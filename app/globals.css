@@ -2,26 +2,118 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+/* HTML의 기본 요소에 대한 스타일을 정의합니다. (ex : <body>, <a>, <h1>) */
+@layer base {
+  /* reset */
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  *::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  * {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  /* number input에서 위아래 화살표 삭제 - Chrome, Safari, Edge, Opera, Firefox */
+  img {
+    max-width: fit-content;
+  }
+  /* toast message default style */
+  .toaster {
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.2) !important;
+    @apply flex items-center px-16 py-12 rounded !important;
+  }
+  .toaster .go3958317564 {
+    @apply text-gray-700 m-0 ml-8 !important;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+  body {
+    @apply text-gray-700 text-14 leading-17 font-normal;
+  }
+
+  h1,
+  h2 {
+    @apply text-24 leading-29 font-semibold;
+  }
+  h3 {
+    @apply text-18 leading-22 font-semibold;
+  }
+  a,
+  span,
+  img,
+  svg,
+  path {
+    @apply transition ease-in-out duration-150;
+  }
+  button {
+    @apply w-fit px-12 py-8 rounded font-medium text-gray-700 bg-white border-solid border-1 border-gray-300 hover:border-nb_blue-300;
+    @apply transition ease-in-out duration-150;
+  }
+  button.reset {
+    @apply w-fit p-0 bg-transparent border-none hover:opacity-80;
+  }
+  [type='text'],
+  [type='email'],
+  [type='url'],
+  [type='password'],
+  [type='number'],
+  [type='date'],
+  [type='datetime-local'],
+  [type='month'],
+  [type='search'],
+  [type='tel'],
+  [type='time'],
+  [type='week'],
+  [multiple],
+  textarea,
+  select,
+  input {
+    @apply w-auto block m-0 px-12 py-8 rounded border-1 border-gray-300 placeholder-gray-400 outline-0 ring-0 focus:outline-0 focus:ring-0 hover:border-nb_blue-300 focus:border-nb_blue-300;
+    @apply transition ease-in-out duration-150;
+  }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    transition: background-color 5000s;
+    -webkit-text-fill-color: #374151 !important;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+/* 재사용 가능한 컴포넌트에 대한 스타일을 정의합니다. (ex : 버튼, 카드, 모달 창 등의 스타일) */
+@layer components {
+}
+
+/* 일반적인 유틸리티 클래스에 대한 스타일을 정의합니다. (ex : .text-center, .bg-red-500, .border-solid 같은 유틸리티 클래스) */
+@layer utilities {
+}
+
+.absoluteCenter {
+  @apply absolute top-1/2 left-1/2 translate-y-[-50%] translate-x-[-50%];
+}
+.fadeIn {
+  @apply transition ease-in-out duration-150;
+}
+
+.roundedButton {
+  @apply px-12 py-8 rounded-full text-gray-700;
+  @apply active:bg-nb_blue-200 active:text-white active:border-nb_blue-200 focus:bg-nb_blue-300 focus:text-white focus:border-nb_blue-300;
+}
+.roundedButton.selected {
+  @apply bg-nb_blue-300 text-white border-nb_blue-300 !important;
+}
+
+.divider {
+  @apply w-full h-1 bg-gray-200;
+}
+.disabled {
+  @apply opacity-70 cursor-not-allowed pointer-events-none;
+}
+.overlayBackground {
+  @apply fixed top-0 left-0 right-0 bottom-0 bg-gray-500 bg-opacity-50 z-50;
 }
