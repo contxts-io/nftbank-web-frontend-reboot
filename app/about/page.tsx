@@ -1,7 +1,10 @@
+import { ThemeSwitcher } from '@/components/buttons/ThemeSwitcher';
+
 const Page = () => {
   return (
     <div>
-      <p>about</p>
+      <p className='dark:text-red-300'>about</p>
+      <ThemeSwitcher />
     </div>
   );
 };
