@@ -12,7 +12,11 @@
     "lint": "next lint",
     "turbo": "cp ./env/.env.development ./.env && next dev --turbo",
     "ci": "yarn run lint",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "e2e": "start-server-and-test dev http://localhost:3000 \"cypress open --e2e\"",
+    "e2e:headless": "start-server-and-test dev http://localhost:3000 \"cypress run --e2e\"",
+    "component": "cypress open --component",
+    "component:headless": "cypress run --component"
   },
   "dependencies": {
     "@tanstack/react-query": "^4.33.0",
@@ -22,6 +26,7 @@
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
     "axios": "^1.5.0",
+    "cypress": "^13.0.0",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
     "jotai": "^2.4.0",
@@ -33,5 +38,8 @@
     "tailwindcss": "3.3.3",
     "typescript": "5.2.2",
     "zod": "^3.22.2"
+  },
+  "devDependencies": {
+    "@testing-library/cypress": "^9.0.0"
   }
 }
