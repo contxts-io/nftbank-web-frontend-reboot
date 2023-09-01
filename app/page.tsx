@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Home() {
   const apiKey = process.env.API_KEY || 'No API Key';
@@ -8,6 +9,7 @@ export default function Home() {
         <h1>Next.js + TypeScript</h1>
         <p>줄리안</p>
         <p>{apiKey}</p>
+        <Link href='/about'>about</Link>
       </div>
     </main>
   );
