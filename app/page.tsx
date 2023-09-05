@@ -1,7 +1,9 @@
+import { signin } from '@/apis/auth';
+import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function Home() {
+export default async function Home() {
   const apiKey = process.env.API_KEY || 'No API Key';
   return (
     <main>
