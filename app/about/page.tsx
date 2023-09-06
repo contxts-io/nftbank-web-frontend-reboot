@@ -1,11 +1,12 @@
 'use client';
 import { ThemeSwitcher } from '@/components/buttons/ThemeSwitcher';
 import { InjectedConnector } from 'wagmi/connectors/injected';
-import { useAccount, useConnect, useEnsName } from 'wagmi';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAccount, useConnect } from 'wagmi';
+import { useAtom } from 'jotai';
 import { testAtom } from '@/store/test';
 import { getIdTokenByGoogle } from '@/apis/firebase';
-import { signin } from '@/apis/auth';
+import { getMe, signIn } from '@/apis/auth';
+import { setCookie } from 'cookies-next';
 
 const Page = () => {
   const { address, isConnected } = useAccount();
@@ -18,9 +19,17 @@ const Page = () => {
   };
   const onClickSignInGoogle = async () => {
     const token = await getIdTokenByGoogle();
-    const user = token ? await signin(token) : null;
-    console.log('user: ', user);
-    return user;
+    if (token) {
+      setCookie('accessToken', token);
+      const user = token ? await signIn(token) : null;
+      console.log('user: ', user);
+    } else {
+      console.log('token is null');
+    }
+  };
+  const checkMe = async () => {
+    const result = await getMe();
+    console.log('result: ', result);
   };
   if (!isConnected)
     return <button onClick={() => connect()}>Connect Wallet</button>;
@@ -31,6 +40,7 @@ const Page = () => {
       <p>{test}</p>
       <button onClick={handleChangeAtom}>change test</button>
       <button onClick={() => onClickSignInGoogle()}>Sign in Google</button>
+      <button onClick={() => checkMe()}>get Me</button>
       <ThemeSwitcher />
     </div>
   );
