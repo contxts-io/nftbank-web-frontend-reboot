@@ -26,7 +26,7 @@ export type IInventoryValue = {
   },
   processedAt: string
 }
-export type ICollectionList = {
+export type IInventoryCollectionList = {
   collections: Collection[],
   paging: Paging,
   processedAt: string,
