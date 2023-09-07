@@ -1,0 +1,15 @@
+.container {
+  @apply w-full flex flex-col items-start my-16;
+}
+.pHeader {
+  @apply text-18 font-bold mb-8;
+}
+.pValue {
+  @apply text-28 leading-28 font-bold;
+}
+.valueRow {
+  @apply flex items-end my-8;
+}
+.pDiff {
+  @apply text-18 text-red-500 leading-22 font-normal ml-16;
+}

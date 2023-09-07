@@ -4,21 +4,21 @@ import { TCurrency } from "./constants";
 export type IInventoryValue = {
   value: {
     eth: {
-      amount: number,
+      amount: string,
       currency: TCurrency
     },
     usd: {
-      amount: null,
-      currency: null
+      amount: string,
+      currency: TCurrency
     },
     difference: {
       eth: {
-        amount: number,
+        amount: string,
         currency: TCurrency
       },
       usd: {
-        amount: null,
-        currency: null
+        amount: string,
+        currency: TCurrency
       },
       percentage: number,
       base: string
@@ -26,7 +26,7 @@ export type IInventoryValue = {
   },
   processedAt: string
 }
-export type IInventoryCollectionList = {
+export type ICollectionList = {
   collections: Collection[],
   paging: Paging,
   processedAt: string,
