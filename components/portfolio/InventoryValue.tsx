@@ -1,6 +1,5 @@
 'use client';
 import { useInventoryValue } from '@/utils/hooks/queries/inventory';
-import { useEffect } from 'react';
 import styles from './InventoryValue.module.css';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
@@ -17,7 +16,7 @@ const InventoryValue = () => {
     <div className={styles.container}>
       <p className={styles.pHeader}>InventoryValue</p>
       {isLoading && <div>Loading...</div>}
-      {inventoryValue && (
+      {!isLoading && inventoryValue && (
         <div className={styles.valueRow}>
           <p className={styles.pValue}>
             {`${toFixed(inventoryValue.value[currency].amount)} ETH`}

@@ -2,6 +2,9 @@
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || 'https://web-api-reboot.dev.nftbank.tools';
 const nextConfig = {
+  images: {
+    domains: ['i.seadn.io', 'upload.wikimedia.org'],
+  },
   async rewrites() {
     return [
       {
