@@ -1,10 +1,8 @@
 import { TChain, TCurrency, TStandard, TValuationType } from "./constants"
 
 type IChain = {
-  chain: {
-    name: TChain,
-    imageUrl: string,
-  }
+  name: TChain,
+  imageUrl: string,
 }
 
 export type Collection = {
@@ -16,14 +14,14 @@ export type Collection = {
     imageUrl: string,
     standard: TStandard,
   },
-  amount: number,
+  amount: string,
   costBasis: {
     eth: {
-      amount: number,
+      amount: string,
       currency: TCurrency,
     },
     usd: {
-      amount: number,
+      amount: string,
       currency: TCurrency,
     }
   },
@@ -32,20 +30,20 @@ export type Collection = {
   },
   nav: {
     eth: {
-      amount: number,
+      amount: string,
       currency: TCurrency,
     },
     usd: {
-      amount: number,
-      currency: null
+      amount: string,
+      currency: TCurrency,
     },
     difference: {
       eth: {
-        amount: number,
+        amount: string,
         currency: TCurrency,
       },
       usd: {
-        amount: number,
+        amount: string,
         currency: TCurrency,
       },
       percentage: number,

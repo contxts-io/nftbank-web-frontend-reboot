@@ -1,5 +1,6 @@
 import { getCollectionList, getInventoryValue } from '@/apis/inventory';
 import { IInventoryCollectionList, IInventoryValue } from '@/interfaces/inventory';
+import { TCollectionParam } from '@/store/requestParam';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
@@ -18,11 +19,11 @@ export function useInventoryValue() {
   );
 }
 
-export function useInventoryCollectionList() {
+export function useInventoryCollectionList(requestParam: TCollectionParam) {
   return useQuery<IInventoryCollectionList,AxiosError>(
-    ['inventoryCollectionList'],
+    ['inventoryCollectionList',requestParam],
     async () => {
-      const inventoryCollectionList = await getCollectionList();
+      const inventoryCollectionList = await getCollectionList(requestParam);
       return inventoryCollectionList;
     },
     {
