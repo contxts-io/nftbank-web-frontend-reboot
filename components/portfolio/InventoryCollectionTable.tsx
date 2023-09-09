@@ -1,52 +1,77 @@
 'use client';
 import { useInventoryCollectionList } from '@/utils/hooks/queries/inventory';
 import styles from './InventoryCollectionTable.module.css';
-import { useAtomValue } from 'jotai';
-import { currencyAtom } from '@/store/currency';
+import { useAtom, useAtomValue } from 'jotai';
+import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import Image from 'next/image';
-import { inventoryCollectionAtom } from '@/store/requestParam';
+import { TSort, inventoryCollectionAtom } from '@/store/requestParam';
 import { useEffect, useState } from 'react';
 import { IInventoryCollectionList } from '@/interfaces/inventory';
+import SkeletonLoader from '../SkeletonLoader';
+
 const InventoryCollectionTable = () => {
   const currency = useAtomValue(currencyAtom);
-  const inventoryCollectionRequestParam = useAtomValue(inventoryCollectionAtom);
-  const { data, status } = useInventoryCollectionList(
+  const priceType = useAtomValue(priceTypeAtom);
+  const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
+    useAtom(inventoryCollectionAtom);
+  const { data: inventoryCollection, status } = useInventoryCollectionList(
     inventoryCollectionRequestParam
   );
-  const [inventoryCollection, setInventoryCollection] =
-    useState<IInventoryCollectionList | null>(null);
-  useEffect(() => {
-    data && setInventoryCollection(data);
-  }, [data]);
+  const handleClickSortButton = (sort: TSort) => {
+    const order =
+      inventoryCollectionRequestParam.sort !== sort
+        ? 'desc'
+        : inventoryCollectionRequestParam.order === 'desc'
+        ? 'asc'
+        : 'desc';
+    console.log('handleClickSortButton @@@order: ', order);
+    setInventoryCollectionRequestParam({
+      ...inventoryCollectionRequestParam,
+      sort: sort,
+      order: order,
+    });
+  };
+
   return (
     <div className={styles.container}>
-      <table className={styles.table}>
-        <thead>
-          <tr className={styles.tableHeader}>
-            <th className={styles.tableCell}>Chain</th>
-            <th className={`${styles.tableCell3} flex justify-start`}>
-              Collection
-            </th>
-            <th className={`${styles.tableCell} flex justify-end`}>Amount</th>
-            <th className={`${styles.tableCell2} flex justify-end`}>
-              Total Cost basis
-            </th>
-            <th className={`${styles.tableCell2} flex justify-end`}>
-              Valuation Type
-            </th>
-            <th className={`${styles.tableCell2} flex justify-end`}>
-              Current Realtime NAV
-            </th>
-            <th className={styles.tableCell} />
-          </tr>
-        </thead>
+      <div className={styles.table}>
+        <div className={styles.tableHeader}>
+          <div className={`${styles.tableCell} flex justify-center`}>Chain</div>
+          <div className={`${styles.tableCell3} flex justify-start`}>
+            Collection
+          </div>
+          <div
+            className={`${styles.tableCell} flex justify-end cursor-pointer`}
+            onClick={() => handleClickSortButton('amount')}
+          >
+            Amount
+          </div>
+          <div
+            className={`${styles.tableCell2} flex justify-end cursor-pointer`}
+            onClick={() => handleClickSortButton('acq_price_eth')}
+          >
+            {priceType === 'costBasis'
+              ? 'Total Cost basis'
+              : 'Acquisition Price'}
+          </div>
+          <div className={`${styles.tableCell2} flex justify-end`}>
+            Valuation Type
+          </div>
+          <div className={`${styles.tableCell2} flex justify-end`}>
+            Current Realtime NAV
+          </div>
+          <div className={styles.tableCell} />
+        </div>
 
-        <tbody>
+        <div>
+          {status === 'loading' && (
+            <SkeletonLoader className='w-full h-[200px]' />
+          )}
           {inventoryCollection &&
             inventoryCollection.collections.map((row, index) => {
               return (
                 <tr className={styles.tableRow} key={index}>
-                  <td className={`${styles.tableCell} flex justify-center`}>
+                  <div className={`${styles.tableCell} flex justify-center`}>
                     <div className='flex items-center justify-center rounded-full bg-white border-gray-200 border-1 w-50 h-50'>
                       <Image
                         width={25}
@@ -55,54 +80,56 @@ const InventoryCollectionTable = () => {
                         alt={row.collection.name}
                       />
                     </div>
-                  </td>
-                  <td className={styles.tableCell3}>
+                  </div>
+                  <div className={styles.tableCell3}>
                     <div className='flex items-center'>
-                      <Image
-                        width={35}
-                        height={35}
-                        src={row.collection.imageUrl}
-                        className='rounded-full mr-8'
-                        alt={row.collection.name}
-                      />
+                      {row.collection.imageUrl && (
+                        <Image
+                          width={50}
+                          height={50}
+                          src={row.collection.imageUrl}
+                          className='rounded-full mr-8'
+                          alt={row.collection.name}
+                        />
+                      )}
                       {row.collection.name}
                     </div>
-                  </td>
-                  <td className={`${styles.tableCell} flex justify-end`}>
+                  </div>
+                  <div className={`${styles.tableCell} flex justify-end`}>
                     <p>{row.amount}</p>
-                  </td>
-                  <td className={`${styles.tableCell2} flex justify-end`}>
+                  </div>
+                  <div className={`${styles.tableCell2} flex justify-end`}>
                     <p>
-                      {`${parseFloat(row.costBasis[currency].amount).toFixed(
-                        2
-                      )} ${row.costBasis[currency].currency} `}
+                      {`${parseFloat(
+                        row[priceType]?.[currency].amount || '0'
+                      ).toFixed(2)} ${row[priceType]?.[currency].currency} `}
                     </p>
-                  </td>
-                  <td className={`${styles.tableCell2} flex justify-end`}>
+                  </div>
+                  <div className={`${styles.tableCell2} flex justify-end`}>
                     <p>{row.valuation.type}</p>
-                  </td>
-                  <td className={`${styles.tableCell2} flex justify-end`}>
+                  </div>
+                  <div className={`${styles.tableCell2} flex justify-end`}>
                     <div className='flex flex-col w-full items-end'>
                       <p>{`${row.nav[currency].currency} ${parseFloat(
                         row.nav[currency].amount
                       ).toFixed(2)}`}</p>
                       <p
                         className={
-                          row.nav.difference.percentage > 0
+                          row.nav[currency].difference.percentage > 0
                             ? 'text-green-500'
                             : 'text-red-500'
                         }
-                      >{`${row.nav.difference[currency].amount} (${row.nav.difference.percentage}%)`}</p>
+                      >{`${row.nav[currency].difference.amount} (${row.nav[currency].difference.percentage}%)`}</p>
                     </div>
-                  </td>
-                  <td className={`${styles.tableCell} flex justify-center `}>
+                  </div>
+                  <div className={`${styles.tableCell} flex justify-center `}>
                     <button>spam</button>
-                  </td>
+                  </div>
                 </tr>
               );
             })}
-        </tbody>
-      </table>
+        </div>
+      </div>
     </div>
   );
 };

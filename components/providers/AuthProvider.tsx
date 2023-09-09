@@ -18,13 +18,16 @@ const checkMe = async (token: RequestCookie) => {
     const result = await instance
       .get(`${URL}/v1/user`, options)
       .then((data) => {
-        console.log('AuthContext @@@getMe: ', data.data);
+        // console.log('AuthContext @@@getMe: ', data.data);
       })
       .catch((error) => {
-        console.log('AuthContext @@@error: ', error);
+        // console.log('AuthContext @@@error: ', error);
       });
-    console.log('AuthContext @@@result: ', result);
-    return { name: 'julian' };
+    // console.log('AuthContext @@@result: ', result);
+    return {
+      name: 'Jay',
+      walletAddress: '0xf060917ad197a9a72ea8ac4e65048eed02e99d5f',
+    };
   } catch (error) {
     console.log('AuthContext @@@error: ', error);
     // throw new Error('Failed to fetch data');

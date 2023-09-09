@@ -1,20 +1,27 @@
 import { atom } from "jotai";
-type TSortOrder = 'asc' | 'desc'
+export type TSortOrder = 'asc' | 'desc'
+export type TSort = 'amount'|'acq_price_eth'
 export type TCollectionParam = {
   searchCollection: string,
-  cursor: number,
+  page: number,
   limit: number,
-  sort: {
-    field: string,
-    order: TSortOrder,
-  }
+  sort: TSort,
+  order :TSortOrder,
+  w: string,
 }
 export const inventoryCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
-  cursor: 0,
-  limit: 50,
-  sort: {
-    field: 'amount',
-    order: 'desc',
-  }
+  page: 1,
+  limit: 5,
+  sort: 'acq_price_eth',
+  order :'desc',
+  w: '',
+})
+export const inventorySpamCollectionAtom = atom<TCollectionParam>({
+  searchCollection: '',
+  page: 1,
+  limit: 5,
+  sort: 'acq_price_eth',
+  order :'desc',
+  w: '',
 })
