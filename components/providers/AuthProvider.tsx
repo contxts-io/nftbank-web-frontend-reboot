@@ -1,11 +1,33 @@
+import { getMe, signIn } from '@/apis/auth';
+import ReactQueryClient from '@/utils/ReactQueryClient';
+import instance from '@/utils/axiosInterceptor';
+import { Hydrate, dehydrate } from '@tanstack/react-query';
+import axios from 'axios';
 import { getAuth, User } from 'firebase/auth';
+import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { cookies } from 'next/headers';
 
-const getData = async (token: string) => {
+const checkMe = async (token: RequestCookie) => {
   try {
-    // const res = await signin(TOKEN);
-    console.log('AuthContextres: @@@@ ', token);
-    return { name: 'julian' };
+    const cookie = `${token.name}=${token.value}`;
+    const options = {
+      withCredentials: true,
+      headers: { Cookie: cookie },
+    };
+    const URL = process.env.NEXT_PUBLIC_API_URL;
+    const result = await instance
+      .get(`${URL}/v1/user`, options)
+      .then((data) => {
+        // console.log('AuthContext @@@getMe: ', data.data);
+      })
+      .catch((error) => {
+        // console.log('AuthContext @@@error: ', error);
+      });
+    // console.log('AuthContext @@@result: ', result);
+    return {
+      name: 'Jay',
+      walletAddress: '0xf060917ad197a9a72ea8ac4e65048eed02e99d5f',
+    };
   } catch (error) {
     console.log('AuthContext @@@error: ', error);
     // throw new Error('Failed to fetch data');
@@ -15,12 +37,13 @@ const getData = async (token: string) => {
 
 export const AuthProvider = async ({ children }: any) => {
   const cookieStore = cookies();
-  const user = { name: 'julian' };
-  const TOKEN =
-    'eyJhbGciOiJSUzI1NiIsImtpZCI6IjE5MGFkMTE4YTk0MGFkYzlmMmY1Mzc2YjM1MjkyZmVkZThjMmQwZWUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiSnVsaWFuIEVvbSIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS0vQU9oMTRHaUxSMUVuMW5xWGwzUTY1UHBEVVlPYXdjdGdQUFloQTN0YUJuczFMV1E5VWpnT0VqRk9jSjFjVjNvM1J3MDZ6WTB4TEFIbGktWllsVHN6eE5MSENWRWFSeWVkLWxyTXdNQlR3SThCSXNrMlNiWHVnMld2OWdiYk44dnVxbFp1X0VUMmZEa25vS3FycW5XdmhFeVZ6bWxFbTlsNUVIdzItbDlyaU81M1VUX1JmMDFqaTFQdjVOamh2UGhidF9NT21qZFpyemdDcUI0dFpJRVo1NXJIOThyT0QyNS1SVXZjTDVqZnc4dTY1SFhnaU9OanNIdlpCT3lrczA5QkRoVEtoVnhrWXVyUGkwQjQ4Qm1TTENzOVVPamp1WDRPMjhXZzk2WVBOa1FoSTkwd2k4ZVhGRkx0eWJ6ako0TUU4T0dHc0k0M1prRTRmakNzQ1JvMVRiQl9YX3VzUEhaRWo5VVFsWENQT1MzMkhMempDYkZWenhXQTd3VXJmTHNxQ013WHZ5d2ZZWHF1ZDl1YzBYbzhsWEp0QUtfYnlIVXlLbUtURld5RXRuSjhtektQbzJtVElJelFVV2NhOFlLeXBQZ3MtSFdfbktSZ1ZfS1VVYVFtSjcxLXIwX0ZJZi04b3cxUEJKSjMxd1ZtY01mbXhDRHRGdVpjQWpvRjh6SjdEaGhzN1pSU1RhUi12MGdNYlpHODJBS1U2YS1SdTB4QVhxc1YtcDZUT1VCWXVZNWhfYnBDZ05DdkRUOHp3MXZncWgyUFo0YzhLbl8yMXMwczllbEEzYV9iVm1oRVY3UG1FVzFDdnNWTUhOOWZJa2hxVFZYYklZZVZSX1BMSmVWa1ZLSEc1eGJTTmo0bTk3YTNYUXd6bl9ZVWM2RndfS3FsSXBFQkNhUzZJWmUxb2hEQjU2NlZ6c3NLSk1OamdYRzZmTm9nei1WR1djdHNTeVhhY3ZHZUlKSTF2SVR4b1BtVDNsTGRyeXpSWDZ6SUxSbVBCa2o2Q1dpYVBzcXJDVmhMdE9yVG42c01RUT1zOTYtYyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS9jb250eHRzaW8tbmZ0YmFuay13ZWIiLCJhdWQiOiJjb250eHRzaW8tbmZ0YmFuay13ZWIiLCJhdXRoX3RpbWUiOjE2OTM4MjU4MTAsInVzZXJfaWQiOiJOMjA1dHZmcWpYUG0xWTQ4Q1JSYW4zcm9EaXAxIiwic3ViIjoiTjIwNXR2ZnFqWFBtMVk0OENSUmFuM3JvRGlwMSIsImlhdCI6MTY5MzgyNTgxMCwiZXhwIjoxNjkzODI5NDEwLCJlbWFpbCI6Imp1bGlhbkBjb250eHRzLmlvIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZ29vZ2xlLmNvbSI6WyIxMTM5NzExMjIwMjMxODY1NDgyMjYiXSwiZW1haWwiOlsianVsaWFuQGNvbnR4dHMuaW8iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJnb29nbGUuY29tIn19.VNhw_6244U23xKRWmbsQcniEK1VpM79FmEWhHnvLElkRAblNHuSAIpKZRaOcpXz3l-WuPCL1gVSPgRZZKbf-G5CFiPqwKZtYd5GENlVj2eY-fvZGVJYVmYaIqTvUrbxuBF_x_ZIerKmNK8HODSJtcVW3Ml6xATu1C7wShL8RFfvNbBh2lWhct61PZMOeQRz4HwcD3tiik2kowgJkvEfXQJV-NSIJp-Re0hnAlBoHgRQqNT1UiR7cP6H2sRxdvDAyWtQQyZxdTOcJlestuUtz3qkwdNvTVD_DiV964ORj-Jssebi_roNycHnU38ApFnxzlaYzoYqDsNsasJhr08CPzg';
-
-  console.log('cookieStore: 11222', cookieStore);
-  const result = await getData(TOKEN);
-
-  return <>{children}</>;
+  const TOKEN = cookieStore.get('nb_session');
+  const reactQueryClient = ReactQueryClient;
+  if (TOKEN?.value) {
+    const me = await reactQueryClient.prefetchQuery(['me'], () =>
+      checkMe(TOKEN)
+    );
+  }
+  const dehydratedState = dehydrate(reactQueryClient);
+  return <Hydrate state={dehydratedState}>{children}</Hydrate>;
 };

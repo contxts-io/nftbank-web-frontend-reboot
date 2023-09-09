@@ -1,0 +1,9 @@
+.container {
+  @apply w-full;
+}
+.inputSearch {
+  @apply w-[250px] h-30 rounded border border-gray-300 text-14 text-gray-500;
+}
+.row {
+  @apply flex items-center justify-between my-8;
+}
