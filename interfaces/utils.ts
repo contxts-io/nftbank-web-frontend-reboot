@@ -1,5 +1,5 @@
 type Paging = {
   limit: number,
-  offset: number,
-  nextCursor: number
+  page: number,
+  total: number,
 }

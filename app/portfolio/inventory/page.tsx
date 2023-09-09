@@ -6,10 +6,13 @@ import ReactQueryClient from '@/utils/ReactQueryClient';
 import instance from '@/utils/axiosInterceptor';
 import { IInventoryValue } from '@/interfaces/inventory';
 
-const getInventoryValue = async <T = IInventoryValue,>(): Promise<T> => {
+const getInventoryValue = async <T = IInventoryValue,>(
+  walletAddress?: string
+): Promise<T> => {
   try {
+    const query = walletAddress ? `?w=${walletAddress}` : '';
     const { data } = await instance.get<T>(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/inventory/value`
+      `${process.env.NEXT_PUBLIC_API_URL}/v1/inventory/value${query}`
     );
     return data;
   } catch (error) {
@@ -17,10 +20,12 @@ const getInventoryValue = async <T = IInventoryValue,>(): Promise<T> => {
   }
 };
 
-const InventoryPage = async () => {
+const InventoryPage = async (context: any) => {
+  console.log('InventoryPage @@@context: ', context);
+  const walletAddress = context.searchParams?.walletAddress;
   const queryClient = ReactQueryClient;
-  await queryClient.prefetchQuery(['inventoryValue'], () =>
-    getInventoryValue()
+  await queryClient.prefetchQuery(['inventoryValue', walletAddress], () =>
+    getInventoryValue(walletAddress)
   );
   const dehydratedState = dehydrate(queryClient);
   return (
