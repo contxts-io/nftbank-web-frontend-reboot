@@ -1,0 +1,19 @@
+.container {
+  @apply w-[600px] h-200 bg-white rounded-lg p-16;
+  @apply flex flex-col;
+}
+.pHeader {
+  @apply text-18 font-bold mb-8;
+}
+.inputText {
+  @apply w-full rounded border border-gray-300 text-14 text-gray-500 my-8;
+}
+.row {
+  @apply w-full flex justify-start items-center;
+}
+.inputSelect {
+  @apply mr-8 h-35 w-130;
+}
+.resetButton {
+  @apply rounded;
+}
