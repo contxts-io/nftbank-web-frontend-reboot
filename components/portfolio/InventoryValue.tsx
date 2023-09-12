@@ -3,9 +3,12 @@ import { useInventoryValue } from '@/utils/hooks/queries/inventory';
 import styles from './InventoryValue.module.css';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
+import { useSearchParams } from 'next/navigation';
 
 const InventoryValue = () => {
-  const { data: inventoryValue, isLoading } = useInventoryValue();
+  const searchParams = useSearchParams();
+  const walletAddress = searchParams.get('walletAddress') || null;
+  const { data: inventoryValue, isLoading } = useInventoryValue(walletAddress);
   const currency = useAtomValue(currencyAtom);
 
   const toFixed = (value: string | null) => {

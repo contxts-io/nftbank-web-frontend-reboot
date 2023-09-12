@@ -4,9 +4,9 @@ import { TCollectionParam } from '@/store/requestParam';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-export function useInventoryValue() {
+export function useInventoryValue(walletAddress: string | null) {
   return useQuery<IInventoryValue,AxiosError>(
-    ['inventoryValue'],
+    ['inventoryValue',walletAddress],
     async () => {
       const inventoryValue = await getInventoryValue();
       return inventoryValue;
