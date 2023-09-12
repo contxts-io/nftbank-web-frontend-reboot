@@ -1,4 +1,4 @@
-import { IInventoryCollectionList, IInventoryValue } from "@/interfaces/inventory";
+import { IInventoryCollectionList, IInventoryItemList, IInventoryValue } from "@/interfaces/inventory";
 import { TCollectionParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
@@ -20,4 +20,9 @@ export const getCollectionList = async<T = IInventoryCollectionList>(requestPara
   .join('&');
   const { data } = await instance.get<{data:T}>(`/inventory/collectionStats?${query}`);
   return data.data;
+}
+export const getItemList = async<T = IInventoryItemList>(requestParam: TCollectionParam): Promise<T> => {
+  const { data } = await instance.get<{data:T}>(`/inventory/item`);
+  return data.data;
+
 }
