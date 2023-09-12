@@ -17,6 +17,7 @@ export const inventoryCollectionAtom = atom<TCollectionParam>({
   order :'desc',
   w: '',
 })
+export const invnetoryItemCollectionAtom = atom<TCollectionParam>({})
 export const inventorySpamCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
   page: 1,
