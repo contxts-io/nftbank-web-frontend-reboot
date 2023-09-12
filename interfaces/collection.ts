@@ -38,7 +38,6 @@ export type Collection = {
     usd: Value & {difference: TDifference},
     base: string,
   },
-    
     // eth: TValue & {
     //   difference: {
     //     amount: string,
@@ -51,5 +50,26 @@ export type Collection = {
     //     percentage : number,
     //   }
     // },
-   
+}
+export type Item = {
+  collection: Collection,
+  item: {
+    tokenId: number,
+    name: string,
+    imageUrl: string,
+  },
+  amount?: number,
+  costBasis: TValue,
+  valuation: {
+    floor: {
+      accuracy: number,
+      isDefault: boolean
+    }
+  },
+  nav: {
+    eth: Value & {difference: TDifference},
+    usd: Value & { difference: TDifference },
+    percentage: number,
+    base: string,
+  },
 }
