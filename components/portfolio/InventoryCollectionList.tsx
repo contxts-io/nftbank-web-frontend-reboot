@@ -2,13 +2,14 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import styles from './InventoryCollectionList.module.css';
 import InventoryCollectionTable from './InventoryCollectionTable';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { inventoryCollectionAtom } from '@/store/requestParam';
 import ReactModal from 'react-modal';
 import SpamModal from './SpamModal';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import { useSearchParams } from 'next/navigation';
 import { useInventoryCollectionList } from '@/utils/hooks/queries/inventory';
+import { inventoryTypeAtom } from '@/store/settings';
 
 const InventoryCollectionList = () => {
   const searchParams = useSearchParams();
@@ -22,6 +23,7 @@ const InventoryCollectionList = () => {
   const { data: collectionList, status } =
     useInventoryCollectionList(inventoryCollection);
   const [currency, setCurrency] = useAtom(currencyAtom);
+  const inventoryType = useAtomValue(inventoryTypeAtom);
   useEffect(() => {
     setInventoryCollection({
       ...inventoryCollection,
@@ -70,7 +72,7 @@ const InventoryCollectionList = () => {
           <button onClick={handleClickOpen}>Spam settings</button>
         </div>
       </div>
-      <InventoryCollectionTable />
+      {inventoryType === 'collection' && <InventoryCollectionTable />}
       <div className='flex w-full justify-center items-center'>
         <button onClick={() => handleClickPaging('prev')}>PREV</button>
         {collectionList && (
