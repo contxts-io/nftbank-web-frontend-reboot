@@ -5,8 +5,6 @@ import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import Image from 'next/image';
 import { TSort, inventoryCollectionAtom } from '@/store/requestParam';
-import { useEffect, useState } from 'react';
-import { IInventoryCollectionList } from '@/interfaces/inventory';
 import SkeletonLoader from '../SkeletonLoader';
 
 const InventoryCollectionTable = () => {
