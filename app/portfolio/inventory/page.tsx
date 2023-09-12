@@ -5,6 +5,7 @@ import { Hydrate, dehydrate } from '@tanstack/react-query';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import instance from '@/utils/axiosInterceptor';
 import { IInventoryValue } from '@/interfaces/inventory';
+import InventoryTypeSelector from '@/components/portfolio/InventoryTypeSelector';
 
 const getInventoryValue = async <T = IInventoryValue,>(
   walletAddress?: string
@@ -30,10 +31,11 @@ const InventoryPage = async (context: any) => {
   const dehydratedState = dehydrate(queryClient);
   return (
     <Hydrate state={dehydratedState}>
-      <div className={styles.container}>
+      <section className={styles.container}>
+        <InventoryTypeSelector />
         <InventoryValue />
         <InventoryCollectionList />
-      </div>
+      </section>
     </Hydrate>
   );
 };
