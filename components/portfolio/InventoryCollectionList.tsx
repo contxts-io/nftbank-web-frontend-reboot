@@ -10,6 +10,7 @@ import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import { useSearchParams } from 'next/navigation';
 import { useInventoryCollectionList } from '@/utils/hooks/queries/inventory';
 import { inventoryTypeAtom } from '@/store/settings';
+import InventoryItemSection from './InventoryItemSection';
 
 const InventoryCollectionList = () => {
   const searchParams = useSearchParams();
@@ -73,6 +74,8 @@ const InventoryCollectionList = () => {
         </div>
       </div>
       {inventoryType === 'collection' && <InventoryCollectionTable />}
+      {inventoryType === 'item' && <InventoryItemSection />}
+
       <div className='flex w-full justify-center items-center'>
         <button onClick={() => handleClickPaging('prev')}>PREV</button>
         {collectionList && (
