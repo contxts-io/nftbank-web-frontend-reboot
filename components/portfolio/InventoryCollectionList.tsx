@@ -78,7 +78,7 @@ const InventoryCollectionList = () => {
 
       <div className='flex w-full justify-center items-center'>
         <button onClick={() => handleClickPaging('prev')}>PREV</button>
-        {collectionList && (
+        {status === 'success' && collectionList && (
           <p className='mx-10'>
             current : {inventoryCollection.page} / total :
             {Math.ceil(

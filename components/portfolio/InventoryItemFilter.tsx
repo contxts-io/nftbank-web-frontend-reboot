@@ -85,6 +85,7 @@ const InventoryItemFilter = (props: Props) => {
       };
     });
   };
+  if (status === 'error') return <div>error</div>;
   return (
     <aside className={styles.container}>
       <h2 className='text-18'>collection</h2>
@@ -95,6 +96,7 @@ const InventoryItemFilter = (props: Props) => {
         onChange={handleInputText}
         value={inventoryCollectionRequestParam.searchCollection}
       />
+
       <ul className='max-h-[300px] overflow-auto flex flex-col'>
         {data?.pages?.map((page, index) => (
           <>

@@ -60,16 +60,19 @@ export type Item = {
   },
   amount?: number,
   costBasis: TValue,
-  valuation: {
-    floor: {
-      accuracy: number,
-      isDefault: boolean
-    }
-  },
+  valuation: Valuation,
   nav: {
     eth: Value & {difference: TDifference},
     usd: Value & { difference: TDifference },
     percentage: number,
     base: string,
   },
+}
+export type Valuation = {
+  [key: string]: ValuationItem
+}
+export type ValuationItem = {
+  accuracy: number,
+  isDefault: boolean,
+  isSelected: boolean,
 }
