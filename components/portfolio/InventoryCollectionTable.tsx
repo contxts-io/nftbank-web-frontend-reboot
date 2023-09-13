@@ -29,7 +29,7 @@ const InventoryCollectionTable = () => {
       order: order,
     });
   };
-
+  if (status === 'error') return <div>error</div>;
   return (
     <div className={styles.container}>
       <div className={styles.table}>

@@ -5,7 +5,7 @@
   @apply w-full;
 }
 .table thead tr {
-  @apply h-32 border-y-1 border-gray-200;
+  @apply h-32 border-b-1 border-gray-200;
 }
 .table tbody tr {
   @apply h-60 hover:bg-gray-100;

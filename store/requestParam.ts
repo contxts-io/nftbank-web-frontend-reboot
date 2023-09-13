@@ -17,12 +17,20 @@ export const inventoryCollectionAtom = atom<TCollectionParam>({
   order :'desc',
   w: '',
 })
-export const invnetoryItemCollectionAtom = atom<TCollectionParam>({})
 export const inventorySpamCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
   page: 1,
   limit: 5,
   sort: 'acq_price_eth',
   order :'desc',
+  w: '',
+})
+export const inventoryItemCollectionAtom = atom<TCollectionParam>({})
+export const inventoryItemListAtom = atom<TCollectionParam>({
+  searchCollection: '',
+  page: 1,
+  limit: 5,
+  sort: 'acq_price_eth',
+  order: 'desc',
   w: '',
 })
