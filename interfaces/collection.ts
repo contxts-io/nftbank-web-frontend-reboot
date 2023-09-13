@@ -29,6 +29,7 @@ export type Collection = {
   amount: string,
   costBasis: TValue | null,
   acquisitionPrice: TValue| null,
+  gasFee: TValue | null,
 
   valuation: {
     type: TValuationType,

@@ -34,7 +34,7 @@ const InventoryItemList = () => {
       }
     }
   };
-  const handleChangeSelect = (e) => {
+  const handleChangeSelect = (e: React.FormEvent) => {
     console.log('handleChangeSelect @@@e: ', e);
   };
   return (
