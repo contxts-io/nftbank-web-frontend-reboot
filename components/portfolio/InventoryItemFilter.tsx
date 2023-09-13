@@ -7,10 +7,15 @@ import { getCollectionList } from '@/apis/inventory';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { useObserver } from '@/utils/hooks/useObserver';
+import { useAtom } from 'jotai';
+import { selectedCollectionInventoryAtom } from '@/store/portfolio';
 type Props = {
   collectionList?: string[];
 };
-const InventoryItemFilter = (props: Props) => {
+const InventoryItemFilter = () => {
+  const [selectedCollection, setSelectedCollection] = useAtom(
+    selectedCollectionInventoryAtom
+  );
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useState<TCollectionParam>({
       searchCollection: '',
@@ -21,7 +26,9 @@ const InventoryItemFilter = (props: Props) => {
       w: '',
     });
   const [checkedCollection, setCheckedCollection] = useState<string[]>(
-    props.collectionList || []
+    selectedCollection?.collection.assetContract
+      ? [selectedCollection.collection.assetContract]
+      : []
   );
   const { ref, inView } = useInView({ threshold: 0.3 });
   // ref는 target을 지정할 element에 지정한다.
@@ -57,6 +64,11 @@ const InventoryItemFilter = (props: Props) => {
   useEffect(() => {
     fetchData(1);
   }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     setSelectedCollection(null);
+  //   };
+  // }, []);
   const fetchData = async (page: number) => {
     console.log('page ', page);
     return await getCollectionList({
@@ -113,9 +125,11 @@ const InventoryItemFilter = (props: Props) => {
                   name={item.collection.name}
                   onChange={handleInputCheck}
                   className='mr-8'
-                  checked={checkedCollection.includes(item.collection.name)}
+                  checked={checkedCollection.includes(
+                    item.collection.assetContract
+                  )}
                 />
-                <p>{item.collection.name}</p>
+                <p>{item.collection.name || item.collection.assetContract}</p>
               </li>
             ))}
           </>

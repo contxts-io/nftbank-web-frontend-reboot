@@ -8,7 +8,6 @@ import ReactModal from 'react-modal';
 import SpamModal from './SpamModal';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import { useSearchParams } from 'next/navigation';
-import { useInventoryCollectionList } from '@/utils/hooks/queries/inventory';
 import { inventoryTypeAtom } from '@/store/settings';
 import InventoryItemSection from './InventoryItemSection';
 
@@ -21,8 +20,6 @@ const InventoryCollectionList = () => {
     inventoryCollectionAtom
   );
   const [priceType, setPriceType] = useAtom(priceTypeAtom);
-  const { data: collectionList, status } =
-    useInventoryCollectionList(inventoryCollection);
   const [currency, setCurrency] = useAtom(currencyAtom);
   const inventoryType = useAtomValue(inventoryTypeAtom);
   useEffect(() => {
@@ -40,16 +37,6 @@ const InventoryCollectionList = () => {
   };
   const handleClickOpen = () => {
     setShowModal(true);
-  };
-  const handleClickPaging = (option: 'prev' | 'next') => {
-    if (option === 'prev' && inventoryCollection.page === 1) return;
-    setInventoryCollection({
-      ...inventoryCollection,
-      page:
-        option === 'prev'
-          ? inventoryCollection.page - 1
-          : inventoryCollection.page + 1,
-    });
   };
   const handleTogglePriceType = () => {
     setPriceType(priceType === 'costBasis' ? 'acquisitionPrice' : 'costBasis');
@@ -75,24 +62,11 @@ const InventoryCollectionList = () => {
       </div>
       {inventoryType === 'collection' && <InventoryCollectionTable />}
       {inventoryType === 'item' && <InventoryItemSection />}
-
-      <div className='flex w-full justify-center items-center'>
-        <button onClick={() => handleClickPaging('prev')}>PREV</button>
-        {status === 'success' && collectionList && (
-          <p className='mx-10'>
-            current : {inventoryCollection.page} / total :
-            {Math.ceil(
-              collectionList.paging.total / collectionList.paging.limit
-            )}
-          </p>
-        )}
-        <button onClick={() => handleClickPaging('next')}>NEXT</button>
-      </div>
       <ReactModal
         isOpen={showModal}
         contentLabel='Minimal Modal Example'
         className='w-fit absolute top-[20%] left-[30%]'
-        onRequestClose={(e) => {
+        onRequestClose={() => {
           setShowModal(false);
         }}
         ariaHideApp={false}

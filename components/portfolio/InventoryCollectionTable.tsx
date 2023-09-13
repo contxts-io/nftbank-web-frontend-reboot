@@ -1,15 +1,21 @@
 'use client';
 import { useInventoryCollectionList } from '@/utils/hooks/queries/inventory';
 import styles from './InventoryCollectionTable.module.css';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import Image from 'next/image';
 import { TSort, inventoryCollectionAtom } from '@/store/requestParam';
 import SkeletonLoader from '../SkeletonLoader';
+import { Collection } from '@/interfaces/collection';
+import { inventoryTypeAtom } from '@/store/settings';
+import { selectedCollectionInventoryAtom } from '@/store/portfolio';
+import { ChangeEvent } from 'react';
 
 const InventoryCollectionTable = () => {
   const currency = useAtomValue(currencyAtom);
   const priceType = useAtomValue(priceTypeAtom);
+  const [inventoryType, setInventoryType] = useAtom(inventoryTypeAtom);
+  const setSelectedCollection = useSetAtom(selectedCollectionInventoryAtom);
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useAtom(inventoryCollectionAtom);
   const { data: inventoryCollection, status } = useInventoryCollectionList(
@@ -22,64 +28,100 @@ const InventoryCollectionTable = () => {
         : inventoryCollectionRequestParam.order === 'desc'
         ? 'asc'
         : 'desc';
-    console.log('handleClickSortButton @@@order: ', order);
     setInventoryCollectionRequestParam({
       ...inventoryCollectionRequestParam,
       sort: sort,
       order: order,
     });
   };
+  const handleClickCollection = (collection: Collection) => {
+    setSelectedCollection(collection);
+    setInventoryType('item');
+  };
+  const handleClickPaging = (option: 'prev' | 'next') => {
+    if (option === 'prev' && inventoryCollectionRequestParam.page === 1) return;
+    setInventoryCollectionRequestParam({
+      ...inventoryCollectionRequestParam,
+      page:
+        option === 'prev'
+          ? inventoryCollectionRequestParam.page - 1
+          : inventoryCollectionRequestParam.page + 1,
+    });
+  };
+  const handleChangePage = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.value) return;
+    const page = parseInt(e.target.value || '1') || 1;
+    console.log('page ', page);
+    if (
+      inventoryCollection &&
+      page >
+        Math.ceil(
+          inventoryCollection.paging.total / inventoryCollection.paging.limit
+        )
+    )
+      return;
+    setInventoryCollectionRequestParam({
+      ...inventoryCollectionRequestParam,
+      page: page,
+    });
+  };
   if (status === 'error') return <div>error</div>;
   return (
-    <div className={styles.container}>
-      <div className={styles.table}>
-        <div className={styles.tableHeader}>
-          <div className={`${styles.tableCell} flex justify-center`}>Chain</div>
-          <div className={`${styles.tableCell3} flex justify-start`}>
+    <section className={styles.container}>
+      <table className={styles.table}>
+        <thead className={styles.tableHeader}>
+          <th className={`${styles.tableCell} flex justify-center`}>Chain</th>
+          <th className={`${styles.tableCell3} flex justify-start`}>
             Collection
-          </div>
-          <div
+          </th>
+          <th
             className={`${styles.tableCell} flex justify-end cursor-pointer`}
             onClick={() => handleClickSortButton('amount')}
           >
             Amount
-          </div>
-          <div
+          </th>
+          <th
             className={`${styles.tableCell2} flex justify-end cursor-pointer`}
             onClick={() => handleClickSortButton('acq_price_eth')}
           >
             {priceType === 'costBasis'
               ? 'Total Cost basis'
               : 'Acquisition Price'}
-          </div>
-          <div className={`${styles.tableCell2} flex justify-end`}>
+          </th>
+          <th className={`${styles.tableCell2} flex justify-end`}>
             Valuation Type
-          </div>
-          <div className={`${styles.tableCell2} flex justify-end`}>
+          </th>
+          <th className={`${styles.tableCell2} flex justify-end`}>
             Current Realtime NAV
-          </div>
-          <div className={styles.tableCell} />
-        </div>
+          </th>
+          <th className={styles.tableCell} />
+        </thead>
 
-        <div>
+        <tbody>
           {status === 'loading' && (
             <SkeletonLoader className='w-full h-[200px]' />
           )}
           {inventoryCollection &&
             inventoryCollection.collections.map((row, index) => {
               return (
-                <tr className={styles.tableRow} key={index}>
-                  <div className={`${styles.tableCell} flex justify-center`}>
+                <tr
+                  className={styles.tableRow}
+                  key={index}
+                  onClick={() => handleClickCollection(row)}
+                >
+                  <td className={`${styles.tableCell} flex justify-center`}>
                     <div className='flex items-center justify-center rounded-full bg-white border-gray-200 border-1 w-50 h-50'>
                       <Image
                         width={25}
                         height={25}
                         src={row.collection.chain.imageUrl}
-                        alt={row.collection.name}
+                        alt={
+                          row.collection.name || row.collection.assetContract
+                        }
                       />
                     </div>
-                  </div>
-                  <div className={styles.tableCell3}>
+                  </td>
+                  <td className={styles.tableCell3}>
                     <div className='flex items-center'>
                       {row.collection.imageUrl && (
                         <Image
@@ -90,23 +132,32 @@ const InventoryCollectionTable = () => {
                           alt={row.collection.name}
                         />
                       )}
-                      {row.collection.name}
+                      {row.collection.name || row.collection.assetContract}
                     </div>
-                  </div>
-                  <div className={`${styles.tableCell} flex justify-end`}>
+                  </td>
+                  <td className={`${styles.tableCell} flex justify-end`}>
                     <p>{row.amount}</p>
-                  </div>
-                  <div className={`${styles.tableCell2} flex justify-end`}>
+                  </td>
+                  <td
+                    className={`${styles.tableCell2} flex flex-col justify-center items-end`}
+                  >
                     <p>
                       {`${parseFloat(
                         row[priceType]?.[currency].amount || '0'
                       ).toFixed(2)} ${row[priceType]?.[currency].currency} `}
                     </p>
-                  </div>
-                  <div className={`${styles.tableCell2} flex justify-end`}>
+                    {priceType === 'costBasis' && (
+                      <p className='text-blue-500'>
+                        {`GAS +${parseFloat(
+                          row.gasFee?.[currency].amount || '0'
+                        ).toFixed(3)}`}
+                      </p>
+                    )}
+                  </td>
+                  <td className={`${styles.tableCell2} flex justify-end`}>
                     <p>{row.valuation.type}</p>
-                  </div>
-                  <div className={`${styles.tableCell2} flex justify-end`}>
+                  </td>
+                  <td className={`${styles.tableCell2} flex justify-end`}>
                     <div className='flex flex-col w-full items-end'>
                       <p>{`${row.nav[currency].currency} ${parseFloat(
                         row.nav[currency].amount
@@ -119,16 +170,58 @@ const InventoryCollectionTable = () => {
                         }
                       >{`${row.nav[currency].difference.amount} (${row.nav[currency].difference.percentage}%)`}</p>
                     </div>
-                  </div>
-                  <div className={`${styles.tableCell} flex justify-center `}>
-                    <button>spam</button>
-                  </div>
+                  </td>
+                  <td className={`${styles.tableCell} flex justify-center `}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        console.log('spam');
+                      }}
+                    >
+                      spam
+                    </button>
+                  </td>
                 </tr>
               );
             })}
-        </div>
+        </tbody>
+      </table>
+      <div className='flex w-full justify-center items-center'>
+        <button onClick={() => handleClickPaging('prev')}>PREV</button>
+        {status === 'success' && inventoryCollection && (
+          <div className='flex justify-center items-center'>
+            <input
+              type='text'
+              value={inventoryCollectionRequestParam.page}
+              onChange={handleChangePage}
+            />
+            <p className='mx-10'>
+              / total :
+              {Math.ceil(
+                inventoryCollection.paging.total /
+                  inventoryCollection.paging.limit
+              )}
+            </p>
+          </div>
+        )}
+        <button onClick={() => handleClickPaging('next')}>NEXT</button>
+
+        <select
+          defaultValue={inventoryCollection?.paging.limit}
+          onChange={(e) => {
+            setInventoryCollectionRequestParam({
+              ...inventoryCollectionRequestParam,
+              page: 1,
+              limit: parseInt(e.target.value),
+            });
+          }}
+        >
+          <option value={10}>10</option>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
+        </select>
       </div>
-    </div>
+    </section>
   );
 };
 export default InventoryCollectionTable;

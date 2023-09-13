@@ -1,5 +1,5 @@
 .container {
-  @apply w-full flex flex-col items-start my-16;
+  @apply w-full flex justify-between items-start my-16;
 }
 .pHeader {
   @apply text-18 font-bold mb-8;

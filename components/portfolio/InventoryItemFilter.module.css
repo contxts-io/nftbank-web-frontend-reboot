@@ -1,3 +1,3 @@
 .container {
-  @apply flex flex-col border-1 border-black w-[370px] p-10;
+  @apply flex flex-col border-1 border-black min-w-[290px] w-[290px] max-w-[290px] p-10;
 }

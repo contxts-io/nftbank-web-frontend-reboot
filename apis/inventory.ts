@@ -2,10 +2,20 @@ import { IInventoryCollectionList, IInventoryItemList, IInventoryValue } from "@
 import { TCollectionParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
-export const getInventoryValue = async<T=IInventoryValue> (): Promise<T> => {
-  const { data } = await instance.get<T>('/inventory/value');
-  console.log('getInventoryValue', data);
+export const getInventoryValue = async<T = IInventoryValue>(walletAddress?: string): Promise<T> => {
+  const query = walletAddress ? `?w=${walletAddress}` : '';
+  const { data } = await instance.get<T>(`/inventory/value${query}`);
   return data;
+}
+export const getCollectionValuableCount = async<T = { count: number }>(walletAddress?: string): Promise<T> => {
+  const query = walletAddress ? `?w=${walletAddress}` : '';
+  const { data } = await instance.get<{data:T}>(`/inventory/collection/valuable${query}`);
+  return data.data;
+}
+export const getItemValuableCount = async<T = { count: number }>(walletAddress?: string): Promise<T> => {
+  const query = walletAddress ? `?w=${walletAddress}` : '';
+  const { data } = await instance.get<{data:T}>(`/inventory/item/valuable${query}`);
+  return data.data;
 }
 
 type Key = keyof TCollectionParam;
