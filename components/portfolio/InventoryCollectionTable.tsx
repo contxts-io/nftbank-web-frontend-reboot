@@ -69,38 +69,40 @@ const InventoryCollectionTable = () => {
   return (
     <section className={styles.container}>
       <table className={styles.table}>
-        <thead className={styles.tableHeader}>
-          <th className={`${styles.tableCell} flex justify-center`}>Chain</th>
-          <th className={`${styles.tableCell3} flex justify-start`}>
-            Collection
-          </th>
-          <th
-            className={`${styles.tableCell} flex justify-end cursor-pointer`}
-            onClick={() => handleClickSortButton('amount')}
-          >
-            Amount
-          </th>
-          <th
-            className={`${styles.tableCell2} flex justify-end cursor-pointer`}
-            onClick={() => handleClickSortButton('acq_price_eth')}
-          >
-            {priceType === 'costBasis'
-              ? 'Total Cost basis'
-              : 'Acquisition Price'}
-          </th>
-          <th className={`${styles.tableCell2} flex justify-end`}>
-            Valuation Type
-          </th>
-          <th className={`${styles.tableCell2} flex justify-end`}>
-            Current Realtime NAV
-          </th>
-          <th className={styles.tableCell} />
+        <thead>
+          <tr className={styles.tableHeader}>
+            <th className={`${styles.tableCell} flex justify-center`}>Chain</th>
+            <th className={`${styles.tableCell3} flex justify-start`}>
+              Collection
+            </th>
+            <th
+              className={`${styles.tableCell} flex justify-end cursor-pointer`}
+              onClick={() => handleClickSortButton('amount')}
+            >
+              Amount
+            </th>
+            <th
+              className={`${styles.tableCell2} flex justify-end cursor-pointer`}
+              onClick={() => handleClickSortButton('acq_price_eth')}
+            >
+              {priceType === 'costBasis'
+                ? 'Total Cost basis'
+                : 'Acquisition Price'}
+            </th>
+            <th className={`${styles.tableCell2} flex justify-end`}>
+              Valuation Type
+            </th>
+            <th className={`${styles.tableCell2} flex justify-end`}>
+              Current Realtime NAV
+            </th>
+            <th className={styles.tableCell} />
+          </tr>
         </thead>
 
         <tbody>
-          {status === 'loading' && (
+          {/* {status === 'loading' && (
             <SkeletonLoader className='w-full h-[200px]' />
-          )}
+          )} */}
           {inventoryCollection &&
             inventoryCollection.collections.map((row, index) => {
               return (
@@ -116,7 +118,7 @@ const InventoryCollectionTable = () => {
                         height={25}
                         src={row.collection.chain.imageUrl}
                         alt={
-                          row.collection.name || row.collection.assetContract
+                          row.collection.name || row.collection.contractAddress
                         }
                       />
                     </div>
@@ -132,7 +134,7 @@ const InventoryCollectionTable = () => {
                           alt={row.collection.name}
                         />
                       )}
-                      {row.collection.name || row.collection.assetContract}
+                      {row.collection.name || row.collection.contractAddress}
                     </div>
                   </td>
                   <td className={`${styles.tableCell} flex justify-end`}>

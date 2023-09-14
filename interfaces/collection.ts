@@ -16,16 +16,16 @@ type TDifference = {
   amount: string,
   percentage: number,
 }
+export type CollectionMetadata = {
+  chain: IChain,
+  name: string,
+  symbol: string,
+  imageUrl: string,
+  standard: TStandard,
+  contractAddress: string,
+}
 export type Collection = {
-  collection: {
-    chain: IChain,
-
-    name: string,
-    symbol: string,
-    imageUrl: string,
-    standard: TStandard,
-    assetContract: string,
-  },
+  collection: CollectionMetadata,
   amount: string,
   costBasis: TValue | null,
   acquisitionPrice: TValue| null,
@@ -52,8 +52,7 @@ export type Collection = {
     //   }
     // },
 }
-export type Item = {
-  collection: Collection,
+export type Item = Collection & {
   item: {
     tokenId: number,
     name: string,
