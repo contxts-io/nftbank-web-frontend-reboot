@@ -4,12 +4,7 @@
 .table {
   @apply w-full;
 }
-.table thead tr {
-  @apply h-32 border-y-1 border-gray-200;
-}
-.table tbody tr {
-  @apply h-60 hover:bg-gray-100;
-}
+
 .tableHeader {
   @apply h-32;
   @apply grid grid-cols-12 items-center grid-rows-1 overflow-hidden text-12 text-gray-500 font-medium border-b border-gray-200;

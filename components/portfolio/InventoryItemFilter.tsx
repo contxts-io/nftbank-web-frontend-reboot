@@ -26,8 +26,8 @@ const InventoryItemFilter = () => {
       w: '',
     });
   const [checkedCollection, setCheckedCollection] = useState<string[]>(
-    selectedCollection?.collection.assetContract
-      ? [selectedCollection.collection.assetContract]
+    selectedCollection?.collection.contractAddress
+      ? [selectedCollection.collection.contractAddress]
       : []
   );
   const { ref, inView } = useInView({ threshold: 0.3 });
@@ -109,7 +109,7 @@ const InventoryItemFilter = () => {
         value={inventoryCollectionRequestParam.searchCollection}
       />
 
-      <ul className='max-h-[300px] overflow-auto flex flex-col'>
+      <ul className='max-h-[500px] overflow-auto flex flex-col'>
         {data?.pages?.map((page, index) => (
           <>
             <div>
@@ -126,10 +126,10 @@ const InventoryItemFilter = () => {
                   onChange={handleInputCheck}
                   className='mr-8'
                   checked={checkedCollection.includes(
-                    item.collection.assetContract
+                    item.collection.contractAddress
                   )}
                 />
-                <p>{item.collection.name || item.collection.assetContract}</p>
+                <p>{item.collection.name || item.collection.contractAddress}</p>
               </li>
             ))}
           </>
