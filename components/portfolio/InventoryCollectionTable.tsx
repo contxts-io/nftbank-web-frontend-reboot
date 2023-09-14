@@ -118,7 +118,7 @@ const InventoryCollectionTable = () => {
                         height={25}
                         src={row.collection.chain.imageUrl}
                         alt={
-                          row.collection.name || row.collection.assetContract
+                          row.collection.name || row.collection.contractAddress
                         }
                       />
                     </div>
@@ -134,7 +134,7 @@ const InventoryCollectionTable = () => {
                           alt={row.collection.name}
                         />
                       )}
-                      {row.collection.name || row.collection.assetContract}
+                      {row.collection.name || row.collection.contractAddress}
                     </div>
                   </td>
                   <td className={`${styles.tableCell} flex justify-end`}>
