@@ -1,4 +1,4 @@
-import InventoryCollectionList from '@/components/portfolio/InventoryCollectionList';
+import InventoryCollectionList from '@/components/portfolio/inventory/collection/InventoryCollectionList';
 import InventoryValue from '@/components/portfolio/InventoryValue';
 import styles from './page.module.css';
 import { Hydrate, dehydrate } from '@tanstack/react-query';

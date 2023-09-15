@@ -16,7 +16,7 @@ export const getMetadata = async<T = Metadata>(param: Param): Promise<T> => {
       return encodeURIComponent(key) + '=' + encodeURIComponent(param[key as Key]);
   })
   .join('&');
-  const { data } = await instance.get<{data: T}>(`/metadata/item${query ? `?${query}` : ''}`);
+  const { data } = await instance.get<{data: T}>(`/metadata/token${query ? `?${query}` : ''}`);
 
   return data.data;
 }
