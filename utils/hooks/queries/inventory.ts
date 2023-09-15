@@ -1,6 +1,6 @@
 import { getCollectionList, getCollectionValuableCount, getInventoryValue, getItemList, getItemValuableCount } from '@/apis/inventory';
 import { IInventoryCollectionList, IInventoryItemList, IInventoryValue } from '@/interfaces/inventory';
-import { TCollectionParam } from '@/store/requestParam';
+import { ItemParam, TCollectionParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
@@ -76,7 +76,7 @@ export function useInventoryItemFilter(requestParam: TCollectionParam) {
     },
   );
 }
-export function useInventoryItemList(requestParam: TCollectionParam) {
+export function useInventoryItemList(requestParam: ItemParam) {
   return useQuery<IInventoryItemList,AxiosError>(
     ['inventoryItemList',requestParam],
     async () => {
