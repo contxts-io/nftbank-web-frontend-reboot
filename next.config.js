@@ -16,6 +16,16 @@ const nextConfig = {
     //   '**',
     // ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/portfolio',
+        destination: '/portfolio/inventory',
+        permanent: true,
+      },
+    ];
+  },
+
   async rewrites() {
     return [
       {

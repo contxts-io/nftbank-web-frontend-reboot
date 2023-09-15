@@ -2,13 +2,14 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import styles from './InventoryCollectionList.module.css';
 import InventoryCollectionTable from './InventoryCollectionTable';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { inventoryCollectionAtom } from '@/store/requestParam';
 import ReactModal from 'react-modal';
 import SpamModal from './SpamModal';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import { useSearchParams } from 'next/navigation';
-import { useInventoryCollectionList } from '@/utils/hooks/queries/inventory';
+import { inventoryTypeAtom } from '@/store/settings';
+import InventoryItemSection from '../item/InventoryItemSection';
 
 const InventoryCollectionList = () => {
   const searchParams = useSearchParams();
@@ -19,34 +20,27 @@ const InventoryCollectionList = () => {
     inventoryCollectionAtom
   );
   const [priceType, setPriceType] = useAtom(priceTypeAtom);
-  const { data: collectionList, status } =
-    useInventoryCollectionList(inventoryCollection);
   const [currency, setCurrency] = useAtom(currencyAtom);
+  const inventoryType = useAtomValue(inventoryTypeAtom);
+  const [searchText, setSearchText] = useState<string>('');
   useEffect(() => {
     setInventoryCollection({
       ...inventoryCollection,
       w: walletAddress,
     });
   }, [walletAddress]);
-  const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setInventoryCollection({
-      ...inventoryCollection,
-      page: 0,
-      searchCollection: e.target.value,
-    });
+  const handleInputText = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setSearchText(value);
+    (value.length >= 3 || value.length == 0) &&
+      setInventoryCollection({
+        ...inventoryCollection,
+        page: 0,
+        searchCollection: e.target.value,
+      });
   };
   const handleClickOpen = () => {
     setShowModal(true);
-  };
-  const handleClickPaging = (option: 'prev' | 'next') => {
-    if (option === 'prev' && inventoryCollection.page === 1) return;
-    setInventoryCollection({
-      ...inventoryCollection,
-      page:
-        option === 'prev'
-          ? inventoryCollection.page - 1
-          : inventoryCollection.page + 1,
-    });
   };
   const handleTogglePriceType = () => {
     setPriceType(priceType === 'costBasis' ? 'acquisitionPrice' : 'costBasis');
@@ -61,8 +55,8 @@ const InventoryCollectionList = () => {
           type='text'
           placeholder='Search by collection'
           className={styles.inputSearch}
-          onChange={handleChangeInput}
-          value={inventoryCollection.searchCollection}
+          onChange={handleInputText}
+          value={searchText}
         />
         <div>
           <button onClick={handleTogglePriceType}>{priceType}</button>
@@ -70,24 +64,13 @@ const InventoryCollectionList = () => {
           <button onClick={handleClickOpen}>Spam settings</button>
         </div>
       </div>
-      <InventoryCollectionTable />
-      <div className='flex w-full justify-center items-center'>
-        <button onClick={() => handleClickPaging('prev')}>PREV</button>
-        {collectionList && (
-          <p className='mx-10'>
-            current : {inventoryCollection.page} / total :
-            {Math.ceil(
-              collectionList.paging.total / collectionList.paging.limit
-            )}
-          </p>
-        )}
-        <button onClick={() => handleClickPaging('next')}>NEXT</button>
-      </div>
+      {inventoryType === 'collection' && <InventoryCollectionTable />}
+      {inventoryType === 'item' && <InventoryItemSection />}
       <ReactModal
         isOpen={showModal}
         contentLabel='Minimal Modal Example'
         className='w-fit absolute top-[20%] left-[30%]'
-        onRequestClose={(e) => {
+        onRequestClose={() => {
           setShowModal(false);
         }}
         ariaHideApp={false}

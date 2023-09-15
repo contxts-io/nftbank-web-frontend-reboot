@@ -1,0 +1,9 @@
+.container {
+  @apply w-full h-60 flex justify-between items-center px-16 border-1 border-gray-300;
+}
+.menu {
+  @apply flex items-center;
+}
+.pLogo {
+  @apply text-28 font-bold text-gray-500;
+}

@@ -1,0 +1,26 @@
+.container {
+  @apply w-full flex flex-col border-1 border-gray-300 rounded p-10;
+}
+.metadata {
+  @apply w-[250px] flex flex-col items-center;
+}
+.table {
+  @apply w-full;
+}
+.tableHeader {
+  @apply h-16;
+  @apply grid grid-cols-6 items-center grid-rows-1 overflow-hidden text-12 text-gray-500 font-medium border-b border-gray-200;
+}
+.tableRow {
+  @apply h-32 hover:bg-gray-100;
+  @apply grid grid-cols-6 grid-rows-1 items-center cursor-pointer hover:bg-gray-50;
+}
+.tableCell {
+  @apply px-20 py-16;
+}
+.tableCell2 {
+  @apply px-20 py-16 col-span-2;
+}
+.tableCell3 {
+  @apply px-20 py-16 col-span-3;
+}

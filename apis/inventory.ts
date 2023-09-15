@@ -1,11 +1,21 @@
-import { IInventoryCollectionList, IInventoryValue } from "@/interfaces/inventory";
-import { TCollectionParam } from "@/store/requestParam";
+import { IInventoryCollectionList, IInventoryItemList, IInventoryValue } from "@/interfaces/inventory";
+import { ItemParam, TCollectionParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
-export const getInventoryValue = async<T=IInventoryValue> (): Promise<T> => {
-  const { data } = await instance.get<T>('/inventory/value');
-  console.log('getInventoryValue', data);
+export const getInventoryValue = async<T = IInventoryValue>(walletAddress?: string): Promise<T> => {
+  const query = walletAddress ? `?w=${walletAddress}` : '';
+  const { data } = await instance.get<T>(`/inventory/value${query}`);
   return data;
+}
+export const getCollectionValuableCount = async<T = { count: number }>(walletAddress?: string): Promise<T> => {
+  const query = walletAddress ? `?w=${walletAddress}` : '';
+  const { data } = await instance.get<{data:T}>(`/inventory/collection/stat${query}`);
+  return data.data;
+}
+export const getItemValuableCount = async<T = { count: number }>(walletAddress?: string): Promise<T> => {
+  const query = walletAddress ? `?w=${walletAddress}` : '';
+  const { data } = await instance.get<{data:T}>(`/inventory/token/stat${query}`);
+  return data.data;
 }
 
 type Key = keyof TCollectionParam;
@@ -18,6 +28,28 @@ export const getCollectionList = async<T = IInventoryCollectionList>(requestPara
       return encodeURIComponent(key) + '=' + encodeURIComponent(requestParam[key as Key]);
   })
   .join('&');
-  const { data } = await instance.get<{data:T}>(`/inventory/collectionStats?${query}`);
+  const { data } = await instance.get<{data:T}>(`/inventory/collection?${query}`);
   return data.data;
+}
+
+type ItemKey = keyof ItemParam;
+export const getItemList = async<T = IInventoryItemList>(requestParam: ItemParam): Promise<T> => {
+  const query = Object.keys(requestParam)
+  .filter(function(key) {
+      return requestParam[key as ItemKey] && requestParam[key as ItemKey] !== ""; // 값이 있는 속성만 필터링
+  })
+    .map(function (key) {
+      const value = requestParam[key as ItemKey];
+      if (Array.isArray(value)) {
+        // 만약 값이 배열이면 요소를 쉼표로 연결하여 문자열로 변환
+        return value.length > 0 ? `${encodeURIComponent(key)}=${value.map((v) => encodeURIComponent(v)).join(",")}`:'';
+      } else {
+        return `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`;
+      }
+  })
+    .join('&');
+  console.log('query',query);
+  const { data } = await instance.get<{data:T}>(`/inventory/token?${query.replace('&&','&')}`);
+  return data.data;
+
 }

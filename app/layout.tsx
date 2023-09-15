@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { AuthProvider } from '@/components/providers/AuthProvider';
+import Navigation from '@/components/Navigation';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,7 +22,12 @@ export default async function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <Providers>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <div className='flex flex-col min-h-screen w-screen'>
+              <Navigation />
+              {children}
+            </div>
+          </AuthProvider>
         </Providers>
       </body>
     </html>
