@@ -13,7 +13,7 @@ const getInventoryValue = async <T = IInventoryValue,>(
   try {
     const query = walletAddress ? `?w=${walletAddress}` : '';
     const { data } = await instance.get<T>(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/inventory/value${query}`
+      `https://web-api-reboot.dev.nftbank.tools/v1/inventory/value${query}`
     );
     return data;
   } catch (error) {
@@ -27,7 +27,7 @@ const getCollectionCount = async <T = { count: number },>(
   try {
     const query = walletAddress ? `?w=${walletAddress}` : '';
     const { data } = await instance.get<{ data: T }>(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/inventory/collection/stat${query}`
+      `https://web-api-reboot.dev.nftbank.tools/v1/inventory/collection/stat${query}`
     );
     return data.data;
   } catch (error) {
