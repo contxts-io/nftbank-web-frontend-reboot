@@ -1,0 +1,31 @@
+.container {
+  @apply w-full rounded pr-10;
+}
+.pTitle {
+  @apply text-18;
+}
+.table {
+  @apply w-full;
+}
+.tableHead {
+  @apply border-b-1 border-gray-300;
+}
+.tableRow {
+  @apply grid grid-cols-6 items-center py-3;
+}
+.tableCell {
+  @apply flex justify-start items-center;
+}
+
+.tableCell2 {
+  @apply flex justify-start  items-center;
+  @apply col-span-2;
+}
+
+.tableCell3 {
+  @apply flex justify-start;
+  @apply col-span-3;
+}
+.row {
+  @apply flex w-full;
+}

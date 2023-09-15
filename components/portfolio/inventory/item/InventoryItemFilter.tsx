@@ -1,6 +1,6 @@
 'use client';
 import styles from './InventoryItemFilter.module.css';
-import { TCollectionParam } from '@/store/requestParam';
+import { TCollectionParam, inventoryItemListAtom } from '@/store/requestParam';
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 import { getCollectionList } from '@/apis/inventory';
@@ -9,6 +9,7 @@ import { useInView } from 'react-intersection-observer';
 import { useObserver } from '@/utils/hooks/useObserver';
 import { useAtom } from 'jotai';
 import { selectedCollectionInventoryAtom } from '@/store/portfolio';
+import { Collection } from '@/interfaces/collection';
 type Props = {
   collectionList?: string[];
 };
@@ -19,16 +20,21 @@ const InventoryItemFilter = () => {
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useState<TCollectionParam>({
       searchCollection: '',
+      networkId: 'ethereum',
+      includeGasUsed: true,
       page: 1,
       limit: 10,
       order: 'desc',
-      sort: 'acq_price_eth',
+      sort: 'acquisitionPrice',
       w: '',
     });
   const [checkedCollection, setCheckedCollection] = useState<string[]>(
-    selectedCollection?.collection.contractAddress
-      ? [selectedCollection.collection.contractAddress]
+    selectedCollection?.collection.assetContract
+      ? [selectedCollection.collection.assetContract]
       : []
+  );
+  const [itemRequestParams, setItemRequestParams] = useAtom(
+    inventoryItemListAtom
   );
   const { ref, inView } = useInView({ threshold: 0.3 });
   // ref는 target을 지정할 element에 지정한다.
@@ -42,7 +48,7 @@ const InventoryItemFilter = () => {
     isFetchingNextPage,
     isFetching,
   } = useInfiniteQuery(
-    ['projects'],
+    ['projects', inventoryCollectionRequestParam],
     async ({ pageParam = 1 }) => {
       return await fetchData(pageParam);
     },
@@ -55,6 +61,7 @@ const InventoryItemFilter = () => {
       },
     }
   );
+  const [searchText, setSearchText] = useState<string>('');
   const bottom = useRef<HTMLDivElement>(null);
   const onIntersect = ([entry]: any) => {
     entry.isIntersecting && fetchNextPage();
@@ -69,6 +76,13 @@ const InventoryItemFilter = () => {
   //     setSelectedCollection(null);
   //   };
   // }, []);
+  useEffect(() => {
+    setItemRequestParams((prev) => ({
+      ...prev,
+      page: 1,
+      assetContractAddress: checkedCollection,
+    }));
+  }, [checkedCollection]);
   const fetchData = async (page: number) => {
     console.log('page ', page);
     return await getCollectionList({
@@ -77,25 +91,41 @@ const InventoryItemFilter = () => {
     });
   };
 
-  const handleInputCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, checked } = e.target;
-    console.log('handleInputCheck', 'name', name, 'checked', checked);
+  // const handleInputCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, checked } = e.target;
+  //   console.log('handleInputCheck', 'name', name, 'checked', checked);
+  //   setCheckedCollection((prev) => {
+  //     if (checked) {
+  //       return [...prev, name];
+  //     } else {
+  //       return prev.filter((item) => item !== name);
+  //     }
+  //   });
+  // };
+  const handleClickCheckBox = (collection: Collection) => {
+    console.log('handleClickCheckBox', collection);
     setCheckedCollection((prev) => {
-      if (checked) {
-        return [...prev, name];
+      if (prev.includes(collection.collection.assetContract)) {
+        return prev.filter(
+          (item) => item !== collection.collection.assetContract
+        );
       } else {
-        return prev.filter((item) => item !== name);
+        return [...prev, collection.collection.assetContract];
       }
     });
   };
   const handleInputText = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setInventoryCollectionRequestParam((prev) => {
-      return {
-        ...prev,
-        searchCollection: value,
-      };
-    });
+    setSearchText(value);
+    (value.length >= 3 || value.length == 0) &&
+      (console.log('handleInputText', 'value', value),
+      setInventoryCollectionRequestParam((prev) => {
+        return {
+          ...prev,
+          searchCollection: value,
+        };
+      }),
+      fetchData(1));
   };
   if (status === 'error') return <div>error</div>;
   return (
@@ -106,7 +136,7 @@ const InventoryItemFilter = () => {
         placeholder='Search by collections'
         className='my-16'
         onChange={handleInputText}
-        value={inventoryCollectionRequestParam.searchCollection}
+        value={searchText}
       />
 
       <ul className='max-h-[500px] overflow-auto flex flex-col'>
@@ -123,13 +153,14 @@ const InventoryItemFilter = () => {
                 <input
                   type='checkbox'
                   name={item.collection.name}
-                  onChange={handleInputCheck}
+                  // onChange={handleInputCheck}
                   className='mr-8'
                   checked={checkedCollection.includes(
-                    item.collection.contractAddress
+                    item.collection.assetContract
                   )}
+                  onClick={() => handleClickCheckBox(item)}
                 />
-                <p>{item.collection.name || item.collection.contractAddress}</p>
+                <p>{item.collection.name || item.collection.assetContract}</p>
               </li>
             ))}
           </>

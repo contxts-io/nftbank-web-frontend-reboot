@@ -1,5 +1,5 @@
 .container {
-  @apply w-full flex border-1 border-gray-300 rounded p-10 m-10;
+  @apply w-full flex flex-col border-1 border-gray-300 rounded p-10;
 }
 .metadata {
   @apply w-[250px] flex flex-col items-center;

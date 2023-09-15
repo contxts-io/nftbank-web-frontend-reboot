@@ -22,7 +22,7 @@ export type CollectionMetadata = {
   symbol: string,
   imageUrl: string,
   standard: TStandard,
-  contractAddress: string,
+  assetContract: string,
 }
 export type Collection = {
   collection: CollectionMetadata,
