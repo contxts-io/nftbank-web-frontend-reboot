@@ -27,7 +27,7 @@ const getCollectionCount = async <T = { count: number },>(
   try {
     const query = walletAddress ? `?w=${walletAddress}` : '';
     const { data } = await instance.get<{ data: T }>(
-      `${process.env.NEXT_PUBLIC_API_URL}/v1/inventory/collection/valuable${query}`
+      `${process.env.NEXT_PUBLIC_API_URL}/v1/inventory/collection/stat${query}`
     );
     return data.data;
   } catch (error) {
