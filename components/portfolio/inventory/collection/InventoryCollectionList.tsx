@@ -9,7 +9,7 @@ import SpamModal from './SpamModal';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import { useSearchParams } from 'next/navigation';
 import { inventoryTypeAtom } from '@/store/settings';
-import InventoryItemSection from './InventoryItemSection';
+import InventoryItemSection from '../item/InventoryItemSection';
 
 const InventoryCollectionList = () => {
   const searchParams = useSearchParams();
@@ -22,18 +22,22 @@ const InventoryCollectionList = () => {
   const [priceType, setPriceType] = useAtom(priceTypeAtom);
   const [currency, setCurrency] = useAtom(currencyAtom);
   const inventoryType = useAtomValue(inventoryTypeAtom);
+  const [searchText, setSearchText] = useState<string>('');
   useEffect(() => {
     setInventoryCollection({
       ...inventoryCollection,
       w: walletAddress,
     });
   }, [walletAddress]);
-  const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setInventoryCollection({
-      ...inventoryCollection,
-      page: 0,
-      searchCollection: e.target.value,
-    });
+  const handleInputText = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setSearchText(value);
+    (value.length >= 3 || value.length == 0) &&
+      setInventoryCollection({
+        ...inventoryCollection,
+        page: 0,
+        searchCollection: e.target.value,
+      });
   };
   const handleClickOpen = () => {
     setShowModal(true);
@@ -51,8 +55,8 @@ const InventoryCollectionList = () => {
           type='text'
           placeholder='Search by collection'
           className={styles.inputSearch}
-          onChange={handleChangeInput}
-          value={inventoryCollection.searchCollection}
+          onChange={handleInputText}
+          value={searchText}
         />
         <div>
           <button onClick={handleTogglePriceType}>{priceType}</button>

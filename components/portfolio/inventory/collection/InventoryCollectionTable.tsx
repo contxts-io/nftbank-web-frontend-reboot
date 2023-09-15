@@ -5,7 +5,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import Image from 'next/image';
 import { TSort, inventoryCollectionAtom } from '@/store/requestParam';
-import SkeletonLoader from '../SkeletonLoader';
+import SkeletonLoader from '../../../SkeletonLoader';
 import { Collection } from '@/interfaces/collection';
 import { inventoryTypeAtom } from '@/store/settings';
 import { selectedCollectionInventoryAtom } from '@/store/portfolio';
@@ -83,7 +83,7 @@ const InventoryCollectionTable = () => {
             </th>
             <th
               className={`${styles.tableCell2} flex justify-end cursor-pointer`}
-              onClick={() => handleClickSortButton('acq_price_eth')}
+              onClick={() => handleClickSortButton('acquisitionPrice')}
             >
               {priceType === 'costBasis'
                 ? 'Total Cost basis'
@@ -100,9 +100,11 @@ const InventoryCollectionTable = () => {
         </thead>
 
         <tbody>
-          {/* {status === 'loading' && (
-            <SkeletonLoader className='w-full h-[200px]' />
-          )} */}
+          {status === 'loading' && (
+            <tr>
+              <SkeletonLoader className='w-full h-[200px]' />
+            </tr>
+          )}
           {inventoryCollection &&
             inventoryCollection.collections.map((row, index) => {
               return (
@@ -118,7 +120,7 @@ const InventoryCollectionTable = () => {
                         height={25}
                         src={row.collection.chain.imageUrl}
                         alt={
-                          row.collection.name || row.collection.contractAddress
+                          row.collection.name || row.collection.assetContract
                         }
                       />
                     </div>
@@ -134,7 +136,7 @@ const InventoryCollectionTable = () => {
                           alt={row.collection.name}
                         />
                       )}
-                      {row.collection.name || row.collection.contractAddress}
+                      {row.collection.name || row.collection.assetContract}
                     </div>
                   </td>
                   <td className={`${styles.tableCell} flex justify-end`}>
@@ -192,13 +194,13 @@ const InventoryCollectionTable = () => {
         <button onClick={() => handleClickPaging('prev')}>PREV</button>
         {status === 'success' && inventoryCollection && (
           <div className='flex justify-center items-center'>
-            <input
+            {/* <input
               type='text'
               value={inventoryCollectionRequestParam.page}
               onChange={handleChangePage}
-            />
+            /> */}
             <p className='mx-10'>
-              / total :
+              current : {inventoryCollection.paging.page}/ total :
               {Math.ceil(
                 inventoryCollection.paging.total /
                   inventoryCollection.paging.limit
