@@ -1,10 +1,49 @@
 import type { Config } from 'tailwindcss';
 import defaultTheme from 'tailwindcss/defaultTheme';
-
+import { color } from './color-token';
 const px0_10 = { ...Array.from(Array(11)).map((_, i) => `${i}px`) };
 const px0_100 = { ...Array.from(Array(101)).map((_, i) => `${i}px`) };
 const px0_200 = { ...Array.from(Array(201)).map((_, i) => `${i}px`) };
 const px0_400 = { ...Array.from(Array(401)).map((_, i) => `${i}px`) };
+
+function parseCustomColors(filePath:string) {
+  const fs = require('fs');
+  const content = fs.readFileSync(filePath, 'utf8');
+  const colors:{[key: string]:string} = {};
+
+  // 정규 표현식을 사용하여 CSS 변수를 추출하고 Tailwind CSS 컬러로 변환
+  const colorRegex = /--color-([a-zA-Z0-9_-]+): var\(--color-([a-zA-Z0-9_-]+)-(\d+)\);/g;
+  
+  let match;
+  while ((match = colorRegex.exec(content)) !== null) {
+    const customColorName = match[1];
+    const tailwindColorName = match[2] || '';
+    const colorNumber = match[3];
+    // 컬러 토큰에서 값을 가져옴
+    const colorValue = color[tailwindColorName]?.[colorNumber] || '';
+    colors[customColorName] = colorValue;
+  }
+  return colors;
+}
+function parseGlobalTokenColors(filePath:string) {
+  const fs = require('fs');
+  const content = fs.readFileSync(filePath, 'utf8');
+  const colors: { [key: string]: string } = {};
+  const colorRegex = /--([a-zA-Z0-9_-]+): (.+?);/g;
+  let match;
+  while ((match = colorRegex.exec(content)) !== null) {
+    const colorName = match[1];
+    const colorValue = match[2];
+
+    // 중복되지 않는 부분 제거 및 수정
+    const modifiedColorName = colorName.replace(/^[a-zA-Z]+-/, '').replace('nb_blue-nb_blue', 'nb_blue');
+
+    colors[modifiedColorName] = colorValue;
+  }
+  console.log('global colors', colors);
+  return colors;
+}
+
 export default {
   darkMode: 'class',
   purge: {
@@ -16,7 +55,7 @@ export default {
     "./components/**/*.{js,jsx,ts,tsx}",
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
-  theme: {
+  theme: {   
     fontFamily: {
       sans: ['Inter', ...defaultTheme.fontFamily.sans],
     },
@@ -34,21 +73,21 @@ export default {
       },
       keyframes: {
         fadeIn: {
-          'from' : {
+          'from': {
             opacity: '0',
             transform: 'translate3d(0, 15%, 0)'
           },
           'to': {
             opacity: '1',
-            transform:'translateZ(0)'
+            transform: 'translateZ(0)'
           }
         },
         fadeOut: {
-          'from' : {
+          'from': {
             opacity: '1',
           },
           'to': {
-              opacity: '0'
+            opacity: '0'
           }
         }
       },
@@ -58,22 +97,16 @@ export default {
         fadeOut: 'fadeOut 1s',
       },
       colors: {
-        nb_blue: {
-          50: '#EEEFFF',
-          100: '#D7DAFF',
-          200: '#979BFF',
-          300: '#6C72FF',
-          400: '#3B43FF',
-          DEFAULT: '#3B43FF',
-          500: '#2B31DB',
-          600: '#1D22B7',
-          700: '#121693',
-          800: '#0B0D7A',
-          900: '#030852',
-          950: '#030852',
-        },
+        ...parseGlobalTokenColors('./global_token_color.css'),
+        light: { ...parseCustomColors('./semantic_token_light.txt') },
+        dark: { ...parseCustomColors('./semantic_token_dark.txt') },
       },
     },
   },
   plugins: [],
 } as Config;
+function generateTextColors(prefix:any, color:any) {
+  return {
+    [`${prefix}`]: `var(${color})`,
+  };
+}
