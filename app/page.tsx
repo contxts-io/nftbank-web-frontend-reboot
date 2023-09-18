@@ -1,4 +1,3 @@
-import Test from '@/components/test/Test';
 import Link from 'next/link';
 
 export default async function Home() {
@@ -17,7 +16,6 @@ export default async function Home() {
           This text has custom color.!!
         </p> */}
       </div>
-      <Test />
     </main>
   );
 }
