@@ -9,6 +9,12 @@ export default async function Home() {
         <p>줄리안</p>
         <p>{apiKey}</p>
         <Link href='/about'>about</Link>
+        <p className='text-red-300'>This text has custom color.!!</p>
+        <p className='text-link'>This text has custom color.!!</p>
+        <p className='text-brand'>This text has custom color.!!</p>
+        {/* <p className='chart-accent-color-chart-orange-boldest'>
+          This text has custom color.!!
+        </p> */}
       </div>
     </main>
   );
