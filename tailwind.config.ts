@@ -1,6 +1,5 @@
 import type { Config } from 'tailwindcss';
 import defaultTheme from 'tailwindcss/defaultTheme';
-import { color } from './color-token';
 const px0_10 = { ...Array.from(Array(11)).map((_, i) => `${i}px`) };
 const px0_100 = { ...Array.from(Array(101)).map((_, i) => `${i}px`) };
 const px0_200 = { ...Array.from(Array(201)).map((_, i) => `${i}px`) };
@@ -13,14 +12,14 @@ function parseCustomColors(filePath:string) {
 
   // 정규 표현식을 사용하여 CSS 변수를 추출하고 Tailwind CSS 컬러로 변환
   const colorRegex = /--color-([a-zA-Z0-9_-]+): var\(--color-([a-zA-Z0-9_-]+)-(\d+)\);/g;
-  
+  const color = parseGlobalTokenColors('./global_token_color.css');
   let match;
   while ((match = colorRegex.exec(content)) !== null) {
     const customColorName = match[1];
     const tailwindColorName = match[2] || '';
     const colorNumber = match[3];
     // 컬러 토큰에서 값을 가져옴
-    const colorValue = color[tailwindColorName]?.[colorNumber] || '';
+    const colorValue = color[`${tailwindColorName}-${colorNumber}`] || '';
     colors[customColorName] = colorValue;
   }
   return colors;
@@ -40,7 +39,6 @@ function parseGlobalTokenColors(filePath:string) {
 
     colors[modifiedColorName] = colorValue;
   }
-  console.log('global colors', colors);
   return colors;
 }
 

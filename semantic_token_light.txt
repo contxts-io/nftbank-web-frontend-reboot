@@ -200,7 +200,7 @@
 --color-chart-fuchsia-boldest: var(--color-fuchsia-700);
 --color-chart-lime-bold: var(--color-lime-500);
 --color-chart-lime-bolder: var(--color-lime-600);
---color-chart-lime-boldest: var(--color-lime-700)00);
+--color-chart-lime-boldest: var(--color-lime-700);
 --color-text-selected: var(--color-blue-600);
 --color-elevation-surface: var(--color-base-white);
 --color-elevation-surface-sunken: var(--color-gray-100);
