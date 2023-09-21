@@ -1,295 +1,281 @@
 /*text style*/
 .font-display01-regular {
   font-size: 128px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 160px;
 }
 .font-display01-medium {
   font-size: 128px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 160px;
 }
 .font-display01-bold {
   font-size: 128px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 160px;
 }
 .font-display02-regular {
   font-size: 96px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 120px;
 }
 .font-display02-medium {
   font-size: 96px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 120px;
 }
 .font-display02-bold {
   font-size: 96px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 120px;
 }
 .font-display03-regular {
   font-size: 60px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 80px;
 }
 .font-display03-medium {
   font-size: 60px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 80px;
 }
 .font-header01-regular {
   font-size: 48px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 60px;
 }
 .font-header01-medium {
   font-size: 48px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 60px;
 }
 .font-subtitle01-medium {
   font-size: 24px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 30px;
 }
 .font-body01-regular {
   font-size: 16px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 20px;
 }
 .font-button01-regular {
   font-size: 18px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 24px;
 }
 .font-display03-bold {
   font-size: 60px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 80px;
 }
 .font-header01-bold {
   font-size: 48px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 60px;
 }
 .font-header02-regular {
   font-size: 40px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 50px;
 }
 .font-header02-medium {
   font-size: 40px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 50px;
 }
 .font-header03-regular {
   font-size: 32px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 40px;
 }
 .font-header03-medium {
   font-size: 32px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 40px;
 }
 .font-header03-bold {
   font-size: 32px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 40px;
 }
 .font-header02-bold {
   font-size: 40px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 50px;
 }
 .font-subtitle01-regular {
   font-size: 24px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 30px;
 }
 .font-subtitle01-bold {
   font-size: 24px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 30px;
 }
 .font-subtitle02-regular {
   font-size: 16px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 20px;
 }
 .font-subtitle02-medium {
   font-size: 16px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 20px;
 }
 .font-subtitle02-bold {
   font-size: 16px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 20px;
 }
 .font-body01-medium {
   font-size: 16px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 20px;
 }
 .font-body01-bold {
   font-size: 16px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 20px;
 }
 .font-body02-regular {
   font-size: 14px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 18px;
 }
 .font-body02-medium {
   font-size: 14px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 18px;
 }
 .font-body02-bold {
   font-size: 14px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 18px;
 }
 .font-button01-medium {
   font-size: 18px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 24px;
 }
 .font-button01-bold {
   font-size: 18px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 24px;
 }
 .font-button02-regular {
   font-size: 16px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 20px;
 }
 .font-button02-medium {
   font-size: 16px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 20px;
 }
 .font-button02-bold {
   font-size: 16px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 20px;
 }
 .font-button03-regular {
   font-size: 14px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 18px;
 }
 .font-button03-medium {
   font-size: 14px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 18px;
 }
 .font-button03-bold {
   font-size: 14px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 18px;
 }
 .font-caption-regular {
   font-size: 12px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 400;
   letter-spacing: 0em;
   line-height: 16px;
 }
 .font-caption-medium {
   font-size: 12px;
-  font-family: Inter;
+  font-family: Iosevka Custom;
   font-weight: 500;
   letter-spacing: 0em;
   line-height: 16px;
 }
 .font-caption-bold {
   font-size: 12px;
-  font-family: Inter;
-  font-weight: 700;
+  font-family: Iosevka Custom;
   letter-spacing: 0em;
   line-height: 16px;
 }
