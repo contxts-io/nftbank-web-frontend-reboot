@@ -96,15 +96,10 @@ export default {
       },
       colors: {
         ...parseGlobalTokenColors('./global_token_color.css'),
-        light: { ...parseCustomColors('./semantic_token_light.txt') },
-        dark: { ...parseCustomColors('./semantic_token_dark.txt') },
+        light: { ...parseCustomColors('./semantic_token_light.css') },
+        dark: { ...parseCustomColors('./semantic_token_dark.css') },
       },
     },
   },
   plugins: [],
 } as Config;
-function generateTextColors(prefix:any, color:any) {
-  return {
-    [`${prefix}`]: `var(${color})`,
-  };
-}

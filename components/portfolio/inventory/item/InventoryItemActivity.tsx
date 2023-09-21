@@ -5,11 +5,11 @@ import Image from 'next/image';
 import { useActivityItem } from '@/utils/hooks/queries/activity';
 import SkeletonLoader from '@/components/SkeletonLoader';
 
-const TableBodyCell = () => {
+const TableBodyCell = ({ address }: { address: string }) => {
   return (
     <div className='flex items-center'>
       <div className='bg-gray-300 rounded-full w-50 h-50 mr-10' />
-      <p>0x</p>
+      <p>{address}</p>
     </div>
   );
 };
@@ -48,42 +48,46 @@ const InventoryItemActivity = ({ item, ...props }: Props) => {
               activityItem.activity.map((item, index) => {
                 return (
                   <tr className={styles.tableRow} key={index}>
-                    <td className={styles.tableCell}>
-                      <p>activity</p>
+                    <td className={`h-full justify-start items-start py-15`}>
+                      <p>{item.functionName}</p>
                     </td>
                     <td className='col-span-5'>
-                      <tr className='w-full grid'>
-                        <div className='grid grid-cols-5'>
-                          <td className={styles.tableCell2}>
-                            {item.functionName}
-                          </td>
-                          <td className={styles.tableCell}>
-                            <TableBodyCell />
-                          </td>
-                          <td className={styles.tableCell}>
-                            <TableBodyCell />
-                          </td>
-                          <td className={styles.tableCell}>
-                            {item.gasFee} ETH
-                          </td>
-                        </div>
-                      </tr>
-                      <tr className='w-full grid'>
-                        <div className='grid grid-cols-5'>
-                          <td className={styles.tableCell2}>
-                            {item.functionName}
-                          </td>
-                          <td className={styles.tableCell}>
-                            <TableBodyCell />
-                          </td>
-                          <td className={styles.tableCell}>
-                            <TableBodyCell />
-                          </td>
-                          <td className={styles.tableCell}>
-                            {item.gasFee} ETH
-                          </td>
-                        </div>
-                      </tr>
+                      {item.send.map((transfer, index) => {
+                        return (
+                          <tr className='w-full grid' key={`send-${index}`}>
+                            <div className='grid grid-cols-5'>
+                              <td className={styles.tableCell2}>
+                                {`<-${transfer.amount} ${transfer.tokenId}`}
+                              </td>
+                              <td className={styles.tableCell}>
+                                <TableBodyCell address={transfer.toAddress} />
+                              </td>
+                              <td className={styles.tableCell}>
+                                <TableBodyCell address={transfer.fromAddress} />
+                              </td>
+                              <td className={styles.tableCell}></td>
+                            </div>
+                          </tr>
+                        );
+                      })}
+                      {item.receive.map((transfer, index) => {
+                        return (
+                          <tr className='w-full grid' key={`receive-${index}`}>
+                            <div className='grid grid-cols-5'>
+                              <td className={styles.tableCell2}>
+                                {`->${transfer.amount} ${transfer.tokenId}`}
+                              </td>
+                              <td className={styles.tableCell}>
+                                <TableBodyCell address={transfer.fromAddress} />
+                              </td>
+                              <td className={styles.tableCell}>
+                                <TableBodyCell address={transfer.toAddress} />
+                              </td>
+                              <td className={styles.tableCell}></td>
+                            </div>
+                          </tr>
+                        );
+                      })}
                     </td>
                   </tr>
                 );
