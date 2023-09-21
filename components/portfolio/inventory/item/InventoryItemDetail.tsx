@@ -1,18 +1,18 @@
 'use client';
-import { Item } from '@/interfaces/collection';
+import { Token } from '@/interfaces/collection';
 import styles from './InventoryItemDetail.module.css';
 import Image from 'next/image';
 import { useMetadata } from '@/utils/hooks/queries/metadata';
 import { useState } from 'react';
 import InventoryItemActivity from './InventoryItemActivity';
 type Props = {
-  item: Item;
+  token: Token;
 };
-const InventoryItemDetail = ({ item }: Props) => {
+const InventoryItemDetail = ({ token }: Props) => {
   const { data: inventoryItem, status } = useMetadata({
-    networkId: item.collection.chain.name,
-    assetContract: item.collection.assetContract,
-    tokenId: item.item.tokenId,
+    networkId: token.collection.chain.name,
+    assetContract: token.collection.assetContract,
+    tokenId: token.token.tokenId,
   });
   const [viewType, setViewType] = useState<'overview' | 'activity'>('overview');
   const handleToggleViewType = (type: 'overview' | 'activity') => {
@@ -44,10 +44,10 @@ const InventoryItemDetail = ({ item }: Props) => {
           <article className='flex justify-between'>
             <div className={styles.metadata}>
               <Image
-                src={item.item.imageUrl}
+                src={token.token.imageUrl}
                 width={250}
                 height={250}
-                alt={`${item.item.name}-${item.item.tokenId}`}
+                alt={`${token.token.name}-${token.token.tokenId}`}
               />
               {inventoryItem && (
                 <article className='w-full rounded border-1 border-gray-300 mt-10'>
@@ -89,16 +89,16 @@ const InventoryItemDetail = ({ item }: Props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {Object.keys(item.valuation).map((key) => (
-                    <tr className={styles.tableRow} key={key}>
+                  {token.valuation.map((valuation, index) => (
+                    <tr className={styles.tableRow} key={index}>
                       <td className={`${styles.tableCell2} flex justify-start`}>
-                        {key}
+                        {valuation.type}
                       </td>
                       <td className={`${styles.tableCell} flex justify-start`}>
-                        0.0000 ETH
+                        {valuation.accuracy}
                       </td>
                       <td className={`${styles.tableCell3} flex justify-end`}>
-                        {item.valuation[key].accuracy}%
+                        {valuation.accuracy}%
                       </td>
                     </tr>
                   ))}
@@ -107,7 +107,7 @@ const InventoryItemDetail = ({ item }: Props) => {
             </div>
           </article>
         )}
-        {viewType === 'activity' && <InventoryItemActivity item={item} />}
+        {viewType === 'activity' && <InventoryItemActivity token={token} />}
       </div>
     </section>
   );

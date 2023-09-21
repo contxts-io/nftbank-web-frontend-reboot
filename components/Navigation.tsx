@@ -4,10 +4,11 @@ const Navigation = () => {
   return (
     <nav className={styles.container}>
       <div className={styles.menu}>
-        <p className={styles.pLogo}>NFTBank</p>
+        <p className='font-header01-bold'>NFTBank</p>
         <ul>
           <Link href={'/'} className='ml-16'>
-            home
+            <p className='text-light-background-brand-bold'>home</p>
+            <p className='text-slate-500'>home</p>
           </Link>
         </ul>
         <ul>
@@ -16,7 +17,6 @@ const Navigation = () => {
           </Link>
         </ul>
       </div>
-      <div></div>
     </nav>
   );
 };
