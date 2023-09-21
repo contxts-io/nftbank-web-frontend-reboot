@@ -173,7 +173,8 @@ const InventoryCollectionTable = () => {
                       ).toFixed(2)}`}</p>
                       <p
                         className={
-                          row.nav[currency].difference.percentage || 0 > 0
+                          row.nav[currency].difference.percentage?.toFixed(2) ||
+                          0 > 0
                             ? 'text-green-500'
                             : 'text-red-500'
                         }

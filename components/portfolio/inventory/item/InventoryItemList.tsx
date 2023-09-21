@@ -182,7 +182,11 @@ const InventoryItemList = () => {
                         {parseFloat(
                           data.nav[currency].difference?.amount || '0'
                         ).toFixed(2)}
-                        {`(${data.nav[currency].difference?.percentage || 0}%)`}
+                        {`(${
+                          data.nav[currency].difference?.percentage?.toFixed(
+                            2
+                          ) || 0
+                        }%)`}
                       </p>
                     </td>
                     <td className={`${styles.tableCell2} flex justify-end`}>
