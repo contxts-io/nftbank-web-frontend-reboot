@@ -26,7 +26,7 @@ const InventoryCollectionList = () => {
   useEffect(() => {
     setInventoryCollection({
       ...inventoryCollection,
-      w: walletAddress,
+      walletAddress,
     });
   }, [walletAddress]);
   const handleInputText = (e: ChangeEvent<HTMLInputElement>) => {

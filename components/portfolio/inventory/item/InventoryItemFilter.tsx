@@ -26,7 +26,7 @@ const InventoryItemFilter = () => {
       limit: 10,
       order: 'desc',
       sort: 'acquisitionPrice',
-      w: '',
+      walletAddress: '',
     });
   const [checkedCollection, setCheckedCollection] = useState<string[]>(
     selectedCollection?.collection.assetContract
@@ -80,7 +80,7 @@ const InventoryItemFilter = () => {
     setItemRequestParams((prev) => ({
       ...prev,
       page: 1,
-      assetContractAddress: checkedCollection,
+      assetContract: checkedCollection,
     }));
   }, [checkedCollection]);
   const fetchData = async (page: number) => {
