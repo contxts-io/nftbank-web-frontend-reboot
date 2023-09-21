@@ -1,5 +1,5 @@
 'use client';
-import { Item } from '@/interfaces/collection';
+import { Token } from '@/interfaces/collection';
 import styles from './InventoryItemActivity.module.css';
 import Image from 'next/image';
 import { useActivityItem } from '@/utils/hooks/queries/activity';
@@ -15,13 +15,13 @@ const TableBodyCell = ({ address }: { address: string }) => {
 };
 
 type Props = {
-  item: Item;
+  token: Token;
 };
-const InventoryItemActivity = ({ item, ...props }: Props) => {
+const InventoryItemActivity = ({ token, ...props }: Props) => {
   const { data: activityItem, status } = useActivityItem({
-    networkId: item.collection.chain.name,
-    assetContract: item.collection.assetContract,
-    tokenId: item.item.tokenId,
+    networkId: token.collection.chain.name,
+    assetContract: token.collection.assetContract,
+    tokenId: token.token.tokenId,
   });
   return (
     <section className={styles.container}>

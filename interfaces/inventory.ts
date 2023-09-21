@@ -1,4 +1,4 @@
-import { Collection, Item } from "./collection";
+import { Collection, Token } from "./collection";
 import { TCurrency } from "./constants";
 
 export type IInventoryValue = {
@@ -32,7 +32,7 @@ export type IInventoryCollectionList = {
   processedAt: string,
 }
 export type IInventoryItemList = {
-  items: Item[],
+  tokens: Token[],
   paging: Paging,
   processedAt: string,
 }

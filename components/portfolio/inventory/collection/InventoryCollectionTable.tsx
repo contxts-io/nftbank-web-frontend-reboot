@@ -147,28 +147,33 @@ const InventoryCollectionTable = () => {
                   >
                     <p>
                       {`${parseFloat(
-                        row[priceType]?.[currency].amount || '0'
+                        row[priceType]?.[currency].amount || ''
                       ).toFixed(2)} ${row[priceType]?.[currency].currency} `}
                     </p>
                     {priceType === 'costBasis' && (
                       <p className='text-blue-500'>
-                        {`GAS +${parseFloat(
-                          row.gasFee?.[currency].amount || '0'
-                        ).toFixed(3)}`}
+                        {row.gasFee?.[currency]?.amount
+                          ? `GAS +${parseFloat(
+                              row.gasFee[currency].amount || ''
+                            ).toFixed(3)} `
+                          : ''}
                       </p>
                     )}
                   </td>
                   <td className={`${styles.tableCell2} flex justify-end`}>
-                    <p>{row.valuation.type}</p>
+                    <p>
+                      {row.valuation.find((item) => item.selected)?.type ||
+                        row.valuation.find((item) => item.default)?.type}
+                    </p>
                   </td>
                   <td className={`${styles.tableCell2} flex justify-end`}>
                     <div className='flex flex-col w-full items-end'>
                       <p>{`${row.nav[currency].currency} ${parseFloat(
-                        row.nav[currency].amount
+                        row.nav[currency].amount || '0'
                       ).toFixed(2)}`}</p>
                       <p
                         className={
-                          row.nav[currency].difference.percentage > 0
+                          row.nav[currency].difference.percentage || 0 > 0
                             ? 'text-green-500'
                             : 'text-red-500'
                         }

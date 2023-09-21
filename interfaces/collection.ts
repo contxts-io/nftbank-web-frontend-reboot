@@ -5,7 +5,7 @@ type IChain = {
   imageUrl: string,
 }
 type Value = {
-  amount: string,
+  amount: string | null,
   currency: 'ETH' | 'USD',
 }
 type TValue = {
@@ -13,9 +13,16 @@ type TValue = {
   usd: Value,
 }
 type TDifference = {
-  amount: string,
-  percentage: number,
+  amount: string | null,
+  percentage: number | null,
 }
+type TValuation = {
+  type: TValuationType,
+  accuracy: number,
+  default: boolean,
+  selected: boolean,
+}
+  
 export type CollectionMetadata = {
   chain: IChain,
   name: string,
@@ -30,10 +37,8 @@ export type Collection = {
   costBasis: TValue | null,
   acquisitionPrice: TValue| null,
   gasFee: TValue | null,
-
-  valuation: {
-    type: TValuationType,
-  },
+  valuation: TValuation[]
+  
   nav: {
     eth: Value & {difference: TDifference},
     usd: Value & {difference: TDifference},
@@ -52,8 +57,8 @@ export type Collection = {
     //   }
     // },
 }
-export type Item = Collection & {
-  item: {
+export type Token = Collection & {
+  token: {
     tokenId: number,
     name: string,
     imageUrl: string,

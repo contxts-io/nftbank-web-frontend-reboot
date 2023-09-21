@@ -51,7 +51,6 @@ const InventoryItemList = () => {
   };
   const handleChangeSelect = (e: React.FormEvent) => {
     e.stopPropagation();
-    console.log('handleChangeSelect @@@e: ', e);
   };
   const handleOpenDetail = (target: string) => {
     setOpenedItem((prev) => {
@@ -108,9 +107,9 @@ const InventoryItemList = () => {
             </tr>
           )}
           {status === 'success' &&
-            inventoryItemList?.items.map((data, index) => {
+            inventoryItemList?.tokens.map((data, index) => {
               const valuationType = selectedValueType(data.valuation);
-              const itemKey = `${data.collection.assetContract}-${data.item.tokenId}-${index}`;
+              const itemKey = `${data.collection.assetContract}-${data.token.tokenId}-${index}`;
               // const itemKey = `${data.item.tokenId}`;
               console.log('valuationType', valuationType);
               return (
@@ -126,18 +125,18 @@ const InventoryItemList = () => {
                       className={`${styles.tableCell3} flex justify-start items-center`}
                     >
                       <div className='flex items-center justify-center rounded bg-white border-gray-200 border-1 w-50 h-50  mr-8'>
-                        {data.item.imageUrl && (
+                        {data.token.imageUrl && (
                           <Image
                             width={50}
                             height={50}
-                            src={data.item.imageUrl}
-                            alt={`${data.item.name}-${data.item.tokenId}`}
+                            src={data.token.imageUrl}
+                            alt={`${data.token.name}-${data.token.tokenId}`}
                             className='rounded'
                           />
                         )}
                       </div>
-                      {data.item.name ||
-                        `${data.collection.name}-${data.item.tokenId}`}
+                      {data.token.name ||
+                        `${data.collection.name}-${data.token.tokenId}`}
                     </td>
                     <td className={styles.tableCell2}>
                       <p>{`${parseFloat(
@@ -191,7 +190,7 @@ const InventoryItemList = () => {
                     </td>
                   </tr>
                   {openedItem.find((item) => item === itemKey) && (
-                    <InventoryItemDetail item={data} />
+                    <InventoryItemDetail token={data} />
                   )}
                 </React.Fragment>
               );
