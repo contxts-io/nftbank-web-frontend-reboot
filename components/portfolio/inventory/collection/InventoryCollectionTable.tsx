@@ -66,6 +66,8 @@ const InventoryCollectionTable = () => {
     });
   };
   if (status === 'error') return <div>error</div>;
+  if (status === 'loading')
+    return <SkeletonLoader className='w-full h-[200px]' />;
   return (
     <section className={styles.container}>
       <table className={styles.table}>
@@ -100,11 +102,6 @@ const InventoryCollectionTable = () => {
         </thead>
 
         <tbody>
-          {status === 'loading' && (
-            <tr>
-              <SkeletonLoader className='w-full h-[200px]' />
-            </tr>
-          )}
           {inventoryCollection &&
             inventoryCollection.collections.map((row, index) => {
               return (

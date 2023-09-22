@@ -3,7 +3,6 @@
 @tailwind utilities;
 
 @import './StylesFont.css';
-
 /* HTML의 기본 요소에 대한 스타일을 정의합니다. (ex : <body>, <a>, <h1>) */
 @layer base {
   /* reset */

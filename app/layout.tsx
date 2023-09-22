@@ -2,9 +2,8 @@ import Providers from '@/components/providers/Provider';
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { cookies } from 'next/headers';
 import { AuthProvider } from '@/components/providers/AuthProvider';
-import Navigation from '@/components/Navigation';
+import GlobalNavigation from '@/components/GlobalNavigation';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,7 +23,7 @@ export default async function RootLayout({
         <Providers>
           {/* <AuthProvider> */}
           <div className='flex flex-col min-h-screen w-screen'>
-            <Navigation />
+            <GlobalNavigation />
             {children}
           </div>
           {/* </AuthProvider> */}

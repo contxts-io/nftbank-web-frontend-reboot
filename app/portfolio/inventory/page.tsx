@@ -48,7 +48,6 @@ const InventoryPage = async (context: any) => {
   return (
     <Hydrate state={dehydratedState}>
       <section className={styles.container}>
-        <InventoryTypeSelector />
         <InventoryValue />
         <InventoryCollectionList />
       </section>
