@@ -6,23 +6,19 @@ export type IInventoryValue = {
     eth: {
       amount: string,
       currency: TCurrency
+      difference: {
+        amount: string,
+        percentage: number,
+      }
     },
     usd: {
       amount: string,
       currency: TCurrency
+      difference: {
+        amount: string,
+        percentage: number,
+      }
     },
-    difference: {
-      eth: {
-        amount: string,
-        currency: TCurrency
-      },
-      usd: {
-        amount: string,
-        currency: TCurrency
-      },
-      percentage: number,
-      base: string
-    }
   },
   processedAt: string
 }

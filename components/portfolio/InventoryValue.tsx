@@ -29,6 +29,9 @@ const InventoryValue = () => {
   useEffect(() => {
     console.log('InventoryValue collectionCount', collectionCount);
   }, [collectionCount]);
+  useEffect(() => {
+    console.log('InventoryValue ', inventoryValue);
+  }, [inventoryValue]);
   return (
     <section className={styles.container}>
       <article>
@@ -37,12 +40,14 @@ const InventoryValue = () => {
         {!isLoading && inventoryValue && (
           <div className={styles.valueRow}>
             <p className={styles.pValue}>
-              {`${toFixed(inventoryValue.value[currency].amount)} ETH`}
+              {`${toFixed(inventoryValue.value[currency].amount)} ${
+                inventoryValue.value[currency].currency
+              }`}
             </p>
             <p className={styles.pDiff}>
-              {`${inventoryValue.value.difference.percentage.toFixed(2)}% (Ξ${
-                inventoryValue.value.difference[currency].amount
-              })`}
+              {`${inventoryValue.value[currency].difference.percentage.toFixed(
+                2
+              )}% (Ξ${inventoryValue.value[currency].difference.amount})`}
             </p>
           </div>
         )}
