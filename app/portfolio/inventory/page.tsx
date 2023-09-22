@@ -11,11 +11,11 @@ const getInventoryValue = async <T = IInventoryValue,>(
   walletAddress?: string
 ): Promise<T> => {
   try {
-    const query = walletAddress ? `?w=${walletAddress}` : '';
-    const { data } = await instance.get<T>(
+    const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
+    const { data } = await instance.get<{ data: T }>(
       `https://web-api-reboot.dev.nftbank.tools/v1/inventory/value${query}`
     );
-    return data;
+    return data.data;
   } catch (error) {
     throw new Error('Failed to fetch data');
   }
@@ -25,7 +25,7 @@ const getCollectionCount = async <T = { count: number },>(
   walletAddress?: string
 ): Promise<T> => {
   try {
-    const query = walletAddress ? `?w=${walletAddress}` : '';
+    const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
     const { data } = await instance.get<{ data: T }>(
       `https://web-api-reboot.dev.nftbank.tools/v1/inventory/collection/stat${query}`
     );
