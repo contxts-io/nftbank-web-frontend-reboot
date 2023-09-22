@@ -1,0 +1,20 @@
+.navigation {
+  @apply w-screen h-60 border-b-1 flex items-center justify-between px-24;
+  @apply border-light-border-brand dark:border-dark-border-brand;
+}
+.navigation svg path mask {
+  @apply w-73 h-12;
+  @apply fill-light-icon-brand;
+  @apply dark:fill-dark-icon-brand;
+}
+.navigation img {
+  @apply mr-5;
+}
+.link {
+  @apply mr-20;
+  @apply text-light-text-subtle;
+  @apply dark:text-dark-text-subtle;
+}
+.svgLogo {
+  @apply w-24 h-24 fill-black;
+}
