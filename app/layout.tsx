@@ -21,12 +21,12 @@ export default async function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <Providers>
-          <AuthProvider>
-            <div className='flex flex-col min-h-screen w-screen'>
-              {/* <GlobalNavigation /> */}
-              {children}
-            </div>
-          </AuthProvider>
+          {/* <AuthProvider> */}
+          <div className='flex flex-col min-h-screen w-screen'>
+            <GlobalNavigation />
+            {children}
+          </div>
+          {/* </AuthProvider> */}
         </Providers>
       </body>
     </html>

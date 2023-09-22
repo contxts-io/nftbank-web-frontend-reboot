@@ -13,13 +13,13 @@ const GlobalNavigation = () => {
     >
       <div className='flex items-center'>
         <div className='flex items-center mr-26'>
-          {/* <Image
+          <Image
             src={'/icon/nftbank_icon.svg'}
             width={20}
             height={20}
             alt='nftbank logo'
           />
-          <NFTBankLogo /> */}
+          <NFTBankLogo />
         </div>
         <Link
           href={'/portfolio'}
