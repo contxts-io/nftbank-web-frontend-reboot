@@ -3,17 +3,17 @@ import { ItemParam, TCollectionParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
 export const getInventoryValue = async<T = IInventoryValue>(walletAddress?: string): Promise<T> => {
-  const query = walletAddress ? `?w=${walletAddress}` : '';
-  const { data } = await instance.get<T>(`/inventory/value${query}`);
-  return data;
+  const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
+  const { data } = await instance.get<{data:T}>(`/inventory/value${query}`);
+  return data.data;
 }
 export const getCollectionValuableCount = async<T = { count: number }>(walletAddress?: string): Promise<T> => {
-  const query = walletAddress ? `?w=${walletAddress}` : '';
+  const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
   const { data } = await instance.get<{data:T}>(`/inventory/collection/stat${query}`);
   return data.data;
 }
 export const getItemValuableCount = async<T = { count: number }>(walletAddress?: string): Promise<T> => {
-  const query = walletAddress ? `?w=${walletAddress}` : '';
+  const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
   const { data } = await instance.get<{data:T}>(`/inventory/token/stat${query}`);
   return data.data;
 }
