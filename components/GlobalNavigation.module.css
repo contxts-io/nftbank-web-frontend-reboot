@@ -1,6 +1,6 @@
 .navigation {
-  @apply w-screen h-60 border-b-1 flex items-center justify-between px-24;
-  @apply border-light-border-brand dark:border-dark-border-brand;
+  @apply w-screen h-60 flex items-center justify-between px-24;
+  @apply border-b-1 dark:border-red-400;
 }
 .navigation svg path mask {
   @apply w-73 h-12;
@@ -12,8 +12,8 @@
 }
 .link {
   @apply mr-20;
-  @apply text-light-text-subtle;
-  @apply dark:text-dark-text-subtle;
+  /* @apply text-light-text-link dark:text-dark-text-warning; */
+  /* @apply text-var(--color-text-main); */
 }
 .svgLogo {
   @apply w-24 h-24 fill-black;
