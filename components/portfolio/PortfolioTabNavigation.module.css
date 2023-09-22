@@ -1,9 +1,11 @@
 .navigation {
-  @apply w-full h-56 px-24 flex
-    items-center justify-between border-b-4;
+  @apply w-full h-60 px-24 flex relative items-center justify-between border-b-4;
+}
+.links {
+  @apply absolute bottom-0 h-60 flex items-center;
 }
 .link {
-  @apply px-24 py-18 border-b-4;
+  @apply px-24 py-18;
 }
 .button {
   @apply border-0 bg-transparent;

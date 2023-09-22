@@ -5,6 +5,8 @@ import { twMerge } from 'tailwind-merge';
 import { usePathname } from 'next/navigation';
 import { useAtom } from 'jotai';
 import { inventoryTypeAtom } from '@/store/settings';
+import Cube from '@/public/icon/Cube';
+import ImageSquare from '@/public/icon/ImageSquare';
 const navLinks = [
   { name: 'Overview', href: '/portfolio/overview' },
   { name: 'Analysis', href: '/portfolio/analysis' },
@@ -21,7 +23,7 @@ const PortfolioTabNavigation = () => {
     <nav
       className={`${styles.navigation} border-light-border-main dark:border-dark-border-main`}
     >
-      <div>
+      <div className={styles.links}>
         {navLinks.map((link, index) => {
           const isActive = pathname === link.href;
           return (
@@ -30,8 +32,8 @@ const PortfolioTabNavigation = () => {
               className={twMerge(
                 `font-body01-medium ${styles.link} ${
                   isActive
-                    ? 'border-light-border-brand dark:border-light-border-brand'
-                    : 'border-light-border-main dark:border-dark-border-main'
+                    ? 'border-b-4 border-light-border-brand dark:border-light-border-brand'
+                    : 'border-0 border-light-border-main dark:border-dark-border-main'
                 }`
               )}
               href={link.href}
@@ -51,7 +53,16 @@ const PortfolioTabNavigation = () => {
               )}
               onClick={() => handleClickButton('collection')}
             >
-              Collections
+              <div className='flex items-center'>
+                <Cube
+                  className={`mr-6  w-16 h-16 ${
+                    inventoryType === 'collection'
+                      ? 'fill-light-icon-brand dark:fill-dark-icon-brand'
+                      : 'fill-light-icon-subtlest dark:fill-dark-icon-subtlest'
+                  }`}
+                />
+                <p className='font-body02-medium'>Collections</p>
+              </div>
             </button>
             <button
               className={twMerge(
@@ -59,13 +70,22 @@ const PortfolioTabNavigation = () => {
                  text-light-text-subtle dark:text-light-text-subtle
                  bg-transparent dark:bg-transparent
                  ${
-                   inventoryType === 'item' &&
-                   'text-light-text-brand dark:text-light-text-brand'
+                   inventoryType === 'item'
+                     ? 'text-light-text-brand dark:text-dark-text-brand'
+                     : 'fill-light-icon-subtlest dark:fill-dark-icon-subtlest'
                  }`
               )}
               onClick={() => handleClickButton('item')}
             >
-              Items
+              <div className='flex items-center'>
+                <ImageSquare
+                  className={`mr-6  w-16 h-16 ${
+                    inventoryType === 'item' &&
+                    'fill-light-icon-brand dark:fill-light-icon-brand'
+                  }`}
+                />
+                <p className='font-body02-medium'>Items</p>
+              </div>
             </button>
           </>
         )}
