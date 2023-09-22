@@ -2,9 +2,7 @@ import Providers from '@/components/providers/Provider';
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { cookies } from 'next/headers';
 import { AuthProvider } from '@/components/providers/AuthProvider';
-import Navigation from '@/components/Navigation';
 import GlobalNavigation from '@/components/GlobalNavigation';
 
 const inter = Inter({ subsets: ['latin'] });
