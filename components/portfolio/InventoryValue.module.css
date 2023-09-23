@@ -1,15 +1,21 @@
 .container {
-  @apply w-full flex justify-between items-start my-16;
+  @apply w-full grid grid-cols-4 justify-between items-start m-22 py-16 border-1;
+}
+.articleBox {
+  @apply border-r-1 ml-16 border-border-main-light;
 }
 .pHeader {
-  @apply text-18 font-bold mb-8;
+  @apply border-border-accent-gray-light;
 }
 .pValue {
   @apply text-28 font-bold;
 }
 .valueRow {
-  @apply flex items-end my-8 h-32;
+  @apply flex items-end mt-16 h-32;
 }
 .pDiff {
   @apply text-18 text-red-500 font-normal ml-16;
+}
+.diffBox {
+  @apply px-8 py-4 bg-elevation-surface-raised-light;
 }

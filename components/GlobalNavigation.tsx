@@ -9,7 +9,7 @@ import NFTBankLogo from '@/public/logo/NFTBankLogo';
 const GlobalNavigation = () => {
   return (
     <nav
-      className={`${styles.navigation} border-light-border-main dark:border-dark-border-main`}
+      className={`${styles.navigation} border-border-main-light dark:border-border-main-dark`}
     >
       <div className='flex items-center'>
         <div className='flex items-center mr-26'>
@@ -30,7 +30,7 @@ const GlobalNavigation = () => {
         <Link
           href={'/watchlist'}
           className={twMerge(
-            `font-body02-medium text-light-text-brand dark:text-dark-text-warning`
+            `font-body02-medium text-text-brand-light dark:text-text-warning-dark`
           )}
         >
           Watchlist

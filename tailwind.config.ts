@@ -5,7 +5,7 @@ const px0_100 = { ...Array.from(Array(101)).map((_, i) => `${i}px`) };
 const px0_200 = { ...Array.from(Array(201)).map((_, i) => `${i}px`) };
 const px0_400 = { ...Array.from(Array(401)).map((_, i) => `${i}px`) };
 
-function parseCustomColors(filePath:string) {
+function parseCustomColors(filePath:string,mode:string = 'light') {
   const fs = require('fs');
   const content = fs.readFileSync(filePath, 'utf8');
   const colors:{[key: string]:string} = {};
@@ -15,7 +15,7 @@ function parseCustomColors(filePath:string) {
   const color = parseGlobalTokenColors('./global_token_color.css');
   let match;
   while ((match = colorRegex.exec(content)) !== null) {
-    const customColorName = match[1];
+    const customColorName = `${match[1]}-${mode}`;
     const tailwindColorName = match[2] || '';
     const colorNumber = match[3];
     // 컬러 토큰에서 값을 가져옴
@@ -96,8 +96,8 @@ export default {
       },
       colors: {
         ...parseGlobalTokenColors('./global_token_color.css'),
-        light: { ...parseCustomColors('./semantic_token_light.css') },
-        dark: { ...parseCustomColors('./semantic_token_dark.css') },
+        ...parseCustomColors('./semantic_token_light.css','light') ,
+        ...parseCustomColors('./semantic_token_dark.css','dark') ,
       },
     },
   },
