@@ -54,16 +54,16 @@ const InventoryValue = () => {
             >
               <div className='w-fit'>
                 <p
-                  className={`font-caption-medium mb-4 text-text-subtle-light dark:text-text-subtle-dark w-fit`}
+                  className={`font-caption-medium mb-4 text-text-subtle dark:text-text-subtle-dark w-fit`}
                 >
                   {item.name}
                 </p>
-                <div className='border-t-1 border-dashed border-border-accent-gray-light dark:border-border-accent-gray-dark' />
+                <div className='border-t-1 border-dashed border-border-accent-gray dark:border-border-accent-gray-dark' />
               </div>
               <div className={styles.valueRow}>
                 <div className='mr-8 items-end'>
                   <p
-                    className={`font-subtitle01-bold text-text-main-light dark:text-text-main-dark`}
+                    className={`font-subtitle01-bold text-text-main dark:text-text-main-dark`}
                   >
                     {`${
                       inventoryValue.value[currency].currency === 'USD'
@@ -97,16 +97,16 @@ const InventoryValue = () => {
       <article className='ml-16'>
         <div className='w-fit'>
           <p
-            className={`font-caption-medium mb-4 text-text-subtle-light dark:text-text-subtle-dark w-fit`}
+            className={`font-caption-medium mb-4 text-text-subtle dark:text-text-subtle-dark w-fit`}
           >
             {inventoryType === 'collection'
               ? 'Valuable Collections'
               : 'Valuable Items'}
           </p>
-          <div className='border-t-1 border-dashed border-border-accent-gray-light dark:border-border-accent-gray-dark' />
+          <div className='border-t-1 border-dashed border-border-accent-gray dark:border-border-accent-gray-dark' />
         </div>
         <p
-          className={`font-subtitle01-bold mt-16 text-text-main-light dark:text-text-main-dark`}
+          className={`font-subtitle01-bold mt-16 text-text-main dark:text-text-main-dark`}
         >
           {inventoryType === 'collection'
             ? collectionCount?.count

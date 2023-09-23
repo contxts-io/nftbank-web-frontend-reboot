@@ -4,7 +4,7 @@
 }
 .navigation svg path mask {
   @apply w-73 h-12;
-  @apply fill-icon-brand-light;
+  @apply fill-icon-brand;
 }
 .navigation img {
   @apply mr-5;

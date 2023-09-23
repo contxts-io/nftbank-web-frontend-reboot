@@ -21,7 +21,7 @@ const PortfolioTabNavigation = () => {
   };
   return (
     <nav
-      className={`${styles.navigation} border-border-main-light dark:border-border-main-dark`}
+      className={`${styles.navigation} border-border-main dark:border-border-main-dark`}
     >
       <div className={styles.links}>
         {navLinks.map((link, index) => {
@@ -32,8 +32,8 @@ const PortfolioTabNavigation = () => {
               className={twMerge(
                 `font-body01-medium ${styles.link} ${
                   isActive
-                    ? 'border-b-4 border-border-brand-light dark:border-border-brand-dark'
-                    : 'border-0 border-border-main-light dark:border-border-main-dark'
+                    ? 'border-b-4 border-border-brand dark:border-border-brand-dark'
+                    : 'border-0 border-border-main dark:border-border-main-dark'
                 }`
               )}
               href={link.href}
@@ -48,7 +48,7 @@ const PortfolioTabNavigation = () => {
               className={twMerge(
                 `font-body01-medium ${styles.button} ${
                   inventoryType === 'collection' &&
-                  'text-text-brand-light dark:text-text-brand-dark'
+                  'text-text-brand dark:text-text-brand-dark'
                 }`
               )}
               onClick={() => handleClickButton('collection')}
@@ -57,8 +57,8 @@ const PortfolioTabNavigation = () => {
                 <Cube
                   className={`mr-6  w-16 h-16 ${
                     inventoryType === 'collection'
-                      ? 'fill-icon-brand-light dark:fill-icon-brand-dark'
-                      : 'fill-icon-subtlest-light dark:fill-icon-subtlest-dark'
+                      ? 'fill-icon-brand dark:fill-icon-brand-dark'
+                      : 'fill-icon-subtlest dark:fill-icon-subtlest-dark'
                   }`}
                 />
                 <p className='font-body02-medium'>Collections</p>
@@ -67,12 +67,12 @@ const PortfolioTabNavigation = () => {
             <button
               className={twMerge(
                 `font-body01-medium ${styles.button}
-                 text-text-subtle-light dark:text-text-subtle-dark
+                 text-text-subtle dark:text-text-subtle-dark
                  bg-transparent dark:bg-transparent
                  ${
                    inventoryType === 'item'
-                     ? 'text-text-brand-light dark:text-text-brand-dark'
-                     : 'fill-icon-subtlest-light dark:fill-icon-subtlest-dark'
+                     ? 'text-text-brand dark:text-text-brand-dark'
+                     : 'fill-icon-subtlest dark:fill-icon-subtlest-dark'
                  }`
               )}
               onClick={() => handleClickButton('item')}
@@ -81,7 +81,7 @@ const PortfolioTabNavigation = () => {
                 <ImageSquare
                   className={`mr-6  w-16 h-16 ${
                     inventoryType === 'item' &&
-                    'fill-icon-brand-light dark:fill-icon-brand-dark'
+                    'fill-icon-brand dark:fill-icon-brand-dark'
                   }`}
                 />
                 <p className='font-body02-medium'>Items</p>
