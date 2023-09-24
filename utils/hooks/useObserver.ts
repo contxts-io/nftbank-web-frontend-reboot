@@ -5,6 +5,7 @@ type Props = {
   root?: any,
 }
 export const useObserver = (props: Props) => {
+  console.log('useObserver',props)
   const ref = props.target;
   useEffect(() => {
     let observer: IntersectionObserver;

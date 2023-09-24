@@ -10,6 +10,7 @@ import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import { useSearchParams } from 'next/navigation';
 import { inventoryTypeAtom } from '@/store/settings';
 import InventoryItemSection from '../item/InventoryItemSection';
+import InventoryCollectionSettings from './InventoryCollectionSettings';
 
 const InventoryCollectionList = () => {
   const searchParams = useSearchParams();
@@ -50,21 +51,12 @@ const InventoryCollectionList = () => {
   };
   return (
     <div className={styles.container}>
-      <div className={styles.row}>
-        <input
-          type='text'
-          placeholder='Search by collection'
-          className={styles.inputSearch}
-          onChange={handleInputText}
-          value={searchText}
-        />
-        <div>
-          <button onClick={handleTogglePriceType}>{priceType}</button>
-          <button onClick={handleToggleCurrency}>{currency}</button>
-          <button onClick={handleClickOpen}>Spam settings</button>
-        </div>
-      </div>
-      {inventoryType === 'collection' && <InventoryCollectionTable />}
+      {inventoryType === 'collection' && (
+        <>
+          <InventoryCollectionSettings />
+          <InventoryCollectionTable />
+        </>
+      )}
       {inventoryType === 'item' && <InventoryItemSection />}
       <ReactModal
         isOpen={showModal}

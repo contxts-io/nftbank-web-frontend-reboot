@@ -8,7 +8,6 @@ import styles from './InventoryValue.module.css';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
 import { inventoryTypeAtom } from '@/store/settings';
 const VALUE = [
   {

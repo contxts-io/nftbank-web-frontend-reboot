@@ -1,0 +1,30 @@
+.container {
+  @apply w-full flex items-center justify-between mb-12;
+}
+.inputContainer {
+  @apply w-[360px] h-36 flex items-center justify-items-start px-12;
+  @apply border-1 border-border-main;
+}
+.textInput {
+  @apply w-full border-0 p-0 ml-8;
+  @apply bg-transparent placeholder:text-text-subtlest;
+}
+.icon {
+  @apply fill-icon-main;
+}
+.settingButton {
+  @apply flex items-center px-12 h-36 border-1 border-border-main bg-transparent text-text-subtle;
+}
+.pSetting {
+  @apply text-text-subtle;
+}
+.gearIcon {
+  @apply mr-8 fill-icon-subtle;
+}
+.toggleButton {
+  @apply flex items-center p-2 ml-8;
+  @apply w-32 h-16 rounded-full bg-transparent border-1 border-border-brand;
+}
+.toggleIcon {
+  @apply w-10 h-10 rounded-full border-1 border-border-brand;
+}
