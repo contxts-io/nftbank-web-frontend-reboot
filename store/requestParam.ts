@@ -31,7 +31,7 @@ export const inventoryCollectionAtom = atom<TCollectionParam>({
   walletAddress: '',
   includeGasUsed: false,
   page: 1,
-  limit: 10,
+  limit: 100,
   sort: 'acquisitionPrice',
   order :'desc',
 })

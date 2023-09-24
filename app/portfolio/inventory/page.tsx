@@ -1,11 +1,10 @@
-import InventoryCollectionList from '@/components/portfolio/inventory/collection/InventoryCollectionList';
 import InventoryValue from '@/components/portfolio/InventoryValue';
 import styles from './page.module.css';
 import { Hydrate, dehydrate } from '@tanstack/react-query';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import instance from '@/utils/axiosInterceptor';
 import { IInventoryValue } from '@/interfaces/inventory';
-import InventoryTypeSelector from '@/components/portfolio/InventoryTypeSelector';
+import InventoryContainer from '@/components/portfolio/inventory/InventoryContainer';
 
 const getInventoryValue = async <T = IInventoryValue,>(
   walletAddress?: string
@@ -49,7 +48,7 @@ const InventoryPage = async (context: any) => {
     <Hydrate state={dehydratedState}>
       <section className={styles.container}>
         <InventoryValue />
-        <InventoryCollectionList />
+        <InventoryContainer />
       </section>
     </Hydrate>
   );

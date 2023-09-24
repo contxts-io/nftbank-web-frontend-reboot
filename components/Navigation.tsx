@@ -7,7 +7,7 @@ const Navigation = () => {
         <p className='font-header01-bold'>NFTBank</p>
         <ul>
           <Link href={'/'} className='ml-16'>
-            <p className='text-light-background-brand-bold'>home</p>
+            <p className='text-background-brand-bold'>home</p>
             <p className='text-slate-500'>home</p>
           </Link>
         </ul>
