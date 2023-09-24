@@ -6,6 +6,7 @@ import ReactQueryClient from '@/utils/ReactQueryClient';
 import instance from '@/utils/axiosInterceptor';
 import { IInventoryValue } from '@/interfaces/inventory';
 import InventoryTypeSelector from '@/components/portfolio/InventoryTypeSelector';
+import InventoryContainer from '@/components/portfolio/inventory/InventoryContainer';
 
 const getInventoryValue = async <T = IInventoryValue,>(
   walletAddress?: string
@@ -49,7 +50,7 @@ const InventoryPage = async (context: any) => {
     <Hydrate state={dehydratedState}>
       <section className={styles.container}>
         <InventoryValue />
-        <InventoryCollectionList />
+        <InventoryContainer />
       </section>
     </Hydrate>
   );

@@ -1,8 +1,5 @@
 'use client';
-import {
-  useInventoryCollectionList,
-  useInventoryCollectionsInfinite,
-} from '@/utils/hooks/queries/inventory';
+import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory';
 import styles from './InventoryCollectionTable.module.css';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
@@ -15,6 +12,7 @@ import { selectedCollectionInventoryAtom } from '@/store/portfolio';
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from 'react';
 import Ethereum from '@/public/icon/Ethereum';
 import useIntersection from '@/utils/hooks/useIntersaction';
+import DotsThree from '@/public/icon/DotsThree';
 const T_HEADER = [
   {
     name: 'Chain',
@@ -52,11 +50,11 @@ const InventoryCollectionTable = () => {
   const setSelectedCollection = useSetAtom(selectedCollectionInventoryAtom);
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useAtom(inventoryCollectionAtom);
-  const { data: inventoryCollection, status } = useInventoryCollectionList(
-    inventoryCollectionRequestParam
-  );
+  // const { data: inventoryCollection, status } = useInventoryCollectionList(
+  //   inventoryCollectionRequestParam
+  // );
 
-  const { fetchNextPage, data } = useInventoryCollectionsInfinite(
+  const { fetchNextPage, data, status } = useInventoryCollectionsInfinite(
     inventoryCollectionRequestParam
   );
   const mergePosts = useMemo(
@@ -110,23 +108,23 @@ const InventoryCollectionTable = () => {
           : inventoryCollectionRequestParam.page + 1,
     });
   };
-  const handleChangePage = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.value) return;
-    const page = parseInt(e.target.value || '1') || 1;
-    console.log('page ', page);
-    if (
-      inventoryCollection &&
-      page >
-        Math.ceil(
-          inventoryCollection.paging.total / inventoryCollection.paging.limit
-        )
-    )
-      return;
-    setInventoryCollectionRequestParam({
-      ...inventoryCollectionRequestParam,
-      page: page,
-    });
-  };
+  // const handleChangePage = (e: ChangeEvent<HTMLInputElement>) => {
+  //   if (!e.target.value) return;
+  //   const page = parseInt(e.target.value || '1') || 1;
+  //   console.log('page ', page);
+  //   if (
+  //     inventoryCollection &&
+  //     page >
+  //       Math.ceil(
+  //         inventoryCollection.paging.total / inventoryCollection.paging.limit
+  //       )
+  //   )
+  //     return;
+  //   setInventoryCollectionRequestParam({
+  //     ...inventoryCollectionRequestParam,
+  //     page: page,
+  //   });
+  // };
   if (status === 'error') return <div>error</div>;
   if (status === 'loading')
     return <SkeletonLoader className='w-full h-[200px]' />;
@@ -240,8 +238,9 @@ const InventoryCollectionTable = () => {
                       e.stopPropagation();
                       console.log('spam');
                     }}
+                    className={`${styles.spamButton} dark:border-border-bold-dark`}
                   >
-                    spam
+                    <DotsThree className='dark:fill-icon-subtle-dark' />
                   </button>
                 </td>
               </tr>
