@@ -1,0 +1,57 @@
+/* ToggleRect.css */
+.rect {
+  width: 80px;
+  height: 40px;
+  background-color: #ccc;
+  border-radius: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.rect.active {
+  background-color: #007bff;
+}
+
+.toggleButton {
+  /* width: 40px;
+  height: 40px;
+  background-color: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  transition: left 0.3s; */
+  @apply relative w-32;
+}
+.toggleRect {
+  @apply absolute top-0 bottom-0 left-0 bg-transparent;
+}
+
+.circle {
+  /* width: 20px;
+  height: 20px;
+  background-color: #007bff;
+  border-radius: 50%; */
+  /* position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.3s; */
+  @apply absolute top-0 left-0 transform -translate-y-1/2 w-8 h-8;
+}
+
+.circle.on {
+  transform: translateY(-50%) translateX(20px);
+}
+
+/* Circle.css */
+.circle {
+  width: 100%;
+  height: 100%;
+  transition: background-color 0.3s;
+}
+
+.circle.on {
+  background-color: #fff;
+}
