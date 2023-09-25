@@ -16,7 +16,7 @@ type TDifference = {
   amount: string | null,
   percentage: number | null,
 }
-type TValuation = {
+export type TValuation = {
   type: TValuationType,
   accuracy: number,
   default: boolean,
@@ -65,16 +65,14 @@ export type Token = Collection & {
   },
   amount?: number,
   costBasis: TValue,
-  valuation: Valuation,
+  acquisitionDate: string,
+  valuation: TValuation[],
   nav: {
     eth: Value & {difference: TDifference},
     usd: Value & { difference: TDifference },
     percentage: number,
     base: string,
   },
-}
-export type Valuation = {
-  [key: string]: ValuationItem
 }
 export type ValuationItem = {
   accuracy: number,

@@ -2,7 +2,7 @@
 import styles from './InventoryItemFilter.module.css';
 import { TCollectionParam, inventoryItemListAtom } from '@/store/requestParam';
 import Image from 'next/image';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { getCollectionList } from '@/apis/inventory';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
@@ -10,6 +10,8 @@ import { useObserver } from '@/utils/hooks/useObserver';
 import { useAtom } from 'jotai';
 import { selectedCollectionInventoryAtom } from '@/store/portfolio';
 import { Collection } from '@/interfaces/collection';
+import MagnifyingGlass from '@/public/icon/MagnifyingGlass';
+import Filter from '@/public/icon/Filter';
 type Props = {
   collectionList?: string[];
 };
@@ -129,41 +131,67 @@ const InventoryItemFilter = () => {
   };
   if (status === 'error') return <div>error</div>;
   return (
-    <aside className={styles.container}>
-      <h2 className='text-18'>collection</h2>
-      <input
-        type='text'
-        placeholder='Search by collections'
-        className='my-16'
-        onChange={handleInputText}
-        value={searchText}
-      />
+    <aside className={`${styles.container} dark:border-border-main-dark`}>
+      <div className='flex justify-between items-center my-12'>
+        <h2 className='font-subtitle02-bold text-text-main dark:text-text-main-dark'>
+          Collection
+        </h2>
+        <button
+          className={`${styles.filterButton} dark:border-border-main-dark`}
+        >
+          <Filter className='fill-icon-subtle dark:fill-icon-subtle-dark' />
+        </button>
+      </div>
+      <div className={`${styles.inputContainer}  dark:border-border-main-dark`}>
+        <MagnifyingGlass
+          className={`${styles.icon} dark:fill-icon-main-dark`}
+          width={16}
+          height={16}
+        />
+        <input
+          type='text'
+          placeholder={'Search by collections'}
+          className={`${styles.textInput} font-caption-regular placeholder:dark:text-text-subtlest-dark`}
+          onChange={handleInputText}
+          value={searchText}
+        />
+      </div>
 
-      <ul className='max-h-[500px] overflow-auto flex flex-col'>
+      <ul className='mt-12 max-h-[500px] overflow-auto flex flex-col'>
         {data?.pages?.map((page, index) => (
-          <>
-            <div>
-              <p>page:{index}</p>
-            </div>
+          <Fragment key={index}>
             {page.collections.map((item) => (
               <li
                 key={`${page.paging.page}-${index}`}
-                className='h-26 flex  my-8 items-center'
+                className='h-26 flex mb-12 items-center'
               >
                 <input
                   type='checkbox'
                   name={item.collection.name}
                   // onChange={handleInputCheck}
-                  className='mr-8'
+                  className={`${styles.checkbox} dark:border-border-bold-dark dark:bg-elevation-sunken-dark`}
                   checked={checkedCollection.includes(
                     item.collection.assetContract
                   )}
                   onClick={() => handleClickCheckBox(item)}
                 />
-                <p>{item.collection.name || item.collection.assetContract}</p>
+                <Image
+                  src={item.collection.imageUrl || '/icon/ethereum.svg'}
+                  width={20}
+                  height={20}
+                  className='rounded-full mr-8'
+                  alt={`${
+                    item.collection.name || item.collection.assetContract
+                  } image`}
+                />
+                <p
+                  className={`font-caption-medium ${styles.pCollectionName} dark:text-text-main-dark`}
+                >
+                  {item.collection.name || item.collection.assetContract}
+                </p>
               </li>
             ))}
-          </>
+          </Fragment>
         ))}
         <div ref={bottom} />
       </ul>

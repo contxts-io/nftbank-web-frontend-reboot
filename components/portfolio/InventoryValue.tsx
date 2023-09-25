@@ -93,7 +93,7 @@ const InventoryValue = () => {
           );
         })}
 
-      <article className='ml-16'>
+      <article className='ml-16 py-16'>
         <div className='w-fit'>
           <p
             className={`font-caption-medium mb-4 text-text-subtle dark:text-text-subtle-dark w-fit`}
