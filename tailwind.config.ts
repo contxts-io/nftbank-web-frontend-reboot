@@ -11,7 +11,7 @@ function parseCustomColors(filePath:string,mode?:string) {
   const colors:{[key: string]:string} = {};
 
   // 정규 표현식을 사용하여 CSS 변수를 추출하고 Tailwind CSS 컬러로 변환
-  const colorRegex = /--color-([a-zA-Z0-9_-]+): var\(--color-([a-zA-Z0-9_-]+)-(\d+)\);/g;
+  const colorRegex = /--color-([a-zA-Z0-9_-]+): var\(--color-([a-zA-Z0-9_-]+)-(.+)\);/g;
   const color = parseGlobalTokenColors('./global_token_color.css');
   let match;
   while ((match = colorRegex.exec(content)) !== null) {

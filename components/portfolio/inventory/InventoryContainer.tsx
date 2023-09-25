@@ -1,6 +1,4 @@
 'use client';
-import styles from './InventoryContainer.module.css';
-import { currencyAtom } from '@/store/currency';
 import { inventoryCollectionAtom } from '@/store/requestParam';
 import { inventoryTypeAtom } from '@/store/settings';
 import { useAtom, useAtomValue } from 'jotai';

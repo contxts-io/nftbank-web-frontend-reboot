@@ -1,8 +1,8 @@
 .container {
-  @apply w-full grid grid-cols-4 justify-between items-start my-22 py-16 border-1;
+  @apply w-full grid grid-cols-4 justify-between items-start my-22 border-1;
 }
 .articleBox {
-  @apply border-r-1 ml-16 border-border-main;
+  @apply border-r-1 ml-16 py-16 border-border-main;
 }
 .pHeader {
   @apply border-border-accent-gray;

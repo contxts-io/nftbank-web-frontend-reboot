@@ -1,3 +1,26 @@
 .container {
-  @apply flex flex-col border-1 border-black min-w-[290px] w-[290px] max-w-[290px] p-10 max-h-[400px];
+  @apply flex flex-col border-r-1 border-border-main;
+  @apply pr-12;
+  @apply min-w-[290px] w-[290px] max-w-[290px];
+}
+.inputContainer {
+  @apply w-full h-36 flex items-center justify-items-start px-12;
+  @apply border-1 border-border-main;
+}
+.textInput {
+  @apply w-full border-0 p-0 ml-8;
+  @apply bg-transparent placeholder:text-text-subtlest;
+}
+.icon {
+  @apply fill-icon-main;
+}
+.filterButton {
+  @apply rounded-none border-1 bg-transparent p-8 border-border-main;
+}
+.checkbox {
+  @apply w-16 h-16 mr-8;
+  @apply bg-elevation-sunken border-1 border-border-bold;
+}
+.pCollectionName {
+  @apply text-text-main;
 }

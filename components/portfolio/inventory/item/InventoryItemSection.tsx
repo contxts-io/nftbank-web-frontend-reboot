@@ -4,7 +4,7 @@ import InventoryItemList from './InventoryItemList';
 
 const InventoryItemSection = () => {
   return (
-    <section className={styles.container}>
+    <section className={`${styles.container} dark:border-border-main-dark`}>
       <InventoryItemFilter />
       <InventoryItemList />
     </section>
