@@ -1,57 +1,33 @@
 /* ToggleRect.css */
-.rect {
-  width: 80px;
-  height: 40px;
-  background-color: #ccc;
-  border-radius: 20px;
-  position: relative;
-  cursor: pointer;
-  transition: background-color 0.3s;
+.toggleButtonWrapper {
+  @apply flex items-center;
 }
-
-.rect.active {
-  background-color: #007bff;
-}
-
 .toggleButton {
-  /* width: 40px;
-  height: 40px;
-  background-color: #fff;
-  border-radius: 50%;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  transition: left 0.3s; */
-  @apply relative w-32;
+  @apply w-36 h-20 relative bg-gray-300 rounded-full border-solid border-1 m-0;
+  @apply transition ease-in-out duration-150;
+  @apply hover:border-gray-300;
 }
-.toggleRect {
-  @apply absolute top-0 bottom-0 left-0 bg-transparent;
+.toggleButton.checked {
+  @apply bg-green-500;
 }
-
-.circle {
-  /* width: 20px;
-  height: 20px;
-  background-color: #007bff;
-  border-radius: 50%; */
-  /* position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: transform 0.3s; */
-  @apply absolute top-0 left-0 transform -translate-y-1/2 w-8 h-8;
+.toggleButton .circle {
+  @apply w-14 h-14 absolute left-3 top-2 bg-white rounded-full;
+  @apply transition ease-in-out duration-200;
+}
+.toggleButton.checked .circle {
+  @apply translate-x-full right-3 bg-white disabled:bg-gray-300;
+}
+.toggleButton:disabled {
+  @apply border-gray-300 bg-white;
 }
 
-.circle.on {
-  transform: translateY(-50%) translateX(20px);
+.toggleButton .circle {
+  @apply w-14 h-14 absolute left-3 top-2 bg-white rounded-full;
+  @apply transition ease-in-out duration-200;
 }
-
-/* Circle.css */
-.circle {
-  width: 100%;
-  height: 100%;
-  transition: background-color 0.3s;
+.toggleButton:disabled .circle {
+  @apply bg-gray-300;
 }
-
-.circle.on {
-  background-color: #fff;
+.circleDisabled {
+  @apply bg-red-500;
 }

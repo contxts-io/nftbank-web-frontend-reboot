@@ -85,40 +85,6 @@ const InventoryItemTable = () => {
             </th>
           ))}
         </tr>
-        {/* <tr className={styles.tableHeader}>
-      <th className={`${styles.tableCell3} flex justify-start`}>Item</th>
-      <th
-        className={`${styles.tableCell2} flex justify-start cursor-pointer`}
-        onClick={() => handleClickSortButton('acquisitionPrice')}
-      >
-        {priceType === 'costBasis'
-          ? 'Total Cost basis'
-          : 'Acquisition Price'}
-      </th>
-      <th
-        className={`${styles.tableCell2} flex justify-start cursor-pointer`}
-      >
-        valuation type
-      </th>
-      <th
-        className={`${styles.tableCell} flex justify-end cursor-pointer`}
-        // onClick={() => handleClickSortButton('acq_price_eth')}
-      >
-        accuracy
-      </th>
-      <th
-        className={`${styles.tableCell2} flex justify-start`}
-        // onClick={() => handleClickSortButton('nav')}
-      >
-        NAV
-      </th>
-      <th
-        className={`${styles.tableCell2} flex justify-end`}
-        // onClick={() => handleClickSortButton('date')}
-      >
-        Acquisition date
-      </th>
-    </tr> */}
       </thead>
       <tbody>
         {status === 'success' &&
@@ -130,7 +96,7 @@ const InventoryItemTable = () => {
               <React.Fragment key={index}>
                 <tr
                   key={index}
-                  className='font-caption-medium cursor-pointer hover:bg-elevation-sunken dark:hover:bg-elevation-sunken-dark'
+                  className='font-caption-medium cursor-pointer border-b-1 border-border-disabled dark:border-border-disabled-dark hover:bg-elevation-sunken dark:hover:bg-elevation-sunken-dark'
                   onClick={() => handleOpenDetail(itemKey)}
                 >
                   <td className='text-left p-0 '>
@@ -140,7 +106,6 @@ const InventoryItemTable = () => {
                           src={data.token.imageUrl || '/icon/nftbank_icon.svg'}
                           width={32}
                           height={32}
-                          layout='fixed'
                           alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
                         />
                       </div>
@@ -179,7 +144,11 @@ const InventoryItemTable = () => {
                   </td>
                 </tr>
                 {openedItem.find((item) => item === itemKey) && (
-                  <InventoryItemDetail token={data} />
+                  <tr>
+                    <td colSpan={HEADER.length + 1}>
+                      <InventoryItemDetail token={data} />
+                    </td>
+                  </tr>
                 )}
               </React.Fragment>
               // <React.Fragment key={index}>

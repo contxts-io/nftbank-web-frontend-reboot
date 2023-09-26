@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useMetadata } from '@/utils/hooks/queries/metadata';
 import { useState } from 'react';
 import InventoryItemActivity from './InventoryItemActivity';
+import Tag from '@/public/icon/Tag';
 type Props = {
   token: Token;
 };
@@ -18,38 +19,93 @@ const InventoryItemDetail = ({ token }: Props) => {
   const handleToggleViewType = (type: 'overview' | 'activity') => {
     setViewType(type);
   };
+  console.log('TOKEN', token);
   return (
     <section className={styles.container}>
-      <div className='mb-10 w-full flex justify-end'>
-        <button
-          onClick={() => handleToggleViewType('overview')}
-          className={
-            viewType === 'overview' ? 'text-blue-500 font-semibold' : ''
-          }
-        >
-          overview
-        </button>
-        <button
-          onClick={() => handleToggleViewType('activity')}
-          className={
-            viewType === 'activity' ? 'text-blue-500 font-semibold' : ''
-          }
-        >
-          activity
-        </button>
+      <div className='my-26 w-full flex justify-between'>
+        <div className='font-caption-medium flex items-center'>
+          <div className='w-[300px]'>
+            <h2
+              className={`font-body01-medium text-text-main dark:text-text-main-dark`}
+            >
+              {token.token.name}
+            </h2>
+            <div className='flex items-center'>
+              {/*  */}
+              <p>
+                {token.collection.name ||
+                  `${token.collection.assetContract.substring(
+                    0,
+                    4
+                  )}...${token.collection.assetContract.substring(-1, 4)}`}
+              </p>
+            </div>
+          </div>
+          <div className='w-90 mr-40'>
+            <p className={`${styles.pSub} dark:text-text-subtle-dark`}>Owner</p>
+            <p className={`${styles.pMain} dark:text-text-main-dark`}>You</p>
+          </div>
+          <div className='w-90 mr-40'>
+            <p className={`${styles.pSub} dark:text-text-subtle-dark`}>
+              Rarity Rank
+            </p>
+            <p className={`${styles.pMain} dark:text-text-main-dark`}>
+              {inventoryItem?.rarityRank}
+            </p>
+          </div>
+          <div className='w-90 mr-40'>
+            <p className={`${styles.pSub} dark:text-text-subtle-dark`}>
+              Rarity
+            </p>
+            <p className={`${styles.pMain} dark:text-text-main-dark`}>
+              {inventoryItem?.rarity}
+            </p>
+          </div>
+        </div>
+        <div className='flex items-center p-7 font-caption-medium border-1 border-border-main dark:border-border-main-dark'>
+          <button
+            onClick={() => handleToggleViewType('overview')}
+            className={`${styles.typeButton} dark:text-text-subtle-dark
+              ${
+                viewType === 'overview'
+                  ? `${styles.active} dark:bg-background-brand-bold-dark dark:text-text-main-dark`
+                  : ''
+              }
+            `}
+          >
+            Overview
+          </button>
+          <button
+            onClick={() => handleToggleViewType('activity')}
+            className={`${styles.typeButton} dark:text-text-subtle-dark
+              ${
+                viewType === 'activity'
+                  ? `${styles.active} dark:bg-background-brand-bold-dark dark:text-text-main-dark`
+                  : ''
+              }
+            `}
+          >
+            Activity
+          </button>
+        </div>
       </div>
 
-      <div className='w-full ml-10 flex flex-col'>
+      <div className='w-full flex flex-col'>
         {viewType === 'overview' && (
-          <article className='flex justify-between'>
+          <article className='flex flex-col'>
             <div className={styles.metadata}>
-              <Image
-                src={token.token.imageUrl}
-                width={250}
-                height={250}
-                alt={`${token.token.name}-${token.token.tokenId}`}
-              />
-              {inventoryItem && (
+              <div
+                className={`${styles.tokenImage} dark:border-border-main-dark`}
+              >
+                <Image
+                  src={token.token.imageUrl}
+                  width={300}
+                  height={300}
+                  alt={`${token.token.name}-${token.token.tokenId}`}
+                />
+              </div>
+              <div>CHART</div>
+              {/* {inventoryItem && (
                 <article className='w-full rounded border-1 border-gray-300 mt-10'>
                   <ul className='w-full p-10'>
                     <li className='flex w-full justify-between'>
@@ -68,9 +124,42 @@ const InventoryItemDetail = ({ token }: Props) => {
                     ))}
                   </ul>
                 </article>
-              )}
+              )} */}
             </div>
-            <div className='w-full h-full flex flex-col justify-between'>
+            {inventoryItem?.traits && (
+              //traits section
+              <section
+                className={`font-caption-medium ${styles.traitSection} dark:border-border-main-dark`}
+              >
+                <span className='flex items-center'>
+                  <Tag />
+                  <p className={`font-body01-medium ml-8`}>Top Traits</p>
+                </span>
+                <div className={styles.traitContainer}>
+                  {inventoryItem?.traits.map((trait, index) => (
+                    <div
+                      key={`item-${inventoryItem.collection.assetContract}-${trait.traitType}-${index} `}
+                      className={`${styles.traitItem} dark:border-border-main-dark`}
+                    >
+                      <p
+                        className={`text-text-subtle dark:text-text-subtle-dark`}
+                      >
+                        {trait.traitType}
+                      </p>
+                      <div className='flex mt-8 items-center justify-between'>
+                        <p className='text-text-brand dark:text-text-brand-dark'>
+                          {trait.value}
+                        </p>
+                        <p className='text-text-main dark:text-text-main-dark'>
+                          {trait.tokenCount}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+            {/* <div className='w-full h-full flex flex-col justify-between'>
               <div className='w-full h-[300px] px-10'>
                 <p>historical</p>
               </div>
@@ -104,7 +193,7 @@ const InventoryItemDetail = ({ token }: Props) => {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </div> */}
           </article>
         )}
         {viewType === 'activity' && <InventoryItemActivity token={token} />}

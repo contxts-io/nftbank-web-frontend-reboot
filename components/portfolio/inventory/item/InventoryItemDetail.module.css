@@ -1,9 +1,35 @@
 .container {
-  @apply w-full flex flex-col border-1 border-gray-300 rounded p-10;
+  @apply w-full flex flex-col;
+}
+.pSub {
+  @apply text-text-subtle mb-8;
+}
+.pMain {
+  @apply text-text-main;
 }
 .metadata {
-  @apply w-[250px] flex flex-col items-center;
+  @apply flex items-center;
 }
+.tokenImage {
+  @apply w-[300px] h-[300px] border-1 border-border-main overflow-hidden;
+  @apply flex items-center justify-center;
+}
+.typeButton {
+  @apply px-24 py-8 border-0 bg-transparent text-text-subtle rounded-none;
+}
+.typeButton.active {
+  @apply bg-background-brand-bold text-text-main;
+}
+.traitSection {
+  @apply w-full mt-24;
+}
+.traitContainer {
+  @apply w-full flex flex-wrap gap-x-[13px] mt-16;
+}
+.traitItem {
+  @apply border-1 border-border-main p-12 mb-13 w-[calc(25%-10px)];
+}
+
 .table {
   @apply w-full;
 }

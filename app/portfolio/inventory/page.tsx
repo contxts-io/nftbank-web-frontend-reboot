@@ -12,7 +12,7 @@ const getInventoryValue = async <T = IInventoryValue,>(
   try {
     const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
     const { data } = await instance.get<{ data: T }>(
-      `https://web-api-reboot.dev.nftbank.tools/v1/inventory/value${query}`
+      `https://web-api-reboot.dev.nftbank.tools/v1/performance/value${query}`
     );
     return data.data;
   } catch (error) {
