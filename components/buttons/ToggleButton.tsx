@@ -1,35 +1,23 @@
-'use client';
+import Button from './Button';
 import styles from './ToggleButton.module.css';
-import Circle from '@/public/icon/Circle';
-import ToggleRect from '@/public/icon/ToggleRect';
-import { useState } from 'react';
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+type Props = {
+  onClick: () => void;
+  checked: boolean;
+  label?: string;
+  id: string;
+} & ButtonProps;
 
-const Rect = ({ on, onClick }: { on: boolean; onClick: () => void }) => {
+const ToggleButton = ({ onClick, checked, label, ...props }: Props) => {
   return (
-    <div className={`${styles.rect} ${on && styles.active}`} onClick={onClick}>
-      <ToggleRect />
-    </div>
-  );
-};
-const CircleComponent = ({ on }: { on: boolean }) => {
-  return (
-    <div className={`${styles.circle} ${on ? styles.on : styles.off}`}>
-      <Circle width={16} height={16} />
-    </div>
-  );
-};
-const ToggleButton = () => {
-  const [isOn, setIsOn] = useState<boolean>(false);
-  const handleToggle = () => {
-    setIsOn(!isOn);
-  };
-
-  return (
-    <div className={styles.toggleButton}>
-      {/* <Rect on={isOn} onClick={handleToggle} />
-      <CircleComponent on={isOn} /> */}
-      <ToggleRect className={styles.toggleRect} />
-      {/* <Circle className={styles.circle} /> */}
+    <div className={styles.toggleButtonWrapper}>
+      <Button
+        onClick={onClick}
+        className={`${styles.toggleButton} ${checked && styles.checked}`}
+        {...props}
+      >
+        <div className={styles.circle} />
+      </Button>
     </div>
   );
 };

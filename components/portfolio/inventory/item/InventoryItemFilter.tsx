@@ -162,7 +162,7 @@ const InventoryItemFilter = () => {
           <Fragment key={index}>
             {page.collections.map((item) => (
               <li
-                key={`${page.paging.page}-${index}`}
+                key={`${page.paging.page}-${index}-${item.collection.assetContract}`}
                 className='h-26 flex mb-12 items-center'
               >
                 <input
@@ -173,7 +173,8 @@ const InventoryItemFilter = () => {
                   checked={checkedCollection.includes(
                     item.collection.assetContract
                   )}
-                  onClick={() => handleClickCheckBox(item)}
+                  // onClick={() => handleClickCheckBox(item)}
+                  onChange={() => handleClickCheckBox(item)}
                 />
                 <Image
                   src={item.collection.imageUrl || '/icon/ethereum.svg'}

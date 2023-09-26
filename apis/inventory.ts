@@ -4,7 +4,8 @@ import instance from "@/utils/axiosInterceptor";
 
 export const getInventoryValue = async<T = IInventoryValue>(walletAddress?: string): Promise<T> => {
   const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
-  const { data } = await instance.get<{data:T}>(`/inventory/value${query}`);
+  // const { data } = await instance.get<{data:T}>(`/inventory/value${query}`);
+  const { data } = await instance.get<{data:T}>(`/performance/value${query}`);
   return data.data;
 }
 export const getCollectionValuableCount = async<T = { count: number }>(walletAddress?: string): Promise<T> => {
@@ -28,7 +29,7 @@ export const getCollectionList = async<T = IInventoryCollectionList>(requestPara
       return encodeURIComponent(key) + '=' + encodeURIComponent(requestParam[key as Key]);
   })
   .join('&');
-  const { data } = await instance.get<{data:T}>(`/inventory/collection?${query}`);
+  const { data } = await instance.get<{data:T}>(`/performance/collection?${query}`);
   return data.data;
 }
 
@@ -49,7 +50,7 @@ export const getItemList = async<T = IInventoryItemList>(requestParam: ItemParam
   })
     .join('&');
   console.log('query',query);
-  const { data } = await instance.get<{data:T}>(`/inventory/token?${query.replace('&&','&')}`);
+  const { data } = await instance.get<{data:T}>(`/performance/token?${query.replace('&&','&')}`);
   return data.data;
 
 }

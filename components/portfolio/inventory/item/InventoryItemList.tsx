@@ -4,7 +4,7 @@ import styles from './InventoryItemList.module.css';
 import { useAtom, useAtomValue } from 'jotai';
 import { TSort, inventoryItemListAtom } from '@/store/requestParam';
 import Image from 'next/image';
-import { currencyAtom, priceTypeAtom } from '@/store/currency';
+import { TPriceType, currencyAtom, priceTypeAtom } from '@/store/currency';
 import { TValuation, ValuationItem } from '@/interfaces/collection';
 import React, { useState } from 'react';
 import InventoryItemDetail from './InventoryItemDetail';
@@ -19,9 +19,10 @@ const InventoryItemList = () => {
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
   const [itemViewType, setItemViewType] = useAtom(inventoryItemViewTypeAtom);
   const [openedItem, setOpenedItem] = useState<string[]>([]);
-  const priceType = useAtomValue(priceTypeAtom);
+  const [priceType, setPriceType] = useAtom(priceTypeAtom);
   const { data: inventoryItemList, status } =
     useInventoryItemList(requestParam);
+  const currency = useAtomValue(currencyAtom);
   const handleClickSortButton = (sort: TSort) => {
     const order =
       requestParam.sort !== sort
@@ -35,7 +36,7 @@ const InventoryItemList = () => {
       order: order,
     });
   };
-  const currency = useAtomValue(currencyAtom);
+
   const handleClickPaging = (option: 'prev' | 'next') => {
     if (option === 'prev' && requestParam.page === 1) return;
     setRequestParam({
@@ -54,6 +55,11 @@ const InventoryItemList = () => {
   const handleChangeSelect = (e: React.FormEvent) => {
     e.stopPropagation();
   };
+  const handleChangePriceType = () => {
+    setPriceType((prev) =>
+      prev === 'costBasis' ? 'acquisitionPrice' : 'costBasis'
+    );
+  };
   const handleOpenDetail = (target: string) => {
     setOpenedItem((prev) => {
       if (prev.includes(target)) {
@@ -70,7 +76,11 @@ const InventoryItemList = () => {
           <span className='text-text-subtle dark:text-text-subtle-dark mr-8'>
             Include Gas fee
           </span>
-          <ToggleButton />
+          <ToggleButton
+            onClick={() => handleChangePriceType()}
+            checked={false}
+            id={''}
+          />
         </div>
         <div className='flex justify-between p-3 items-center border-1 w-72 border-border-main dark:border-border-main-dark'>
           <div
