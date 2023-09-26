@@ -31,7 +31,6 @@ const InventoryItemDetail = ({ token }: Props) => {
               {token.token.name}
             </h2>
             <div className='flex items-center'>
-              {/*  */}
               <p>
                 {token.collection.name ||
                   `${token.collection.assetContract.substring(
@@ -41,11 +40,11 @@ const InventoryItemDetail = ({ token }: Props) => {
               </p>
             </div>
           </div>
-          <div className='w-90 mr-40'>
+          <div className='mr-40'>
             <p className={`${styles.pSub} dark:text-text-subtle-dark`}>Owner</p>
             <p className={`${styles.pMain} dark:text-text-main-dark`}>You</p>
           </div>
-          <div className='w-90 mr-40'>
+          <div className='mr-40'>
             <p className={`${styles.pSub} dark:text-text-subtle-dark`}>
               Rarity Rank
             </p>
@@ -53,7 +52,7 @@ const InventoryItemDetail = ({ token }: Props) => {
               {inventoryItem?.rarityRank}
             </p>
           </div>
-          <div className='w-90 mr-40'>
+          <div className='mr-40'>
             <p className={`${styles.pSub} dark:text-text-subtle-dark`}>
               Rarity
             </p>

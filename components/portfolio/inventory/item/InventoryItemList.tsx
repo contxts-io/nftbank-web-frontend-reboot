@@ -14,6 +14,8 @@ import DotsNine from '@/public/icon/DotsNine';
 import Hamburger from '@/public/icon/Hamburger';
 import { inventoryItemViewTypeAtom } from '@/store/settings';
 import ToggleButton from '@/components/buttons/ToggleButton';
+import InventoryItemCard from './InventoryItemCard';
+import InventoryItemCardGrid from './InventoryItemCardGrid';
 
 const InventoryItemList = () => {
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
@@ -78,7 +80,7 @@ const InventoryItemList = () => {
           </span>
           <ToggleButton
             onClick={() => handleChangePriceType()}
-            checked={false}
+            checked={priceType === 'acquisitionPrice'}
             id={''}
           />
         </div>
@@ -117,7 +119,8 @@ const InventoryItemList = () => {
           </div>
         </div>
       </div>
-      <InventoryItemTable />
+      {itemViewType === 'listView' && <InventoryItemTable />}
+      {itemViewType === 'cardView' && <InventoryItemCardGrid />}
     </section>
   );
 };
