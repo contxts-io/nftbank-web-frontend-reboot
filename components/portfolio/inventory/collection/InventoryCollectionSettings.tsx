@@ -8,6 +8,7 @@ import { inventoryCollectionAtom } from '@/store/requestParam';
 import { priceTypeAtom } from '@/store/currency';
 import ReactModal from 'react-modal';
 import SpamModal from './SpamModal';
+import ToggleButton from '@/components/buttons/ToggleButton';
 const InventoryCollectionSettings = () => {
   const [inventoryCollection, setInventoryCollection] = useAtom(
     inventoryCollectionAtom
@@ -49,15 +50,14 @@ const InventoryCollectionSettings = () => {
       </div>
       <div className='flex items-center'>
         <div className='flex mr-8'>
-          <p className={`${styles.pSetting} dark:text-text-subtle-dark`}>
+          <p className={`${styles.pSetting} dark:text-text-subtle-dark mr-8`}>
             Include Gas fee
           </p>
-          <button
-            className={styles.toggleButton}
-            onClick={() => handleTogglePriceType()}
-          >
-            <div className={styles.toggleIcon} />
-          </button>
+          <ToggleButton
+            onClick={handleTogglePriceType}
+            checked={priceType === 'costBasis'}
+            id={''}
+          />
         </div>
         <button
           className={`font-button03-medium ${styles.settingButton} dark:border-border-main-dark`}
