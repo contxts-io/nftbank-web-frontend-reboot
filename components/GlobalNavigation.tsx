@@ -1,61 +1,57 @@
+'use client';
 import Image from 'next/image';
 import styles from './GlobalNavigation.module.css';
 import Link from 'next/link';
-import { twMerge } from 'tailwind-merge';
 import { ThemeSwitcher } from './buttons/ThemeSwitcher';
-import NFTBankIcon from '@/public/icon/NFTBankIcon';
 import NFTBankLogo from '@/public/logo/NFTBankLogo';
+import { useAtom } from 'jotai';
+import { currencyAtom } from '@/store/currency';
 
 const GlobalNavigation = () => {
+  const [currency, setCurrency] = useAtom(currencyAtom);
+  const changeCurrency = () => {
+    setCurrency((prev) => {
+      return prev === 'eth' ? 'usd' : 'eth';
+    });
+  };
   return (
     <nav
-      className={`${styles.navigation} border-border-main dark:border-border-main-dark`}
+      className={`${styles.navigation} border-border-main text-text-subtle dark:border-border-main-dark`}
     >
-      <div className='flex items-center'>
-        <div className='flex items-center mr-26'>
+      <div className='flex items-center  dark:text-text-subtle-dark'>
+        <div className='font-body02-medium flex items-center mr-26'>
           <Image
             src={'/icon/nftbank_icon.svg'}
             width={20}
             height={20}
             alt='nftbank logo'
           />
-          <NFTBankLogo />
+          <NFTBankLogo className={`fill-icon-main dark:fill-icon-main-dark`} />
         </div>
         <Link
           href={'/portfolio'}
-          className={twMerge(`font-body02-medium ${styles.link}`)}
+          className={` ${styles.link} text-text-main dark:text-text-main-dark`}
         >
           Portfolio
         </Link>
-        <Link
-          href={'/watchlist'}
-          className={twMerge(
-            `font-body02-medium text-text-brand dark:text-text-warning-dark`
-          )}
-        >
+        <Link href={'/watchlist'} className={`${styles.link}`}>
           Watchlist
         </Link>
-        <Link
-          href={'/activitys'}
-          className={twMerge(`font-body02-medium ${styles.link}`)}
-        >
+        <Link href={'/activitys'} className={` ${styles.link}`}>
           Activitys
         </Link>
-        <Link
-          href={'/report'}
-          className={twMerge(`font-body02-medium ${styles.link}`)}
-        >
+        <Link href={'/report'} className={` ${styles.link}`}>
           Report
         </Link>
-        <Link
-          href={'/settings'}
-          className={twMerge(`font-body02-medium ${styles.link}`)}
-        >
+        <Link href={'/settings'} className={` ${styles.link}`}>
           Settings
         </Link>
       </div>
-      <div>
+      <div className='flex items-center'>
         <ThemeSwitcher />
+        <button onClick={() => changeCurrency()} className='ml-8'>
+          {currency}
+        </button>
       </div>
     </nav>
   );

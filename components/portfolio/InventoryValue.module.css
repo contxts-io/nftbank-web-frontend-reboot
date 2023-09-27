@@ -1,5 +1,5 @@
 .container {
-  @apply w-full grid grid-cols-4 justify-between items-start my-22 border-1;
+  @apply w-full grid grid-cols-4 justify-between items-start mt-22 border-1;
 }
 .articleBox {
   @apply border-r-1 ml-16 py-16 border-border-main;
@@ -10,6 +10,12 @@
 .pValue {
   @apply text-28 font-bold;
 }
+.plus {
+  @apply text-text-success bg-background-success;
+}
+.minus {
+  @apply text-text-danger bg-background-danger;
+}
 .valueRow {
   @apply flex items-end mt-16 h-32;
 }
@@ -17,5 +23,5 @@
   @apply text-18 text-red-500 font-normal ml-16;
 }
 .diffBox {
-  @apply px-8 py-4 bg-elevation-surface-raised;
+  @apply px-8 py-4;
 }

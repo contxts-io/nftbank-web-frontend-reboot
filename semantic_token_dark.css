@@ -188,5 +188,5 @@
   --color-chart-accent-lime-bold: var(--color-lime-500);
   --color-chart-accent-lime-bolder: var(--color-lime-400);
   --color-chart-accent-lime-boldest: var(--color-lime-300);
-  --color-etc-footer: var(--opacity-black200);
+  --color-etc-footer: var(--color-opacity-black200);
 }

@@ -75,7 +75,7 @@ const InventoryItemList = () => {
     <section className={styles.container}>
       <div className='flex py-12 items-center justify-end'>
         <div className='flex px-12 mr-8'>
-          <span className='text-text-subtle dark:text-text-subtle-dark mr-8'>
+          <span className='font-button03-medium text-text-subtle dark:text-text-subtle-dark mr-8'>
             Include Gas fee
           </span>
           <ToggleButton

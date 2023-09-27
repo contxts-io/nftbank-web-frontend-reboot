@@ -125,14 +125,18 @@ const InventoryItemDetail = ({ token }: Props) => {
                 </article>
               )} */}
             </div>
-            {inventoryItem?.traits && (
+            {(inventoryItem?.traits?.length || 0) > 0 && (
               //traits section
               <section
                 className={`font-caption-medium ${styles.traitSection} dark:border-border-main-dark`}
               >
                 <span className='flex items-center'>
-                  <Tag />
-                  <p className={`font-body01-medium ml-8`}>Top Traits</p>
+                  <Tag className='fill-icon-subtle dark:fill-icon-subtle-dark' />
+                  <p
+                    className={`font-body01-medium tex-text-main dark:text-text-main-dark ml-8`}
+                  >
+                    Top Traits
+                  </p>
                 </span>
                 <div className={styles.traitContainer}>
                   {inventoryItem?.traits.map((trait, index) => (

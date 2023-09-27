@@ -1,6 +1,6 @@
 .navigation {
   @apply w-screen h-60 flex items-center justify-between px-24;
-  @apply border-b-1 dark:border-red-400;
+  @apply border-b-1;
 }
 .navigation svg path mask {
   @apply w-73 h-12;

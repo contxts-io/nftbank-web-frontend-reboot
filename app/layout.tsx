@@ -4,8 +4,75 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import GlobalNavigation from '@/components/GlobalNavigation';
+import localFont from 'next/font/local';
+import Footer from '@/components/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
+
+const iosevkaCustom = localFont({
+  src: [
+    {
+      path: './iosevka-custom-regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: './iosevka-custom-regular.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: './iosevka-custom-oblique.woff2',
+      weight: '400',
+      style: 'oblique',
+    },
+    {
+      path: './iosevka-custom-oblique.ttf',
+      weight: '400',
+      style: 'oblique',
+    },
+    {
+      path: './iosevka-custom-italic.woff2',
+      weight: '400',
+      style: 'italic',
+    },
+    {
+      path: './iosevka-custom-italic.ttf',
+      weight: '400',
+      style: 'italic',
+    },
+    {
+      path: './iosevka-custom-medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: './iosevka-custom-medium.ttf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: './iosevka-custom-mediumoblique.woff2',
+      weight: '500',
+      style: 'oblique',
+    },
+    {
+      path: './iosevka-custom-mediumoblique.ttf',
+      weight: '500',
+      style: 'oblique',
+    },
+    {
+      path: './iosevka-custom-mediumitalic.woff2',
+      weight: '500',
+      style: 'italic',
+    },
+    {
+      path: './iosevka-custom-mediumitalic.ttf',
+      weight: '500',
+      style: 'italic',
+    },
+  ],
+});
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -18,13 +85,14 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en'>
-      <body className={inter.className}>
+    <html lang='en' className={`${iosevkaCustom.className}`}>
+      <body className='relative'>
         <Providers>
           {/* <AuthProvider> */}
           <div className='flex flex-col min-h-screen w-screen'>
             <GlobalNavigation />
             {children}
+            <Footer />
           </div>
           {/* </AuthProvider> */}
         </Providers>

@@ -47,7 +47,7 @@
     @apply transition ease-in-out duration-150;
   }
   button {
-    @apply w-fit px-12 py-8 rounded font-medium text-gray-700 bg-white border-solid border-1 border-gray-300 hover:border-nb_blue-300;
+    @apply w-fit px-12 py-8 rounded-none font-medium bg-transparent border-solid border-1 hover:border-nb_blue-300;
     @apply transition ease-in-out duration-150;
   }
   button.reset {

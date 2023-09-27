@@ -31,8 +31,8 @@ const InventoryItemFilter = () => {
       walletAddress: '',
     });
   const [checkedCollection, setCheckedCollection] = useState<string[]>(
-    selectedCollection?.collection.assetContract
-      ? [selectedCollection.collection.assetContract]
+    selectedCollection
+      ? selectedCollection.map((item) => item.collection.assetContract)
       : []
   );
   const [itemRequestParams, setItemRequestParams] = useAtom(
@@ -82,9 +82,11 @@ const InventoryItemFilter = () => {
     setItemRequestParams((prev) => ({
       ...prev,
       page: 1,
-      assetContract: checkedCollection,
+      assetContract: selectedCollection.map(
+        (item) => item.collection.assetContract
+      ),
     }));
-  }, [checkedCollection]);
+  }, [selectedCollection]);
   const fetchData = async (page: number) => {
     console.log('page ', page);
     return await getCollectionList({
@@ -106,13 +108,30 @@ const InventoryItemFilter = () => {
   // };
   const handleClickCheckBox = (collection: Collection) => {
     console.log('handleClickCheckBox', collection);
-    setCheckedCollection((prev) => {
-      if (prev.includes(collection.collection.assetContract)) {
+    // setCheckedCollection((prev) => {
+    //   if (prev.includes(collection.collection.assetContract)) {
+    //     return prev.filter(
+    //       (item) => item !== collection.collection.assetContract
+    //     );
+    //   } else {
+    //     return [...prev, collection.collection.assetContract];
+    //   }
+    // });
+    setSelectedCollection((prev) => {
+      if (
+        prev.find(
+          (item) =>
+            item.collection.assetContract ===
+            collection.collection.assetContract
+        )
+      ) {
         return prev.filter(
-          (item) => item !== collection.collection.assetContract
+          (item) =>
+            item.collection.assetContract !==
+            collection.collection.assetContract
         );
       } else {
-        return [...prev, collection.collection.assetContract];
+        return [...prev, collection];
       }
     });
   };
@@ -170,9 +189,19 @@ const InventoryItemFilter = () => {
                   name={item.collection.name}
                   // onChange={handleInputCheck}
                   className={`${styles.checkbox} dark:border-border-bold-dark dark:bg-elevation-sunken-dark`}
-                  checked={checkedCollection.includes(
-                    item.collection.assetContract
-                  )}
+                  // checked={checkedCollection.includes(
+                  //   item.collection.assetContract
+                  // )}
+                  checked={
+                    selectedCollection?.find((collection) => {
+                      return (
+                        collection.collection.assetContract ===
+                        item.collection.assetContract
+                      );
+                    })
+                      ? true
+                      : false
+                  }
                   // onClick={() => handleClickCheckBox(item)}
                   onChange={() => handleClickCheckBox(item)}
                 />

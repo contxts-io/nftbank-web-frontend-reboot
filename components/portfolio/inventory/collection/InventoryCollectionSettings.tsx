@@ -50,7 +50,9 @@ const InventoryCollectionSettings = () => {
       </div>
       <div className='flex items-center'>
         <div className='flex mr-8'>
-          <p className={`${styles.pSetting} dark:text-text-subtle-dark mr-8`}>
+          <p
+            className={`font-button03-medium ${styles.pSetting} dark:text-text-subtle-dark mr-8`}
+          >
             Include Gas fee
           </p>
           <ToggleButton

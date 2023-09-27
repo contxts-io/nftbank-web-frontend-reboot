@@ -1,5 +1,5 @@
 .container {
-  @apply w-full flex items-center justify-between mb-12;
+  @apply w-full flex items-center justify-between mt-24 mb-12;
 }
 .inputContainer {
   @apply w-[360px] h-36 flex items-center justify-items-start px-12;

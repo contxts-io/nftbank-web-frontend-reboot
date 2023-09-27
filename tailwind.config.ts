@@ -38,6 +38,7 @@ function parseGlobalTokenColors(filePath:string) {
     const modifiedColorName = colorName.replace(/^[a-zA-Z]+-/, '').replace('nb_blue-nb_blue', 'nb_blue');
 
     colors[modifiedColorName] = colorValue;
+    modifiedColorName === 'etc' && console.log('etc',colorValue)
   }
   return colors;
 }
@@ -56,6 +57,7 @@ export default {
   theme: {   
     fontFamily: {
       sans: ['Inter', ...defaultTheme.fontFamily.sans],
+      IosevkaCustom: ['IosevkaCustom', ...defaultTheme.fontFamily.sans],
     },
     extend: {
       borderWidth: px0_10 as any,
