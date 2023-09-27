@@ -9,6 +9,7 @@ import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { useSearchParams } from 'next/navigation';
 import { inventoryTypeAtom } from '@/store/settings';
+import { formatCurrency } from '@/utils/common';
 const VALUE = [
   {
     type: 'inventoryValue',
@@ -64,16 +65,18 @@ const InventoryValue = () => {
                   <p
                     className={`font-subtitle01-bold text-text-main dark:text-text-main-dark`}
                   >
-                    {`${
-                      inventoryValue.value[currency].currency === 'USD'
-                        ? '$'
-                        : 'Ξ'
-                    }
-                      ${toFixed(inventoryValue.value[currency].amount)} `}
+                    {formatCurrency(
+                      inventoryValue.value[currency].amount,
+                      currency
+                    )}
                   </p>
                 </div>
                 <div
-                  className={`${styles.diffBox} dark:bg-elevation-surface-raised-dark`}
+                  className={
+                    isPlus
+                      ? `${styles.diffBox} ${styles.plus} dark:text-text-success-dark  dark:bg-background-success-dark`
+                      : `${styles.diffBox} ${styles.minus} dark:text-text-danger-dark dark:bg-background-danger-dark`
+                  }
                 >
                   <p className='font-caption-medium'>
                     {`${toFixed(
@@ -84,9 +87,11 @@ const InventoryValue = () => {
                   </p>
                 </div>
                 <div
-                  className={`${styles.diffBox} dark:bg-elevation-surface-raised-dark`}
+                  className={`${styles.diffBox} bg-elevation-surface-raised dark:bg-elevation-surface-raised-dark`}
                 >
-                  <p className='font-caption-medium'>24H</p>
+                  <p className='font-caption-medium text-text-main dark:text-text-main-dark'>
+                    24H
+                  </p>
                 </div>
               </div>
             </article>

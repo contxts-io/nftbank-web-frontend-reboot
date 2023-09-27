@@ -9,6 +9,7 @@ import { currencyAtom } from '@/store/currency';
 import React, { useState } from 'react';
 import InventoryItemDetail from './InventoryItemDetail';
 import CaretDown from '@/public/icon/CaretDown';
+import { formatCurrency, formatDate } from '@/utils/common';
 const HEADER = [
   {
     type: 'Item',
@@ -73,7 +74,9 @@ const InventoryItemTable = () => {
   return (
     <table className={`${styles.table} dark:border-border-main-dark`}>
       <thead>
-        <tr className={`${styles.tableHeadRow} dark:border-border-main-dark`}>
+        <tr
+          className={`${styles.tableHeadRow} text-text-subtle dark:text-text-subtle-dark dark:border-border-main-dark`}
+        >
           {HEADER.map((item, index) => (
             <th
               key={index}
@@ -96,7 +99,8 @@ const InventoryItemTable = () => {
               <React.Fragment key={index}>
                 <tr
                   key={index}
-                  className='font-caption-medium cursor-pointer border-b-1 border-border-disabled dark:border-border-disabled-dark hover:bg-elevation-sunken dark:hover:bg-elevation-sunken-dark'
+                  className='font-caption-medium cursor-pointer text-text-main dark:text-text-main-dark
+                   border-b-1 border-border-disabled dark:border-border-disabled-dark hover:bg-elevation-sunken dark:hover:bg-elevation-sunken-dark'
                   onClick={() => handleOpenDetail(itemKey)}
                 >
                   <td className='text-left p-0 '>
@@ -125,15 +129,18 @@ const InventoryItemTable = () => {
                   </td>
                   <td className='text-right'>{data.amount}</td>
                   <td className='text-right'>
-                    {data.costBasis[currency].amount}
+                    {formatCurrency(data.costBasis[currency].amount, currency)}
                   </td>
-                  <td className='text-right'>{data.nav[currency].amount}</td>
+                  <td className='text-right'>
+                    {data.nav[currency].amount &&
+                      formatCurrency(data.nav[currency].amount, currency)}
+                  </td>
                   <td className='text-right'>{data.nav[currency].amount}</td>
                   <td className='text-right'>{data.nav[currency].amount}</td>
                   <td className='text-right'>{valuationType?.type}</td>
                   <td className='text-right'>{valuationType?.accuracy}</td>
                   <td className='text-right'>
-                    {data.acquisitionDate.substring(0, 10)}
+                    {formatDate(new Date(data.acquisitionDate))}
                   </td>
                   <td className='text-right'>
                     <button

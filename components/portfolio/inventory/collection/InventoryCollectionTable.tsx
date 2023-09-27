@@ -13,6 +13,7 @@ import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from 'react';
 import Ethereum from '@/public/icon/Ethereum';
 import useIntersection from '@/utils/hooks/useIntersaction';
 import DotsThree from '@/public/icon/DotsThree';
+import { formatCurrency } from '@/utils/common';
 const T_HEADER = [
   {
     name: 'Chain',
@@ -95,7 +96,7 @@ const InventoryCollectionTable = () => {
     });
   };
   const handleClickCollection = (collection: Collection) => {
-    setSelectedCollection(collection);
+    setSelectedCollection([collection]);
     setInventoryType('item');
   };
   const handleClickPaging = (option: 'prev' | 'next') => {
@@ -191,9 +192,10 @@ const InventoryCollectionTable = () => {
                 </td>
                 <td className='text-right'>
                   <p className='dark:text-text-main-dark'>
-                    {`${parseFloat(
-                      row[priceType]?.[currency].amount || ''
-                    ).toFixed(2)} ${row[priceType]?.[currency].currency} `}
+                    {formatCurrency(
+                      row[priceType]?.[currency].amount || null,
+                      currency
+                    )}
                   </p>
                   {priceType === 'costBasis' && (
                     <p className='text-text-brand dark:text-text-brand-dark'>
@@ -212,11 +214,12 @@ const InventoryCollectionTable = () => {
                   </p>
                 </td>
                 <td className='text-right'>
-                  <p className='dark:text-text-main-dark'>{`${
-                    row.nav[currency].currency
-                  } ${parseFloat(row.nav[currency].amount || '0').toFixed(
-                    2
-                  )}`}</p>
+                  <p className='dark:text-text-main-dark'>
+                    {formatCurrency(
+                      row.nav[currency].amount || null,
+                      currency
+                    ) || '-'}
+                  </p>
                   <p
                     className={
                       row.nav[currency].difference.percentage?.toFixed(2) ||

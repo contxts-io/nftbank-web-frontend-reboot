@@ -47,8 +47,9 @@ const PortfolioTabNavigation = () => {
             <button
               className={twMerge(
                 `font-body01-medium ${styles.button} ${
-                  inventoryType === 'collection' &&
-                  'text-text-brand dark:text-text-brand-dark'
+                  inventoryType === 'collection'
+                    ? 'text-text-brand dark:text-text-brand-dark'
+                    : 'text-text-subtlest dark:text-text-subtlest-dark'
                 }`
               )}
               onClick={() => handleClickButton('collection')}
