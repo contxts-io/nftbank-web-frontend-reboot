@@ -1,4 +1,4 @@
-const DiscordLogo = (props) => {
+const DiscordLogo = (props: any) => {
   return (
     <svg
       width='16'
