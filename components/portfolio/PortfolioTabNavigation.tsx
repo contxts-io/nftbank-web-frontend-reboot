@@ -31,6 +31,7 @@ const PortfolioTabNavigation = () => {
           const isActive = pathname === link.href;
           return (
             <div
+              key={index}
               className={`border-b-4 h-full flex items-center ${
                 isActive
                   ? 'border-border-brand dark:border-border-brand-dark'
@@ -38,7 +39,6 @@ const PortfolioTabNavigation = () => {
               }`}
             >
               <Link
-                key={index}
                 className={`font-body01-medium ${styles.link}`}
                 href={link.href}
               >
