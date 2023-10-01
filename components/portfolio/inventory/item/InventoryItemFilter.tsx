@@ -2,19 +2,17 @@
 import styles from './InventoryItemFilter.module.css';
 import { TCollectionParam, inventoryItemListAtom } from '@/store/requestParam';
 import Image from 'next/image';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { getCollectionList } from '@/apis/inventory';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useObserver } from '@/utils/hooks/useObserver';
 import { useAtom } from 'jotai';
 import { selectedCollectionInventoryAtom } from '@/store/portfolio';
 import { Collection } from '@/interfaces/collection';
 import MagnifyingGlass from '@/public/icon/MagnifyingGlass';
 import Filter from '@/public/icon/Filter';
-type Props = {
-  collectionList?: string[];
-};
+import { shortenAddress } from '@/utils/common';
+import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory';
+import { useTheme } from 'next-themes';
+
 const InventoryItemFilter = () => {
   const [selectedCollection, setSelectedCollection] = useAtom(
     selectedCollectionInventoryAtom
@@ -38,46 +36,20 @@ const InventoryItemFilter = () => {
   const [itemRequestParams, setItemRequestParams] = useAtom(
     inventoryItemListAtom
   );
+  const { fetchNextPage, data, status, isFetchingNextPage, isFetching } =
+    useInventoryCollectionsInfinite(inventoryCollectionRequestParam);
   const { ref, inView } = useInView({ threshold: 0.3 });
-  // ref는 target을 지정할 element에 지정한다.
-  //inView type은 boolean으로 root(뷰포트)에 target(ref를 지정한 element)이 들어오면 true로 변환됨
-
-  const {
-    data,
-    status,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-    isFetching,
-  } = useInfiniteQuery(
-    ['projects', inventoryCollectionRequestParam],
-    async ({ pageParam = 1 }) => {
-      return await fetchData(pageParam);
-    },
-    {
-      getNextPageParam: (lastPage) => {
-        const page = lastPage.paging.page;
-        if (Math.round(lastPage.paging.total / lastPage.paging.limit) == page)
-          return false;
-        return page + 1;
-      },
-    }
+  const { theme } = useTheme();
+  const mergePosts = useMemo(
+    () => data?.pages.flatMap((page) => page.collections),
+    [data?.pages]
   );
-  const [searchText, setSearchText] = useState<string>('');
-  const bottom = useRef<HTMLDivElement>(null);
-  const onIntersect = ([entry]: any) => {
-    entry.isIntersecting && fetchNextPage();
-  };
-  useObserver({ target: bottom, onIntersect });
-
   useEffect(() => {
-    fetchData(1);
-  }, []);
-  // useEffect(() => {
-  //   return () => {
-  //     setSelectedCollection(null);
-  //   };
-  // }, []);
+    inView && fetchNextPage();
+  }, [fetchNextPage, inView]);
+
+  const [searchText, setSearchText] = useState<string>('');
+
   useEffect(() => {
     setItemRequestParams((prev) => ({
       ...prev,
@@ -87,36 +59,8 @@ const InventoryItemFilter = () => {
       ),
     }));
   }, [selectedCollection]);
-  const fetchData = async (page: number) => {
-    console.log('page ', page);
-    return await getCollectionList({
-      ...inventoryCollectionRequestParam,
-      page: page,
-    });
-  };
 
-  // const handleInputCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, checked } = e.target;
-  //   console.log('handleInputCheck', 'name', name, 'checked', checked);
-  //   setCheckedCollection((prev) => {
-  //     if (checked) {
-  //       return [...prev, name];
-  //     } else {
-  //       return prev.filter((item) => item !== name);
-  //     }
-  //   });
-  // };
   const handleClickCheckBox = (collection: Collection) => {
-    console.log('handleClickCheckBox', collection);
-    // setCheckedCollection((prev) => {
-    //   if (prev.includes(collection.collection.assetContract)) {
-    //     return prev.filter(
-    //       (item) => item !== collection.collection.assetContract
-    //     );
-    //   } else {
-    //     return [...prev, collection.collection.assetContract];
-    //   }
-    // });
     setSelectedCollection((prev) => {
       if (
         prev.find(
@@ -139,14 +83,18 @@ const InventoryItemFilter = () => {
     const { value } = e.target;
     setSearchText(value);
     (value.length >= 3 || value.length == 0) &&
-      (console.log('handleInputText', 'value', value),
       setInventoryCollectionRequestParam((prev) => {
         return {
           ...prev,
           searchCollection: value,
         };
       }),
-      fetchData(1));
+      setInventoryCollectionRequestParam((prev) => {
+        return {
+          ...prev,
+          page: 1,
+        };
+      });
   };
   if (status === 'error') return <div>error</div>;
   return (
@@ -176,7 +124,7 @@ const InventoryItemFilter = () => {
         />
       </div>
 
-      <ul className='mt-12 max-h-[500px] overflow-auto flex flex-col'>
+      <ul className='mt-12 h-full w-full overflow-auto flex flex-col'>
         {data?.pages?.map((page, index) => (
           <Fragment key={index}>
             {page.collections.map((item) => (
@@ -187,11 +135,7 @@ const InventoryItemFilter = () => {
                 <input
                   type='checkbox'
                   name={item.collection.name}
-                  // onChange={handleInputCheck}
                   className={`${styles.checkbox} dark:border-border-bold-dark dark:bg-elevation-sunken-dark`}
-                  // checked={checkedCollection.includes(
-                  //   item.collection.assetContract
-                  // )}
                   checked={
                     selectedCollection?.find((collection) => {
                       return (
@@ -202,7 +146,6 @@ const InventoryItemFilter = () => {
                       ? true
                       : false
                   }
-                  // onClick={() => handleClickCheckBox(item)}
                   onChange={() => handleClickCheckBox(item)}
                 />
                 <Image
@@ -217,13 +160,14 @@ const InventoryItemFilter = () => {
                 <p
                   className={`font-caption-medium ${styles.pCollectionName} dark:text-text-main-dark`}
                 >
-                  {item.collection.name || item.collection.assetContract}
+                  {item.collection.name ||
+                    shortenAddress(item.collection.assetContract)}
                 </p>
               </li>
             ))}
           </Fragment>
         ))}
-        <div ref={bottom} />
+        <div ref={ref} />
       </ul>
       <div>
         {isFetching && !isFetchingNextPage ? 'Background Updating...' : null}

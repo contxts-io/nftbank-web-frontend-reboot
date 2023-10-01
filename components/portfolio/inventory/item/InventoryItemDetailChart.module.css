@@ -1,0 +1,27 @@
+.tooltip {
+  @apply border-1 text-text-subtle border-border-bold w-[250px] bg-elevation-surface;
+}
+.header {
+  @apply w-full flex items-center justify-center py-8 border-b-1 border-border-bold;
+}
+.tooltip li {
+  @apply flex items-center justify-between px-12 mb-11;
+}
+.dot {
+  @apply border-2 bg-elevation-surface w-10 h-10 rounded-full mr-9;
+}
+.dot--0 {
+  @apply border-[#14B8A6];
+}
+.dot--1 {
+  @apply border-[#9333EA];
+}
+.dot--2 {
+  @apply border-[#16A34A];
+}
+.dot--3 {
+  @apply border-[#CA8A04];
+}
+.dot--4 {
+  @apply border-[#DC2626];
+}

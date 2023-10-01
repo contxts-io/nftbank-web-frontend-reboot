@@ -1,5 +1,5 @@
 .table {
-  @apply w-full table-auto border-t-1 border-border-main;
+  @apply w-full h-full table-auto border-t-1 border-border-main;
 }
 .tableHeadRow {
   @apply h-40 py-12 border-b-1 border-border-main;

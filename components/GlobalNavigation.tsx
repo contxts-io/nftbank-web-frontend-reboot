@@ -6,6 +6,9 @@ import { ThemeSwitcher } from './buttons/ThemeSwitcher';
 import NFTBankLogo from '@/public/logo/NFTBankLogo';
 import { useAtom } from 'jotai';
 import { currencyAtom } from '@/store/currency';
+import Wallet from '@/public/icon/Wallet';
+import Ghost from '@/public/icon/Ghost';
+import Ethereum from '@/public/icon/Ethereum';
 
 const GlobalNavigation = () => {
   const [currency, setCurrency] = useAtom(currencyAtom);
@@ -16,7 +19,7 @@ const GlobalNavigation = () => {
   };
   return (
     <nav
-      className={`${styles.navigation} border-border-main text-text-subtle dark:border-border-main-dark`}
+      className={`${styles.navigation} border-border-main text-text-subtle dark:border-border-main-dark py-12`}
     >
       <div className='flex items-center  dark:text-text-subtle-dark'>
         <div className='font-body02-medium flex items-center mr-26'>
@@ -47,9 +50,19 @@ const GlobalNavigation = () => {
           Settings
         </Link>
       </div>
-      <div className='flex items-center'>
+      <div className={`${styles.buttonBox} dark:border-border-main-dark`}>
+        <button className='dark:border-border-main-dark dark:hover:border-border-main-dark'>
+          <Wallet />
+        </button>
+        <button className='dark:border-border-main-dark dark:hover:border-border-main-dark'>
+          <Ghost />
+        </button>
         <ThemeSwitcher />
-        <button onClick={() => changeCurrency()} className='ml-8'>
+        <button
+          className='dark:border-border-main-dark dark:hover:border-border-main-dark'
+          onClick={() => changeCurrency()}
+        >
+          <Ethereum width={20} height={20} className='m-8' />
           {currency}
         </button>
       </div>
