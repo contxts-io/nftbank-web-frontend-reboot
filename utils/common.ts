@@ -9,7 +9,14 @@ export function formatCurrency(amount: string | null, currency: 'usd' | 'eth'): 
   if (!amount) return '';
   return parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: currency }).replace('ETH', 'Ξ');
 }
+export function formatPercent(amount: number | null): string {
+  if (!amount) return '-';
+  return amount.toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 2 });
+}
 export function formatEth(amount: string | null): string {
   if (!amount) return '';
   return parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' });
+}
+export function shortenAddress(address: string): string {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }

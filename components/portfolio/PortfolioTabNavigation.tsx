@@ -24,34 +24,37 @@ const PortfolioTabNavigation = () => {
       className={`${styles.navigation} border-border-main dark:border-border-main-dark`}
     >
       <div className={styles.links}>
+        <div
+          className={`w-24 h-full border-b-4 border-border-main dark:border-border-main-dark`}
+        />
         {navLinks.map((link, index) => {
           const isActive = pathname === link.href;
           return (
-            <Link
-              key={index}
-              className={twMerge(
-                `font-body01-medium ${styles.link} ${
-                  isActive
-                    ? 'border-b-4 border-border-brand dark:border-border-brand-dark'
-                    : 'border-0 border-border-main dark:border-border-main-dark'
-                }`
-              )}
-              href={link.href}
+            <div
+              className={`border-b-4 h-full flex items-center ${
+                isActive
+                  ? 'border-border-brand dark:border-border-brand-dark'
+                  : 'border-border-main dark:border-border-main-dark'
+              }`}
             >
-              {link.name}
-            </Link>
+              <Link
+                key={index}
+                className={`font-body01-medium ${styles.link}`}
+                href={link.href}
+              >
+                {link.name}
+              </Link>
+            </div>
           );
         })}
         {pathname === '/portfolio/inventory' && (
-          <>
+          <div className='border-b-4 flex h-full dark:border-border-main-dark'>
             <button
-              className={twMerge(
-                `font-body01-medium ${styles.button} ${
-                  inventoryType === 'collection'
-                    ? 'text-text-brand dark:text-text-brand-dark'
-                    : 'text-text-subtlest dark:text-text-subtlest-dark'
-                }`
-              )}
+              className={`font-body01-medium ${styles.button} ${
+                inventoryType === 'collection'
+                  ? 'text-text-brand dark:text-text-brand-dark'
+                  : 'text-text-subtlest dark:text-text-subtlest-dark'
+              }`}
               onClick={() => handleClickButton('collection')}
             >
               <div className='flex items-center'>
@@ -88,8 +91,9 @@ const PortfolioTabNavigation = () => {
                 <p className='font-body02-medium'>Items</p>
               </div>
             </button>
-          </>
+          </div>
         )}
+        <div className='w-full h-full border-b-4 dark:border-border-main-dark' />
       </div>
     </nav>
   );

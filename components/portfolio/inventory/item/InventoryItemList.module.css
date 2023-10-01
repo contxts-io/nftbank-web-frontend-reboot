@@ -1,5 +1,5 @@
 .container {
-  @apply w-full px-24;
+  @apply w-full px-24 max-h-[700px] h-full overflow-y-auto;
 }
 .viewType {
   @apply flex items-center justify-center;

@@ -15,10 +15,7 @@
   @apply flex items-center justify-center;
 }
 .typeButton {
-  @apply px-24 py-8 border-0 bg-transparent text-text-subtle rounded-none;
-}
-.typeButton.active {
-  @apply bg-background-brand-bold text-text-main;
+  @apply px-24 py-8 border-0;
 }
 .traitSection {
   @apply w-full mt-24;

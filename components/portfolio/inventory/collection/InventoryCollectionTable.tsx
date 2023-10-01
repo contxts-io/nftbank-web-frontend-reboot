@@ -13,7 +13,8 @@ import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from 'react';
 import Ethereum from '@/public/icon/Ethereum';
 import useIntersection from '@/utils/hooks/useIntersaction';
 import DotsThree from '@/public/icon/DotsThree';
-import { formatCurrency } from '@/utils/common';
+import { formatCurrency, formatPercent, shortenAddress } from '@/utils/common';
+import { useInView } from 'react-intersection-observer';
 const T_HEADER = [
   {
     name: 'Chain',
@@ -47,13 +48,11 @@ const T_HEADER = [
 const InventoryCollectionTable = () => {
   const currency = useAtomValue(currencyAtom);
   const priceType = useAtomValue(priceTypeAtom);
+  const { ref, inView } = useInView();
   const [inventoryType, setInventoryType] = useAtom(inventoryTypeAtom);
   const setSelectedCollection = useSetAtom(selectedCollectionInventoryAtom);
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useAtom(inventoryCollectionAtom);
-  // const { data: inventoryCollection, status } = useInventoryCollectionList(
-  //   inventoryCollectionRequestParam
-  // );
 
   const { fetchNextPage, data, status } = useInventoryCollectionsInfinite(
     inventoryCollectionRequestParam
@@ -62,25 +61,11 @@ const InventoryCollectionTable = () => {
     () => data?.pages.flatMap((page) => page.collections),
     [data?.pages]
   );
-  useEffect(() => {
-    data && console.log('infinity', data);
-  }, [data]);
-  const onIntersect = useCallback(
-    async (
-      entries: IntersectionObserverEntry[],
-      observer: IntersectionObserver
-    ) => {
-      const entry = entries[0];
-      if (entry.isIntersecting) {
-        observer.unobserve(entry.target);
-        await fetchNextPage();
-        observer.observe(entry.target);
-      }
-    },
-    [fetchNextPage]
-  );
 
-  const target = useIntersection(onIntersect);
+  useEffect(() => {
+    inView && console.log('inView,', inView);
+    inView && fetchNextPage();
+  }, [fetchNextPage, inView]);
 
   const handleClickSortButton = (sort: TSort) => {
     const order =
@@ -99,42 +84,16 @@ const InventoryCollectionTable = () => {
     setSelectedCollection([collection]);
     setInventoryType('item');
   };
-  const handleClickPaging = (option: 'prev' | 'next') => {
-    if (option === 'prev' && inventoryCollectionRequestParam.page === 1) return;
-    setInventoryCollectionRequestParam({
-      ...inventoryCollectionRequestParam,
-      page:
-        option === 'prev'
-          ? inventoryCollectionRequestParam.page - 1
-          : inventoryCollectionRequestParam.page + 1,
-    });
-  };
-  // const handleChangePage = (e: ChangeEvent<HTMLInputElement>) => {
-  //   if (!e.target.value) return;
-  //   const page = parseInt(e.target.value || '1') || 1;
-  //   console.log('page ', page);
-  //   if (
-  //     inventoryCollection &&
-  //     page >
-  //       Math.ceil(
-  //         inventoryCollection.paging.total / inventoryCollection.paging.limit
-  //       )
-  //   )
-  //     return;
-  //   setInventoryCollectionRequestParam({
-  //     ...inventoryCollectionRequestParam,
-  //     page: page,
-  //   });
-  // };
+
   if (status === 'error') return <div>error</div>;
   if (status === 'loading')
     return <SkeletonLoader className='w-full h-[200px]' />;
   return (
     <section className={styles.container}>
       <table
-        className={`${styles.table} dark:border-border-main-dark h-[300px]`}
+        className={`${styles.table} dark:border-border-main-dark h-full relative`}
       >
-        <thead className='border-b-1 border-border-main dark:border-border-main-dark'>
+        <thead className='sticky top-0 border-b-1 border-border-main dark:border-border-main-dark'>
           <tr>
             {T_HEADER.map((item, index) => (
               <th
@@ -159,7 +118,7 @@ const InventoryCollectionTable = () => {
             <th />
           </tr>
         </thead>
-        <tbody>
+        <tbody className='h-full'>
           {/* {inventoryCollection?.collections.map((row, index) => { */}
           {mergePosts?.map((row, index) => {
             return (
@@ -172,7 +131,7 @@ const InventoryCollectionTable = () => {
                   <Ethereum width={32} height={32} />
                 </td>
                 <td>
-                  <div className='flex items-center'>
+                  <article className='flex items-center'>
                     {row.collection.imageUrl && (
                       <Image
                         width={32}
@@ -183,9 +142,10 @@ const InventoryCollectionTable = () => {
                       />
                     )}
                     <p className='dark:text-text-main-dark'>
-                      {row.collection.name || row.collection.assetContract}
+                      {row.collection.name ||
+                        shortenAddress(row.collection.assetContract)}
                     </p>
-                  </div>
+                  </article>
                 </td>
                 <td className='text-right'>
                   <p className='dark:text-text-main-dark'>{row.amount}</p>
@@ -227,7 +187,9 @@ const InventoryCollectionTable = () => {
                         ? 'text-green-500'
                         : 'text-red-500'
                     }
-                  >{`${row.nav[currency].difference.amount} (${row.nav[currency].difference.percentage}%)`}</p>
+                  >{`${row.nav[currency].difference.amount} (${formatPercent(
+                    row.nav[currency].difference.percentage
+                  )})`}</p>
                 </td>
                 <td className='text-right'>
                   <p className='dark:text-text-main-dark'>1</p>
@@ -249,9 +211,9 @@ const InventoryCollectionTable = () => {
               </tr>
             );
           })}
-          <div ref={target}>more</div>
         </tbody>
       </table>
+      <div ref={ref}>more</div>
     </section>
   );
 };

@@ -6,6 +6,7 @@ import { AuthProvider } from '@/components/providers/AuthProvider';
 import GlobalNavigation from '@/components/GlobalNavigation';
 import localFont from 'next/font/local';
 import Footer from '@/components/Footer';
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -89,7 +90,7 @@ export default async function RootLayout({
       <body className='relative'>
         <Providers>
           {/* <AuthProvider> */}
-          <div className='flex flex-col min-h-screen w-screen'>
+          <div className='flex flex-col min-h-screen h-screen w-screen max-h-[1024px] max-w-[1440]'>
             <GlobalNavigation />
             {children}
             <Footer />

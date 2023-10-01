@@ -6,6 +6,7 @@ import { useMetadata } from '@/utils/hooks/queries/metadata';
 import { useState } from 'react';
 import InventoryItemActivity from './InventoryItemActivity';
 import Tag from '@/public/icon/Tag';
+import InventoryItemDetailChart from './InventoryItemDetailChart';
 type Props = {
   token: Token;
 };
@@ -61,15 +62,15 @@ const InventoryItemDetail = ({ token }: Props) => {
             </p>
           </div>
         </div>
-        <div className='flex items-center p-7 font-caption-medium border-1 border-border-main dark:border-border-main-dark'>
+        <div className='flex items-center p-7 font-caption-medium border-1 border-border-main dark:border-border-main-dark text-text-subtle'>
           <button
             onClick={() => handleToggleViewType('overview')}
-            className={`${styles.typeButton} dark:text-text-subtle-dark
-              ${
-                viewType === 'overview'
-                  ? `${styles.active} dark:bg-background-brand-bold-dark dark:text-text-main-dark`
-                  : ''
-              }
+            className={`${styles.typeButton} dark:text-text-subtle-dark 
+            ${
+              viewType === 'overview'
+                ? `bg-background-brand-bold text-text-main dark:text-text-main-dark`
+                : ''
+            }
             `}
           >
             Overview
@@ -79,7 +80,7 @@ const InventoryItemDetail = ({ token }: Props) => {
             className={`${styles.typeButton} dark:text-text-subtle-dark
               ${
                 viewType === 'activity'
-                  ? `${styles.active} dark:bg-background-brand-bold-dark dark:text-text-main-dark`
+                  ? `bg-background-brand-bold text-text-main dark:text-text-main-dark`
                   : ''
               }
             `}
@@ -103,7 +104,9 @@ const InventoryItemDetail = ({ token }: Props) => {
                   alt={`${token.token.name}-${token.token.tokenId}`}
                 />
               </div>
-              <div>CHART</div>
+              <div className='w-[calc(100%-300px)]'>
+                <InventoryItemDetailChart />
+              </div>
               {/* {inventoryItem && (
                 <article className='w-full rounded border-1 border-gray-300 mt-10'>
                   <ul className='w-full p-10'>

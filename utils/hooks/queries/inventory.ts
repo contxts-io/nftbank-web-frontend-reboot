@@ -91,7 +91,34 @@ export function useInventoryItemList(requestParam: ItemParam) {
     },
   );
 }
+export const useInventoryItemInfinite = (requestParam: ItemParam) => {
+  const fetchData = async ({ pageParam = 1 }) => {
+    const result = await getItemList({...requestParam, page: pageParam});
+    const isLast = (result.paging.total / result.paging.limit) == result.paging.page;
+        
+    return {
+      ...result,
+      nextPage: pageParam + 1,
+      isLast,
+    };
+  }
 
+  const query = useInfiniteQuery(['inventoryItemList',requestParam], fetchData, {
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.isLast) return lastPage.nextPage;
+      return undefined;
+    },
+    staleTime: Infinity,
+    cacheTime: Infinity,
+    useErrorBoundary: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    retry: 1,
+  });
+
+  return query;
+};
 export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) => {
   const fetchData = async ({ pageParam = 1 }) => {
     const result = await getCollectionList({...requestParam, page: pageParam});
@@ -104,7 +131,7 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
     };
   }
 
-  const query = useInfiniteQuery(['inventoryCollectionList2',requestParam], fetchData, {
+  const query = useInfiniteQuery(['inventoryCollectionList',requestParam], fetchData, {
     getNextPageParam: (lastPage) => {
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;

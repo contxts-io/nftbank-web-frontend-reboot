@@ -9,7 +9,7 @@ import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { useSearchParams } from 'next/navigation';
 import { inventoryTypeAtom } from '@/store/settings';
-import { formatCurrency } from '@/utils/common';
+import { formatCurrency, formatPercent } from '@/utils/common';
 const VALUE = [
   {
     type: 'inventoryValue',
@@ -81,9 +81,9 @@ const InventoryValue = () => {
                   <p className='font-caption-medium'>
                     {`${toFixed(
                       inventoryValue.value[currency].difference.amount
-                    )} (${inventoryValue.value[
-                      currency
-                    ].difference.percentage.toFixed(2)}%)`}
+                    )} (${formatPercent(
+                      inventoryValue.value[currency].difference.percentage
+                    )})`}
                   </p>
                 </div>
                 <div
