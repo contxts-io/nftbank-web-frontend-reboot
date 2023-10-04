@@ -14,6 +14,12 @@ const getInventoryValue = async <T = IInventoryValue,>(
     const { data } = await instance.get<{ data: T }>(
       `https://web-api-reboot.dev.nftbank.tools/v1/performance/value${query}`
     );
+    // await new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     resolve('Delayed result');
+    //   }, 2000); // 2초 딜레이
+    // });
+    console.log('ssr ?');
     return data.data;
   } catch (error) {
     throw new Error('Failed to fetch data');

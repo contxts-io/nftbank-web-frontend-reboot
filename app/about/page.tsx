@@ -17,20 +17,20 @@ const Page = () => {
   // const handleChangeAtom = (e: any) => {
   //   setTest('changed');
   // };
-  // const onClickSignInGoogle = async () => {
-  //   const token = await getIdTokenByGoogle();
-  //   if (token) {
-  //     setCookie('accessToken', token);
-  //     const user = token ? await signIn(token) : null;
-  //     console.log('user: ', user);
-  //   } else {
-  //     console.log('token is null');
-  //   }
-  // };
-  // const checkMe = async () => {
-  //   const result = await getMe();
-  //   console.log('result: ', result);
-  // };
+  const onClickSignInGoogle = async () => {
+    const token = await getIdTokenByGoogle();
+    if (token) {
+      setCookie('accessToken', token);
+      const user = token ? await signIn(token) : null;
+      console.log('user: ', user);
+    } else {
+      console.log('token is null');
+    }
+  };
+  const checkMe = async () => {
+    const result = await getMe();
+    console.log('result: ', result);
+  };
   // if (!isConnected)
   //   return <button onClick={() => connect()}>Connect Wallet</button>;
   return (
@@ -38,9 +38,9 @@ const Page = () => {
       <p className='dark:text-red-300'>about</p>
       {/* <p>{address}</p>
       <p>{test}</p>
-      <button onClick={handleChangeAtom}>change test</button>
+      <button onClick={handleChangeAtom}>change test</button>*/}
       <button onClick={() => onClickSignInGoogle()}>Sign in Google</button>
-      <button onClick={() => checkMe()}>get Me</button> */}
+      <button onClick={() => checkMe()}>get Me</button>
       <ThemeSwitcher />
     </div>
   );
