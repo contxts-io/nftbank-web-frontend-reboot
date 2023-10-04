@@ -18,13 +18,18 @@ const Page = () => {
   //   setTest('changed');
   // };
   const onClickSignInGoogle = async () => {
-    const token = await getIdTokenByGoogle();
-    if (token) {
-      setCookie('accessToken', token);
-      const user = token ? await signIn(token) : null;
-      console.log('user: ', user);
-    } else {
-      console.log('token is null');
+    try {
+      const token = await getIdTokenByGoogle();
+      if (token) {
+        setCookie('accessToken', token);
+        const user = token ? await signIn(token) : null;
+        console.log('user: ', user);
+      } else {
+        console.log('token is null');
+      }
+    } catch (error) {
+      console.log('error: ', error);
+      throw error;
     }
   };
   const checkMe = async () => {
