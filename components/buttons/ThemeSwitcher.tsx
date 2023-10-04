@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
+import Moon from '@/public/icon/Moon';
 
 export function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
@@ -17,11 +18,10 @@ export function ThemeSwitcher() {
 
   return (
     <button
+      className='dark:border-border-main-dark dark:hover:border-border-main-dark'
       onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-      className='border rounded-md w-6 h-6 flex items-center justify-center'
     >
-      <span className='sr-only'>Toggle mode</span>
-      {theme === 'dark' ? <p>Light</p> : <p>Dark</p>}
+      <Moon />
     </button>
   );
 }

@@ -1,0 +1,3 @@
+.cardListSection {
+  @apply grid grid-cols-5 w-full gap-[13px] overflow-hidden;
+}

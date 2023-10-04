@@ -1,0 +1,6 @@
+.cardWrapper {
+  @apply flex flex-col items-center border-1 border-border-main;
+}
+.tokenName {
+  @apply text-text-subtle;
+}

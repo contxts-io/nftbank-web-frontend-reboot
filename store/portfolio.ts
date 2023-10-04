@@ -1,4 +1,4 @@
 import { Collection } from "@/interfaces/collection";
 import { atom } from "jotai";
 
-export const selectedCollectionInventoryAtom = atom<Collection | null>(null);
+export const selectedCollectionInventoryAtom = atom<Collection[]>([]);

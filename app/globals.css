@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import './StylesFont.css';
+@import './ToastStyles.css';
 
 /* HTML의 기본 요소에 대한 스타일을 정의합니다. (ex : <body>, <a>, <h1>) */
 @layer base {
@@ -48,7 +49,7 @@
     @apply transition ease-in-out duration-150;
   }
   button {
-    @apply w-fit px-12 py-8 rounded font-medium text-gray-700 bg-white border-solid border-1 border-gray-300 hover:border-nb_blue-300;
+    @apply w-fit px-12 py-8 rounded-none font-medium bg-transparent border-solid border-1 hover:border-nb_blue-300;
     @apply transition ease-in-out duration-150;
   }
   button.reset {
@@ -118,4 +119,10 @@
 }
 .overlayBackground {
   @apply fixed top-0 left-0 right-0 bottom-0 bg-gray-500 bg-opacity-50 z-50;
+}
+.apexcharts-tooltip {
+  @apply border-0 rounded-none !important;
+}
+.toast-message {
+  @apply rounded-none flex h-28 items-center !important;
 }

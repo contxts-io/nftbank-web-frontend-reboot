@@ -5,17 +5,17 @@ const px0_100 = { ...Array.from(Array(101)).map((_, i) => `${i}px`) };
 const px0_200 = { ...Array.from(Array(201)).map((_, i) => `${i}px`) };
 const px0_400 = { ...Array.from(Array(401)).map((_, i) => `${i}px`) };
 
-function parseCustomColors(filePath:string) {
+function parseCustomColors(filePath:string,mode?:string) {
   const fs = require('fs');
   const content = fs.readFileSync(filePath, 'utf8');
   const colors:{[key: string]:string} = {};
 
   // 정규 표현식을 사용하여 CSS 변수를 추출하고 Tailwind CSS 컬러로 변환
-  const colorRegex = /--color-([a-zA-Z0-9_-]+): var\(--color-([a-zA-Z0-9_-]+)-(\d+)\);/g;
+  const colorRegex = /--color-([a-zA-Z0-9_-]+): var\(--color-([a-zA-Z0-9_-]+)-(.+)\);/g;
   const color = parseGlobalTokenColors('./global_token_color.css');
   let match;
   while ((match = colorRegex.exec(content)) !== null) {
-    const customColorName = match[1];
+    const customColorName = mode === 'dark' ? `${match[1]}-dark` : match[1];
     const tailwindColorName = match[2] || '';
     const colorNumber = match[3];
     // 컬러 토큰에서 값을 가져옴
@@ -38,6 +38,7 @@ function parseGlobalTokenColors(filePath:string) {
     const modifiedColorName = colorName.replace(/^[a-zA-Z]+-/, '').replace('nb_blue-nb_blue', 'nb_blue');
 
     colors[modifiedColorName] = colorValue;
+    modifiedColorName === 'etc' && console.log('etc',colorValue)
   }
   return colors;
 }
@@ -56,6 +57,7 @@ export default {
   theme: {   
     fontFamily: {
       sans: ['Inter', ...defaultTheme.fontFamily.sans],
+      IosevkaCustom: ['IosevkaCustom', ...defaultTheme.fontFamily.sans],
     },
     extend: {
       borderWidth: px0_10 as any,
@@ -96,8 +98,8 @@ export default {
       },
       colors: {
         ...parseGlobalTokenColors('./global_token_color.css'),
-        light: { ...parseCustomColors('./semantic_token_light.css') },
-        dark: { ...parseCustomColors('./semantic_token_dark.css') },
+        ...parseCustomColors('./semantic_token_light.css') ,
+        ...parseCustomColors('./semantic_token_dark.css','dark') ,
       },
     },
   },

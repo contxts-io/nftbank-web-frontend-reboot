@@ -2,17 +2,17 @@
 import styles from './InventoryItemFilter.module.css';
 import { TCollectionParam, inventoryItemListAtom } from '@/store/requestParam';
 import Image from 'next/image';
-import React, { useEffect, useRef, useState } from 'react';
-import { getCollectionList } from '@/apis/inventory';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useObserver } from '@/utils/hooks/useObserver';
 import { useAtom } from 'jotai';
 import { selectedCollectionInventoryAtom } from '@/store/portfolio';
 import { Collection } from '@/interfaces/collection';
-type Props = {
-  collectionList?: string[];
-};
+import MagnifyingGlass from '@/public/icon/MagnifyingGlass';
+import Filter from '@/public/icon/Filter';
+import { shortenAddress } from '@/utils/common';
+import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory';
+import { useTheme } from 'next-themes';
+
 const InventoryItemFilter = () => {
   const [selectedCollection, setSelectedCollection] = useAtom(
     selectedCollectionInventoryAtom
@@ -29,88 +29,53 @@ const InventoryItemFilter = () => {
       walletAddress: '',
     });
   const [checkedCollection, setCheckedCollection] = useState<string[]>(
-    selectedCollection?.collection.assetContract
-      ? [selectedCollection.collection.assetContract]
+    selectedCollection
+      ? selectedCollection.map((item) => item.collection.assetContract)
       : []
   );
   const [itemRequestParams, setItemRequestParams] = useAtom(
     inventoryItemListAtom
   );
+  const { fetchNextPage, data, status, isFetchingNextPage, isFetching } =
+    useInventoryCollectionsInfinite(inventoryCollectionRequestParam);
   const { ref, inView } = useInView({ threshold: 0.3 });
-  // ref는 target을 지정할 element에 지정한다.
-  //inView type은 boolean으로 root(뷰포트)에 target(ref를 지정한 element)이 들어오면 true로 변환됨
-
-  const {
-    data,
-    status,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-    isFetching,
-  } = useInfiniteQuery(
-    ['projects', inventoryCollectionRequestParam],
-    async ({ pageParam = 1 }) => {
-      return await fetchData(pageParam);
-    },
-    {
-      getNextPageParam: (lastPage) => {
-        const page = lastPage.paging.page;
-        if (Math.round(lastPage.paging.total / lastPage.paging.limit) == page)
-          return false;
-        return page + 1;
-      },
-    }
+  const { theme } = useTheme();
+  const mergePosts = useMemo(
+    () => data?.pages.flatMap((page) => page.collections),
+    [data?.pages]
   );
-  const [searchText, setSearchText] = useState<string>('');
-  const bottom = useRef<HTMLDivElement>(null);
-  const onIntersect = ([entry]: any) => {
-    entry.isIntersecting && fetchNextPage();
-  };
-  useObserver({ target: bottom, onIntersect });
-
   useEffect(() => {
-    fetchData(1);
-  }, []);
-  // useEffect(() => {
-  //   return () => {
-  //     setSelectedCollection(null);
-  //   };
-  // }, []);
+    inView && fetchNextPage();
+  }, [fetchNextPage, inView]);
+
+  const [searchText, setSearchText] = useState<string>('');
+
   useEffect(() => {
     setItemRequestParams((prev) => ({
       ...prev,
       page: 1,
-      assetContract: checkedCollection,
+      assetContract: selectedCollection.map(
+        (item) => item.collection.assetContract
+      ),
     }));
-  }, [checkedCollection]);
-  const fetchData = async (page: number) => {
-    console.log('page ', page);
-    return await getCollectionList({
-      ...inventoryCollectionRequestParam,
-      page: page,
-    });
-  };
+  }, [selectedCollection]);
 
-  // const handleInputCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, checked } = e.target;
-  //   console.log('handleInputCheck', 'name', name, 'checked', checked);
-  //   setCheckedCollection((prev) => {
-  //     if (checked) {
-  //       return [...prev, name];
-  //     } else {
-  //       return prev.filter((item) => item !== name);
-  //     }
-  //   });
-  // };
   const handleClickCheckBox = (collection: Collection) => {
-    console.log('handleClickCheckBox', collection);
-    setCheckedCollection((prev) => {
-      if (prev.includes(collection.collection.assetContract)) {
+    setSelectedCollection((prev) => {
+      if (
+        prev.find(
+          (item) =>
+            item.collection.assetContract ===
+            collection.collection.assetContract
+        )
+      ) {
         return prev.filter(
-          (item) => item !== collection.collection.assetContract
+          (item) =>
+            item.collection.assetContract !==
+            collection.collection.assetContract
         );
       } else {
-        return [...prev, collection.collection.assetContract];
+        return [...prev, collection];
       }
     });
   };
@@ -118,54 +83,91 @@ const InventoryItemFilter = () => {
     const { value } = e.target;
     setSearchText(value);
     (value.length >= 3 || value.length == 0) &&
-      (console.log('handleInputText', 'value', value),
       setInventoryCollectionRequestParam((prev) => {
         return {
           ...prev,
           searchCollection: value,
         };
       }),
-      fetchData(1));
+      setInventoryCollectionRequestParam((prev) => {
+        return {
+          ...prev,
+          page: 1,
+        };
+      });
   };
   if (status === 'error') return <div>error</div>;
   return (
-    <aside className={styles.container}>
-      <h2 className='text-18'>collection</h2>
-      <input
-        type='text'
-        placeholder='Search by collections'
-        className='my-16'
-        onChange={handleInputText}
-        value={searchText}
-      />
+    <aside className={`${styles.container} dark:border-border-main-dark`}>
+      <div className='flex justify-between items-center my-12'>
+        <h2 className='font-subtitle02-bold text-text-main dark:text-text-main-dark'>
+          Collection
+        </h2>
+        <button
+          className={`${styles.filterButton} dark:border-border-main-dark`}
+        >
+          <Filter className='fill-icon-subtle dark:fill-icon-subtle-dark' />
+        </button>
+      </div>
+      <div className={`${styles.inputContainer}  dark:border-border-main-dark`}>
+        <MagnifyingGlass
+          className={`${styles.icon} dark:fill-icon-main-dark`}
+          width={16}
+          height={16}
+        />
+        <input
+          type='text'
+          placeholder={'Search by collections'}
+          className={`${styles.textInput} font-caption-regular placeholder:dark:text-text-subtlest-dark`}
+          onChange={handleInputText}
+          value={searchText}
+        />
+      </div>
 
-      <ul className='max-h-[500px] overflow-auto flex flex-col'>
+      <ul className='mt-12 h-full w-full overflow-auto flex flex-col'>
         {data?.pages?.map((page, index) => (
-          <>
-            <div>
-              <p>page:{index}</p>
-            </div>
+          <Fragment key={index}>
             {page.collections.map((item) => (
               <li
-                key={`${page.paging.page}-${index}`}
-                className='h-26 flex  my-8 items-center'
+                key={`${page.paging.page}-${index}-${item.collection.assetContract}`}
+                className='h-26 flex mb-12 items-center'
               >
                 <input
                   type='checkbox'
                   name={item.collection.name}
-                  // onChange={handleInputCheck}
-                  className='mr-8'
-                  checked={checkedCollection.includes(
-                    item.collection.assetContract
-                  )}
-                  onClick={() => handleClickCheckBox(item)}
+                  className={`${styles.checkbox} dark:border-border-bold-dark dark:bg-elevation-sunken-dark`}
+                  checked={
+                    selectedCollection?.find((collection) => {
+                      return (
+                        collection.collection.assetContract ===
+                        item.collection.assetContract
+                      );
+                    })
+                      ? true
+                      : false
+                  }
+                  onChange={() => handleClickCheckBox(item)}
                 />
-                <p>{item.collection.name || item.collection.assetContract}</p>
+                <Image
+                  src={item.collection.imageUrl || '/icon/ethereum.svg'}
+                  width={20}
+                  height={20}
+                  className='rounded-full mr-8'
+                  alt={`${
+                    item.collection.name || item.collection.assetContract
+                  } image`}
+                />
+                <p
+                  className={`font-caption-medium ${styles.pCollectionName} dark:text-text-main-dark`}
+                >
+                  {item.collection.name ||
+                    shortenAddress(item.collection.assetContract)}
+                </p>
               </li>
             ))}
-          </>
+          </Fragment>
         ))}
-        <div ref={bottom} />
+        <div ref={ref} />
       </ul>
       <div>
         {isFetching && !isFetchingNextPage ? 'Background Updating...' : null}

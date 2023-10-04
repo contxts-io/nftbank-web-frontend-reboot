@@ -1,5 +1,5 @@
 'use client';
-import { useInventoryCollectionList } from '@/utils/hooks/queries/inventory';
+import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory';
 import styles from './InventoryCollectionTable.module.css';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
@@ -9,18 +9,64 @@ import SkeletonLoader from '../../../SkeletonLoader';
 import { Collection } from '@/interfaces/collection';
 import { inventoryTypeAtom } from '@/store/settings';
 import { selectedCollectionInventoryAtom } from '@/store/portfolio';
-import { ChangeEvent } from 'react';
-
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from 'react';
+import Ethereum from '@/public/icon/Ethereum';
+import useIntersection from '@/utils/hooks/useIntersaction';
+import DotsThree from '@/public/icon/DotsThree';
+import { formatCurrency, formatPercent, shortenAddress } from '@/utils/common';
+import { useInView } from 'react-intersection-observer';
+const T_HEADER = [
+  {
+    name: 'Chain',
+  },
+  {
+    name: 'Collection',
+  },
+  {
+    name: 'Amount',
+    key: 'amount',
+    sort: 'amount',
+  },
+  {
+    name: 'Cost basis',
+    key: 'costBasis',
+    sort: 'acquisitionPrice',
+  },
+  {
+    name: 'Valuation Type',
+  },
+  {
+    name: 'Realtime NAV',
+  },
+  {
+    name: 'Unrealized G&L',
+  },
+  {
+    name: 'Unrealized ROI',
+  },
+];
 const InventoryCollectionTable = () => {
   const currency = useAtomValue(currencyAtom);
   const priceType = useAtomValue(priceTypeAtom);
+  const { ref, inView } = useInView();
   const [inventoryType, setInventoryType] = useAtom(inventoryTypeAtom);
   const setSelectedCollection = useSetAtom(selectedCollectionInventoryAtom);
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useAtom(inventoryCollectionAtom);
-  const { data: inventoryCollection, status } = useInventoryCollectionList(
+
+  const { fetchNextPage, data, status } = useInventoryCollectionsInfinite(
     inventoryCollectionRequestParam
   );
+  const mergePosts = useMemo(
+    () => data?.pages.flatMap((page) => page.collections),
+    [data?.pages]
+  );
+
+  useEffect(() => {
+    inView && console.log('inView,', inView);
+    inView && fetchNextPage();
+  }, [fetchNextPage, inView]);
+
   const handleClickSortButton = (sort: TSort) => {
     const order =
       inventoryCollectionRequestParam.sort !== sort
@@ -35,202 +81,139 @@ const InventoryCollectionTable = () => {
     });
   };
   const handleClickCollection = (collection: Collection) => {
-    setSelectedCollection(collection);
+    setSelectedCollection([collection]);
     setInventoryType('item');
   };
-  const handleClickPaging = (option: 'prev' | 'next') => {
-    if (option === 'prev' && inventoryCollectionRequestParam.page === 1) return;
-    setInventoryCollectionRequestParam({
-      ...inventoryCollectionRequestParam,
-      page:
-        option === 'prev'
-          ? inventoryCollectionRequestParam.page - 1
-          : inventoryCollectionRequestParam.page + 1,
-    });
-  };
-  const handleChangePage = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.value) return;
-    const page = parseInt(e.target.value || '1') || 1;
-    console.log('page ', page);
-    if (
-      inventoryCollection &&
-      page >
-        Math.ceil(
-          inventoryCollection.paging.total / inventoryCollection.paging.limit
-        )
-    )
-      return;
-    setInventoryCollectionRequestParam({
-      ...inventoryCollectionRequestParam,
-      page: page,
-    });
-  };
+
   if (status === 'error') return <div>error</div>;
+  if (status === 'loading')
+    return <SkeletonLoader className='w-full h-[200px]' />;
   return (
     <section className={styles.container}>
-      <table className={styles.table}>
-        <thead>
-          <tr className={styles.tableHeader}>
-            <th className={`${styles.tableCell} flex justify-center`}>Chain</th>
-            <th className={`${styles.tableCell3} flex justify-start`}>
-              Collection
-            </th>
-            <th
-              className={`${styles.tableCell} flex justify-end cursor-pointer`}
-              onClick={() => handleClickSortButton('amount')}
-            >
-              Amount
-            </th>
-            <th
-              className={`${styles.tableCell2} flex justify-end cursor-pointer`}
-              onClick={() => handleClickSortButton('acquisitionPrice')}
-            >
-              {priceType === 'costBasis'
-                ? 'Total Cost basis'
-                : 'Acquisition Price'}
-            </th>
-            <th className={`${styles.tableCell2} flex justify-end`}>
-              Valuation Type
-            </th>
-            <th className={`${styles.tableCell2} flex justify-end`}>
-              Current Realtime NAV
-            </th>
-            <th className={styles.tableCell} />
+      <table
+        className={`${styles.table} dark:border-border-main-dark h-full relative`}
+      >
+        <thead className='sticky top-0 border-b-1 border-border-main dark:border-border-main-dark'>
+          <tr>
+            {T_HEADER.map((item, index) => (
+              <th
+                key={index}
+                className={`font-caption-medium text-text-subtle dark:text-text-subtle-dark py-12
+                ${
+                  index == 0
+                    ? 'text-center'
+                    : index > 1
+                    ? 'text-right'
+                    : 'text-left'
+                }
+                ${item.sort && 'cursor-pointer'}
+                `}
+                onClick={() =>
+                  item.sort && handleClickSortButton(item.sort as TSort)
+                }
+              >
+                <p>{item.name}</p>
+              </th>
+            ))}
+            <th />
           </tr>
         </thead>
-
-        <tbody>
-          {status === 'loading' && (
-            <tr>
-              <SkeletonLoader className='w-full h-[200px]' />
-            </tr>
-          )}
-          {inventoryCollection &&
-            inventoryCollection.collections.map((row, index) => {
-              return (
-                <tr
-                  className={styles.tableRow}
-                  key={index}
-                  onClick={() => handleClickCollection(row)}
-                >
-                  <td className={`${styles.tableCell} flex justify-center`}>
-                    <div className='flex items-center justify-center rounded-full bg-white border-gray-200 border-1 w-50 h-50'>
+        <tbody className='h-full'>
+          {/* {inventoryCollection?.collections.map((row, index) => { */}
+          {mergePosts?.map((row, index) => {
+            return (
+              <tr
+                key={index}
+                className={`font-caption-medium cursor-pointer ${styles.tableRow} dark:border-border-disabled-dark`}
+                onClick={() => handleClickCollection(row)}
+              >
+                <td className='flex justify-center py-10'>
+                  <Ethereum width={32} height={32} />
+                </td>
+                <td>
+                  <article className='flex items-center'>
+                    {row.collection.imageUrl && (
                       <Image
-                        width={25}
-                        height={25}
-                        src={row.collection.chain.imageUrl}
-                        alt={
-                          row.collection.name || row.collection.assetContract
-                        }
+                        width={32}
+                        height={32}
+                        src={row.collection.imageUrl}
+                        className='rounded-full mr-12'
+                        alt={row.collection.name}
                       />
-                    </div>
-                  </td>
-                  <td className={styles.tableCell3}>
-                    <div className='flex items-center'>
-                      {row.collection.imageUrl && (
-                        <Image
-                          width={50}
-                          height={50}
-                          src={row.collection.imageUrl}
-                          className='rounded-full mr-8'
-                          alt={row.collection.name}
-                        />
-                      )}
-                      {row.collection.name || row.collection.assetContract}
-                    </div>
-                  </td>
-                  <td className={`${styles.tableCell} flex justify-end`}>
-                    <p>{row.amount}</p>
-                  </td>
-                  <td
-                    className={`${styles.tableCell2} flex flex-col justify-center items-end`}
-                  >
-                    <p>
-                      {`${parseFloat(
-                        row[priceType]?.[currency].amount || ''
-                      ).toFixed(2)} ${row[priceType]?.[currency].currency} `}
-                    </p>
-                    {priceType === 'costBasis' && (
-                      <p className='text-blue-500'>
-                        {row.gasFee?.[currency]?.amount
-                          ? `GAS +${parseFloat(
-                              row.gasFee[currency].amount || ''
-                            ).toFixed(3)} `
-                          : ''}
-                      </p>
                     )}
-                  </td>
-                  <td className={`${styles.tableCell2} flex justify-end`}>
-                    <p>
-                      {row.valuation.find((item) => item.selected)?.type ||
-                        row.valuation.find((item) => item.default)?.type}
+                    <p className='dark:text-text-main-dark'>
+                      {row.collection.name ||
+                        shortenAddress(row.collection.assetContract)}
                     </p>
-                  </td>
-                  <td className={`${styles.tableCell2} flex justify-end`}>
-                    <div className='flex flex-col w-full items-end'>
-                      <p>{`${row.nav[currency].currency} ${parseFloat(
-                        row.nav[currency].amount || '0'
-                      ).toFixed(2)}`}</p>
-                      <p
-                        className={
-                          row.nav[currency].difference.percentage?.toFixed(2) ||
-                          0 > 0
-                            ? 'text-green-500'
-                            : 'text-red-500'
-                        }
-                      >{`${row.nav[currency].difference.amount} (${row.nav[currency].difference.percentage}%)`}</p>
-                    </div>
-                  </td>
-                  <td className={`${styles.tableCell} flex justify-center `}>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        console.log('spam');
-                      }}
-                    >
-                      spam
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+                  </article>
+                </td>
+                <td className='text-right'>
+                  <p className='dark:text-text-main-dark'>{row.amount}</p>
+                </td>
+                <td className='text-right'>
+                  <p className='dark:text-text-main-dark'>
+                    {formatCurrency(
+                      row[priceType]?.[currency].amount || null,
+                      currency
+                    )}
+                  </p>
+                  {priceType === 'costBasis' && (
+                    <p className='text-text-brand dark:text-text-brand-dark'>
+                      {row.gasFee?.[currency]?.amount
+                        ? `GAS +${parseFloat(
+                            row.gasFee[currency].amount || ''
+                          ).toFixed(3)} `
+                        : ''}
+                    </p>
+                  )}
+                </td>
+                <td className='text-right'>
+                  <p className='dark:text-text-main-dark'>
+                    {row.valuation.find((item) => item.selected)?.type ||
+                      row.valuation.find((item) => item.default)?.type}
+                  </p>
+                </td>
+                <td className='text-right'>
+                  <p className='dark:text-text-main-dark'>
+                    {formatCurrency(
+                      row.nav[currency].amount || null,
+                      currency
+                    ) || '-'}
+                  </p>
+                  <p
+                    className={
+                      row.nav[currency].difference.percentage?.toFixed(2) ||
+                      0 > 0
+                        ? 'text-green-500'
+                        : 'text-red-500'
+                    }
+                  >{`${row.nav[currency].difference.amount} (${formatPercent(
+                    row.nav[currency].difference.percentage
+                  )})`}</p>
+                </td>
+                <td className='text-right'>
+                  <p className='dark:text-text-main-dark'>1</p>
+                </td>
+                <td className='text-right'>
+                  <p className='dark:text-text-main-dark'>1</p>
+                </td>
+                <td className='text-center'>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log('spam');
+                    }}
+                    className={`${styles.spamButton} dark:border-border-bold-dark`}
+                  >
+                    <DotsThree className='dark:fill-icon-subtle-dark' />
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
-      <div className='flex w-full justify-center items-center'>
-        <button onClick={() => handleClickPaging('prev')}>PREV</button>
-        {status === 'success' && inventoryCollection && (
-          <div className='flex justify-center items-center'>
-            {/* <input
-              type='text'
-              value={inventoryCollectionRequestParam.page}
-              onChange={handleChangePage}
-            /> */}
-            <p className='mx-10'>
-              current : {inventoryCollection.paging.page}/ total :
-              {Math.ceil(
-                inventoryCollection.paging.total /
-                  inventoryCollection.paging.limit
-              )}
-            </p>
-          </div>
-        )}
-        <button onClick={() => handleClickPaging('next')}>NEXT</button>
-
-        <select
-          defaultValue={inventoryCollection?.paging.limit}
-          onChange={(e) => {
-            setInventoryCollectionRequestParam({
-              ...inventoryCollectionRequestParam,
-              page: 1,
-              limit: parseInt(e.target.value),
-            });
-          }}
-        >
-          <option value={10}>10</option>
-          <option value={50}>50</option>
-          <option value={100}>100</option>
-        </select>
-      </div>
+      <div ref={ref}>more</div>
     </section>
   );
 };
