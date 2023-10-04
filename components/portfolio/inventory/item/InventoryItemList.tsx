@@ -3,18 +3,14 @@ import { useInventoryItemList } from '@/utils/hooks/queries/inventory';
 import styles from './InventoryItemList.module.css';
 import { useAtom, useAtomValue } from 'jotai';
 import { TSort, inventoryItemListAtom } from '@/store/requestParam';
-import Image from 'next/image';
-import { TPriceType, currencyAtom, priceTypeAtom } from '@/store/currency';
-import { TValuation, ValuationItem } from '@/interfaces/collection';
+import { currencyAtom, priceTypeAtom } from '@/store/currency';
+import { TValuation } from '@/interfaces/collection';
 import React, { useState } from 'react';
-import InventoryItemDetail from './InventoryItemDetail';
-import SkeletonLoader from '@/components/SkeletonLoader';
 import InventoryItemTable from './InventoryItemTable';
 import DotsNine from '@/public/icon/DotsNine';
 import Hamburger from '@/public/icon/Hamburger';
 import { inventoryItemViewTypeAtom } from '@/store/settings';
 import ToggleButton from '@/components/buttons/ToggleButton';
-import InventoryItemCard from './InventoryItemCard';
 import InventoryItemCardGrid from './InventoryItemCardGrid';
 
 const InventoryItemList = () => {
@@ -39,13 +35,6 @@ const InventoryItemList = () => {
     });
   };
 
-  const handleClickPaging = (option: 'prev' | 'next') => {
-    if (option === 'prev' && requestParam.page === 1) return;
-    setRequestParam({
-      ...requestParam,
-      page: option === 'prev' ? requestParam.page - 1 : requestParam.page + 1,
-    });
-  };
   const selectedValueType = (
     valuations: TValuation[]
   ): TValuation | undefined => {

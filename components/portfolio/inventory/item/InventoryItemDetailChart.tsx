@@ -43,6 +43,7 @@ const InventoryItemDetailChart = (props: InventoryItemDetailChartProps) => {
   const { theme } = useTheme();
   const borderColor = theme === 'light' ? '#e5e7eb' : '#162130';
   const markerFill = theme === 'light' ? '#FBFBFB' : '#000000';
+  const axisColor = theme === 'light' ? '#4B5563' : '#9CA3AF';
   const options = {
     chart: {
       id: 'basic-bar',
@@ -52,6 +53,29 @@ const InventoryItemDetailChart = (props: InventoryItemDetailChartProps) => {
     },
     xaxis: {
       categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
+      labels: {
+        style: {
+          colors: axisColor,
+          fontSize: '12px',
+        },
+      },
+      axisTicks: {
+        show: false,
+      },
+      axisBorder: {
+        show: false,
+      },
+      tooltip: {
+        enabled: false,
+      },
+    },
+    yaxis: {
+      labels: {
+        style: {
+          colors: axisColor,
+          fontSize: '12px',
+        },
+      },
     },
     grid: {
       borderColor: borderColor,
@@ -122,7 +146,7 @@ const InventoryItemDetailChart = (props: InventoryItemDetailChartProps) => {
         }))}
         type='line'
         width='100%'
-        height='300px'
+        height='340px'
       />
     </section>
   );

@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import { WagmiConfig, configureChains, createConfig, mainnet } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import { useTheme } from 'next-themes';
+import { AuthProvider } from './AuthProvider';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet],
@@ -35,14 +36,16 @@ function Providers({ children }: React.PropsWithChildren) {
   console.log('Providers theme', theme);
   return (
     <QueryClientProvider client={client}>
-      <JotaiProvider>
-        <WagmiConfig config={config}>
-          <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-            <ToastContainer />
-            {children}
-          </ThemeProvider>
-        </WagmiConfig>
-      </JotaiProvider>
+      <AuthProvider>
+        <JotaiProvider>
+          <WagmiConfig config={config}>
+            <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+              <ToastContainer />
+              {children}
+            </ThemeProvider>
+          </WagmiConfig>
+        </JotaiProvider>
+      </AuthProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

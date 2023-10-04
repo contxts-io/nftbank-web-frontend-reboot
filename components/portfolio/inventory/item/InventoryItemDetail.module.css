@@ -8,7 +8,7 @@
   @apply text-text-main;
 }
 .metadata {
-  @apply flex items-center;
+  @apply flex items-center h-[300px] w-full;
 }
 .tokenImage {
   @apply w-[300px] h-[300px] border-1 border-border-main overflow-hidden;

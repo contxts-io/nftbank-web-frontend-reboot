@@ -1,8 +1,5 @@
 'use client';
-import {
-  useInventoryItemInfinite,
-  useInventoryItemList,
-} from '@/utils/hooks/queries/inventory';
+import { useInventoryItemInfinite } from '@/utils/hooks/queries/inventory';
 import styles from './InventoryItemTable.module.css';
 import { useAtom, useAtomValue } from 'jotai';
 import { inventoryItemListAtom } from '@/store/requestParam';

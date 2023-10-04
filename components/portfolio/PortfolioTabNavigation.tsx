@@ -47,7 +47,7 @@ const PortfolioTabNavigation = () => {
             </div>
           );
         })}
-        {pathname === '/portfolio/inventory' && (
+        {pathname === '/portfolio/inventory' ? (
           <div className='border-b-4 flex h-full dark:border-border-main-dark'>
             <button
               className={`font-body01-medium ${styles.button} ${
@@ -92,8 +92,10 @@ const PortfolioTabNavigation = () => {
               </div>
             </button>
           </div>
+        ) : (
+          <div />
         )}
-        <div className='w-full h-full border-b-4 dark:border-border-main-dark' />
+        <div className='flex-grow h-full border-b-4 dark:border-border-main-dark' />
       </div>
     </nav>
   );

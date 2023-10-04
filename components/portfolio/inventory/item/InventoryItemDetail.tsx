@@ -20,7 +20,6 @@ const InventoryItemDetail = ({ token }: Props) => {
   const handleToggleViewType = (type: 'overview' | 'activity') => {
     setViewType(type);
   };
-  console.log('TOKEN', token);
   return (
     <section className={styles.container}>
       <div className='my-26 w-full flex justify-between'>
@@ -104,29 +103,9 @@ const InventoryItemDetail = ({ token }: Props) => {
                   alt={`${token.token.name}-${token.token.tokenId}`}
                 />
               </div>
-              <div className='w-[calc(100%-300px)]'>
+              <div className='flex-grow'>
                 <InventoryItemDetailChart />
               </div>
-              {/* {inventoryItem && (
-                <article className='w-full rounded border-1 border-gray-300 mt-10'>
-                  <ul className='w-full p-10'>
-                    <li className='flex w-full justify-between'>
-                      <p className='font-semibold text-14'>Rarity Rank</p>
-                      <p className='text-gray-800'>
-                        {inventoryItem?.rarityRank}
-                      </p>
-                    </li>
-                    {inventoryItem?.traits.map((trait, index) => (
-                      <li className='flex w-full justify-between' key={index}>
-                        <p className='font-semibold text-14'>
-                          {trait.traitType}
-                        </p>
-                        <p className='text-gray-800'>{trait.value}</p>
-                      </li>
-                    ))}
-                  </ul>
-                </article>
-              )} */}
             </div>
             {(inventoryItem?.traits?.length || 0) > 0 && (
               //traits section
@@ -165,41 +144,6 @@ const InventoryItemDetail = ({ token }: Props) => {
                 </div>
               </section>
             )}
-            {/* <div className='w-full h-full flex flex-col justify-between'>
-              <div className='w-full h-[300px] px-10'>
-                <p>historical</p>
-              </div>
-              <table className={styles.table}>
-                <thead>
-                  <tr className={styles.tableHeader}>
-                    <th className={`${styles.tableCell2} flex justify-start`}>
-                      Valuation type
-                    </th>
-                    <th className={`${styles.tableCell} flex justify-start`}>
-                      Price
-                    </th>
-                    <th className={`${styles.tableCell3} flex justify-end`}>
-                      Accuracy
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {token.valuation.map((valuation, index) => (
-                    <tr className={styles.tableRow} key={index}>
-                      <td className={`${styles.tableCell2} flex justify-start`}>
-                        {valuation.type}
-                      </td>
-                      <td className={`${styles.tableCell} flex justify-start`}>
-                        {valuation.accuracy}
-                      </td>
-                      <td className={`${styles.tableCell3} flex justify-end`}>
-                        {valuation.accuracy}%
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div> */}
           </article>
         )}
         {viewType === 'activity' && <InventoryItemActivity token={token} />}
