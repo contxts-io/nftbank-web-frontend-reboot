@@ -3,6 +3,7 @@ import styles from './InventoryItemCard.module.css';
 import { Token } from '@/interfaces/collection';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
+import { formatCurrency } from '@/utils/common';
 
 const InventoryItemCard = ({ token }: { token: Token }) => {
   const currency = useAtomValue(currencyAtom);
@@ -10,11 +11,14 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
     <article
       className={`font-caption-medium ${styles.cardWrapper} dark:border-border-main-dark`}
     >
-      <div className='w-full after:pb-[100%] flex items-center justify-center relative overflow-hidden'>
+      <div className='w-full pb-[100%] overflow-hidden relative'>
         <Image
           src={token.token.imageUrl}
-          fill
+          fill={true}
           alt={`${token.collection.name}-${token.token.name}`}
+          // objectFit='contain' // 이미지를 가운데 기준으로 크롭
+          // objectPosition='center center'
+          style={{ objectFit: 'cover' }}
         />
       </div>
       <div className='w-full flex flex-col justify-start my-12 px-12'>
@@ -26,7 +30,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             Cost basis
           </p>
           <p className='text-text-main dark:text-text-main-dark'>
-            {token.costBasis[currency].amount}
+            {formatCurrency(token.costBasis[currency].amount, currency)}
           </p>
         </div>
         <div className='flex justify-between items-center mb-8'>
@@ -34,7 +38,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             Realtime NAV
           </p>
           <p className='text-text-main dark:text-text-main-dark'>
-            {token.costBasis[currency].amount}
+            {formatCurrency(token.costBasis[currency].amount, currency)}
           </p>
         </div>
         <div className='flex justify-between items-center mb-8'>
@@ -42,7 +46,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             Unrealized G&L
           </p>
           <p className='text-text-main dark:text-text-main-dark'>
-            {token.costBasis[currency].amount}
+            {formatCurrency(token.costBasis[currency].amount, currency)}
           </p>
         </div>
         <div className='flex justify-between items-center mb-8'>
@@ -50,7 +54,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             Unrealized ROI
           </p>
           <p className='text-text-main dark:text-text-main-dark'>
-            {token.costBasis[currency].amount}
+            {formatCurrency(token.costBasis[currency].amount, currency)}
           </p>
         </div>
       </div>

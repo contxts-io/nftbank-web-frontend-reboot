@@ -37,10 +37,10 @@ const GlobalNavigation = () => {
         >
           Portfolio
         </Link>
-        <Link href={'/watchlist'} className={`${styles.link}`}>
+        <Link href={'/watch'} className={`${styles.link}`}>
           Watchlist
         </Link>
-        <Link href={'/activitys'} className={` ${styles.link}`}>
+        <Link href={'/activity'} className={` ${styles.link}`}>
           Activitys
         </Link>
         <Link href={'/report'} className={` ${styles.link}`}>

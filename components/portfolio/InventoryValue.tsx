@@ -41,7 +41,7 @@ const InventoryValue = () => {
 
   return (
     <section className={`${styles.container} dark:border-border-main-dark`}>
-      {isLoading && <div>Loading...</div>}
+      {isLoading && <div>Loading...1</div>}
       {!isLoading &&
         inventoryValue &&
         VALUE.map((item, index) => {

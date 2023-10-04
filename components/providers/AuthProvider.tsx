@@ -1,11 +1,10 @@
+'use client';
 import { getMe, signIn } from '@/apis/auth';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import instance from '@/utils/axiosInterceptor';
 import { Hydrate, dehydrate } from '@tanstack/react-query';
-import axios from 'axios';
-import { getAuth, User } from 'firebase/auth';
+import { getCookies } from 'cookies-next';
 import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
-import { cookies } from 'next/headers';
 
 const checkMe = async (token: RequestCookie) => {
   try {
@@ -36,10 +35,14 @@ const checkMe = async (token: RequestCookie) => {
 };
 
 export const AuthProvider = async ({ children }: any) => {
-  const cookieStore = cookies();
-  const TOKEN = cookieStore.get('nb_session');
+  const cookieStore = getCookies();
+  const TOKEN = {
+    name: 'nb_session',
+    value: cookieStore['nb_session'] || '',
+  };
+
   const reactQueryClient = ReactQueryClient;
-  if (TOKEN?.value) {
+  if (TOKEN?.value !== '') {
     const me = await reactQueryClient.prefetchQuery(['me'], () =>
       checkMe(TOKEN)
     );
