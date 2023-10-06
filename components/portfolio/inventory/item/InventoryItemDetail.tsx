@@ -97,7 +97,7 @@ const InventoryItemDetail = ({ token }: Props) => {
                 className={`${styles.tokenImage} dark:border-border-main-dark`}
               >
                 <Image
-                  src={token.token.imageUrl}
+                  src={token.token.imageUrl || '/icon/nftbank_icon.svg'}
                   width={300}
                   height={300}
                   alt={`${token.token.name}-${token.token.tokenId}`}

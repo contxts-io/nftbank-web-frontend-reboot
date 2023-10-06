@@ -1,8 +1,11 @@
 .table {
-  @apply w-full h-full table-auto border-t-1 border-border-main;
+  @apply w-full table-auto border-t-1 border-border-main;
 }
 .tableHeadRow {
   @apply h-40 py-12 border-b-1 border-border-main;
+}
+.tableBodyRow {
+  @apply h-50 cursor-pointer border-b-1 !important;
 }
 .pMain {
   @apply text-text-main mb-2;
