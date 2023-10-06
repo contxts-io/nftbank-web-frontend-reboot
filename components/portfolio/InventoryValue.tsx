@@ -10,6 +10,8 @@ import { currencyAtom } from '@/store/currency';
 import { useSearchParams } from 'next/navigation';
 import { inventoryTypeAtom } from '@/store/settings';
 import { formatCurrency, formatPercent } from '@/utils/common';
+import { useInventoryValuePerformance } from '@/utils/hooks/queries/performance';
+import SkeletonLoader from '../SkeletonLoader';
 const VALUE = [
   {
     type: 'inventoryValue',
@@ -28,6 +30,8 @@ const InventoryValue = () => {
   const searchParams = useSearchParams();
   const walletAddress = searchParams.get('walletAddress') || undefined;
   const { data: inventoryValue, isLoading } = useInventoryValue(walletAddress);
+  const { data: inventoryValuePerformance, status: statusPerformance } =
+    useInventoryValuePerformance(walletAddress);
   const { data: collectionCount, isLoading: isLoadingCollectionCount } =
     useCollectionCount(walletAddress);
   const { data: itemCount, isLoading: isLoadingItemCount } =
@@ -41,12 +45,19 @@ const InventoryValue = () => {
 
   return (
     <section className={`${styles.container} dark:border-border-main-dark`}>
-      {isLoading && <div>Loading...1</div>}
+      {isLoading && <div>Loading...</div>}
       {!isLoading &&
         inventoryValue &&
         VALUE.map((item, index) => {
           const isPlus =
-            parseFloat(inventoryValue.value[currency].difference.amount) > 0;
+            inventoryValuePerformance &&
+            parseFloat(
+              inventoryValuePerformance.value[currency].difference.amount
+            ) > 0;
+          const value =
+            item.type === 'inventoryValue'
+              ? inventoryValue.value[currency].amount
+              : null;
           return (
             <article
               key={index}
@@ -65,34 +76,43 @@ const InventoryValue = () => {
                   <p
                     className={`font-subtitle01-bold text-text-main dark:text-text-main-dark`}
                   >
-                    {formatCurrency(
-                      inventoryValue.value[currency].amount,
-                      currency
-                    )}
+                    {value && formatCurrency(value, currency)}
                   </p>
                 </div>
-                <div
-                  className={
-                    isPlus
-                      ? `${styles.diffBox} ${styles.plus} dark:text-text-success-dark  dark:bg-background-success-dark`
-                      : `${styles.diffBox} ${styles.minus} dark:text-text-danger-dark dark:bg-background-danger-dark`
-                  }
-                >
-                  <p className='font-caption-medium'>
-                    {`${toFixed(
-                      inventoryValue.value[currency].difference.amount
-                    )} (${formatPercent(
-                      inventoryValue.value[currency].difference.percentage
-                    )})`}
-                  </p>
-                </div>
-                <div
-                  className={`${styles.diffBox} bg-elevation-surface-raised dark:bg-elevation-surface-raised-dark`}
-                >
-                  <p className='font-caption-medium text-text-main dark:text-text-main-dark'>
-                    24H
-                  </p>
-                </div>
+                {value && statusPerformance !== 'success' && (
+                  <SkeletonLoader className='h-22 w-100' />
+                )}
+                {value &&
+                  statusPerformance === 'success' &&
+                  inventoryValuePerformance && (
+                    <>
+                      <div
+                        className={
+                          isPlus
+                            ? `${styles.diffBox} ${styles.plus} dark:text-text-success-dark  dark:bg-background-success-dark`
+                            : `${styles.diffBox} ${styles.minus} dark:text-text-danger-dark dark:bg-background-danger-dark`
+                        }
+                      >
+                        <p className='font-caption-medium'>
+                          {`${formatCurrency(
+                            inventoryValuePerformance.value[currency].difference
+                              .amount,
+                            currency
+                          )} (${formatPercent(
+                            inventoryValuePerformance.value[currency].difference
+                              .percentage
+                          )})`}
+                        </p>
+                      </div>
+                      <div
+                        className={`${styles.diffBox} bg-elevation-surface-raised dark:bg-elevation-surface-raised-dark`}
+                      >
+                        <p className='font-caption-medium text-text-main dark:text-text-main-dark'>
+                          24H
+                        </p>
+                      </div>
+                    </>
+                  )}
               </div>
             </article>
           );
@@ -113,8 +133,8 @@ const InventoryValue = () => {
           className={`font-subtitle01-bold mt-16 text-text-main dark:text-text-main-dark`}
         >
           {inventoryType === 'collection'
-            ? collectionCount?.count
-            : itemCount?.count}
+            ? collectionCount?.totalCount
+            : itemCount?.totalCount}
         </p>
       </article>
     </section>

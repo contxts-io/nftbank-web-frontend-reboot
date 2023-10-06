@@ -31,6 +31,11 @@ export type CollectionMetadata = {
   standard: TStandard,
   assetContract: string,
 }
+export type PerformanceValue = {
+  costBasis: TValue | null,
+  acquisitionPrice: TValue| null,
+  gasFee: TValue | null,
+}
 export type Collection = {
   collection: CollectionMetadata,
   amount: string,
@@ -40,9 +45,8 @@ export type Collection = {
   valuation: TValuation[]
   
   nav: {
-    eth: Value & {difference: TDifference},
-    usd: Value & {difference: TDifference},
-    base: string,
+    eth: Value & {difference: TDifference | null},
+    usd: Value & {difference: TDifference | null},
   },
     // eth: TValue & {
     //   difference: {
@@ -64,9 +68,9 @@ export type Token = Collection & {
     imageUrl: string,
   },
   amount?: number,
-  costBasis: TValue,
-  acquisitionDate: string,
-  valuation: TValuation[],
+  costBasis: TValue | null,
+  acquisitionDate: string | null,
+  valuation: TValuation[] | null,
   nav: {
     eth: Value & {difference: TDifference},
     usd: Value & { difference: TDifference },

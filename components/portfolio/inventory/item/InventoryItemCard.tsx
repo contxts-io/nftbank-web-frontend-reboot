@@ -30,7 +30,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             Cost basis
           </p>
           <p className='text-text-main dark:text-text-main-dark'>
-            {formatCurrency(token.costBasis[currency].amount, currency)}
+            {/* {formatCurrency(token.costBasis[currency].amount, currency)} */}
           </p>
         </div>
         <div className='flex justify-between items-center mb-8'>
@@ -38,7 +38,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             Realtime NAV
           </p>
           <p className='text-text-main dark:text-text-main-dark'>
-            {formatCurrency(token.costBasis[currency].amount, currency)}
+            {/* {formatCurrency(token.costBasis[currency].amount, currency)} */}
           </p>
         </div>
         <div className='flex justify-between items-center mb-8'>
@@ -46,7 +46,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             Unrealized G&L
           </p>
           <p className='text-text-main dark:text-text-main-dark'>
-            {formatCurrency(token.costBasis[currency].amount, currency)}
+            {/* {formatCurrency(token.costBasis[currency].amount, currency)} */}
           </p>
         </div>
         <div className='flex justify-between items-center mb-8'>
@@ -54,7 +54,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             Unrealized ROI
           </p>
           <p className='text-text-main dark:text-text-main-dark'>
-            {formatCurrency(token.costBasis[currency].amount, currency)}
+            {/* {formatCurrency(token.costBasis[currency].amount, currency)} */}
           </p>
         </div>
       </div>

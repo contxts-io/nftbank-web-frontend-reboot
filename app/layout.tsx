@@ -91,7 +91,7 @@ export default async function RootLayout({
       <body className='relative'>
         <Providers>
           {/* <AuthProvider> */}
-          <div className='flex flex-col min-h-screen h-screen w-screen max-h-[1024px] max-w-[1440]'>
+          <div className='flex flex-col min-h-screen h-screen w-screen max-h-[1024px] max-w-[1440] bg-elevation-surface dark:bg-elevation-surface-dark'>
             <GlobalNavigation />
             <ProfileComponent />
             {children}
