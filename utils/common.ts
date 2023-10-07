@@ -5,12 +5,14 @@ export function formatDate(date:  Date): string  {
   return `${year}/${month}/${day}`;
 }
 export function formatCurrency(amount: string | null, currency: 'usd' | 'eth'): string {
-  console.log('currency', currency);
   if (!amount) return '';
+  if (amount === 'infinity')
+    return 'infinity';
+    // return '∞';
   return parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: currency }).replace('ETH', 'Ξ');
 }
 export function formatPercent(amount: number | null): string {
-  if (!amount) return '-';
+  if(amount === null) return '-';
   return amount.toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 2 });
 }
 export function formatEth(amount: string | null): string {

@@ -7,7 +7,7 @@
 }
 .textInput {
   @apply w-full border-0 p-0 ml-8;
-  @apply bg-transparent placeholder:text-text-subtlest;
+  @apply bg-transparent placeholder:text-text-subtlest text-text-main;
 }
 .icon {
   @apply fill-icon-main;

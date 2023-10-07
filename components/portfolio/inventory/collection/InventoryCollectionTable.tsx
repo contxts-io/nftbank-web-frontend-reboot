@@ -9,12 +9,17 @@ import SkeletonLoader from '../../../SkeletonLoader';
 import { Collection } from '@/interfaces/collection';
 import { inventoryTypeAtom } from '@/store/settings';
 import { selectedCollectionInventoryAtom } from '@/store/portfolio';
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Ethereum from '@/public/icon/Ethereum';
-import useIntersection from '@/utils/hooks/useIntersaction';
 import DotsThree from '@/public/icon/DotsThree';
 import { formatCurrency, formatPercent, shortenAddress } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
+import {
+  useInventoryCollectionListPerformance,
+  useInventoryCollectionsInfinitePerformance,
+} from '@/utils/hooks/queries/performance';
+import { use } from 'chai';
+import ReactQueryClient from '@/utils/ReactQueryClient';
 const T_HEADER = [
   {
     name: 'Chain',
@@ -54,17 +59,98 @@ const InventoryCollectionTable = () => {
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useAtom(inventoryCollectionAtom);
 
-  const { fetchNextPage, data, status } = useInventoryCollectionsInfinite(
-    inventoryCollectionRequestParam
-  );
-  const mergePosts = useMemo(
-    () => data?.pages.flatMap((page) => page.collections),
-    [data?.pages]
+  const { fetchNextPage, data, status } = useInventoryCollectionsInfinite({
+    ...inventoryCollectionRequestParam,
+    page: 0,
+  });
+  // const {
+  //   fetchNextPage: fetchNextPagePerformance,
+  //   data: dataPerformance,
+  //   status: statusPerformance,
+  // } = useInventoryCollectionsInfinitePerformance({
+  //   ...inventoryCollectionRequestParam,
+  //   page: 0,
+  // });
+  const { data: collectionsPerformance, status: statusListPerformance } =
+    useInventoryCollectionListPerformance(inventoryCollectionRequestParam);
+  const [mergedCollections, setMergedCollections] = useState<Collection[]>([]);
+  type TPage = {
+    page: number;
+    collections: Collection[];
+  };
+  const [performanceCollections, setPerformanceCollections] = useState<TPage[]>(
+    []
   );
 
+  // useEffect(() => {
+  //   const mergedCollections = dataPerformance?.pages.flatMap(
+  //     (page) => page.collections
+  //   );
+  //   data?.pages &&
+  //     setMergedCollections(data?.pages.flatMap((page) => page.collections));
+  //   setMergedCollections((prev) =>
+  //     prev.map((row) => {
+  //       return (
+  //         mergedCollections?.find(
+  //           (item) =>
+  //             item.collection.assetContract === row.collection.assetContract
+  //         ) || row
+  //       );
+  //     })
+  //   );
+  // }, [data?.pages, dataPerformance]);
+  const collections = useMemo(() => data?.pages, [data?.pages]);
   useEffect(() => {
-    inView && console.log('inView,', inView);
-    inView && fetchNextPage();
+    collectionsPerformance &&
+      setPerformanceCollections((prev) =>
+        prev.find((item) => item.page === inventoryCollectionRequestParam.page)
+          ? prev.map((item) => {
+              return item.page === inventoryCollectionRequestParam.page
+                ? {
+                    ...item,
+                    collections: collectionsPerformance?.collections || [],
+                  }
+                : item;
+            })
+          : [
+              ...prev,
+              {
+                page: inventoryCollectionRequestParam.page,
+                collections: collectionsPerformance.collections || [],
+              },
+            ]
+      );
+    collectionsPerformance &&
+      data?.pages &&
+      ReactQueryClient.setQueryData(
+        [
+          'inventoryCollectionList',
+          { ...inventoryCollectionRequestParam, page: 0 },
+        ],
+        {
+          ...data,
+          pages: data.pages.map(
+            (page) =>
+              (page.page === collectionsPerformance?.paging.page && {
+                ...page,
+                collections: collectionsPerformance?.collections,
+              }) ||
+              page
+          ),
+        }
+      );
+  }, [collectionsPerformance]);
+  useEffect(() => {
+    const isLastPage = data?.pages?.[data.pages.length - 1].isLast;
+    !isLastPage &&
+      inView &&
+      status !== 'loading' &&
+      statusListPerformance !== 'loading' &&
+      (fetchNextPage(),
+      setInventoryCollectionRequestParam((prev) => ({
+        ...prev,
+        page: prev.page + 1,
+      })));
   }, [fetchNextPage, inView]);
 
   const handleClickSortButton = (sort: TSort) => {
@@ -93,8 +179,8 @@ const InventoryCollectionTable = () => {
       <table
         className={`${styles.table} dark:border-border-main-dark h-full relative`}
       >
-        <thead className='sticky top-0 border-b-1 border-border-main dark:border-border-main-dark'>
-          <tr>
+        <thead className='sticky top-110 bg-elevation-surface dark:bg-elevation-surface-dark h-fit border-b-1 border-border-main dark:border-border-main-dark  z-20'>
+          <tr className='h-fit'>
             {T_HEADER.map((item, index) => (
               <th
                 key={index}
@@ -118,102 +204,130 @@ const InventoryCollectionTable = () => {
             <th />
           </tr>
         </thead>
-        <tbody className='h-full'>
-          {/* {inventoryCollection?.collections.map((row, index) => { */}
-          {mergePosts?.map((row, index) => {
-            return (
-              <tr
-                key={index}
-                className={`font-caption-medium cursor-pointer ${styles.tableRow} dark:border-border-disabled-dark`}
-                onClick={() => handleClickCollection(row)}
-              >
-                <td className='flex justify-center py-10'>
-                  <Ethereum width={32} height={32} />
-                </td>
-                <td>
-                  <article className='flex items-center'>
-                    {row.collection.imageUrl && (
-                      <Image
-                        width={32}
-                        height={32}
-                        src={row.collection.imageUrl}
-                        className='rounded-full mr-12'
-                        alt={row.collection.name}
-                      />
-                    )}
-                    <p className='dark:text-text-main-dark'>
-                      {row.collection.name ||
-                        shortenAddress(row.collection.assetContract)}
-                    </p>
-                  </article>
-                </td>
-                <td className='text-right'>
-                  <p className='dark:text-text-main-dark'>{row.amount}</p>
-                </td>
-                <td className='text-right'>
-                  <p className='dark:text-text-main-dark'>
-                    {formatCurrency(
-                      row[priceType]?.[currency].amount || null,
-                      currency
-                    )}
-                  </p>
-                  {priceType === 'costBasis' && (
-                    <p className='text-text-brand dark:text-text-brand-dark'>
-                      {row.gasFee?.[currency]?.amount
-                        ? `GAS +${parseFloat(
-                            row.gasFee[currency].amount || ''
-                          ).toFixed(3)} `
-                        : ''}
-                    </p>
+        <tbody className='h-full z-0'>
+          {/* {mergedCollections?.map((row, index) => { */}
+          {collections?.map((page, pageIndex) => {
+            return page.collections?.map((row, index) => {
+              const performanceItem = performanceCollections[
+                pageIndex
+              ]?.collections.find(
+                (item) =>
+                  item.collection.assetContract === row.collection.assetContract
+              );
+              return (
+                <tr
+                  key={`${pageIndex}-${index}}`}
+                  className={`font-caption-regular cursor-pointer ${styles.tableRow} dark:border-border-disabled-dark`}
+                  onClick={() => handleClickCollection(row)}
+                >
+                  <td className='flex justify-center py-10'>
+                    <Ethereum width={32} height={32} />
+                  </td>
+                  <td>
+                    <article className='flex items-center'>
+                      {row.collection.imageUrl && (
+                        <Image
+                          width={32}
+                          height={32}
+                          src={row.collection.imageUrl}
+                          className='rounded-full mr-12'
+                          alt={row.collection.name}
+                        />
+                      )}
+                      <p className='font-caption-medium dark:text-text-main-dark'>
+                        {row.collection.name ||
+                          shortenAddress(row.collection.assetContract)}
+                      </p>
+                    </article>
+                  </td>
+                  <td className='text-right'>
+                    <p className='dark:text-text-main-dark'>{row.amount}</p>
+                  </td>
+                  {/* coast basis */}
+                  {!row[priceType] ? (
+                    <td className='text-right'>
+                      <div className='flex justify-end items-center w-full h-full'>
+                        <SkeletonLoader className='w-1/2 h-1/2' />
+                      </div>
+                    </td>
+                  ) : (
+                    <td className='text-right'>
+                      <p className='dark:text-text-main-dark'>
+                        {formatCurrency(
+                          row[priceType]?.[currency].amount || null,
+                          currency
+                        )}
+                      </p>
+                      {priceType === 'costBasis' && (
+                        <p className='text-text-brand dark:text-text-brand-dark'>
+                          {row.gasFee?.[currency]?.amount
+                            ? `GAS +${parseFloat(
+                                row.gasFee[currency].amount || ''
+                              ).toFixed(3)} `
+                            : ''}
+                        </p>
+                      )}
+                    </td>
                   )}
-                </td>
-                <td className='text-right'>
-                  <p className='dark:text-text-main-dark'>
-                    {row.valuation.find((item) => item.selected)?.type ||
-                      row.valuation.find((item) => item.default)?.type}
-                  </p>
-                </td>
-                <td className='text-right'>
-                  <p className='dark:text-text-main-dark'>
-                    {formatCurrency(
-                      row.nav[currency].amount || null,
+                  {/* valuation type */}
+                  <td className='text-right'>
+                    <p className='dark:text-text-main-dark'>
+                      {row.valuation.find((item) => item.selected)?.type ||
+                        row.valuation.find((item) => item.default)?.type}
+                    </p>
+                  </td>
+                  {/* realtime nav */}
+                  <td className='text-right'>
+                    <p className='dark:text-text-main-dark'>
+                      {formatCurrency(
+                        row.nav[currency].amount || null,
+                        currency
+                      ) || '-'}
+                    </p>
+                  </td>
+                  <td className='text-right'>
+                    <p
+                      className={
+                        row.nav[currency].difference?.percentage?.toFixed(2) ||
+                        0 > 0
+                          ? 'text-green-500'
+                          : 'text-red-500'
+                      }
+                    >{`${formatCurrency(
+                      row.nav[currency].difference?.amount || null,
                       currency
-                    ) || '-'}
-                  </p>
-                  <p
-                    className={
-                      row.nav[currency].difference.percentage?.toFixed(2) ||
-                      0 > 0
-                        ? 'text-green-500'
-                        : 'text-red-500'
-                    }
-                  >{`${row.nav[currency].difference.amount} (${formatPercent(
-                    row.nav[currency].difference.percentage
-                  )})`}</p>
-                </td>
-                <td className='text-right'>
-                  <p className='dark:text-text-main-dark'>1</p>
-                </td>
-                <td className='text-right'>
-                  <p className='dark:text-text-main-dark'>1</p>
-                </td>
-                <td className='text-center'>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      console.log('spam');
-                    }}
-                    className={`${styles.spamButton} dark:border-border-bold-dark`}
-                  >
-                    <DotsThree className='dark:fill-icon-subtle-dark' />
-                  </button>
-                </td>
-              </tr>
-            );
+                    )}`}</p>
+                  </td>
+                  <td className='text-right'>
+                    <p
+                      className={
+                        row.nav[currency].difference?.percentage?.toFixed(2) ||
+                        0 > 0
+                          ? 'text-green-500'
+                          : 'text-red-500'
+                      }
+                    >{`${formatPercent(
+                      row.nav[currency].difference?.percentage || null
+                    )}`}</p>
+                  </td>
+                  <td className='text-center'>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        console.log('spam');
+                      }}
+                      className={`${styles.spamButton} dark:border-border-bold-dark`}
+                    >
+                      <DotsThree className='dark:fill-icon-subtle-dark' />
+                    </button>
+                  </td>
+                </tr>
+              );
+            });
           })}
         </tbody>
       </table>
-      <div ref={ref}>more</div>
+      <div ref={ref} className='h-43' />
     </section>
   );
 };

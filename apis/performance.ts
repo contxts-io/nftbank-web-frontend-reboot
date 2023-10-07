@@ -1,25 +1,15 @@
-import { IInventoryCollectionList, IInventoryItemList, IInventoryValue, IStat } from "@/interfaces/inventory";
+import { IInventoryCollectionList, IInventoryCollectionListPerformance, IInventoryItemList, IInventoryValue } from "@/interfaces/inventory";
 import { ItemParam, TCollectionParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
-export const getInventoryValue = async<T = IInventoryValue>(walletAddress?: string): Promise<T> => {
+export const getInventoryValuePerformance = async<T = IInventoryValue>(walletAddress?: string): Promise<T> => {
   const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
-  const { data } = await instance.get<{data:T}>(`/inventory/value${query}`);
+  // const { data } = await instance.get<{data:T}>(`/inventory/value${query}`);
+  const { data } = await instance.get<{data:T}>(`/performance/value${query}`);
   return data.data;
 }
-export const getCollectionValuableCount = async<T = IStat>(walletAddress?: string): Promise<T> => {
-  const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
-  const { data } = await instance.get<{data:T}>(`/inventory/collection/stat${query}`);
-  return data.data;
-}
-export const getItemValuableCount = async<T = IStat>(walletAddress?: string): Promise<T> => {
-  const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
-  const { data } = await instance.get<{data:T}>(`/inventory/token/stat${query}`);
-  return data.data;
-}
-
 type Key = keyof TCollectionParam;
-export const getCollectionList = async<T = IInventoryCollectionList>(requestParam: TCollectionParam): Promise<T> => {
+export const getCollectionListPerformance = async<T = IInventoryCollectionListPerformance>(requestParam: TCollectionParam): Promise<T> => {
   const query = Object.keys(requestParam)
   .filter(function(key) {
       return requestParam[key as Key] !== ""; // 값이 있는 속성만 필터링
@@ -28,12 +18,11 @@ export const getCollectionList = async<T = IInventoryCollectionList>(requestPara
       return encodeURIComponent(key) + '=' + encodeURIComponent(requestParam[key as Key]);
   })
   .join('&');
-  const { data } = await instance.get<{data:T}>(`/inventory/collection?${query}`);
+  const { data } = await instance.get<{data:T}>(`/performance/collection?${query}`);
   return data.data;
 }
-
 type ItemKey = keyof ItemParam;
-export const getItemList = async<T = IInventoryItemList>(requestParam: ItemParam): Promise<T> => {
+export const getItemListPerformance = async<T = IInventoryItemList>(requestParam: ItemParam): Promise<T> => {
   const query = Object.keys(requestParam)
   .filter(function(key) {
       return requestParam[key as ItemKey] && requestParam[key as ItemKey] !== ""; // 값이 있는 속성만 필터링
@@ -48,6 +37,6 @@ export const getItemList = async<T = IInventoryItemList>(requestParam: ItemParam
       }
   })
     .join('&');
-  const { data } = await instance.get<{data:T}>(`/inventory/token?${query.replace('&&','&')}`);
+  const { data } = await instance.get<{data:T}>(`/performance/token?${query.replace('&&','&')}`);
   return data.data;
 }

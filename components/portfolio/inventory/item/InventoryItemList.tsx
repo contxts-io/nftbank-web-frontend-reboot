@@ -12,8 +12,13 @@ import Hamburger from '@/public/icon/Hamburger';
 import { inventoryItemViewTypeAtom } from '@/store/settings';
 import ToggleButton from '@/components/buttons/ToggleButton';
 import InventoryItemCardGrid from './InventoryItemCardGrid';
-
-const InventoryItemList = () => {
+import Filter from '@/public/icon/Filter';
+type Props = {
+  isFilterOpen: boolean;
+  handleFilterOpen: (state: boolean) => void;
+};
+const InventoryItemList = (props: Props) => {
+  const { isFilterOpen, handleFilterOpen } = props;
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
   const [itemViewType, setItemViewType] = useAtom(inventoryItemViewTypeAtom);
   const [openedItem, setOpenedItem] = useState<string[]>([]);
@@ -62,49 +67,61 @@ const InventoryItemList = () => {
   };
   return (
     <section className={styles.container}>
-      <div className='flex py-12 items-center justify-end'>
-        <div className='flex px-12 mr-8'>
-          <span className='font-button03-medium text-text-subtle dark:text-text-subtle-dark mr-8'>
-            Include Gas fee
-          </span>
-          <ToggleButton
-            onClick={() => handleChangePriceType()}
-            checked={priceType === 'acquisitionPrice'}
-            id={''}
-          />
+      <div className='flex py-12 px-24 items-center justify-between'>
+        <div>
+          {!isFilterOpen && (
+            <button
+              className={`${styles.filterButton} dark:border-border-main-dark dark:hover:border-border-selected-dark hover:dark:text-text-main-dark`}
+              onClick={() => handleFilterOpen(true)}
+            >
+              <Filter className='fill-icon-subtle dark:fill-icon-subtle-dark' />
+            </button>
+          )}
         </div>
-        <div className='flex justify-between p-3 items-center border-1 w-72 border-border-main dark:border-border-main-dark'>
-          <div
-            className={`${styles.viewType} ${
-              itemViewType === 'cardView' && styles.checked
-            }`}
-          >
-            <button
-              className={`${styles.viewTypeButton}`}
-              onClick={() => setItemViewType('cardView')}
-            >
-              <DotsNine
-                width={16}
-                height={16}
-                className={`${styles.viewTypeButtonIcon} dark:fill-icon-main-dark`}
-              />
-            </button>
+        <div className='flex items-center'>
+          <div className='flex px-12 mr-8'>
+            <span className='font-button03-medium text-text-subtle dark:text-text-subtle-dark mr-8'>
+              Include Gas fee
+            </span>
+            <ToggleButton
+              onClick={() => handleChangePriceType()}
+              checked={priceType === 'acquisitionPrice'}
+              id={''}
+            />
           </div>
-          <div
-            className={`${styles.viewType} ${
-              itemViewType === 'listView' && styles.checked
-            }`}
-          >
-            <button
-              className={`${styles.viewTypeButton}`}
-              onClick={() => setItemViewType('listView')}
+          <div className='flex justify-between p-3 items-center border-1 w-72 border-border-main dark:border-border-main-dark'>
+            <div
+              className={`${styles.viewType} ${
+                itemViewType === 'cardView' && styles.checked
+              }`}
             >
-              <Hamburger
-                width={16}
-                height={16}
-                className={`${styles.viewTypeButtonIcon} dark:fill-icon-main-dark`}
-              />
-            </button>
+              <button
+                className={`${styles.viewTypeButton}`}
+                onClick={() => setItemViewType('cardView')}
+              >
+                <DotsNine
+                  width={16}
+                  height={16}
+                  className={`${styles.viewTypeButtonIcon} dark:fill-icon-main-dark`}
+                />
+              </button>
+            </div>
+            <div
+              className={`${styles.viewType} ${
+                itemViewType === 'listView' && styles.checked
+              }`}
+            >
+              <button
+                className={`${styles.viewTypeButton}`}
+                onClick={() => setItemViewType('listView')}
+              >
+                <Hamburger
+                  width={16}
+                  height={16}
+                  className={`${styles.viewTypeButtonIcon} dark:fill-icon-main-dark`}
+                />
+              </button>
+            </div>
           </div>
         </div>
       </div>

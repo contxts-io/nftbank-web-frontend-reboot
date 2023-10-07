@@ -1,5 +1,5 @@
 import { getCollectionList, getCollectionValuableCount, getInventoryValue, getItemList, getItemValuableCount } from '@/apis/inventory';
-import { IInventoryCollectionList, IInventoryItemList, IInventoryValue } from '@/interfaces/inventory';
+import { IInventoryCollectionList, IInventoryItemList, IInventoryValue, IStat } from '@/interfaces/inventory';
 import { ItemParam, TCollectionParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -19,7 +19,7 @@ export function useInventoryValue(walletAddress?: string) {
   );
 }
 export function useCollectionCount(walletAddress?: string) {
-  return useQuery<{count:number},AxiosError>(
+  return useQuery<IStat,AxiosError>(
     ['collectionCount',walletAddress],
     async () => {
       const count = await getCollectionValuableCount(walletAddress);
@@ -33,7 +33,7 @@ export function useCollectionCount(walletAddress?: string) {
   );
 }
 export function useItemCount(walletAddress?: string) {
-  return useQuery<{count:number},AxiosError>(
+  return useQuery<IStat,AxiosError>(
     ['itemCount',walletAddress],
     async () => {
       const count = await getItemValuableCount(walletAddress);
@@ -77,7 +77,6 @@ export function useInventoryItemFilter(requestParam: TCollectionParam) {
   );
 }
 export function useInventoryItemList(requestParam: ItemParam) {
-  console.log('useInventoryItemList',requestParam)
   return useQuery<IInventoryItemList,AxiosError>(
     ['inventoryItemList',requestParam],
     async () => {
@@ -94,10 +93,11 @@ export function useInventoryItemList(requestParam: ItemParam) {
 export const useInventoryItemInfinite = (requestParam: ItemParam) => {
   const fetchData = async ({ pageParam = 1 }) => {
     const result = await getItemList({...requestParam, page: pageParam});
-    const isLast = (result.paging.total / result.paging.limit) == result.paging.page;
+    const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
         
     return {
       ...result,
+      page: pageParam,
       nextPage: pageParam + 1,
       isLast,
     };
@@ -122,10 +122,11 @@ export const useInventoryItemInfinite = (requestParam: ItemParam) => {
 export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) => {
   const fetchData = async ({ pageParam = 1 }) => {
     const result = await getCollectionList({...requestParam, page: pageParam});
-    const isLast = (result.paging.total / result.paging.limit) == result.paging.page;
+    const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
         
     return {
       ...result,
+      page: pageParam,
       nextPage: pageParam + 1,
       isLast,
     };

@@ -12,8 +12,11 @@ import Filter from '@/public/icon/Filter';
 import { shortenAddress } from '@/utils/common';
 import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory';
 import { useTheme } from 'next-themes';
-
-const InventoryItemFilter = () => {
+type Props = {
+  handleFilterOpen: (state: boolean) => void;
+};
+const InventoryItemFilter = (props: Props) => {
+  const { handleFilterOpen } = props;
   const [selectedCollection, setSelectedCollection] = useAtom(
     selectedCollectionInventoryAtom
   );
@@ -25,7 +28,7 @@ const InventoryItemFilter = () => {
       page: 1,
       limit: 10,
       order: 'desc',
-      sort: 'acquisitionPrice',
+      sort: 'nav',
       walletAddress: '',
     });
   const [checkedCollection, setCheckedCollection] = useState<string[]>(
@@ -104,9 +107,10 @@ const InventoryItemFilter = () => {
           Collection
         </h2>
         <button
-          className={`${styles.filterButton} dark:border-border-main-dark`}
+          className={`${styles.filterButton} dark:border-border-main-dark dark:hover:border-border-selected-dark hover:dark:text-text-main-dark`}
+          onClick={() => handleFilterOpen(false)}
         >
-          <Filter className='fill-icon-subtle dark:fill-icon-subtle-dark' />
+          <Filter />
         </button>
       </div>
       <div className={`${styles.inputContainer}  dark:border-border-main-dark`}>
@@ -118,53 +122,48 @@ const InventoryItemFilter = () => {
         <input
           type='text'
           placeholder={'Search by collections'}
-          className={`${styles.textInput} font-caption-regular placeholder:dark:text-text-subtlest-dark`}
+          className={`${styles.textInput} font-caption-regular placeholder:dark:text-text-subtlest-dark dark:text-text-main-dark`}
           onChange={handleInputText}
           value={searchText}
         />
       </div>
 
       <ul className='mt-12 h-full w-full overflow-auto flex flex-col'>
-        {data?.pages?.map((page, index) => (
-          <Fragment key={index}>
-            {page.collections.map((item) => (
-              <li
-                key={`${page.paging.page}-${index}-${item.collection.assetContract}`}
-                className='h-26 flex mb-12 items-center'
+        {mergePosts?.map((item, index) => (
+          <Fragment key={`${item.collection.assetContract}-${index}`}>
+            <li className='h-26 flex mb-12 items-center'>
+              <input
+                type='checkbox'
+                name={item.collection.name}
+                className={`${styles.checkbox} dark:border-border-bold-dark dark:bg-elevation-sunken-dark`}
+                checked={
+                  selectedCollection?.find((collection) => {
+                    return (
+                      collection.collection.assetContract ===
+                      item.collection.assetContract
+                    );
+                  })
+                    ? true
+                    : false
+                }
+                onChange={() => handleClickCheckBox(item)}
+              />
+              <Image
+                src={item.collection.imageUrl || '/icon/ethereum.svg'}
+                width={20}
+                height={20}
+                className='rounded-full mr-8 border-1 border-border-main dark:border-border-main-dark'
+                alt={`${
+                  item.collection.name || item.collection.assetContract
+                } image`}
+              />
+              <p
+                className={`font-caption-medium ${styles.pCollectionName} dark:text-text-main-dark`}
               >
-                <input
-                  type='checkbox'
-                  name={item.collection.name}
-                  className={`${styles.checkbox} dark:border-border-bold-dark dark:bg-elevation-sunken-dark`}
-                  checked={
-                    selectedCollection?.find((collection) => {
-                      return (
-                        collection.collection.assetContract ===
-                        item.collection.assetContract
-                      );
-                    })
-                      ? true
-                      : false
-                  }
-                  onChange={() => handleClickCheckBox(item)}
-                />
-                <Image
-                  src={item.collection.imageUrl || '/icon/ethereum.svg'}
-                  width={20}
-                  height={20}
-                  className='rounded-full mr-8'
-                  alt={`${
-                    item.collection.name || item.collection.assetContract
-                  } image`}
-                />
-                <p
-                  className={`font-caption-medium ${styles.pCollectionName} dark:text-text-main-dark`}
-                >
-                  {item.collection.name ||
-                    shortenAddress(item.collection.assetContract)}
-                </p>
-              </li>
-            ))}
+                {item.collection.name ||
+                  shortenAddress(item.collection.assetContract)}
+              </p>
+            </li>
           </Fragment>
         ))}
         <div ref={ref} />
