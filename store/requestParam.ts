@@ -51,7 +51,7 @@ export const inventoryItemListAtom = atom<ItemParam>({
   includeGasUsed: false,
   assetContract: [],
   page: 1,
-  limit: 100,
+  limit: 30,
   currency: 'eth',
   sort: 'nav',
   order: 'desc',
