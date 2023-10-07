@@ -31,7 +31,7 @@ export const inventoryCollectionAtom = atom<TCollectionParam>({
   walletAddress: '',
   includeGasUsed: false,
   page: 1,
-  limit: 10,
+  limit: 30,
   sort: 'nav',
   order :'desc',
 })
@@ -41,7 +41,7 @@ export const inventorySpamCollectionAtom = atom<TCollectionParam>({
   walletAddress: '',
   includeGasUsed: false,
   page: 1,
-  limit: 10,
+  limit: 30,
   sort: 'nav',
   order :'desc',
 })
@@ -51,7 +51,7 @@ export const inventoryItemListAtom = atom<ItemParam>({
   includeGasUsed: false,
   assetContract: [],
   page: 1,
-  limit: 10,
+  limit: 100,
   currency: 'eth',
   sort: 'nav',
   order: 'desc',

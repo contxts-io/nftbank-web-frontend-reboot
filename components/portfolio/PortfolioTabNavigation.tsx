@@ -21,7 +21,7 @@ const PortfolioTabNavigation = () => {
   };
   return (
     <nav
-      className={`${styles.navigation} border-border-main dark:border-border-main-dark`}
+      className={`${styles.navigation} border-border-main dark:border-border-main-dark dark:bg-elevation-surface-dark`}
     >
       <div className={styles.links}>
         <div
@@ -39,7 +39,11 @@ const PortfolioTabNavigation = () => {
               }`}
             >
               <Link
-                className={`font-body01-medium ${styles.link}`}
+                className={`font-body01-medium ${
+                  styles.link
+                } dark:hover:text-text-main-dark ${
+                  isActive && 'text-text-main dark:text-text-main-dark'
+                }`}
                 href={link.href}
               >
                 {link.name}
@@ -48,48 +52,31 @@ const PortfolioTabNavigation = () => {
           );
         })}
         {pathname === '/portfolio/inventory' ? (
-          <div className='border-b-4 flex h-full dark:border-border-main-dark'>
+          <div
+            className={`font-body01-medium  ${styles.subButtons} dark:border-border-main-dark dark:text-text-subtlest-dark dark:fill-icon-subtlest-dark`}
+          >
             <button
-              className={`font-body01-medium ${styles.button} ${
+              className={`${styles.button}  ${
                 inventoryType === 'collection'
-                  ? 'text-text-brand dark:text-text-brand-dark'
-                  : 'text-text-subtlest dark:text-text-subtlest-dark'
+                  ? 'text-text-brand dark:text-text-brand-dark hover:text-text-brand hover:dark:text-text-brand-dark fill-icon-brand dark:fill-icon-brand-dark hover:fill-icon-brand dark:hover:fill-icon-brand-dark'
+                  : 'hover:text-text-main hover:fill-icon-main dark:hover:text-text-main-dark dark:hover:fill-icon-main-dark'
               }`}
               onClick={() => handleClickButton('collection')}
             >
-              <div className='flex items-center'>
-                <Cube
-                  className={`mr-6  w-16 h-16 ${
-                    inventoryType === 'collection'
-                      ? 'fill-icon-brand dark:fill-icon-brand-dark'
-                      : 'fill-icon-subtlest dark:fill-icon-subtlest-dark'
-                  }`}
-                />
-                <p className='font-body02-medium'>Collections</p>
-              </div>
+              <Cube className={`mr-6  w-16 h-16`} />
+              <p>Collections</p>
             </button>
+
             <button
-              className={twMerge(
-                `font-body01-medium ${styles.button}
-                 text-text-subtle dark:text-text-subtle-dark
-                 bg-transparent dark:bg-transparent
-                 ${
-                   inventoryType === 'item'
-                     ? 'text-text-brand dark:text-text-brand-dark'
-                     : 'fill-icon-subtlest dark:fill-icon-subtlest-dark'
-                 }`
-              )}
+              className={`${styles.button}  ${
+                inventoryType === 'item'
+                  ? 'text-text-brand dark:text-text-brand-dark hover:text-text-brand hover:dark:text-text-brand-dark fill-icon-brand dark:fill-icon-brand-dark hover:fill-icon-brand dark:hover:fill-icon-brand-dark'
+                  : 'hover:text-text-main hover:fill-icon-main dark:hover:text-text-main-dark dark:hover:fill-icon-main-dark'
+              }`}
               onClick={() => handleClickButton('item')}
             >
-              <div className='flex items-center'>
-                <ImageSquare
-                  className={`mr-6  w-16 h-16 ${
-                    inventoryType === 'item' &&
-                    'fill-icon-brand dark:fill-icon-brand-dark'
-                  }`}
-                />
-                <p className='font-body02-medium'>Items</p>
-              </div>
+              <ImageSquare className={`mr-6  w-16 h-16 `} />
+              <p>Items</p>
             </button>
           </div>
         ) : (

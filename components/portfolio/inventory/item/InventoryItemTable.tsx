@@ -67,7 +67,10 @@ const InventoryItemTable = () => {
   const { data: inventoryItemListPerformance, status: statusPerformance } =
     useInventoryItemPerformance(requestParam);
   useEffect(() => {
-    inView &&
+    const isLast =
+      inventoryItemList?.pages?.[inventoryItemList?.pages.length - 1].isLast;
+    !isLast &&
+      inView &&
       status !== 'loading' &&
       statusPerformance !== 'loading' &&
       (fetchNextPage(),
@@ -84,11 +87,12 @@ const InventoryItemTable = () => {
   };
   useEffect(() => {
     inventoryItemListPerformance &&
+      inventoryItemList?.pages &&
       ReactQueryClient.setQueryData(
         ['inventoryItemList', { ...requestParam, page: 0 }],
         {
           ...inventoryItemList,
-          pages: inventoryItemList?.pages.map(
+          pages: inventoryItemList.pages.map(
             (page) =>
               (page.page === inventoryItemListPerformance?.paging.page && {
                 ...page,
@@ -163,16 +167,19 @@ const InventoryItemTable = () => {
         <tr
           className={`${styles.tableHeadRow} text-text-subtle dark:text-text-subtle-dark dark:border-border-main-dark`}
         >
+          <th className='w-12 border-0' />
           {HEADER.map((item, index) => (
             <th
               key={index}
               className={`font-caption-medium ${
                 index == 0 ? 'text-left' : 'text-right'
-              }`}
+              } dark:border-border-main-dark`}
             >
               {item.name}
             </th>
           ))}
+          <th className='dark:border-border-main-dark' />
+          <th className='w-12' />
         </tr>
       </thead>
       <tbody>
@@ -181,17 +188,26 @@ const InventoryItemTable = () => {
             return page.tokens.map((data, index) => {
               const valuationType = selectedValueType(data.valuation);
               const itemKey = `${data.collection.assetContract}-${data.token.tokenId}-${index}`;
+              const isOpen = openedItem.find((item) => item === itemKey)
+                ? true
+                : false;
 
               return (
                 <React.Fragment key={index}>
                   <tr
                     key={index}
-                    className={`font-caption-medium ${styles.tableBodyRow} text-text-main dark:text-text-main-dark
-                    border-border-disabled dark:border-border-disabled-dark hover:bg-elevation-sunken dark:hover:bg-elevation-sunken-dark`}
+                    className={`font-caption-regular ${
+                      styles.tableBodyRow
+                    } text-text-main dark:text-text-main-dark
+                    border-border-disabled dark:border-border-disabled-dark hover:bg-elevation-sunken dark:hover:bg-elevation-sunken-dark ${
+                      isOpen &&
+                      'bg-elevation-sunken dark:bg-elevation-sunken-dark'
+                    }`}
                     onClick={() => handleOpenDetail(itemKey)}
                   >
-                    <td className='text-left p-0 '>
-                      <div className='flex items-center my-8'>
+                    <td />
+                    <td className='text-left p-0'>
+                      <div className={`flex items-center my-8`}>
                         <div className='w-32 h-32 border-1 flex items-center overflow-hidden justify-center border-border-main dark:border-border-main-dark mr-8'>
                           <Image
                             src={
@@ -202,7 +218,7 @@ const InventoryItemTable = () => {
                             alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
                           />
                         </div>
-                        <div>
+                        <div className='font-caption-medium'>
                           <p
                             className={`${styles.pMain} dark:text-text-main-dark`}
                           >
@@ -244,12 +260,15 @@ const InventoryItemTable = () => {
                         <CaretDown />
                       </button>
                     </td>
+                    <td />
                   </tr>
-                  {openedItem.find((item) => item === itemKey) && (
+                  {isOpen && (
                     <tr>
+                      <td />
                       <td colSpan={HEADER.length + 1}>
                         <InventoryItemDetail token={data} />
                       </td>
+                      <td />
                     </tr>
                   )}
                 </React.Fragment>
@@ -257,7 +276,7 @@ const InventoryItemTable = () => {
             });
           })}
       </tbody>
-      <div ref={ref} />
+      <div ref={ref} className='h-42' />
     </table>
   );
 };

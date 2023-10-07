@@ -12,8 +12,11 @@ import Filter from '@/public/icon/Filter';
 import { shortenAddress } from '@/utils/common';
 import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory';
 import { useTheme } from 'next-themes';
-
-const InventoryItemFilter = () => {
+type Props = {
+  handleFilterOpen: (state: boolean) => void;
+};
+const InventoryItemFilter = (props: Props) => {
+  const { handleFilterOpen } = props;
   const [selectedCollection, setSelectedCollection] = useAtom(
     selectedCollectionInventoryAtom
   );
@@ -104,9 +107,10 @@ const InventoryItemFilter = () => {
           Collection
         </h2>
         <button
-          className={`${styles.filterButton} dark:border-border-main-dark`}
+          className={`${styles.filterButton} dark:border-border-main-dark dark:hover:border-border-selected-dark hover:dark:text-text-main-dark`}
+          onClick={() => handleFilterOpen(false)}
         >
-          <Filter className='fill-icon-subtle dark:fill-icon-subtle-dark' />
+          <Filter />
         </button>
       </div>
       <div className={`${styles.inputContainer}  dark:border-border-main-dark`}>
@@ -118,7 +122,7 @@ const InventoryItemFilter = () => {
         <input
           type='text'
           placeholder={'Search by collections'}
-          className={`${styles.textInput} font-caption-regular placeholder:dark:text-text-subtlest-dark`}
+          className={`${styles.textInput} font-caption-regular placeholder:dark:text-text-subtlest-dark dark:text-text-main-dark`}
           onChange={handleInputText}
           value={searchText}
         />
