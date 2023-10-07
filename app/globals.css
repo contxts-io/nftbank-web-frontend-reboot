@@ -31,6 +31,7 @@
   }
 
   body {
+    @apply bg-elevation-surface;
     @apply text-gray-700 text-14 leading-17 font-normal;
   }
 
@@ -46,11 +47,11 @@
   img,
   svg,
   path {
-    @apply transition ease-in-out duration-150;
+    /* @apply transition ease-in-out duration-150; */
   }
   button {
-    @apply w-fit px-12 py-8 rounded-none font-medium bg-transparent border-solid border-1 hover:border-nb_blue-300;
-    @apply transition ease-in-out duration-150;
+    /* @apply w-fit px-12 py-8 rounded-none font-medium bg-transparent border-solid border-1 hover:border-nb_blue-300;
+    @apply transition ease-in-out duration-150; */
   }
   button.reset {
     @apply w-fit p-0 bg-transparent border-none hover:opacity-80;

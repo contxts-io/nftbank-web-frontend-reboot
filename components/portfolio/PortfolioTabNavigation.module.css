@@ -1,12 +1,18 @@
 .navigation {
-  @apply w-full h-60 flex relative items-center justify-between;
+  @apply w-full h-60 flex items-center justify-between sticky top-55 bg-elevation-surface z-40;
 }
 .links {
-  @apply absolute bottom-0 h-60 w-full flex items-center;
+  @apply bottom-0 h-60 w-full flex items-center text-text-subtlest;
 }
 .link {
-  @apply px-24 py-18;
+  @apply px-24 py-18 hover:text-text-main;
 }
 .button {
-  @apply border-0 bg-transparent;
+  @apply border-0 bg-transparent flex items-center fill-icon-subtlest px-24 py-14;
+}
+.svg {
+  @apply fill-icon-subtlest hover:fill-icon-main;
+}
+.subButtons {
+  @apply border-b-4 flex h-full text-text-subtlest fill-icon-subtlest;
 }

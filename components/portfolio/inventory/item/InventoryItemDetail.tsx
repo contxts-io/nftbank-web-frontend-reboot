@@ -61,14 +61,14 @@ const InventoryItemDetail = ({ token }: Props) => {
             </p>
           </div>
         </div>
-        <div className='flex items-center p-7 font-caption-medium border-1 border-border-main dark:border-border-main-dark text-text-subtle'>
+        <div className='flex items-center p-7 font-caption-medium border-1 border-border-main dark:border-border-main-dark'>
           <button
             onClick={() => handleToggleViewType('overview')}
-            className={`${styles.typeButton} dark:text-text-subtle-dark 
+            className={`${styles.typeButton}
             ${
               viewType === 'overview'
                 ? `bg-background-brand-bold text-text-main dark:text-text-main-dark`
-                : ''
+                : 'text-text-subtle dark:text-text-subtle-dark'
             }
             `}
           >
@@ -76,11 +76,11 @@ const InventoryItemDetail = ({ token }: Props) => {
           </button>
           <button
             onClick={() => handleToggleViewType('activity')}
-            className={`${styles.typeButton} dark:text-text-subtle-dark
+            className={`${styles.typeButton} 
               ${
                 viewType === 'activity'
                   ? `bg-background-brand-bold text-text-main dark:text-text-main-dark`
-                  : ''
+                  : 'text-text-subtle dark:text-text-subtle-dark'
               }
             `}
           >

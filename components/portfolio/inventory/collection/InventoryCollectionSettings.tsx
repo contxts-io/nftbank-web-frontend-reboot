@@ -43,7 +43,7 @@ const InventoryCollectionSettings = () => {
         <input
           type='text'
           placeholder={'Search collection'}
-          className={`${styles.textInput} font-caption-regular placeholder:dark:text-text-subtlest-dark`}
+          className={`${styles.textInput} font-caption-regular placeholder:dark:text-text-subtlest-dark dark:text-text-main-dark`}
           onChange={handleInputText}
           value={searchText}
         />

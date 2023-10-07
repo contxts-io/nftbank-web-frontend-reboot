@@ -120,26 +120,30 @@ const InventoryCollectionTable = () => {
               },
             ]
       );
-    ReactQueryClient.setQueryData(
-      [
-        'inventoryCollectionList',
-        { ...inventoryCollectionRequestParam, page: 0 },
-      ],
-      {
-        ...data,
-        pages: data?.pages.map(
-          (page) =>
-            (page.page === collectionsPerformance?.paging.page && {
-              ...page,
-              collections: collectionsPerformance?.collections,
-            }) ||
-            page
-        ),
-      }
-    );
+    collectionsPerformance &&
+      data?.pages &&
+      ReactQueryClient.setQueryData(
+        [
+          'inventoryCollectionList',
+          { ...inventoryCollectionRequestParam, page: 0 },
+        ],
+        {
+          ...data,
+          pages: data.pages.map(
+            (page) =>
+              (page.page === collectionsPerformance?.paging.page && {
+                ...page,
+                collections: collectionsPerformance?.collections,
+              }) ||
+              page
+          ),
+        }
+      );
   }, [collectionsPerformance]);
   useEffect(() => {
-    inView &&
+    const isLastPage = data?.pages?.[data.pages.length - 1].isLast;
+    !isLastPage &&
+      inView &&
       status !== 'loading' &&
       statusListPerformance !== 'loading' &&
       (fetchNextPage(),
@@ -175,8 +179,8 @@ const InventoryCollectionTable = () => {
       <table
         className={`${styles.table} dark:border-border-main-dark h-full relative`}
       >
-        <thead className='sticky top-0 border-b-1 border-border-main dark:border-border-main-dark'>
-          <tr>
+        <thead className='sticky top-110 bg-elevation-surface dark:bg-elevation-surface-dark h-fit border-b-1 border-border-main dark:border-border-main-dark  z-20'>
+          <tr className='h-fit'>
             {T_HEADER.map((item, index) => (
               <th
                 key={index}
@@ -200,10 +204,10 @@ const InventoryCollectionTable = () => {
             <th />
           </tr>
         </thead>
-        <tbody className='h-full'>
+        <tbody className='h-full z-0'>
           {/* {mergedCollections?.map((row, index) => { */}
           {collections?.map((page, pageIndex) => {
-            return page.collections.map((row, index) => {
+            return page.collections?.map((row, index) => {
               const performanceItem = performanceCollections[
                 pageIndex
               ]?.collections.find(
@@ -323,7 +327,7 @@ const InventoryCollectionTable = () => {
           })}
         </tbody>
       </table>
-      <div ref={ref}>more</div>
+      <div ref={ref} className='h-43' />
     </section>
   );
 };

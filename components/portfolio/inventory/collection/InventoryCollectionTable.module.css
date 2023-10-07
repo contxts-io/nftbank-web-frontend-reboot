@@ -1,5 +1,5 @@
 .container {
-  @apply w-full h-[200px];
+  @apply w-full;
 }
 .table {
   @apply w-full border-y-1 border-border-main;

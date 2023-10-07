@@ -93,7 +93,7 @@ export function useInventoryItemList(requestParam: ItemParam) {
 export const useInventoryItemInfinite = (requestParam: ItemParam) => {
   const fetchData = async ({ pageParam = 1 }) => {
     const result = await getItemList({...requestParam, page: pageParam});
-    const isLast = (result.paging.total / result.paging.limit) == result.paging.page;
+    const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
         
     return {
       ...result,
@@ -122,7 +122,7 @@ export const useInventoryItemInfinite = (requestParam: ItemParam) => {
 export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) => {
   const fetchData = async ({ pageParam = 1 }) => {
     const result = await getCollectionList({...requestParam, page: pageParam});
-    const isLast = (result.paging.total / result.paging.limit) == result.paging.page;
+    const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
         
     return {
       ...result,

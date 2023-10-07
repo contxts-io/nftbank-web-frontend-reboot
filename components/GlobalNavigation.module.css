@@ -1,5 +1,5 @@
 .navigation {
-  @apply w-screen border-b-1;
+  @apply w-screen border-b-1 sticky top-0 bg-elevation-surface z-50;
   @apply flex items-center justify-between px-24;
 }
 .navigation svg path mask {
@@ -16,11 +16,9 @@
   @apply w-24 h-24 fill-black;
 }
 .buttonBox {
-  @apply flex items-center border-0 border-border-main;
+  @apply flex items-center;
 }
+
 .buttonBox button {
-  @apply px-12 h-32 flex justify-center items-center border-border-main hover:border-border-main;
-}
-.buttonBox button :last-child {
-  @apply border-r-0;
+  @apply px-12 h-32 flex justify-center items-center text-icon-subtle hover:text-icon-main;
 }
