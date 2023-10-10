@@ -5,7 +5,7 @@ import { useAccount, useConnect } from 'wagmi';
 import { useAtom } from 'jotai';
 import { testAtom } from '@/store/test';
 import { getIdTokenByGoogle } from '@/apis/firebase';
-import { getMe, signIn } from '@/apis/auth';
+import { getMe, signIn, signUp } from '@/apis/auth';
 import { setCookie } from 'cookies-next';
 
 const Page = () => {
@@ -32,6 +32,21 @@ const Page = () => {
       throw error;
     }
   };
+  const onClickSignUpGoogle = async () => {
+    try {
+      const token = await getIdTokenByGoogle();
+      if (token) {
+        setCookie('accessToken', token);
+        const user = token ? await signUp({ token, nickname: 'julian' }) : null;
+        console.log('user: ', user);
+      } else {
+        console.log('token is null');
+      }
+    } catch (error) {
+      console.log('error: ', error);
+      throw error;
+    }
+  };
   const checkMe = async () => {
     const result = await getMe();
     console.log('result: ', result);
@@ -45,6 +60,7 @@ const Page = () => {
       <p>{test}</p>
       <button onClick={handleChangeAtom}>change test</button>*/}
       <button onClick={() => onClickSignInGoogle()}>Sign in Google</button>
+      <button onClick={() => onClickSignUpGoogle()}>Sign Up Google</button>
       <button onClick={() => checkMe()}>get Me</button>
       <ThemeSwitcher />
     </div>

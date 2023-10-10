@@ -17,3 +17,12 @@ export const getMe = async () => {
   console.log('me', result);
   return result;
 }
+export const signUp = async ({token,nickname}:{token:string,nickname:string}) => {
+  const postData = {
+    idToken: token,
+    nickname: nickname,
+  }
+  const result = await instance.post('/auth/signup', postData);
+  console.log('signUp', result);
+  return result;
+}

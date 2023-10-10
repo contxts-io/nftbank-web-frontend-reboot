@@ -22,6 +22,7 @@ function parseCustomColors(filePath:string,mode?:string) {
     const colorValue = color[`${tailwindColorName}-${colorNumber}`] || '';
     colors[customColorName] = colorValue;
   }
+  console.log('colors', colors);
   return colors;
 }
 function parseGlobalTokenColors(filePath:string) {

@@ -1,5 +1,5 @@
-:root {
-  --color-text-main: var(--color-gray-200);
+[data-theme='dark'] {
+  --color-text-main: var(--color-base-white);
   --color-text-subtle: var(--color-gray-400);
   --color-text-subtlest: var(--color-gray-500);
   --color-text-disabled: var(--color-gray-600);
