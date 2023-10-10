@@ -80,7 +80,7 @@ const SpamModal = () => {
           positions={['bottom']} // preferred positions by priority
           content={() => (
             <div className='bg-red-500 h-200 w-100 z-50'>
-              Hi! I'm popover content.
+              {`Hi! I'm popover content.`}
             </div>
           )}
           align='start'
