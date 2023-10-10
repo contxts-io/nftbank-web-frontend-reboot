@@ -9,6 +9,7 @@ import { priceTypeAtom } from '@/store/currency';
 import ReactModal from 'react-modal';
 import SpamModal from './SpamModal';
 import ToggleButton from '@/components/buttons/ToggleButton';
+import Button from '@/components/buttons/Button';
 const InventoryCollectionSettings = () => {
   const [inventoryCollection, setInventoryCollection] = useAtom(
     inventoryCollectionAtom
@@ -61,13 +62,13 @@ const InventoryCollectionSettings = () => {
             id={''}
           />
         </div>
-        <button
-          className={`font-button03-medium ${styles.settingButton} dark:border-border-main-dark`}
+        <Button
+          id={'/portfolio/inventory/collection/spam'}
           onClick={() => handleModalOpen()}
         >
-          <Gear className={`${styles.gearIcon} dark:fill-icon-subtle-dark`} />
-          <p className='dark:text-text-subtle-dark'>Spam Settings</p>
-        </button>
+          <Gear className='mr-4' />
+          <p>Spam Settings</p>
+        </Button>
       </div>
       <ReactModal
         isOpen={showModal}

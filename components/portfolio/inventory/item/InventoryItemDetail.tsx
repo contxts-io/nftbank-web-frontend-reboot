@@ -49,7 +49,7 @@ const InventoryItemDetail = ({ token }: Props) => {
               Rarity Rank
             </p>
             <p className={`${styles.pMain} dark:text-text-main-dark`}>
-              {inventoryItem?.rarityRank}
+              {inventoryItem?.rarityRank || '-'}
             </p>
           </div>
           <div className='mr-40'>
@@ -57,7 +57,7 @@ const InventoryItemDetail = ({ token }: Props) => {
               Rarity
             </p>
             <p className={`${styles.pMain} dark:text-text-main-dark`}>
-              {inventoryItem?.rarity}
+              {inventoryItem?.rarity || '-'}
             </p>
           </div>
         </div>
@@ -94,12 +94,11 @@ const InventoryItemDetail = ({ token }: Props) => {
           <article className='flex flex-col'>
             <div className={styles.metadata}>
               <div
-                className={`${styles.tokenImage} dark:border-border-main-dark`}
+                className={`${styles.tokenImage} dark:border-border-main-dark relative`}
               >
                 <Image
                   src={token.token.imageUrl || '/icon/nftbank_icon.svg'}
-                  width={300}
-                  height={300}
+                  fill
                   alt={`${token.token.name}-${token.token.tokenId}`}
                 />
               </div>

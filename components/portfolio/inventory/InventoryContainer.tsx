@@ -32,7 +32,11 @@ const InventoryContainer = () => {
           <InventoryCollectionTable />
         </>
       )}
-      {inventoryType === 'item' && <InventoryItemSection />}
+      {inventoryType === 'item' && (
+        <div className='sticky top-116'>
+          <InventoryItemSection />
+        </div>
+      )}
     </section>
   );
 };

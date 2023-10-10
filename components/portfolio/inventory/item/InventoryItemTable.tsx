@@ -16,6 +16,7 @@ import {
   useInventoryItemPerformance,
 } from '@/utils/hooks/queries/performance';
 import ReactQueryClient from '@/utils/ReactQueryClient';
+import { twMerge } from 'tailwind-merge';
 const HEADER = [
   {
     type: 'Item',
@@ -163,7 +164,7 @@ const InventoryItemTable = () => {
   };
   return (
     <table className={`${styles.table} dark:border-border-main-dark`}>
-      <thead>
+      <thead className='sticky top-0 bg-elevation-surface dark:bg-elevation-surface-dark z-20'>
         <tr
           className={`${styles.tableHeadRow} text-text-subtle dark:text-text-subtle-dark dark:border-border-main-dark`}
         >
@@ -206,15 +207,18 @@ const InventoryItemTable = () => {
                     onClick={() => handleOpenDetail(itemKey)}
                   >
                     <td />
-                    <td className='text-left p-0'>
+                    <td className='text-left p-0 dark:border-border-main-dark'>
                       <div className={`flex items-center my-8`}>
-                        <div className='w-32 h-32 border-1 flex items-center overflow-hidden justify-center border-border-main dark:border-border-main-dark mr-8'>
+                        <div
+                          className={twMerge(
+                            `${styles.tokenImage} dark:border-border-main-dark`
+                          )}
+                        >
                           <Image
                             src={
                               data?.token.imageUrl || '/icon/nftbank_icon.svg'
                             }
-                            width={32}
-                            height={32}
+                            fill
                             alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
                           />
                         </div>
@@ -232,28 +236,36 @@ const InventoryItemTable = () => {
                         </div>
                       </div>
                     </td>
-                    <td className='text-right'>{data.amount}</td>
-                    <td className='text-right'>
+                    <td className='text-right dark:border-border-main-dark'>
+                      {data.amount}
+                    </td>
+                    <td className='text-right dark:border-border-main-dark'>
                       {data.costBasis?.[currency] &&
                         formatCurrency(
                           data.costBasis[currency].amount,
                           currency
                         )}
                     </td>
-                    <td className='text-right'>
+                    <td className='text-right dark:border-border-main-dark'>
                       {formatCurrency(data.nav[currency].amount, currency)}
                     </td>
-                    <td className='text-right'>{data.nav[currency].amount}</td>
-                    <td className='text-right'>{data.nav[currency].amount}</td>
-                    <td className='text-right'>{valuationType?.type}</td>
-                    <td className='text-right'>
+                    <td className='text-right dark:border-border-main-dark'>
+                      {data.nav[currency].amount}
+                    </td>
+                    <td className='text-right dark:border-border-main-dark'>
+                      {data.nav[currency].amount}
+                    </td>
+                    <td className='text-right dark:border-border-main-dark'>
+                      {valuationType?.type}
+                    </td>
+                    <td className='text-right dark:border-border-main-dark'>
                       {valuationType?.accuracy.toFixed(2)}
                     </td>
-                    <td className='text-right'>
+                    <td className='text-right dark:border-border-main-dark'>
                       {data.acquisitionDate &&
                         formatDate(new Date(data.acquisitionDate))}
                     </td>
-                    <td className='text-right'>
+                    <td className='text-right dark:border-border-main-dark'>
                       <button
                         className={`${styles.expandButton} dark:border-border-bold-dark`}
                       >
@@ -276,7 +288,7 @@ const InventoryItemTable = () => {
             });
           })}
       </tbody>
-      <div ref={ref} className='h-42' />
+      <div ref={ref} className='h-43' />
     </table>
   );
 };

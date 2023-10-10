@@ -12,6 +12,7 @@ import { useState } from 'react';
 import GhostOn from '@/public/icon/GhostOn';
 import EthereumIcon from '@/public/icon/EthereumIcon';
 import Usd from '@/public/icon/Usd';
+import Button from './buttons/Button';
 
 const GlobalNavigation = () => {
   const [currency, setCurrency] = useAtom(currencyAtom);
@@ -58,25 +59,19 @@ const GlobalNavigation = () => {
         </Link>
       </div>
       <div className={`${styles.buttonBox}`}>
-        <button className='border-1 dark:text-icon-subtle-dark hover:dark:text-icon-main-dark border-border-main dark:border-border-main-dark hover:border-border-selected hover:dark:border-border-selected-dark'>
+        <Button id={'/global/wallet'}>
           <Wallet />
-        </button>
-        <button
-          className='border-1 dark:text-icon-subtle-dark hover:dark:text-icon-main-dark border-border-main dark:border-border-main-dark hover:border-border-selected hover:dark:border-border-selected-dark hover: hover:fill-icon-main'
-          onClick={() => handleGhostMode()}
-        >
+        </Button>
+        <Button id={'/global/ghost'} onClick={() => handleGhostMode()}>
           {isGhost ? <Ghost /> : <GhostOn />}
-        </button>
+        </Button>
         <ThemeSwitcher />
-        <button
-          className='text-text-subtle hover:dark:text-icon-main-dark dark:text-text-subtle-dark hover:text-text-main border-1 border-border-main dark:border-border-main-dark hover:border-border-selected hover:dark:border-border-selected-dark'
-          onClick={() => changeCurrency()}
-        >
+        <Button id={'/global/currency'} onClick={() => changeCurrency()}>
           <div className='flex items-center justify-center border-1 border-border-bold dark:border-border-bold-dark rounded-full h-20 w-20 mr-8 '>
             {currency === 'eth' ? <EthereumIcon /> : <Usd />}
           </div>
           {currency.toUpperCase()}
-        </button>
+        </Button>
       </div>
     </nav>
   );

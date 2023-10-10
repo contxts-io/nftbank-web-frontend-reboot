@@ -20,6 +20,7 @@ import {
 } from '@/utils/hooks/queries/performance';
 import { use } from 'chai';
 import ReactQueryClient from '@/utils/ReactQueryClient';
+import Button from '@/components/buttons/Button';
 const T_HEADER = [
   {
     name: 'Chain',
@@ -311,15 +312,18 @@ const InventoryCollectionTable = () => {
                     )}`}</p>
                   </td>
                   <td className='text-center'>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        console.log('spam');
-                      }}
-                      className={`${styles.spamButton} dark:border-border-bold-dark`}
-                    >
-                      <DotsThree className='dark:fill-icon-subtle-dark' />
-                    </button>
+                    <div className='w-full flex justify-center items-center'>
+                      <Button
+                        id={`spam-${row.collection.assetContract}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          console.log('spam');
+                        }}
+                        className='p-4 mx-10'
+                      >
+                        <DotsThree />
+                      </Button>
+                    </div>
                   </td>
                 </tr>
               );

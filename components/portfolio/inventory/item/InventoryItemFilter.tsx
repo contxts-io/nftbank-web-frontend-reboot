@@ -12,6 +12,7 @@ import Filter from '@/public/icon/Filter';
 import { shortenAddress } from '@/utils/common';
 import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory';
 import { useTheme } from 'next-themes';
+import Button from '@/components/buttons/Button';
 type Props = {
   handleFilterOpen: (state: boolean) => void;
 };
@@ -41,7 +42,7 @@ const InventoryItemFilter = (props: Props) => {
   );
   const { fetchNextPage, data, status, isFetchingNextPage, isFetching } =
     useInventoryCollectionsInfinite(inventoryCollectionRequestParam);
-  const { ref, inView } = useInView({ threshold: 0.3 });
+  const { ref, inView } = useInView();
   const { theme } = useTheme();
   const mergePosts = useMemo(
     () => data?.pages.flatMap((page) => page.collections),
@@ -106,12 +107,9 @@ const InventoryItemFilter = (props: Props) => {
         <h2 className='font-subtitle02-bold text-text-main dark:text-text-main-dark'>
           Collection
         </h2>
-        <button
-          className={`${styles.filterButton} dark:border-border-main-dark dark:hover:border-border-selected-dark hover:dark:text-text-main-dark`}
-          onClick={() => handleFilterOpen(false)}
-        >
+        <Button onClick={() => handleFilterOpen(false)} id={'filterButton'}>
           <Filter />
-        </button>
+        </Button>
       </div>
       <div className={`${styles.inputContainer}  dark:border-border-main-dark`}>
         <MagnifyingGlass
@@ -128,7 +126,7 @@ const InventoryItemFilter = (props: Props) => {
         />
       </div>
 
-      <ul className='mt-12 h-full w-full overflow-auto flex flex-col'>
+      <ul className='mt-12 w-full h-full overflow-y-scroll flex flex-col'>
         {mergePosts?.map((item, index) => (
           <Fragment key={`${item.collection.assetContract}-${index}`}>
             <li className='h-26 flex mb-12 items-center'>
@@ -166,7 +164,11 @@ const InventoryItemFilter = (props: Props) => {
             </li>
           </Fragment>
         ))}
-        <div ref={ref} />
+        {!data?.pages?.[data?.pages.length - 1].isLast && (
+          <li ref={ref} className='h-43 '>
+            more
+          </li>
+        )}
       </ul>
       <div>
         {isFetching && !isFetchingNextPage ? 'Background Updating...' : null}
