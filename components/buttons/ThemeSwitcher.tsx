@@ -12,17 +12,22 @@ export function ThemeSwitcher() {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const darkModeHandler = () => {
-    setIsDarkMode(!isDarkMode);
-    if (isDarkMode) {
-      document.body.setAttribute('data-theme', 'light');
-    } else {
-      document.body.setAttribute('data-theme', 'dark');
-    }
+    setTheme(theme === 'light' ? 'dark' : 'light');
+    // setIsDarkMode(!isDarkMode);
+    // if (isDarkMode) {
+    //   document.body.setAttribute('data-theme', 'light');
+    // } else {
+    //   document.body.setAttribute('data-theme', 'dark');
+    // }
   };
 
   useEffect(() => {
     setMounted(true);
+    theme === 'light';
   }, []);
+  useEffect(() => {
+    theme && document.body.setAttribute('data-theme', theme);
+  }, [theme]);
 
   if (!mounted) {
     return (
@@ -35,12 +40,12 @@ export function ThemeSwitcher() {
       <Button id={'/global/theme'} onClick={() => darkModeHandler()}>
         {theme === 'light' ? <Sun /> : <Moon />}
       </Button>
-      <Button
+      {/* <Button
         id={'/global/theme'}
         onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
       >
         {theme === 'light' ? <Sun /> : <Moon />}
-      </Button>
+      </Button> */}
     </>
   );
 }
