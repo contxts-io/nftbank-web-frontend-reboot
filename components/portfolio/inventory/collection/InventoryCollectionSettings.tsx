@@ -10,6 +10,7 @@ import ReactModal from 'react-modal';
 import SpamModal from './SpamModal';
 import ToggleButton from '@/components/buttons/ToggleButton';
 import Button from '@/components/buttons/Button';
+import CloseX from '@/public/icon/CloseX';
 const InventoryCollectionSettings = () => {
   const [inventoryCollection, setInventoryCollection] = useAtom(
     inventoryCollectionAtom
@@ -73,7 +74,7 @@ const InventoryCollectionSettings = () => {
       <ReactModal
         isOpen={showModal}
         contentLabel='Minimal Modal Example'
-        className='w-fit absolute top-[20%] left-[30%]'
+        className='w-fit absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%]'
         onRequestClose={() => {
           setShowModal(false);
         }}
@@ -81,13 +82,15 @@ const InventoryCollectionSettings = () => {
         shouldCloseOnOverlayClick={true}
         overlayClassName={'overlayBackground'}
       >
-        <div className='relative w-fit h-fit'>
-          <button
-            className='absolute top-10 right-10'
+        <div className='relative w-full h-full'>
+          <Button
+            className='absolute top-[32px] right-[32px]'
             onClick={() => setShowModal(false)}
+            id='/portfolio/inventory/collection/spam/close'
           >
-            close
-          </button>
+            <CloseX />
+            Close
+          </Button>
           <SpamModal />
         </div>
       </ReactModal>

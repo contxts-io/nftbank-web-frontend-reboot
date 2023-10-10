@@ -1,0 +1,19 @@
+.table {
+  @apply table-auto w-full;
+}
+.tableHeadRow {
+  @apply h-40 py-12;
+  @apply border-t-1 border-b-1 border-[var(--color-border-main)];
+}
+.tableHeadRow th {
+  @apply text-[var(--color-text-subtle)];
+}
+.tableBodyRow {
+  @apply border-b-1 border-[var(--color-border-disabled)];
+}
+.tableBodyRow td {
+  @apply text-[var(--color-text-main)];
+}
+.tableBodyRow td:last-child {
+  @apply w-16  text-[var(--color-icon-brand)];
+}

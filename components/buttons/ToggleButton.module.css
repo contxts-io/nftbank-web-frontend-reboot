@@ -3,19 +3,19 @@
   @apply flex items-center;
 }
 .toggleButton {
-  @apply w-32 h-16 relative bg-transparent rounded-full border-1 m-0 border-border-brand;
+  @apply w-32 h-16 py-6 relative bg-transparent rounded-full border-1 m-0;
   @apply transition ease-in-out duration-150;
-  @apply hover:border-border-brand;
+  @apply border-[var(--color-border-accent-gray)] hover:border-[var(--color-border-accent-gray)] !important;
 }
 .toggleButton.checked {
-  @apply bg-transparent;
+  @apply bg-transparent border-1 border-[var(--color-border-brand)] hover:border-[var(--color-border-brand)] !important;
 }
 .toggleButton .circle {
-  @apply w-8 h-8 absolute left-4 top-4 bg-transparent border-1 border-border-brand rounded-full;
+  @apply w-8 h-8 absolute left-4 bg-transparent border-1 border-[var(--color-border-accent-gray)] rounded-full;
   @apply transition ease-in-out duration-200;
 }
 .toggleButton.checked .circle {
-  @apply translate-x-full left-10 bg-transparent disabled:bg-gray-300;
+  @apply translate-x-full left-10 bg-transparent disabled:bg-gray-300 border-[var(--color-border-brand)];
 }
 .toggleButton:disabled {
   @apply border-gray-300 bg-transparent;

@@ -1,19 +1,32 @@
 .container {
-  @apply w-[600px] h-200 bg-white rounded-lg p-16;
   @apply flex flex-col;
+  @apply w-[982px] max-h-[700px] rounded-none px-32 py-38;
+  @apply bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)];
 }
 .pHeader {
-  @apply text-18 font-bold mb-8;
+  @apply mr-12 text-[var(--color-text-main)];
 }
-.inputText {
-  @apply w-full rounded border border-gray-300 text-14 text-gray-500 my-8;
+.box {
+  @apply px-8 py-4;
+  @apply bg-[var(--color-elevation-sunken)] text-[var(--color-text-subtle)];
+}
+.inputContainer {
+  @apply w-full h-44 flex items-center justify-items-start px-12 mt-30 mb-24;
+  @apply border-1 border-[var(--color-border-main)] text-[var(--color-text-main)];
+}
+.textInput {
+  @apply w-full border-0 p-0 ml-8;
+  @apply bg-transparent placeholder:text-[var(--color-text-subtlest)];
 }
 .row {
-  @apply w-full flex justify-start items-center;
+  @apply w-full flex justify-between items-center;
 }
 .inputSelect {
   @apply mr-8 h-35 w-130;
 }
-.resetButton {
-  @apply rounded;
+.tableWrapper {
+  @apply w-full max-h-[436px] mt-12 overflow-y-scroll;
+}
+.textSub {
+  @apply text-[var(--color-text-subtle)];
 }
