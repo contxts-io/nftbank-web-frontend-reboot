@@ -1,3 +1,3 @@
 .container {
-  @apply flex border-t-1 border-border-main  max-h-[600px] h-[600px];
+  @apply flex border-t-1 overflow-hidden h-full gap-12 border-border-main;
 }

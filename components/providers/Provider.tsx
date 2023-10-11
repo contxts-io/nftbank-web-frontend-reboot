@@ -36,16 +36,14 @@ function Providers({ children }: React.PropsWithChildren) {
   console.log('Providers theme', theme);
   return (
     <QueryClientProvider client={client}>
-      <AuthProvider>
-        <JotaiProvider>
-          <WagmiConfig config={config}>
-            <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-              <ToastContainer />
-              {children}
-            </ThemeProvider>
-          </WagmiConfig>
-        </JotaiProvider>
-      </AuthProvider>
+      <JotaiProvider>
+        <WagmiConfig config={config}>
+          <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+            <ToastContainer />
+            {children}
+          </ThemeProvider>
+        </WagmiConfig>
+      </JotaiProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

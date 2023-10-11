@@ -7,7 +7,7 @@ import { useState } from 'react';
 const InventoryItemSection = () => {
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(true);
   return (
-    <>
+    <section className='sticky top-116 z-0'>
       <InventoryItemSelectCollection />
       <section className={`${styles.container} dark:border-border-main-dark`}>
         {isFilterOpen && (
@@ -18,7 +18,7 @@ const InventoryItemSection = () => {
           handleFilterOpen={setIsFilterOpen}
         />
       </section>
-    </>
+    </section>
   );
 };
 export default InventoryItemSection;

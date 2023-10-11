@@ -1,8 +1,11 @@
 .table {
-  @apply w-full table-auto mx-12;
+  @apply w-full table-auto overflow-y-scroll;
 }
 .tableHeadRow {
   @apply h-40 py-12;
+}
+.tokenImage {
+  @apply w-32 h-32 border-1 flex items-center overflow-hidden justify-center border-border-main mr-8 relative;
 }
 .tableHeadRow th {
   @apply border-t-1 border-b-1 border-border-main;
@@ -14,7 +17,16 @@
   @apply border-0;
 }
 .tableBodyRow {
-  @apply h-50 cursor-pointer border-b-1;
+  @apply h-50 cursor-pointer;
+}
+.tableBodyRow td {
+  @apply border-b-1 border-border-main;
+}
+.tableBodyRow :first-child {
+  @apply border-0;
+}
+.tableBodyRow :last-child {
+  @apply border-0;
 }
 .pMain {
   @apply text-text-main mb-2;

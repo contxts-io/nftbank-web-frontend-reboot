@@ -4,7 +4,9 @@
 
 @import './StylesFont.css';
 @import './ToastStyles.css';
-
+@import '../global_token_color.css';
+@import '../semantic_token_dark.css';
+@import '../semantic_token_light.css';
 /* HTML의 기본 요소에 대한 스타일을 정의합니다. (ex : <body>, <a>, <h1>) */
 @layer base {
   /* reset */
@@ -126,4 +128,29 @@
 }
 .toast-message {
   @apply rounded-none flex h-28 items-center !important;
+}
+:root {
+  --color-primary-accent: #2614c7;
+  --color-primary: #000;
+  --color-button: #3d486c;
+  --color-paragraph: #797979;
+  --color-button-text: rgb(255, 255, 255);
+  --color-background: #fff;
+  --color-anchor: #000aff;
+}
+
+[data-theme='dark'] {
+  --color-primary-accent: #00ff4c;
+  --color-primary: #fff;
+  --color-button: #00ff4c;
+  --color-paragraph: #8a8a8a;
+  --color-button-text: rgb(0, 0, 0);
+  --color-background: #000;
+}
+.test {
+  background-color: var(--color-text-main);
+  color: var(--color-text-link);
+}
+.text-text-main {
+  color: var(--color-text-main);
 }

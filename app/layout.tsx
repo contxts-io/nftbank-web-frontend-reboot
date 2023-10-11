@@ -90,14 +90,14 @@ export default async function RootLayout({
     <html lang='en' className={`${iosevkaCustom.className}`}>
       <body className='relative dark:bg-elevation-surface-dark'>
         <Providers>
-          {/* <AuthProvider> */}
-          <div className='flex flex-col w-screen h-fit max-w-[1440]'>
-            <GlobalNavigation />
-            <ProfileComponent />
-            {children}
-            <Footer />
-          </div>
-          {/* </AuthProvider> */}
+          <AuthProvider>
+            <div className='flex flex-col w-screen h-fit max-w-[1440]'>
+              <GlobalNavigation />
+              <ProfileComponent />
+              {children}
+              <Footer />
+            </div>
+          </AuthProvider>
         </Providers>
       </body>
     </html>

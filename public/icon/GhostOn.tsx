@@ -8,7 +8,7 @@ const GhostOn = (props: any) => {
       xmlns='http://www.w3.org/2000/svg'
       {...props}
     >
-      <g clip-path='url(#clip0_473_5393)'>
+      <g clipPath='url(#clip0_473_5393)'>
         <path
           d='M10.8604 9.42639H5.33203V10.4019H10.8604V9.42639Z'
           fill='currentColor'

@@ -1,3 +1,4 @@
+import Test from '@/components/Test';
 import Link from 'next/link';
 
 export default async function Home() {
@@ -10,6 +11,7 @@ export default async function Home() {
         <p>{apiKey}</p>
         <Link href='/about'>about</Link>
       </div>
+      <Test />
     </main>
   );
 }
