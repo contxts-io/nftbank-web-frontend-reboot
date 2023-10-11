@@ -6,7 +6,7 @@ import { renderToString } from 'react-dom/server';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   return (
-    <div className='px-16 py-8 border-1 border-[var(--color-border-bold)]'>
+    <div className='px-16 py-8 border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
       <p className={`font-caption-regular text-[var(--color-text-main)]`}>
         Aug 24
       </p>
