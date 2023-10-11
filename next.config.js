@@ -20,7 +20,7 @@ const nextConfig = {
     return [
       {
         source: '/portfolio',
-        destination: '/portfolio/inventory',
+        destination: '/portfolio/overview',
         permanent: true,
       },
     ];

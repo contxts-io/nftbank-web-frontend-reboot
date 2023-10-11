@@ -1,0 +1,42 @@
+.container {
+  @apply w-full border-1 border-[var(--color-border-main)] grid grid-cols-5;
+}
+.container > article {
+  @apply border-r-1 border-[var(--color-border-main)];
+}
+.container :last-child {
+  @apply border-r-0;
+}
+.valueRect {
+  @apply p-16 flex flex-col justify-between items-start;
+}
+.subTitle {
+  @apply text-[var(--color-text-subtle)] border-b-1 border-[var(--color-border-accent-gray)] border-dashed  mb-20;
+}
+.title {
+  @apply text-[var(--color-text-main)];
+}
+.row {
+  @apply w-full flex items-center justify-between;
+}
+.valueSubRect {
+  @apply flex items-center;
+}
+.valueSubBox {
+  @apply bg-[var(--color-elevation-surface-raised)] px-8 py-4;
+}
+.valueSubBox p {
+  @apply text-[var(--color-text-main)];
+}
+.plus {
+  @apply bg-[var(--color-background-success)];
+}
+.plus p {
+  @apply text-[var(--color-text-success)];
+}
+.minus {
+  @apply bg-[var(--color-background-danger)];
+}
+.minus p {
+  @apply text-[var(--color-text-danger)];
+}
