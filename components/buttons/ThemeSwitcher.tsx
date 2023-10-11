@@ -27,6 +27,7 @@ export function ThemeSwitcher() {
   }, []);
   useEffect(() => {
     theme && document.body.setAttribute('data-theme', theme);
+    theme && window.localStorage.setItem('theme', theme);
   }, [theme]);
 
   if (!mounted) {
