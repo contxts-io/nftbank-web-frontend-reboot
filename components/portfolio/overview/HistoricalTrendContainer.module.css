@@ -1,0 +1,24 @@
+.container {
+  @apply w-full h-[400px] p-20 border-1 border-[var(--color-border-main)] mb-20;
+}
+.title {
+  @apply text-[var(--color-text-main)];
+}
+.summary {
+  @apply w-full flex justify-between items-center;
+}
+.rowEnd {
+  @apply flex items-end mt-12;
+}
+.periodButtons {
+  @apply flex items-center h-36;
+}
+.periodButtons button {
+  @apply border-0;
+}
+.selected {
+  @apply bg-[var(--color-elevation-surface-raised)] text-[var(--color-text-main)] !important;
+}
+.minus {
+  @apply text-[var(--color-text-danger)];
+}
