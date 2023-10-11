@@ -27,7 +27,6 @@ const HistoricalTrendChart = () => {
       },
     },
     stroke: {
-      curve: 'straight',
       width: 1,
     },
     dataLabels: {
@@ -132,7 +131,10 @@ const HistoricalTrendChart = () => {
   return (
     <section className='w-full'>
       <ApexCharts
-        options={options}
+        options={{
+          ...options,
+          stroke: { ...options.stroke, curve: 'straight' },
+        }}
         type='area'
         series={series}
         height={260}
