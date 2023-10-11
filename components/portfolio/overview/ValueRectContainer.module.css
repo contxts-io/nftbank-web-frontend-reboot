@@ -22,10 +22,10 @@
 .valueSubRect {
   @apply flex items-center;
 }
-.valueSubBox {
+.diffBox {
   @apply bg-[var(--color-elevation-surface-raised)] px-8 py-4;
 }
-.valueSubBox p {
+.diffBox p {
   @apply text-[var(--color-text-main)];
 }
 .plus {
