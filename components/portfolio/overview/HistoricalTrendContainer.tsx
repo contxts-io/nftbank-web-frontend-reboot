@@ -31,6 +31,10 @@ const HistoricalTrendContainer = () => {
   const handleClickPeriod = (period: Period) => {
     setSelectedPeriod(period);
   };
+  const mathFloor = (value: string) => {
+    return Math.floor(parseFloat(value)).toLocaleString('en-US').toString();
+  };
+  const total = '165293.12';
   return (
     <section className={styles.container}>
       <div className={styles.summary}>
@@ -53,7 +57,18 @@ const HistoricalTrendContainer = () => {
         </div>
       </div>
       <div className={styles.rowEnd}>
-        <p className='font-header03-bold mr-12'>$173,398.02</p>
+        <div className='flex flex-col items-start h-full'>
+          <div className='rounded-full animateBlink w-6 h-6 mr-4 bg-[var(--color-background-danger-bold)]' />
+        </div>
+        <p className='font-header03-bold mr-12'>
+          <span className='!important:text-[var(--color-subtlest)]'>$</span>
+          <span className='text-[var(--color-text-main)]'>
+            {mathFloor(total).split('.')[0]}
+          </span>
+          <span className='!important:text-[var(--color-subtlest)]'>
+            {`.${total.split('.')[1]}`}
+          </span>
+        </p>
         <p className={`font-body01-medium ${styles.minus}`}>-2,177(2.3%)</p>
       </div>
       <HistoricalTrendChart />

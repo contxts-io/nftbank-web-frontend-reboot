@@ -1,6 +1,10 @@
 .container {
   @apply w-full;
 }
-/* .container rect {
-  @apply fill-gray-200 !important;
-} */
+.container rect {
+  background: linear-gradient(
+    180deg,
+    #111924 17.19%,
+    rgba(17, 25, 36, 0) 100%
+  ) !important;
+}

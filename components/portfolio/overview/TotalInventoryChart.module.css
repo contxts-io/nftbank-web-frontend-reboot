@@ -1,0 +1,18 @@
+.container {
+  @apply w-full h-full flex items-center justify-center;
+}
+.dot--0 {
+  @apply bg-[var(--color-chart-information)];
+}
+.dot--1 {
+  @apply bg-[var(--color-chart-accent-teal-boldest)];
+}
+.dot--2 {
+  @apply bg-[var(--color-chart-accent-purple-bold)];
+}
+.dot--3 {
+  @apply bg-[var(--color-chart-accent-teal-bold)];
+}
+.dot--4 {
+  @apply bg-[var(--color-chart-accent-blue-boldest)];
+}

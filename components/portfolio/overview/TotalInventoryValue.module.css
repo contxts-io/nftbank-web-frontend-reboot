@@ -1,0 +1,46 @@
+.container {
+  @apply w-full h-[390px] p-20 flex flex-col items-center border-1 border-[var(--color-border-main)] mb-20;
+}
+.header {
+  @apply w-full mb-20 flex justify-between items-center;
+}
+.selector {
+  @apply w-190 border-1 border-[var(--color-border-main)] p-8 flex justify-between items-center;
+}
+.selector button {
+  @apply w-83 h-32 flex items-center justify-center text-[var(--color-text-subtle)] border-0;
+}
+.selected {
+  @apply bg-[var(--color-background-brand-bold)] text-[var(--color-text-inverse)] !important;
+}
+.body {
+  @apply flex items-center;
+}
+.dot {
+  @apply w-4 h-4;
+}
+.dot--0 {
+  @apply bg-[var(--color-chart-information)];
+}
+.dot--1 {
+  @apply bg-[var(--color-chart-accent-teal-boldest)];
+}
+.dot--2 {
+  @apply bg-[var(--color-chart-accent-purple-bold)];
+}
+.dot--3 {
+  @apply bg-[var(--color-chart-accent-teal-bold)];
+}
+.dot--4 {
+  @apply bg-[var(--color-chart-accent-blue-boldest)];
+}
+.body li {
+  @apply items-center w-full flex items-center;
+}
+
+.body li p:first-child {
+  @apply text-[var(--color-text-main)];
+}
+.dot {
+  @apply w-8 h-8 mr-16;
+}

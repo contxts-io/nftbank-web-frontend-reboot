@@ -113,7 +113,20 @@
 .roundedButton.selected {
   @apply bg-nb_blue-300 text-white border-nb_blue-300 !important;
 }
-
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.animateBlink {
+  animation: blink 1.3s infinite;
+}
 .divider {
   @apply w-full h-1 bg-gray-200;
 }
