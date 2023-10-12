@@ -11,7 +11,7 @@
   @apply w-full overflow-y-scroll max-h-[240px] px-12;
 }
 .listRow {
-  @apply grid grid-cols-5 px-8 py-6 gap-x-[10px] mb-10 hover:bg-[var(--color-elevation-sunken)] cursor-pointer;
+  @apply grid grid-cols-5 px-8 py-6 gap-x-[10px] my-2 hover:bg-[var(--color-elevation-sunken)] cursor-pointer;
 }
 .iconWrapper {
   @apply rounded-full border-1 w-32 h-32 flex justify-center items-center;

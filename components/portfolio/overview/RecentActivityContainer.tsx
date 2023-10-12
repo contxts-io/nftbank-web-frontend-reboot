@@ -35,16 +35,6 @@ const ACTIVITY: { type: TActivity; chain: TChain; date: string }[] = [
     chain: 'ethereum',
     date: 'Aug 31',
   },
-  {
-    type: 'MINT',
-    chain: 'polygon',
-    date: 'Aug 31',
-  },
-  {
-    type: 'FREE MINT',
-    chain: 'ethereum',
-    date: 'Aug 31',
-  },
 ];
 const Icon = ({ type, chain }: { type: TActivity; chain: TChain }) => {
   return (
@@ -186,7 +176,7 @@ const RecentActivityContainer = () => {
                     </p>
                   </div>
                 </div>
-                <div className='text-white rotate-270'>
+                <div className='text-[var(--color-icon-subtle)] rotate-270'>
                   <CaretDown />
                 </div>
               </div>
