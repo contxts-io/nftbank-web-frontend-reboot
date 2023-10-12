@@ -70,7 +70,7 @@ const TotalInventoryChart = () => {
               fontWeight: 600,
               color: undefined,
               offsetY: -10,
-              formatter: function (val) {
+              formatter: function (val: any) {
                 return '$173,398.02';
               },
             },
@@ -82,8 +82,8 @@ const TotalInventoryChart = () => {
               fontFamily: 'Helvetica, Arial, sans-serif',
               fontWeight: 600,
               color: '#373d3f',
-              formatter: function (w) {
-                return w.globals.seriesTotals.reduce((a, b) => {
+              formatter: function (w: any) {
+                return w.globals.seriesTotals.reduce((a: any, b: any) => {
                   return 'total';
                 }, 0);
               },
