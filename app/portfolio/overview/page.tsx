@@ -2,6 +2,7 @@ import ValueRectContainer from '@/components/portfolio/overview/ValueRectContain
 import HistoricalTrendContainer from '@/components/portfolio/overview/HistoricalTrendContainer';
 import RecentActivityContainer from '@/components/portfolio/overview/RecentActivityContainer';
 import PerformanceContainer from '@/components/portfolio/overview/PerformanceContainer';
+import TotalInventoryValue from '@/components/portfolio/overview/TotalInventoryValue';
 
 const OverviewPage = () => {
   return (
@@ -12,6 +13,7 @@ const OverviewPage = () => {
         <PerformanceContainer />
         <RecentActivityContainer />
       </div>
+      <TotalInventoryValue />
     </section>
   );
 };

@@ -30,7 +30,7 @@ const PerformanceChart = () => {
         barHeight: '100%',
         colors: {
           backgroundBarColors: [barBackground],
-          backgroundBarOpacity: 0.8,
+          backgroundBarOpacity: 0.6,
         },
       },
     },
@@ -88,7 +88,7 @@ const PerformanceChart = () => {
       show: false,
     },
     tooltip: {
-      followCursor: true,
+      followCursor: false,
       custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
         return renderToString(
           tooltip({ series, seriesIndex, dataPointIndex, w })
