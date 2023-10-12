@@ -1,0 +1,21 @@
+.container {
+  @apply w-full mb-20 h-[340px] py-20 border-1 border-[var(--color-border-main)];
+}
+.row {
+  @apply flex w-full justify-between items-center mb-20 px-20;
+}
+.title {
+  @apply text-[var(--color-text-main)];
+}
+.listWrapper {
+  @apply w-full overflow-y-scroll max-h-[240px] px-12;
+}
+.listRow {
+  @apply grid grid-cols-5 px-8 py-6 gap-x-[10px] my-2 hover:bg-[var(--color-elevation-sunken)] cursor-pointer;
+}
+.iconWrapper {
+  @apply rounded-full border-1 w-32 h-32 flex justify-center items-center;
+}
+.tokenImageWrapper {
+  @apply border-1 border-[var(--color-border-main)] w-32 h-32 flex justify-center items-center mr-8;
+}

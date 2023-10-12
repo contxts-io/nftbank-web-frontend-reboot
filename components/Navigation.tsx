@@ -12,7 +12,7 @@ const Navigation = () => {
           </Link>
         </ul>
         <ul>
-          <Link href={'/portfolio/inventory'} className='ml-16'>
+          <Link href={'/portfolio'} className='ml-16'>
             Portfolio
           </Link>
         </ul>
