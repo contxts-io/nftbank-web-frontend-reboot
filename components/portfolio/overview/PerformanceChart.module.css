@@ -1,0 +1,6 @@
+.container {
+  @apply w-full;
+}
+/* .container rect {
+  @apply fill-gray-200 !important;
+} */
