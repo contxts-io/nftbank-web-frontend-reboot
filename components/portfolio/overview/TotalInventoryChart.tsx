@@ -97,7 +97,7 @@ const TotalInventoryChart = () => {
   return (
     <section className={styles.container}>
       <ApexCharts
-        options={options}
+        options={{ ...options, chart: { ...options.chart, type: 'donut' } }}
         type={'donut'}
         series={series}
         height={280}
