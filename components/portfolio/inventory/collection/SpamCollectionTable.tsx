@@ -1,3 +1,4 @@
+'use client';
 import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory';
 import styles from './SpamCollectionTable.module.css';
 import { inventorySpamCollectionAtom } from '@/store/requestParam';
@@ -7,8 +8,27 @@ import { currencyAtom } from '@/store/currency';
 import { formatCurrency, formatPercent, shortenAddress } from '@/utils/common';
 import Ethereum from '@/public/icon/Ethereum';
 import { useInView } from 'react-intersection-observer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import ClockClockwise from '@/public/icon/ClockClockwise';
+import SkeletonLoader from '@/components/SkeletonLoader';
+type Props = {
+  onClick: (string: boolean) => void;
+};
+const Dropdown = (props: Props) => {
+  return (
+    <div className={`font-caption-medium ${styles.dropDown}`}>
+      <li
+        className='border-b-1 border-[var(--color-border-bold)]'
+        onClick={() => props.onClick(true)}
+      >
+        <p className='hover:bg-red-300'>Spam</p>
+      </li>
+      <li onClick={() => props.onClick(false)}>
+        <p className='hover:bg-red-300'>Non Spam</p>
+      </li>
+    </div>
+  );
+};
 const SpamCollectionTable = () => {
   const currency = useAtomValue(currencyAtom);
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
@@ -18,6 +38,13 @@ const SpamCollectionTable = () => {
     ...inventoryCollectionRequestParam,
     page: 0,
   });
+  const [view, setView] = useState<{ key: string; open: boolean }>({
+    key: '',
+    open: false,
+  });
+  const [spamList, setSpamList] = useState<{ key: string; open: boolean }[]>(
+    []
+  );
   useEffect(() => {
     const isLastPage = data?.pages?.[data.pages.length - 1].isLast;
     !isLastPage &&
@@ -29,6 +56,15 @@ const SpamCollectionTable = () => {
         page: prev.page + 1,
       })));
   }, [fetchNextPage, inView]);
+  const handleClickSpam = (obj: { key: string; open: boolean }) => {
+    setSpamList((prev) =>
+      prev.find((item) => item.key === obj.key)
+        ? prev.filter((item) => item.key === obj.key).concat(obj)
+        : [...prev, obj]
+    );
+  };
+  if (status === 'loading')
+    return <SkeletonLoader className='w-full h-[200px]' />;
   return (
     <table className={`font-caption-medium ${styles.table} border-spacing-x-2`}>
       <thead
@@ -40,7 +76,7 @@ const SpamCollectionTable = () => {
           <th className='text-right'>Valuation type</th>
           <th className='text-right'>Realtime NAV</th>
           <th className='text-left'>Status</th>
-          <th />
+          <th className='text-right' />
         </tr>
       </thead>
       <tbody>
@@ -85,19 +121,40 @@ const SpamCollectionTable = () => {
                     ?.type}
               </td>
               <td className='text-right'>
-                <div className='w-full pr-10'>
-                  <p>
-                    {formatCurrency(collection.nav[currency].amount, currency)}
-                  </p>
-                </div>
+                {formatCurrency(collection.nav[currency].amount, currency)}
               </td>
-              <td className='text-left'>Non spam</td>
-              <td>{index !== 0 && <ClockClockwise />}</td>
+              <td className='text-left'>
+                <ul
+                  onClick={() => {
+                    setView({
+                      key: `${pageIndex}-${index}`,
+                      open: !view.open,
+                    });
+                  }}
+                >
+                  {spamList.find((obj) => obj.key === `${pageIndex}-${index}`)
+                    ?.open
+                    ? 'spam'
+                    : 'non spam'}
+                  {view.open && view.key === `${pageIndex}-${index}` && (
+                    <Dropdown
+                      onClick={(open: boolean) =>
+                        handleClickSpam({ key: `${pageIndex}-${index}`, open })
+                      }
+                    />
+                  )}
+                </ul>
+              </td>
+              <td className='text-right'>
+                {index !== 0 && <ClockClockwise />}
+              </td>
             </tr>
           ))
         )}
       </tbody>
-      <div ref={ref} />
+      {!data?.pages?.[data.pages.length - 1].isLast && (
+        <div ref={ref}>More</div>
+      )}
     </table>
   );
 };

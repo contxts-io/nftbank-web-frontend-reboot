@@ -1,5 +1,5 @@
 [data-theme='dark'] {
-  --color-text-main: var(--color-base-white);
+  --color-text-main: var(--color-gray-200);
   --color-text-subtle: var(--color-gray-400);
   --color-text-subtlest: var(--color-gray-500);
   --color-text-disabled: var(--color-gray-600);
@@ -188,5 +188,5 @@
   --color-chart-accent-lime-bold: var(--color-lime-500);
   --color-chart-accent-lime-bolder: var(--color-lime-400);
   --color-chart-accent-lime-boldest: var(--color-lime-300);
-  --color-etc-footer: var(--color-opacity-black200);
+  --color-etc-footer: var(--opacity-black200);
 }

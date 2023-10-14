@@ -6,14 +6,25 @@
   @apply border-t-1 border-b-1 border-[var(--color-border-main)];
 }
 .tableHeadRow th {
-  @apply text-[var(--color-text-subtle)];
+  @apply text-[var(--color-text-subtle)] pr-30;
+}
+.tableHeadRow th:last-child {
+  @apply pr-0;
 }
 .tableBodyRow {
   @apply border-b-1 border-[var(--color-border-disabled)];
 }
 .tableBodyRow td {
-  @apply text-[var(--color-text-main)];
+  @apply text-[var(--color-text-main)] pr-30;
 }
 .tableBodyRow td:last-child {
-  @apply w-16  text-[var(--color-icon-brand)];
+  @apply w-16 text-[var(--color-icon-brand)] pr-0;
+}
+.dropDown {
+  width: 106px;
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.1));
+  @apply absolute border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface-overlay)] z-10;
+}
+.dropDown li {
+  @apply text-[var(--color-text-subtle)] p-8 cursor-pointer;
 }

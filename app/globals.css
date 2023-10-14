@@ -134,7 +134,7 @@
   @apply opacity-70 cursor-not-allowed pointer-events-none;
 }
 .overlayBackground {
-  @apply fixed top-0 left-0 right-0 bottom-0 bg-gray-500 bg-opacity-50 z-50;
+  @apply fixed overflow-hidden top-0 left-0 right-0 bottom-0 bg-gray-500 bg-opacity-50 z-50;
 }
 .apexcharts-tooltip {
   @apply border-0 rounded-none !important;

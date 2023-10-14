@@ -2,7 +2,7 @@
 import { useAtom } from 'jotai';
 import styles from './SpamModal.module.css';
 import { inventorySpamCollectionAtom } from '@/store/requestParam';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory';
 import MagnifyingGlass from '@/public/icon/MagnifyingGlass';
 import ToggleButton from '@/components/buttons/ToggleButton';
@@ -21,9 +21,6 @@ const SpamModal = () => {
     ...inventoryCollectionRequestParam,
     page: 0,
   });
-  const [spamCollectionParam, setSpamCollectionParam] = useAtom(
-    inventorySpamCollectionAtom
-  );
   const handleInputText = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setSearchText(value);
@@ -39,6 +36,19 @@ const SpamModal = () => {
   const toggleEditOnly = () => {
     setIsEditOnly((prev) => !prev);
   };
+  useEffect(() => {
+    document.body.style.cssText = `
+      position: fixed; 
+      top: -${window.scrollY}px;
+      overflow-y: scroll;
+      width: 100%;`;
+    return () => {
+      const scrollY = document.body.style.top;
+      document.body.style.cssText = '';
+      window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+    };
+  }, []);
+
   useEffect(() => {
     setInventoryCollectionRequestParam((prev) => {
       return {
@@ -106,7 +116,7 @@ const SpamModal = () => {
           </div>
           <Button id={'/spam/reset'}>
             <ClockClockwise className='mr-4' />
-            All Reset 1
+            All Reset
           </Button>
         </div>
       </div>

@@ -11,6 +11,7 @@ import SpamModal from './SpamModal';
 import ToggleButton from '@/components/buttons/ToggleButton';
 import Button from '@/components/buttons/Button';
 import CloseX from '@/public/icon/CloseX';
+import { Popover } from 'react-tiny-popover';
 const InventoryCollectionSettings = () => {
   const [inventoryCollection, setInventoryCollection] = useAtom(
     inventoryCollectionAtom
@@ -18,6 +19,7 @@ const InventoryCollectionSettings = () => {
   const [showModal, setShowModal] = useState(false);
   const [priceType, setPriceType] = useAtom(priceTypeAtom);
   const [searchText, setSearchText] = useState<string>('');
+  const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const handleTogglePriceType = () => {
     setPriceType(priceType === 'costBasis' ? 'acquisitionPrice' : 'costBasis');
   };

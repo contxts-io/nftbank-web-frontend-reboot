@@ -22,3 +22,22 @@ export function formatEth(amount: string | null): string {
 export function shortenAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
+export function customToFixed(number:number) {
+  if (Number.isNaN(number)) {
+    return "NaN";
+  }
+  
+  // 숫자를 문자열로 변환
+  const numberStr = number.toString();
+  
+  // 소수점 이하 2자리 이상인 경우에만 toFixed(2)를 적용
+  if (numberStr.includes('.')) {
+    const decimalPart = numberStr.split('.')[1];
+    if (decimalPart.length >= 2) {
+      return number.toFixed(2);
+    }
+  }
+
+  // 아니라면 그냥 원래 숫자 반환
+  return number;
+}

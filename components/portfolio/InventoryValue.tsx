@@ -12,6 +12,7 @@ import { inventoryTypeAtom } from '@/store/settings';
 import { formatCurrency, formatPercent } from '@/utils/common';
 import { useInventoryValuePerformance } from '@/utils/hooks/queries/performance';
 import SkeletonLoader from '../SkeletonLoader';
+import { useMe } from '@/utils/hooks/queries/auth';
 const VALUE = [
   {
     type: 'inventoryValue',
@@ -28,7 +29,10 @@ const VALUE = [
 ];
 const InventoryValue = () => {
   const searchParams = useSearchParams();
-  const walletAddress = searchParams.get('walletAddress') || undefined;
+  const { data: me } = useMe();
+  const walletAddress =
+    searchParams.get('walletAddress') || me.walletAddress || undefined;
+
   const { data: inventoryValue, isLoading } = useInventoryValue(walletAddress);
   const { data: inventoryValuePerformance, status: statusPerformance } =
     useInventoryValuePerformance(walletAddress);

@@ -36,7 +36,17 @@ export const inventoryCollectionAtom = atom<TCollectionParam>({
   walletAddress: '',
   includeGasUsed: false,
   page: 1,
-  limit: 30,
+  limit: 10,
+  sort: 'nav',
+  order :'desc',
+})
+export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
+  searchCollection: '',
+  networkId: 'ethereum',
+  walletAddress: '',
+  includeGasUsed: false,
+  page: 1,
+  limit: 10,
   sort: 'nav',
   order :'desc',
 })
@@ -46,7 +56,7 @@ export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
   walletAddress: '',
   includeGasUsed: false,
   page: 1,
-  limit: 30,
+  limit: 10,
   sort: 'nav',
   order: 'desc',
   includeSpam: true,
@@ -55,11 +65,12 @@ export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
 })
 // export const inventoryItemCollectionAtom = atom<TCollectionParam>({})
 export const inventoryItemListAtom = atom<ItemParam>({
+  walletAddress: '',
   networkId: 'ethereum',
   includeGasUsed: false,
   assetContract: [],
   page: 1,
-  limit: 30,
+  limit: 10,
   currency: 'eth',
   sort: 'nav',
   order: 'desc',

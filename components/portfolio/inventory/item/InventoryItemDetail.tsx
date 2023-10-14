@@ -7,6 +7,8 @@ import { useState } from 'react';
 import InventoryItemActivity from './InventoryItemActivity';
 import Tag from '@/public/icon/Tag';
 import InventoryItemDetailChart from './InventoryItemDetailChart';
+import { useValuationTokenHistory } from '@/utils/hooks/queries/valuation';
+import SkeletonLoader from '@/components/SkeletonLoader';
 type Props = {
   token: Token;
 };
@@ -16,6 +18,12 @@ const InventoryItemDetail = ({ token }: Props) => {
     assetContract: token.collection.assetContract,
     tokenId: token.token.tokenId,
   });
+  const { data: historicalData, status: historicalStatus } =
+    useValuationTokenHistory({
+      networkId: token.collection.chain.name,
+      assetContract: token.collection.assetContract,
+      tokenId: token.token.tokenId,
+    });
   const [viewType, setViewType] = useState<'overview' | 'activity'>('overview');
   const handleToggleViewType = (type: 'overview' | 'activity') => {
     setViewType(type);
@@ -25,9 +33,7 @@ const InventoryItemDetail = ({ token }: Props) => {
       <div className='my-26 w-full flex justify-between'>
         <div className='font-caption-medium flex items-center'>
           <div className='w-[300px]'>
-            <h2
-              className={`font-body01-medium text-text-main dark:text-text-main-dark`}
-            >
+            <h2 className={`font-body01-medium text-[var(--color-text-main)]`}>
               {token.token.name}
             </h2>
             <div className='flex items-center'>
@@ -41,34 +47,28 @@ const InventoryItemDetail = ({ token }: Props) => {
             </div>
           </div>
           <div className='mr-40'>
-            <p className={`${styles.pSub} dark:text-text-subtle-dark`}>Owner</p>
-            <p className={`${styles.pMain} dark:text-text-main-dark`}>You</p>
+            <p className={`${styles.pSub}`}>Owner</p>
+            <p className={`${styles.pMain} `}>You</p>
           </div>
           <div className='mr-40'>
-            <p className={`${styles.pSub} dark:text-text-subtle-dark`}>
-              Rarity Rank
-            </p>
-            <p className={`${styles.pMain} dark:text-text-main-dark`}>
+            <p className={`${styles.pSub}`}>Rarity Rank</p>
+            <p className={`${styles.pMain}`}>
               {inventoryItem?.rarityRank || '-'}
             </p>
           </div>
           <div className='mr-40'>
-            <p className={`${styles.pSub} dark:text-text-subtle-dark`}>
-              Rarity
-            </p>
-            <p className={`${styles.pMain} dark:text-text-main-dark`}>
-              {inventoryItem?.rarity || '-'}
-            </p>
+            <p className={`${styles.pSub}`}>Rarity</p>
+            <p className={`${styles.pMain}`}>{inventoryItem?.rarity || '-'}</p>
           </div>
         </div>
-        <div className='flex items-center p-7 font-caption-medium border-1 border-border-main dark:border-border-main-dark'>
+        <div className='flex items-center p-7 font-caption-medium border-1 border-[var(--color-border-main)]'>
           <button
             onClick={() => handleToggleViewType('overview')}
             className={`${styles.typeButton}
             ${
               viewType === 'overview'
-                ? `bg-background-brand-bold text-text-main dark:text-text-main-dark`
-                : 'text-text-subtle dark:text-text-subtle-dark'
+                ? `bg-background-brand-bold text-[var(--color-text-main)]`
+                : 'text-[var(--color-text-subtle)]'
             }
             `}
           >
@@ -79,8 +79,8 @@ const InventoryItemDetail = ({ token }: Props) => {
             className={`${styles.typeButton} 
               ${
                 viewType === 'activity'
-                  ? `bg-background-brand-bold text-text-main dark:text-text-main-dark`
-                  : 'text-text-subtle dark:text-text-subtle-dark'
+                  ? `bg-[var(--color-background-brand-bold)] text-[var(--color-text-main)]`
+                  : 'text-[var(--color-text-subtle)]'
               }
             `}
           >
@@ -93,9 +93,7 @@ const InventoryItemDetail = ({ token }: Props) => {
         {viewType === 'overview' && (
           <article className='flex flex-col'>
             <div className={styles.metadata}>
-              <div
-                className={`${styles.tokenImage} dark:border-border-main-dark relative`}
-              >
+              <div className={`${styles.tokenImage} relative`}>
                 <Image
                   src={token.token.imageUrl || '/icon/nftbank_icon.svg'}
                   fill
@@ -103,18 +101,23 @@ const InventoryItemDetail = ({ token }: Props) => {
                 />
               </div>
               <div className='flex-grow'>
-                <InventoryItemDetailChart />
+                {historicalStatus === 'loading' && (
+                  <div className='w-full h-[300px] pl-24'>
+                    <SkeletonLoader className='w-full h-full' />
+                  </div>
+                )}
+                {historicalData && (
+                  <InventoryItemDetailChart historicalData={historicalData} />
+                )}
               </div>
             </div>
             {(inventoryItem?.traits?.length || 0) > 0 && (
               //traits section
-              <section
-                className={`font-caption-medium ${styles.traitSection} dark:border-border-main-dark`}
-              >
-                <span className='flex items-center'>
-                  <Tag className='fill-icon-subtle dark:fill-icon-subtle-dark' />
+              <section className={`font-caption-medium ${styles.traitSection}`}>
+                <span className='flex items-center text-[var(--color-text-subtle)]'>
+                  <Tag />
                   <p
-                    className={`font-body01-medium tex-text-main dark:text-text-main-dark ml-8`}
+                    className={`font-body01-medium text-[var(--color-text-main)] ml-8`}
                   >
                     Top Traits
                   </p>
@@ -123,18 +126,16 @@ const InventoryItemDetail = ({ token }: Props) => {
                   {inventoryItem?.traits.map((trait, index) => (
                     <div
                       key={`item-${inventoryItem.collection.assetContract}-${trait.traitType}-${index} `}
-                      className={`${styles.traitItem} dark:border-border-main-dark`}
+                      className={`${styles.traitItem}`}
                     >
-                      <p
-                        className={`text-text-subtle dark:text-text-subtle-dark`}
-                      >
+                      <p className={`text-[var(--color-text-subtle)]`}>
                         {trait.traitType}
                       </p>
                       <div className='flex mt-8 items-center justify-between'>
-                        <p className='text-text-brand dark:text-text-brand-dark'>
+                        <p className='text-[var(--color-text-brand)]'>
                           {trait.value}
                         </p>
-                        <p className='text-text-main dark:text-text-main-dark'>
+                        <p className='text-[var(--color-text-main)]'>
                           {trait.tokenCount}
                         </p>
                       </div>

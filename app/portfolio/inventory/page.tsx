@@ -19,7 +19,7 @@ const getInventoryValue = async <T = IInventoryValue,>(
     //     resolve('Delayed result');
     //   }, 2000); // 2초 딜레이
     // });
-    console.log('ssr ?');
+    console.log('ssr ? getInventoryValue: ', data.data);
     return data.data;
   } catch (error) {
     throw new Error('Failed to fetch data');
@@ -34,6 +34,7 @@ const getCollectionCount = async <T = { count: number },>(
     const { data } = await instance.get<{ data: T }>(
       `https://web-api-reboot.dev.nftbank.tools/v1/inventory/collection/stat${query}`
     );
+    console.log('ssr ? getCollectionCount:', data.data);
     return data.data;
   } catch (error) {
     throw new Error('Failed to fetch data');
@@ -41,14 +42,21 @@ const getCollectionCount = async <T = { count: number },>(
 };
 
 const InventoryPage = async (context: any) => {
-  const walletAddress = context.searchParams?.walletAddress;
   const queryClient = ReactQueryClient;
-  await queryClient.prefetchQuery(['inventoryValue', walletAddress], () =>
-    getInventoryValue(walletAddress)
-  );
-  await queryClient.prefetchQuery(['collectionCount', walletAddress], () =>
-    getCollectionCount(walletAddress)
-  );
+  const me = (await queryClient.getQueryData(['me'])) as {
+    walletAddress: string;
+  };
+  const walletAddress =
+    context.searchParams?.walletAddress || me?.walletAddress || undefined;
+
+  walletAddress &&
+    queryClient.prefetchQuery(['inventoryValue', walletAddress], () =>
+      getInventoryValue(walletAddress)
+    );
+  walletAddress &&
+    queryClient.prefetchQuery(['collectionCount', walletAddress], () =>
+      getCollectionCount(walletAddress)
+    );
   const dehydratedState = dehydrate(queryClient);
   return (
     <Hydrate state={dehydratedState}>
