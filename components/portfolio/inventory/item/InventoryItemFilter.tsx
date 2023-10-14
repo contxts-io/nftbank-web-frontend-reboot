@@ -1,6 +1,10 @@
 'use client';
 import styles from './InventoryItemFilter.module.css';
-import { TCollectionParam, inventoryItemListAtom } from '@/store/requestParam';
+import {
+  TCollectionParam,
+  inventoryItemFilterCollectionAtom,
+  inventoryItemListAtom,
+} from '@/store/requestParam';
 import Image from 'next/image';
 import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -22,16 +26,7 @@ const InventoryItemFilter = (props: Props) => {
     selectedCollectionInventoryAtom
   );
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
-    useState<TCollectionParam>({
-      searchCollection: '',
-      networkId: 'ethereum',
-      includeGasUsed: true,
-      page: 1,
-      limit: 10,
-      order: 'desc',
-      sort: 'nav',
-      walletAddress: '',
-    });
+    useAtom(inventoryItemFilterCollectionAtom);
   const [checkedCollection, setCheckedCollection] = useState<string[]>(
     selectedCollection
       ? selectedCollection.map((item) => item.collection.assetContract)
@@ -91,11 +86,6 @@ const InventoryItemFilter = (props: Props) => {
         return {
           ...prev,
           searchCollection: value,
-        };
-      }),
-      setInventoryCollectionRequestParam((prev) => {
-        return {
-          ...prev,
           page: 1,
         };
       });

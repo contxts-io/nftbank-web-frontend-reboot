@@ -16,7 +16,7 @@ const checkMe = async (token: RequestCookie) => {
     const { data } = await instance.get(`${URL}`, options);
     return {
       ...data.data,
-      walletAddress: '0xf060917ad197a9a72ea8ac4e65048eed02e99d5f',
+      walletAddress: '0x7e0de483a33bd04d2efe38686be5cb25cfd3e533',
     };
   } catch (error) {
     // throw new Error('Failed to fetch data');

@@ -163,24 +163,22 @@ const InventoryItemTable = () => {
     return result;
   };
   return (
-    <table className={`${styles.table} dark:border-border-main-dark`}>
-      <thead className='sticky top-0 bg-elevation-surface dark:bg-elevation-surface-dark z-20'>
-        <tr
-          className={`${styles.tableHeadRow} text-text-subtle dark:text-text-subtle-dark dark:border-border-main-dark`}
-        >
-          <th className='w-12 border-0' />
+    <table className={`${styles.table}`}>
+      <thead className={styles.tableHead}>
+        <tr className={`${styles.tableHeadRow}`}>
+          <th />
           {HEADER.map((item, index) => (
             <th
               key={index}
               className={`font-caption-medium ${
                 index == 0 ? 'text-left' : 'text-right'
-              } dark:border-border-main-dark`}
+              }`}
             >
               {item.name}
             </th>
           ))}
-          <th className='dark:border-border-main-dark' />
-          <th className='w-12' />
+          <th />
+          <th />
         </tr>
       </thead>
       <tbody>
@@ -197,23 +195,15 @@ const InventoryItemTable = () => {
                 <React.Fragment key={index}>
                   <tr
                     key={index}
-                    className={`font-caption-regular ${
-                      styles.tableBodyRow
-                    } text-text-main dark:text-text-main-dark
-                    border-border-disabled dark:border-border-disabled-dark hover:bg-elevation-sunken dark:hover:bg-elevation-sunken-dark ${
-                      isOpen &&
-                      'bg-elevation-sunken dark:bg-elevation-sunken-dark'
+                    className={`font-caption-regular ${styles.tableBodyRow} ${
+                      isOpen && styles.isOpen
                     }`}
                     onClick={() => handleOpenDetail(itemKey)}
                   >
                     <td />
-                    <td className='text-left p-0 dark:border-border-main-dark'>
+                    <td className='text-left p-0'>
                       <div className={`flex items-center my-8`}>
-                        <div
-                          className={twMerge(
-                            `${styles.tokenImage} dark:border-border-main-dark`
-                          )}
-                        >
+                        <div className={twMerge(`${styles.tokenImage}`)}>
                           <Image
                             src={
                               data?.token.imageUrl || '/icon/nftbank_icon.svg'
@@ -223,52 +213,38 @@ const InventoryItemTable = () => {
                           />
                         </div>
                         <div className='font-caption-medium'>
-                          <p
-                            className={`${styles.pMain} dark:text-text-main-dark`}
-                          >
+                          <p className={`${styles.pMain}`}>
                             {data.token.tokenId}
                           </p>
-                          <p
-                            className={`${styles.pSub} dark:text-text-subtle-dark`}
-                          >
-                            {data.token.name}
-                          </p>
+                          <p className={`${styles.pSub}`}>{data.token.name}</p>
                         </div>
                       </div>
                     </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      {data.amount}
-                    </td>
-                    <td className='text-right dark:border-border-main-dark'>
+                    <td className='text-right'>{data.amount}</td>
+                    <td className='text-right'>
                       {data.costBasis?.[currency] &&
                         formatCurrency(
                           data.costBasis[currency].amount,
                           currency
                         )}
                     </td>
-                    <td className='text-right dark:border-border-main-dark'>
+                    <td className='text-right'>
                       {formatCurrency(data.nav[currency].amount, currency)}
                     </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      {data.nav[currency].amount}
+                    <td className='text-right'>
+                      {formatCurrency(data.nav[currency].amount, currency)}
                     </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      {data.nav[currency].amount}
-                    </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      {valuationType?.type}
-                    </td>
-                    <td className='text-right dark:border-border-main-dark'>
+                    <td className='text-right'>{data.nav[currency].amount}</td>
+                    <td className='text-right'>{valuationType?.type}</td>
+                    <td className='text-right'>
                       {valuationType?.accuracy.toFixed(2)}
                     </td>
-                    <td className='text-right dark:border-border-main-dark'>
+                    <td className='text-right'>
                       {data.acquisitionDate &&
                         formatDate(new Date(data.acquisitionDate))}
                     </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      <button
-                        className={`${styles.expandButton} dark:border-border-bold-dark`}
-                      >
+                    <td className='text-right'>
+                      <button className={`${styles.expandButton}`}>
                         <CaretDown />
                       </button>
                     </td>

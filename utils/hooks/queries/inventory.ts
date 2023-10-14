@@ -12,6 +12,7 @@ export function useInventoryValue(walletAddress?: string) {
       return inventoryValue;
     },
     {
+      enabled: walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -26,6 +27,7 @@ export function useCollectionCount(walletAddress?: string) {
       return count;
     },
     {
+      enabled: walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -40,6 +42,7 @@ export function useItemCount(walletAddress?: string) {
       return count;
     },
     {
+      enabled: walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -55,6 +58,7 @@ export function useInventoryCollectionList(requestParam: TCollectionParam) {
       return inventoryCollectionList;
     },
     {
+      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -70,6 +74,7 @@ export function useInventoryItemFilter(requestParam: TCollectionParam) {
       return inventoryItemFilterCollections;
     },
     {
+      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -84,6 +89,7 @@ export function useInventoryItemList(requestParam: ItemParam) {
       return inventoryItemList;
     },
     {
+      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -108,6 +114,7 @@ export const useInventoryItemInfinite = (requestParam: ItemParam) => {
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
+    enabled: requestParam.walletAddress !== '',
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,
@@ -137,6 +144,7 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
+    enabled: requestParam.walletAddress !== '',
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,

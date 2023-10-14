@@ -1,26 +1,32 @@
 .table {
-  @apply w-full table-auto overflow-y-scroll;
+  @apply w-full table-auto overflow-y-scroll border-[var(--color-border-main)];
+}
+.tableHead {
+  @apply sticky top-0 bg-[var(--color-elevation-surface)] z-20;
 }
 .tableHeadRow {
-  @apply h-40 py-12;
+  @apply h-40 py-12 text-[var(--color-text-subtle)];
 }
 .tokenImage {
   @apply w-32 h-32 border-1 flex items-center overflow-hidden justify-center border-border-main mr-8 relative;
 }
 .tableHeadRow th {
-  @apply border-t-1 border-b-1 border-border-main;
+  @apply border-t-1 border-b-1 border-[var(--color-border-main)];
 }
 .tableHeadRow :first-child {
-  @apply border-0;
+  @apply w-12 border-0;
 }
 .tableHeadRow :last-child {
-  @apply border-0;
+  @apply w-12 border-0;
 }
 .tableBodyRow {
-  @apply h-50 cursor-pointer;
+  @apply h-50 cursor-pointer text-[var(--color-text-main)] border-[var(--color-border-disabled)] hover:bg-[var(--color-elevation-sunken)];
+}
+.isOpen {
+  @apply bg-[var(--color-elevation-sunken)];
 }
 .tableBodyRow td {
-  @apply border-b-1 border-border-main;
+  @apply border-b-1 border-[var(--color-border-main)];
 }
 .tableBodyRow :first-child {
   @apply border-0;
@@ -29,13 +35,13 @@
   @apply border-0;
 }
 .pMain {
-  @apply text-text-main mb-2;
+  @apply text-[var(--color-text-main)] mb-2;
 }
 .pSub {
-  @apply text-text-subtle;
+  @apply text-[var(--color-text-subtle)];
 }
 .expandButton {
-  @apply rounded-none p-0 border-1 border-border-bold bg-transparent;
+  @apply rounded-none p-0 border-1 border-[var(--color-border-bold)] bg-transparent;
 }
 .expandButton svg {
   @apply m-3;
