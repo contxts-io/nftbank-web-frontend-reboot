@@ -9,12 +9,14 @@ import { currencyAtom } from '@/store/currency';
 import React, { useEffect, useMemo, useState } from 'react';
 import InventoryItemDetail from './InventoryItemDetail';
 import CaretDown from '@/public/icon/CaretDown';
-import { formatCurrency, formatDate, formatPercent } from '@/utils/common';
-import { useInView } from 'react-intersection-observer';
 import {
-  useInventoryItemInfinitePerformance,
-  useInventoryItemPerformance,
-} from '@/utils/hooks/queries/performance';
+  formatCurrency,
+  formatDate,
+  formatPercent,
+  mappingConstants,
+} from '@/utils/common';
+import { useInView } from 'react-intersection-observer';
+import { useInventoryItemPerformance } from '@/utils/hooks/queries/performance';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import { twMerge } from 'tailwind-merge';
 import Check from '@/public/icon/Check';
@@ -22,6 +24,7 @@ import { ValuationEdit } from '@/interfaces/valuation';
 import { TValuationType } from '@/interfaces/constants';
 import CustomValuationSaveToast from './CustomValuationSaveToast';
 import { customValuationAtom } from '@/store/portfolio';
+import ClockClockwise from '@/public/icon/ClockClockwise';
 const HEADER = [
   {
     type: 'Item',
@@ -63,35 +66,31 @@ const HEADER = [
 type Props = {
   onClick: (valuationType: TValuationType) => void;
   valuations: TValuation[];
+  selectedValuation: TValuation | undefined;
 };
-const Dropdown = (props: Props) => {
+const Dropdown = ({ onClick, valuations, selectedValuation }: Props) => {
   return (
     <div className={`font-caption-medium ${styles.dropdown}`}>
-      {props.valuations.map((valuation, index) => {
+      {valuations.map((valuation, index) => {
         return (
           <li
             className={styles.dropdownRow}
             key={index}
-            onClick={() => props.onClick(valuation.type)}
+            onClick={() => onClick(valuation.type)}
           >
-            <p>{`${valuation.type} (${formatPercent(valuation.accuracy)})`}</p>
-            {valuation.selected ? (
+            <p>{`${mappingConstants(valuation.type)} (${formatPercent(
+              valuation.accuracy
+            )})`}</p>
+            {selectedValuation?.type === valuation.type && (
               <div className={styles.icon}>
                 <Check />
               </div>
-            ) : valuation.default ? (
-              <div className={styles.icon}>
-                <Check />
-              </div>
-            ) : null}
+            )}
           </li>
         );
       })}
-      <li onClick={() => props.onClick('COLLECTION_FLOOR_PRICE')}>
+      <li onClick={() => onClick('COLLECTION_FLOOR_PRICE')}>
         <p>Trait Floor (25%)</p>
-        <div className={styles.icon}>
-          <Check />
-        </div>
       </li>
     </div>
   );
@@ -127,7 +126,7 @@ const InventoryItemTable = () => {
     () => inventoryItemList?.pages,
     [inventoryItemList?.pages]
   );
-  const [mergedTokens, setMergedTokens] = useState<Token[]>([]);
+
   type TPage = {
     page: number;
     tokens: Token[];
@@ -141,7 +140,7 @@ const InventoryItemTable = () => {
           ...inventoryItemList,
           pages: inventoryItemList.pages.map(
             (page) =>
-              (page.page === inventoryItemListPerformance?.paging.page && {
+              (page.page === inventoryItemListPerformance?.paging?.page && {
                 ...page,
                 tokens: inventoryItemListPerformance.tokens,
               }) ||
@@ -149,7 +148,7 @@ const InventoryItemTable = () => {
           ),
         }
       );
-  }, [inventoryItemListPerformance]);
+  }, [inventoryItemList, inventoryItemListPerformance]);
   const handleOpenDetail = (target: string) => {
     setOpenedItem((prev) => {
       if (prev.includes(target)) {
@@ -275,10 +274,12 @@ const InventoryItemTable = () => {
                           });
                         }}
                       >
-                        <ul className='relative'>
+                        <ul className='relative ml-8'>
                           {valuationType?.type && (
                             <div className='flex items-center'>
-                              <p className='mr-8'>{`${valuationType?.type}`}</p>
+                              <p className='mr-8'>{`${mappingConstants(
+                                valuationType.type
+                              )}`}</p>
                               <div
                                 className={`${
                                   view.open &&
@@ -288,6 +289,13 @@ const InventoryItemTable = () => {
                               >
                                 <CaretDown />
                               </div>
+                              {valuationType.selected && (
+                                <div
+                                  className={`text-[var(--color-icon-brand)]`}
+                                >
+                                  <ClockClockwise />
+                                </div>
+                              )}
                             </div>
                           )}
                           {view.open &&
@@ -302,6 +310,7 @@ const InventoryItemTable = () => {
                                     valuationType: valuationType,
                                   })
                                 }
+                                selectedValuation={valuationType}
                                 valuations={data.valuation}
                               />
                             )}

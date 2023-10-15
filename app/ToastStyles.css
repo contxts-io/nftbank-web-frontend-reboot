@@ -15,6 +15,7 @@
 .Toastify__toast-container--bottom-center {
 }
 .Toastify__toast-container--bottom-right {
+  bottom: -3rem !important;
 }
 
 /** Classes for the displayed toast **/
@@ -23,13 +24,13 @@
   font-style: normal;
   font-weight: 400;
   line-height: 18px; /* 128.571% */
-  @apply px-16 py-12 min-h-60 h-60 max-h-60 flex items-center border-1 border-border-bold !important;
+  @apply px-16 py-12 min-h-60 h-60 max-h-60 flex items-center border-1 bg-[var(--color-elevation-surface-overlay)] border-[var(--color-border-bold)] text-[var(--color-text-main)] !important;
 }
 .Toastify__toast--rtl {
   @apply h-20 !important;
 }
 .Toastify__toast-body {
-  @apply m-0 p-0  h-20 !important;
+  @apply m-0 p-0 h-20 !important;
 }
 
 /** Used to position the icon **/
@@ -84,6 +85,7 @@
 .Toastify__close-button--default {
 }
 .Toastify__close-button > svg {
+  @apply fill-[var(--color-icon-main)] !important;
 }
 .Toastify__close-button:hover,
 .Toastify__close-button:focus {

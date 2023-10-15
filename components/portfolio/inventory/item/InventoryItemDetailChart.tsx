@@ -96,13 +96,10 @@ const InventoryItemDetailChart = ({
           key !== 'processedAt' &&
             _seriesData.map((series) => {
               if (key === series.id) {
-                const prevValue =
-                  index > 0
-                    ? historicalData[index - 1][key]?.[currency] || 0
-                    : 0;
+                const prevValue = index > 0 ? series.data[index - 1] || 0 : 0;
                 const value = item[key]?.[currency]
                   ? item[key]?.[currency]
-                  : prevValue;
+                  : prevValue.toString();
                 value
                   ? series.data.push(parseFloat(value))
                   : series.data.push(0);
@@ -111,7 +108,7 @@ const InventoryItemDetailChart = ({
         });
       });
     return _seriesData;
-  }, [historicalData]);
+  }, [historicalData, currency]);
 
   const options = {
     chart: {

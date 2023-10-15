@@ -2,16 +2,51 @@
 import FloppyDisk from '@/public/icon/FloppyDisk';
 import styles from './CustomValuationSaveToast.module.css';
 import Button from '@/components/buttons/Button';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { customValuationAtom } from '@/store/portfolio';
 import { set } from 'cypress/types/lodash';
+import { useMutationCustomValuations } from '@/utils/hooks/mutaions/valuation';
+import { use } from 'chai';
+import { showToastMessage } from '@/utils/toastify';
+import { useInventoryItemInfinitePerformance } from '@/utils/hooks/queries/performance';
+import { inventoryItemListAtom } from '@/store/requestParam';
+import { useInventoryItemInfinite } from '@/utils/hooks/queries/inventory';
 type Props = {};
 const CustomValuationSaveToast = (props: Props) => {
   const [customValuations, setCustomValuations] = useAtom(customValuationAtom);
+  const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
+  const { mutate, status } = useMutationCustomValuations();
+  const { data, refetch: refetchInventoryItemPerformance } =
+    useInventoryItemInfinitePerformance(requestParam);
+  const { refetch: refetchInventoryItem } = useInventoryItemInfinite({
+    ...requestParam,
+    page: 0,
+  });
   const handleClickCancel = () => {
     setCustomValuations([]);
   };
+  const handleClickSave = () => {
+    mutate(customValuations);
+  };
+  useEffect(() => {
+    console.log('status', status);
+    if (status === 'success') {
+      setCustomValuations([]);
+      showToastMessage({
+        message: 'Modifications have been saved.',
+        code: 'success',
+        toastId: 'custom-valuation',
+      });
+      setRequestParam((prev) => ({
+        ...prev,
+        page: 1,
+      }));
+      refetchInventoryItemPerformance();
+      refetchInventoryItem();
+    }
+  }, [status]);
+
   return (
     <div className={styles.toast}>
       <div className='flex'>
@@ -28,7 +63,11 @@ const CustomValuationSaveToast = (props: Props) => {
         >
           Cancel
         </Button>
-        <Button id={`/valuation/change/save`} className={styles.save}>
+        <Button
+          id={`/valuation/change/save`}
+          className={styles.save}
+          onClick={() => handleClickSave()}
+        >
           Save
         </Button>
       </div>
