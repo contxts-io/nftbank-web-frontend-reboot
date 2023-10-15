@@ -41,3 +41,15 @@ export function customToFixed(number:number) {
   // 아니라면 그냥 원래 숫자 반환
   return number;
 }
+type MappingTable = {
+  [key: string]: string;
+}
+
+export const mappingConstants = (value: string): string => {
+  const mappingTable: MappingTable = {
+    'COLLECTION_FLOOR_PRICE' : 'Floor Price',
+    'ESTIMATED_PRICE' : 'Estimated',
+    'TRAIT_FLOOR_PRICE': 'Trait Floor',
+  }
+  return mappingTable[value] || value;
+}

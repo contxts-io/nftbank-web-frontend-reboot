@@ -1,5 +1,5 @@
 import { IInventoryCollectionList, IInventoryItemList, IInventoryValue, IStat } from "@/interfaces/inventory";
-import { TokenHistory } from "@/interfaces/valuation";
+import { TokenHistory, ValuationEdit } from "@/interfaces/valuation";
 import { ItemParam, TCollectionParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
@@ -21,4 +21,10 @@ export const getValuationTokenHistory = async<T = TokenHistory>(requestParam:Tok
   const { data } = await instance.get<{ data: { data: T } }>(`/valuation/token/history?${query}&interval=daily&window=30d&limit=30
   `);
   return data.data.data;
+}
+
+export const insertCustomValuations = async (valuations: ValuationEdit[]) => {
+  const result = await instance.post<{ data: { data: ValuationEdit[] } }>('/valuation/custom', valuations);
+  console.log('insertCustomValuations', result)
+  return result;
 }
