@@ -2,10 +2,17 @@ import styles from './InventoryItemSection.module.css';
 import InventoryItemFilter from './InventoryItemFilter';
 import InventoryItemList from './InventoryItemList';
 import InventoryItemSelectCollection from './InventoryItemSelectCollection';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import CustomValuationSaveToast from './CustomValuationSaveToast';
+import { useAtom } from 'jotai';
+import { customValuationAtom } from '@/store/portfolio';
 
 const InventoryItemSection = () => {
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(true);
+  const [customValuations, setCustomValuations] = useAtom(customValuationAtom);
+  useEffect(() => {
+    setCustomValuations([]);
+  }, []);
   return (
     <section className='sticky top-116 z-0'>
       <InventoryItemSelectCollection />
@@ -13,10 +20,15 @@ const InventoryItemSection = () => {
         {isFilterOpen && (
           <InventoryItemFilter handleFilterOpen={setIsFilterOpen} />
         )}
-        <InventoryItemList
-          isFilterOpen={isFilterOpen}
-          handleFilterOpen={setIsFilterOpen}
-        />
+        <div className='w-full'>
+          <div className='flex-grow px-12'>
+            <InventoryItemList
+              isFilterOpen={isFilterOpen}
+              handleFilterOpen={setIsFilterOpen}
+            />
+          </div>
+          {customValuations.length > 0 && <CustomValuationSaveToast />}
+        </div>
       </section>
     </section>
   );

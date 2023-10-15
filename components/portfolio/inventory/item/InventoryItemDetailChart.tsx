@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server';
 import dynamic from 'next/dynamic';
 import styles from './InventoryItemDetailChart.module.css';
 import { TokenHistory } from '@/interfaces/valuation';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { customToFixed, formatDate } from '@/utils/common';
@@ -55,56 +55,64 @@ const InventoryItemDetailChart = ({
   const markerFill = 'var(--color-elevation-surface)';
   const axisColor = 'var(--color-text-subtle)';
   const currency = useAtomValue(currencyAtom);
-  let seriesData: Series = [
-    {
-      id: 'estimate',
-      name: 'Estimated',
-      data: [],
-    },
-    {
-      id: 'floor',
-      name: 'Trait Floor',
-      data: [],
-    },
-    {
-      id: 'traitFloor',
-      name: 'Collection Floor',
-      data: [],
-    },
-    {
-      id: 'd30Avg',
-      name: '30d Avg.',
-      data: [],
-    },
-    {
-      id: 'd90Avg',
-      name: '90d Avg.',
-      data: [],
-    },
-  ];
-  let category: string[] = [];
-  historicalData &&
-    historicalData.map((item, index) => {
-      const _date = formatDate(new Date(item.processedAt)).split('/');
-      const date = `${_date[1]}/${_date[2]}`;
-      category.push(date);
-      const keys = Object.keys(item) as (keyof typeof item)[];
-      keys.map((key) => {
-        key !== 'processedAt' &&
-          seriesData.map((series) => {
-            if (key === series.id) {
-              const prevValue =
-                index > 0 ? historicalData[index - 1][key]?.[currency] || 0 : 0;
-              const value = item[key]?.[currency]
-                ? item[key]?.[currency]
-                : prevValue;
-              value ? series.data.push(parseFloat(value)) : series.data.push(0);
-            }
-          });
-      });
-    });
 
-  console.log('series', seriesData);
+  let category: string[] = [];
+
+  let seriesData = useMemo(() => {
+    let _seriesData: Series = [
+      {
+        id: 'estimate',
+        name: 'Estimated',
+        data: [],
+      },
+      {
+        id: 'floor',
+        name: 'Trait Floor',
+        data: [],
+      },
+      {
+        id: 'traitFloor',
+        name: 'Collection Floor',
+        data: [],
+      },
+      {
+        id: 'd30Avg',
+        name: '30d Avg.',
+        data: [],
+      },
+      {
+        id: 'd90Avg',
+        name: '90d Avg.',
+        data: [],
+      },
+    ];
+    historicalData &&
+      historicalData.map((item, index) => {
+        const _date = formatDate(new Date(item.processedAt)).split('/');
+        const date = `${_date[1]}/${_date[2]}`;
+        category.push(date);
+        const keys = Object.keys(item) as (keyof typeof item)[];
+        keys.map((key) => {
+          key !== 'processedAt' &&
+            _seriesData.map((series) => {
+              if (key === series.id) {
+                const prevValue =
+                  index > 0
+                    ? historicalData[index - 1][key]?.[currency] || 0
+                    : 0;
+                const value = item[key]?.[currency]
+                  ? item[key]?.[currency]
+                  : prevValue;
+                value
+                  ? series.data.push(parseFloat(value))
+                  : series.data.push(0);
+              }
+            });
+        });
+      });
+    return _seriesData;
+  }, [historicalData]);
+
   const options = {
     chart: {
       id: 'basic-bar',
