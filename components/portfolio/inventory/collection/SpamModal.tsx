@@ -1,5 +1,5 @@
 'use client';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import styles from './SpamModal.module.css';
 import { inventorySpamCollectionAtom } from '@/store/requestParam';
 import { useEffect, useState } from 'react';
@@ -11,12 +11,15 @@ import ClockClockwise from '@/public/icon/ClockClockwise';
 import SpamCollectionTable from './SpamCollectionTable';
 import CaretDown from '@/public/icon/CaretDown';
 import { Popover } from 'react-tiny-popover';
+import SpamSaveToast from './SpamSaveToast';
+import { addedSpamListAtom } from '@/store/portfolio';
 const SpamModal = () => {
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useAtom(inventorySpamCollectionAtom);
   const [isEditOnly, setIsEditOnly] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
+  const spamList = useAtomValue(addedSpamListAtom);
   const { fetchNextPage, data, status } = useInventoryCollectionsInfinite({
     ...inventoryCollectionRequestParam,
     page: 0,
@@ -83,7 +86,7 @@ const SpamModal = () => {
           value={searchText}
         />
       </div>
-
+      {spamList.length > 0 && <SpamSaveToast />}
       <div className={styles.row}>
         <Popover
           isOpen={isPopoverOpen}

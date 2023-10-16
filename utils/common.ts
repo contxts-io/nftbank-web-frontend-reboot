@@ -1,3 +1,5 @@
+import { TValuation } from "@/interfaces/collection";
+
 export function formatDate(date:  Date): string  {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더하고 2자리로 포맷팅
@@ -44,7 +46,6 @@ export function customToFixed(number:number) {
 type MappingTable = {
   [key: string]: string;
 }
-
 export const mappingConstants = (value: string): string => {
   const mappingTable: MappingTable = {
     'COLLECTION_FLOOR_PRICE' : 'Floor Price',
@@ -53,3 +54,11 @@ export const mappingConstants = (value: string): string => {
   }
   return mappingTable[value] || value;
 }
+export const selectedValueType = (
+  valuations: TValuation[]
+): string => {
+  const result =
+    valuations.find((val) => val.selected) ||
+    valuations.find((val) => val.default);
+  return mappingConstants(result?.type || '');
+};
