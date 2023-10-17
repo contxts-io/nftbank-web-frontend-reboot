@@ -24,7 +24,7 @@ export const getValuationTokenHistory = async<T = TokenHistory>(requestParam:Tok
 }
 
 export const insertCustomValuations = async (valuations: ValuationEdit[]) => {
-  const result = await instance.post<{ data: { data: ValuationEdit[] } }>('/valuation/custom', valuations);
+  const result = await instance.post<{ data: { data: ValuationEdit[] } }>('/valuation/custom/bulk', valuations);
   console.log('insertCustomValuations', result)
   return result;
 }
