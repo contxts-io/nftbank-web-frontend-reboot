@@ -30,6 +30,9 @@ export type CollectionMetadata = {
   imageUrl: string,
   standard: TStandard,
   assetContract: string,
+  isSpam: boolean,
+  spamType?: 'system' | 'custom'
+  
 }
 export type PerformanceValue = {
   costBasis: TValue | null,

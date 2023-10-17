@@ -2,86 +2,88 @@
 import Check from '@/public/icon/Check';
 import styles from './SpamInsertDropdown.module.css';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TSpam } from '@/interfaces/spam';
-import { CollectionMetadata } from '@/interfaces/collection';
+import { Collection, CollectionMetadata } from '@/interfaces/collection';
 import { addedSpamListAtom } from '@/store/portfolio';
 import { useAtom } from 'jotai';
 import Button from '@/components/buttons/Button';
 import DotsThree from '@/public/icon/DotsThree';
 
 type Props = {
-  collection: CollectionMetadata;
+  collection: Collection;
   icon?: boolean;
 };
 const SpamInsertDropdown = ({ collection, icon }: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const [spamList, setSpamList] = useAtom(addedSpamListAtom);
-  const obj = {
-    assetContract: collection.assetContract,
-    networkId: collection.chain.name,
-    isSpam:
-      spamList.find(
-        (item) =>
-          item.assetContract === collection.assetContract &&
-          item.networkId === collection.chain.name
-      )?.isSpam === false
-        ? false
-        : true,
-  };
-  const handleClickSpam = (obj: TSpam) => {
+  const [selectedCollection, setSelectedCollection] =
+    useState<Collection>(collection);
+
+  const handleClickSpam = (isSpam: boolean) => {
+    setSelectedCollection((prev) => ({
+      ...prev,
+      collection: { ...prev.collection, isSpam: isSpam },
+    }));
     setSpamList((prev) =>
       prev
         .filter(
           (item) =>
             !(
-              item.assetContract === obj.assetContract &&
-              item.networkId === obj.networkId
+              item.assetContract ===
+                selectedCollection.collection.assetContract &&
+              item.networkId === selectedCollection.collection.chain.name
             )
         )
-        .concat(obj)
+        .concat({
+          assetContract: selectedCollection.collection.assetContract,
+          networkId: selectedCollection.collection.chain.name,
+          isSpam: isSpam,
+        })
     );
   };
+  // useEffect(() => {
+  //   const item = spamList.find(
+  //     (item) =>
+  //       item.assetContract === collection.collection.assetContract &&
+  //       item.networkId === collection.collection.chain.name
+  //   );
+  //   console.log('item', item);
+  //   setSelectedCollection((prev) => ({
+  //     ...prev,
+  //     collection: {
+  //       ...prev.collection,
+  //       isSpam: item ? item.isSpam : prev.collection.isSpam,
+  //     },
+  //   }));
+  // }, [spamList]);
   return (
     <div
       className={`relative cursor-pointer ${
-        icon ? 'border-1' : 'border-0 p-0 w-100'
+        icon
+          ? 'border-1 border-[var(--color-border-bold)] hover:border-[var(--color-border-selected)] text-[var(--color-icon-subtle)] hover:text-[var(--color-icon-main)] right-0'
+          : 'border-0 p-0 w-100'
       }`}
-      id={`/spam/insert/${collection.chain.name}/${collection.assetContract}`}
       onClick={(e) => (e.stopPropagation(), setIsPopoverOpen((prev) => !prev))}
     >
       {icon ? (
         <DotsThree />
-      ) : obj.isSpam ? (
+      ) : selectedCollection.collection.isSpam ? (
         <p className={styles.pSpam}>Spam</p>
       ) : (
         <p className={styles.pNonSpam}>Non Spam</p>
       )}
       {isPopoverOpen && (
         <ul className={`${styles.dropdown} z-50`}>
-          <li
-            onClick={() =>
-              handleClickSpam({
-                ...obj,
-                isSpam: true,
-              })
-            }
-          >
+          <li onClick={() => handleClickSpam(true)}>
             <p>Spam</p>
-            {obj.isSpam && (
+            {selectedCollection.collection.isSpam && (
               <Check className='fill-[var(--color-icon-success)]' />
             )}
           </li>
-          <li
-            onClick={() =>
-              handleClickSpam({
-                ...obj,
-                isSpam: false,
-              })
-            }
-          >
+          <li onClick={() => handleClickSpam(false)}>
             Non Spam
-            {!obj.isSpam && (
+            {!selectedCollection.collection.isSpam && (
               <Check className='fill-[var(--color-icon-success)]' />
             )}
           </li>

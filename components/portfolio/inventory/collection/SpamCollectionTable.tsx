@@ -18,6 +18,7 @@ import ClockClockwise from '@/public/icon/ClockClockwise';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import SpamInsertDropdown from './SpamInsertDropdown';
 import { TSpam } from '@/interfaces/spam';
+import { useInventorySpamListInfinite } from '@/utils/hooks/queries/spam';
 type Props = {
   onClick: (string: boolean) => void;
 };
@@ -27,7 +28,7 @@ const SpamCollectionTable = () => {
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useAtom(inventorySpamCollectionAtom);
   const { ref, inView } = useInView();
-  const { fetchNextPage, data, status } = useInventoryCollectionsInfinite({
+  const { fetchNextPage, data, status } = useInventorySpamListInfinite({
     ...inventoryCollectionRequestParam,
     page: 0,
   });
@@ -112,10 +113,12 @@ const SpamCollectionTable = () => {
                   </p>
                 </td>
                 <td className='text-left pr-0'>
-                  <SpamInsertDropdown collection={collection.collection} />
+                  <SpamInsertDropdown collection={collection} />
                 </td>
                 <td className='text-right'>
-                  {index !== 0 && <ClockClockwise />}
+                  {collection.collection.spamType === 'custom' && (
+                    <ClockClockwise />
+                  )}
                 </td>
               </tr>
             );

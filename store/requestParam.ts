@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 export type TSortOrder = 'asc' | 'desc'
-export type TSort = 'amount' | 'nav'
+export type TSort = 'amount' | 'nav' | 'spam'
 type currency = 'eth' | 'usd';
 export type TCollectionParam = {
   searchCollection: string,
@@ -36,7 +36,7 @@ export const inventoryCollectionAtom = atom<TCollectionParam>({
   walletAddress: '',
   includeGasUsed: false,
   page: 1,
-  limit: 10,
+  limit: 30,
   sort: 'nav',
   order :'desc',
 })
@@ -46,7 +46,7 @@ export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
   walletAddress: '',
   includeGasUsed: false,
   page: 1,
-  limit: 10,
+  limit: 30,
   sort: 'nav',
   order :'desc',
 })
@@ -56,12 +56,12 @@ export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
   walletAddress: '',
   includeGasUsed: false,
   page: 1,
-  limit: 10,
-  sort: 'nav',
+  limit: 30,
+  sort: 'spam',
   order: 'desc',
   includeSpam: true,
   includeCustomSpam: true,
-  includeNonSpam: false,
+  includeNonSpam: true,
 })
 // export const inventoryItemCollectionAtom = atom<TCollectionParam>({})
 export const inventoryItemListAtom = atom<ItemParam>({
@@ -70,7 +70,7 @@ export const inventoryItemListAtom = atom<ItemParam>({
   includeGasUsed: false,
   assetContract: [],
   page: 1,
-  limit: 10,
+  limit: 30,
   currency: 'eth',
   sort: 'nav',
   order: 'desc',

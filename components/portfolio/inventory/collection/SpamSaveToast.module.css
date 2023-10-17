@@ -14,3 +14,6 @@
 .save {
   @apply border-[var(--color-border-success)] text-[var(--color-text-success)] !important;
 }
+.save:hover {
+  @apply border-[--color-border-selected] text-[var(--color-text-main)] !important;
+}

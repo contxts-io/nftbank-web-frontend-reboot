@@ -15,17 +15,13 @@ import DotsThree from '@/public/icon/DotsThree';
 import {
   formatCurrency,
   formatPercent,
+  isPlus,
   selectedValueType,
   shortenAddress,
 } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
-import {
-  useInventoryCollectionListPerformance,
-  useInventoryCollectionsInfinitePerformance,
-} from '@/utils/hooks/queries/performance';
-import { use } from 'chai';
+import { useInventoryCollectionListPerformance } from '@/utils/hooks/queries/performance';
 import ReactQueryClient from '@/utils/ReactQueryClient';
-import Button from '@/components/buttons/Button';
 import SpamInsertDropdown from './SpamInsertDropdown';
 const T_HEADER = [
   {
@@ -268,26 +264,26 @@ const InventoryCollectionTable = () => {
                     </p>
                   </td>
                   <td className='text-right'>
-                    <p
-                      className={
-                        row.nav[currency].difference?.percentage?.toFixed(2) ||
-                        0 > 0
-                          ? 'text-green-500'
-                          : 'text-red-500'
-                      }
-                    >{`${formatCurrency(
-                      row.nav[currency].difference?.amount || null,
-                      currency
-                    )}`}</p>
+                    {row.nav[currency].difference?.amount && (
+                      <p
+                        className={`${
+                          isPlus(row.nav[currency].difference?.amount || 0)
+                            ? 'text-[var(--color-text-success)]'
+                            : 'text-[var(--color-text-danger)]'
+                        }`}
+                      >{`${formatCurrency(
+                        row.nav[currency].difference?.amount || null,
+                        currency
+                      )}`}</p>
+                    )}
                   </td>
                   <td className='text-right'>
                     <p
-                      className={
-                        row.nav[currency].difference?.percentage?.toFixed(2) ||
-                        0 > 0
-                          ? 'text-green-500'
-                          : 'text-red-500'
-                      }
+                      className={`${
+                        isPlus(row.nav[currency].difference?.percentage || 0)
+                          ? 'text-[var(--color-text-success)]'
+                          : 'text-[var(--color-text-danger)]'
+                      }`}
                     >{`${formatPercent(
                       row.nav[currency].difference?.percentage || null
                     )}`}</p>
@@ -297,10 +293,7 @@ const InventoryCollectionTable = () => {
                       className='w-full flex justify-center items-center'
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <SpamInsertDropdown
-                        collection={row.collection}
-                        icon={true}
-                      />
+                      <SpamInsertDropdown collection={row} icon={true} />
                     </div>
                   </td>
                 </tr>

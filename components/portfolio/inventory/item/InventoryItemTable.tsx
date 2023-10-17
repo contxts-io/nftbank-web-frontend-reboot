@@ -5,7 +5,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { inventoryItemListAtom } from '@/store/requestParam';
 import Image from 'next/image';
 import { TValuation, Token } from '@/interfaces/collection';
-import { currencyAtom } from '@/store/currency';
+import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import React, { useEffect, useMemo, useState } from 'react';
 import InventoryItemDetail from './InventoryItemDetail';
 import CaretDown from '@/public/icon/CaretDown';
@@ -13,7 +13,9 @@ import {
   formatCurrency,
   formatDate,
   formatPercent,
+  isPlus,
   mappingConstants,
+  shortenAddress,
 } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
 import { useInventoryItemPerformance } from '@/utils/hooks/queries/performance';
@@ -25,6 +27,7 @@ import { TValuationType } from '@/interfaces/constants';
 import CustomValuationSaveToast from './CustomValuationSaveToast';
 import { customValuationAtom } from '@/store/portfolio';
 import ClockClockwise from '@/public/icon/ClockClockwise';
+import ValuationDropdown from './ValuationDropdown';
 const HEADER = [
   {
     type: 'Item',
@@ -89,9 +92,6 @@ const Dropdown = ({ onClick, valuations, selectedValuation }: Props) => {
           </li>
         );
       })}
-      <li onClick={() => onClick('COLLECTION_FLOOR_PRICE')}>
-        <p>Trait Floor (25%)</p>
-      </li>
     </div>
   );
 };
@@ -99,12 +99,12 @@ const InventoryItemTable = () => {
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
   const [openedItem, setOpenedItem] = useState<string[]>([]);
   const currency = useAtomValue(currencyAtom);
+  const priceType = useAtomValue(priceTypeAtom);
   const { ref, inView } = useInView();
   const [view, setView] = useState<{ key: string; open: boolean }>({
     key: '',
     open: false,
   });
-  const [customValuations, setCustomValuations] = useAtom(customValuationAtom);
   const {
     fetchNextPage,
     data: inventoryItemList,
@@ -124,7 +124,7 @@ const InventoryItemTable = () => {
   }, [fetchNextPage, inView]);
   const mergePosts = useMemo(
     () => inventoryItemList?.pages,
-    [inventoryItemList?.pages]
+    [inventoryItemList?.pages, requestParam]
   );
 
   type TPage = {
@@ -148,7 +148,7 @@ const InventoryItemTable = () => {
           ),
         }
       );
-  }, [inventoryItemList, inventoryItemListPerformance]);
+  }, [inventoryItemList, inventoryItemListPerformance, requestParam]);
   const handleOpenDetail = (target: string) => {
     setOpenedItem((prev) => {
       if (prev.includes(target)) {
@@ -159,20 +159,6 @@ const InventoryItemTable = () => {
     });
   };
 
-  const handleSelectValuation = (valuation: ValuationEdit) => {
-    setCustomValuations((prev) => {
-      return prev
-        .filter(
-          (val) =>
-            !(
-              val.assetContract === valuation.assetContract &&
-              val.tokenId === valuation.tokenId &&
-              val.networkId === valuation.networkId
-            )
-        )
-        .concat(valuation);
-    });
-  };
   const selectedValueType = (
     valuations: TValuation[]
   ): TValuation | undefined => {
@@ -181,9 +167,7 @@ const InventoryItemTable = () => {
       valuations.find((val) => val.default);
     return result;
   };
-  useEffect(() => {
-    console.log(customValuations);
-  }, [customValuations]);
+
   return (
     <React.Fragment>
       <table className={`${styles.table}`}>
@@ -242,7 +226,8 @@ const InventoryItemTable = () => {
                               {data.token.tokenId}
                             </p>
                             <p className={`${styles.pSub}`}>
-                              {data.token.name}
+                              {data.token.name ||
+                                shortenAddress(data.collection.assetContract)}
                             </p>
                           </div>
                         </div>
@@ -254,29 +239,65 @@ const InventoryItemTable = () => {
                             data.costBasis[currency].amount,
                             currency
                           )}
+                        {priceType === 'acquisitionPrice' && (
+                          <p className='text-[var(--color-text-brand)]'>
+                            {data.gasFee?.[currency]?.amount
+                              ? `GAS +${parseFloat(
+                                  data.gasFee[currency].amount || ''
+                                ).toFixed(3)} `
+                              : ''}
+                          </p>
+                        )}
                       </td>
                       <td className='text-right'>
                         {formatCurrency(data.nav[currency].amount, currency)}
                       </td>
                       <td className='text-right'>
-                        {formatCurrency(data.nav[currency].amount, currency)}
+                        <p
+                          className={`${
+                            isPlus(data.nav[currency].difference?.amount || 0)
+                              ? 'text-[var(--color-text-success)]'
+                              : 'text-[var(--color-text-danger)]'
+                          }`}
+                        >
+                          {formatCurrency(
+                            data.nav[currency].difference?.amount || null,
+                            currency
+                          )}
+                        </p>
                       </td>
                       <td className='text-right'>
-                        {data.nav[currency].amount}
+                        <p
+                          className={`${
+                            isPlus(
+                              data.nav[currency].difference?.percentage || 0
+                            )
+                              ? 'text-[var(--color-text-success)]'
+                              : 'text-[var(--color-text-danger)]'
+                          }`}
+                        >
+                          {formatPercent(
+                            data.nav[currency].difference?.percentage || null
+                          )}
+                        </p>
                       </td>
                       <td
                         className='text-right cursor-pointer'
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setView({
-                            key: `${pageIndex}-${index}`,
-                            open: !view.open,
-                          });
-                        }}
+                        // onClick={(e) => {
+                        //   e.stopPropagation();
+                        //   setView({
+                        //     key: `${pageIndex}-${index}`,
+                        //     open: !view.open,
+                        //   });
+                        // }}
                       >
-                        <ul className='relative ml-8'>
+                        <ValuationDropdown
+                          token={data}
+                          valuations={data.valuation}
+                        />
+                        {/* <ul className='relative ml-8'>
                           {valuationType?.type && (
-                            <div className='flex items-center'>
+                            <div className='flex items-center justify-end'>
                               <p className='mr-8'>{`${mappingConstants(
                                 valuationType.type
                               )}`}</p>
@@ -314,10 +335,10 @@ const InventoryItemTable = () => {
                                 valuations={data.valuation}
                               />
                             )}
-                        </ul>
+                        </ul> */}
                       </td>
                       <td className='text-right'>
-                        {valuationType?.accuracy.toFixed(2)}
+                        {formatPercent(valuationType?.accuracy || null)}
                       </td>
                       <td className='text-right'>
                         {data.acquisitionDate &&
