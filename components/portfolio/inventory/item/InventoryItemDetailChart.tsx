@@ -108,7 +108,7 @@ const InventoryItemDetailChart = ({
         });
       });
     return _seriesData;
-  }, [historicalData, currency]);
+  }, [historicalData, currency, category]);
 
   const options = {
     chart: {
@@ -122,6 +122,7 @@ const InventoryItemDetailChart = ({
       tickAmount: 10,
       categories: category,
       labels: {
+        rotate: 0,
         style: {
           colors: axisColor,
           fontSize: '12px',

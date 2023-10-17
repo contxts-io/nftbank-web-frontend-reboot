@@ -34,6 +34,6 @@ What is [Turbopack?](https://turbo.build/pack)
 ├── utils
 │   ├── hooks
 │   ├── queries //reactquery에서 쓰일 query들 정의
-│   └── mutations //reactquery 에서 쓰일 mutaions들 정의
+│   └── mutations //reactquery 에서 쓰일 mutations 정의
 └── public //각종 asset들. 이미지, svg 등
 ```

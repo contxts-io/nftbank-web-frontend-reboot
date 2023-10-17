@@ -3,17 +3,11 @@ import Check from '@/public/icon/Check';
 import styles from './ValuationDropdown.module.css';
 
 import { useEffect, useState } from 'react';
-import {
-  Collection,
-  CollectionMetadata,
-  TValuation,
-  Token,
-} from '@/interfaces/collection';
+import { TValuation, Token } from '@/interfaces/collection';
 import { customValuationAtom } from '@/store/portfolio';
 import { useAtom } from 'jotai';
 import { formatPercent, mappingConstants } from '@/utils/common';
 import CaretDown from '@/public/icon/CaretDown';
-import { ValuationEdit } from '@/interfaces/valuation';
 import ClockClockwise from '@/public/icon/ClockClockwise';
 
 type Props = {

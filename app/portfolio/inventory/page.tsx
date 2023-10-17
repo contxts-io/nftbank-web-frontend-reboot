@@ -49,14 +49,14 @@ const InventoryPage = async (context: any) => {
   const walletAddress =
     context.searchParams?.walletAddress || me?.walletAddress || undefined;
 
-  walletAddress &&
-    queryClient.prefetchQuery(['inventoryValue', walletAddress], () =>
-      getInventoryValue(walletAddress)
-    );
-  walletAddress &&
-    queryClient.prefetchQuery(['collectionCount', walletAddress], () =>
-      getCollectionCount(walletAddress)
-    );
+  // walletAddress &&
+  //   queryClient.prefetchQuery(['inventoryValue', walletAddress], () =>
+  //     getInventoryValue(walletAddress)
+  //   );
+  // walletAddress &&
+  //   queryClient.prefetchQuery(['collectionCount', walletAddress], () =>
+  //     getCollectionCount(walletAddress)
+  //   );
   const dehydratedState = dehydrate(queryClient);
   return (
     <Hydrate state={dehydratedState}>

@@ -1,0 +1,19 @@
+.toast {
+  @apply sticky bottom-40 z-10;
+  @apply w-full px-16 mb-24 text-[var(--color-text-main)] h-50 flex items-center justify-between bg-[var(--color-elevation-sunken)];
+}
+.toast p {
+  @apply ml-8;
+}
+.toast p > span {
+  @apply text-[var(--color-text-success)];
+}
+.toast button {
+  @apply px-12 py-4;
+}
+.save {
+  @apply border-[var(--color-border-success)] text-[var(--color-text-success)] !important;
+}
+.save:hover {
+  @apply border-[--color-border-selected] text-[var(--color-text-main)] !important;
+}

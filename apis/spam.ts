@@ -6,3 +6,8 @@ export const insertSpamList = async (spamList: TSpam[]) => {
   console.log('insertSpamList', result)
   return result;
 }
+export const resetSpamList = async () => {
+  const result = await instance.patch('/spam/reset');
+  console.log('resetSpamList', result)
+  return result;
+}

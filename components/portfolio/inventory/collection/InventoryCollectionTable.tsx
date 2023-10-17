@@ -16,16 +16,13 @@ import {
   formatCurrency,
   formatPercent,
   isPlus,
+  selectedValueType,
   shortenAddress,
 } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
-import {
-  useInventoryCollectionListPerformance,
-  useInventoryCollectionsInfinitePerformance,
-} from '@/utils/hooks/queries/performance';
-import { use } from 'chai';
+import { useInventoryCollectionListPerformance } from '@/utils/hooks/queries/performance';
 import ReactQueryClient from '@/utils/ReactQueryClient';
-import Button from '@/components/buttons/Button';
+import SpamInsertDropdown from './SpamInsertDropdown';
 const T_HEADER = [
   {
     name: 'Chain',
@@ -108,25 +105,6 @@ const InventoryCollectionTable = () => {
   const collections = useMemo(() => data?.pages, [data?.pages]);
   useEffect(() => {
     collectionsPerformance &&
-      setPerformanceCollections((prev) =>
-        prev.find((item) => item.page === inventoryCollectionRequestParam.page)
-          ? prev.map((item) => {
-              return item.page === inventoryCollectionRequestParam.page
-                ? {
-                    ...item,
-                    collections: collectionsPerformance?.collections || [],
-                  }
-                : item;
-            })
-          : [
-              ...prev,
-              {
-                page: inventoryCollectionRequestParam.page,
-                collections: collectionsPerformance.collections || [],
-              },
-            ]
-      );
-    collectionsPerformance &&
       data?.pages &&
       ReactQueryClient.setQueryData(
         [
@@ -145,7 +123,7 @@ const InventoryCollectionTable = () => {
           ),
         }
       );
-  }, [collectionsPerformance]);
+  }, [collectionsPerformance, data]);
   useEffect(() => {
     const isLastPage = data?.pages?.[data.pages.length - 1].isLast;
     !isLastPage &&
@@ -214,12 +192,7 @@ const InventoryCollectionTable = () => {
           {/* {mergedCollections?.map((row, index) => { */}
           {collections?.map((page, pageIndex) => {
             return page.collections?.map((row, index) => {
-              const performanceItem = performanceCollections[
-                pageIndex
-              ]?.collections.find(
-                (item) =>
-                  item.collection.assetContract === row.collection.assetContract
-              );
+              const valuation = row.valuation.find((item) => item.selected);
               return (
                 <tr
                   key={`${pageIndex}-${index}}`}
@@ -278,8 +251,7 @@ const InventoryCollectionTable = () => {
                   {/* valuation type */}
                   <td className='text-right'>
                     <p className='dark:text-text-main-dark'>
-                      {row.valuation.find((item) => item.selected)?.type ||
-                        row.valuation.find((item) => item.default)?.type}
+                      {selectedValueType(row.valuation)}
                     </p>
                   </td>
                   {/* realtime nav */}
@@ -317,17 +289,11 @@ const InventoryCollectionTable = () => {
                     )}`}</p>
                   </td>
                   <td className='text-center'>
-                    <div className='w-full flex justify-center items-center'>
-                      <Button
-                        id={`spam-${row.collection.assetContract}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          console.log('spam');
-                        }}
-                        className='p-4 mx-10'
-                      >
-                        <DotsThree />
-                      </Button>
+                    <div
+                      className='w-full flex justify-center items-center'
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <SpamInsertDropdown collection={row} icon={true} />
                     </div>
                   </td>
                 </tr>

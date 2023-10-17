@@ -126,8 +126,10 @@ const InventoryItemList = (props: Props) => {
           </div>
         </div>
       </div>
-      {itemViewType === 'listView' && <InventoryItemTable />}
-      {itemViewType === 'cardView' && <InventoryItemCardGrid />}
+      <div className='min-h-[300px]'>
+        {itemViewType === 'listView' && <InventoryItemTable />}
+        {itemViewType === 'cardView' && <InventoryItemCardGrid />}
+      </div>
     </section>
   );
 };
