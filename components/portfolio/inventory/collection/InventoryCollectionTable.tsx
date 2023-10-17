@@ -12,7 +12,12 @@ import { selectedCollectionInventoryAtom } from '@/store/portfolio';
 import { useEffect, useMemo, useState } from 'react';
 import Ethereum from '@/public/icon/Ethereum';
 import DotsThree from '@/public/icon/DotsThree';
-import { formatCurrency, formatPercent, shortenAddress } from '@/utils/common';
+import {
+  formatCurrency,
+  formatPercent,
+  isPlus,
+  shortenAddress,
+} from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
 import {
   useInventoryCollectionListPerformance,
@@ -287,26 +292,26 @@ const InventoryCollectionTable = () => {
                     </p>
                   </td>
                   <td className='text-right'>
-                    <p
-                      className={
-                        row.nav[currency].difference?.percentage?.toFixed(2) ||
-                        0 > 0
-                          ? 'text-green-500'
-                          : 'text-red-500'
-                      }
-                    >{`${formatCurrency(
-                      row.nav[currency].difference?.amount || null,
-                      currency
-                    )}`}</p>
+                    {row.nav[currency].difference?.amount && (
+                      <p
+                        className={`${
+                          isPlus(row.nav[currency].difference?.amount || 0)
+                            ? 'text-[var(--color-text-success)]'
+                            : 'text-[var(--color-text-danger)]'
+                        }`}
+                      >{`${formatCurrency(
+                        row.nav[currency].difference?.amount || null,
+                        currency
+                      )}`}</p>
+                    )}
                   </td>
                   <td className='text-right'>
                     <p
-                      className={
-                        row.nav[currency].difference?.percentage?.toFixed(2) ||
-                        0 > 0
-                          ? 'text-green-500'
-                          : 'text-red-500'
-                      }
+                      className={`${
+                        isPlus(row.nav[currency].difference?.percentage || 0)
+                          ? 'text-[var(--color-text-success)]'
+                          : 'text-[var(--color-text-danger)]'
+                      }`}
                     >{`${formatPercent(
                       row.nav[currency].difference?.percentage || null
                     )}`}</p>

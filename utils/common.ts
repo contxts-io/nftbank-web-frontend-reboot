@@ -7,13 +7,23 @@ export function formatDate(date:  Date): string  {
 export function formatCurrency(amount: string | null, currency: 'usd' | 'eth'): string {
   if (!amount) return '';
   if (amount === 'infinity')
-    return 'infinity';
+    return '-';
     // return '∞';
   return parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: currency }).replace('ETH', 'Ξ');
 }
+export function isPlus (value: number | string): boolean {
+  if (value === 'infinity') return true;
+  if (typeof value === 'string') {
+    return parseFloat(value) > 0 ? true : false;
+  } else if (typeof value === 'number') {
+    return value > 0 ? true : false;
+  } else {
+    return false;
+  }
+};
 export function formatPercent(amount: number | null): string {
   if(amount === null) return '-';
-  return amount.toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 2 });
+  return (amount/100).toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 2 });
 }
 export function formatEth(amount: string | null): string {
   if (!amount) return '';
@@ -50,6 +60,8 @@ export const mappingConstants = (value: string): string => {
     'COLLECTION_FLOOR_PRICE' : 'Floor Price',
     'ESTIMATED_PRICE' : 'Estimated',
     'TRAIT_FLOOR_PRICE': 'Trait Floor',
+    'AVERAGE_PRICE_30D':'Average Price 30D',
+    'AVERAGE_PRICE_90D':'Average Price 90D'
   }
   return mappingTable[value] || value;
 }

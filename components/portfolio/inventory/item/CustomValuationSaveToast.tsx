@@ -12,6 +12,8 @@ import { showToastMessage } from '@/utils/toastify';
 import { useInventoryItemInfinitePerformance } from '@/utils/hooks/queries/performance';
 import { inventoryItemListAtom } from '@/store/requestParam';
 import { useInventoryItemInfinite } from '@/utils/hooks/queries/inventory';
+import { QueryClient } from '@tanstack/react-query';
+import ReactQueryClient from '@/utils/ReactQueryClient';
 type Props = {};
 const CustomValuationSaveToast = (props: Props) => {
   const [customValuations, setCustomValuations] = useAtom(customValuationAtom);
@@ -38,12 +40,13 @@ const CustomValuationSaveToast = (props: Props) => {
         code: 'success',
         toastId: 'custom-valuation',
       });
-      setRequestParam((prev) => ({
-        ...prev,
-        page: 1,
-      }));
-      refetchInventoryItemPerformance();
-      refetchInventoryItem();
+      ReactQueryClient.removeQueries(['inventoryItemList']);
+      // setRequestParam((prev) => ({
+      //   ...prev,
+      //   page: 1,
+      // }));
+      // refetchInventoryItemPerformance();
+      // refetchInventoryItem();
     }
   }, [status]);
 

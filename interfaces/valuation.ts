@@ -1,3 +1,4 @@
+import { TValuation } from "./collection"
 import { TChain, TValuationType } from "./constants"
 
 type ValuePair = {
