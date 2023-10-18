@@ -1,13 +1,13 @@
 import { atom } from "jotai";
 export type TSortOrder = 'asc' | 'desc'
-export type TSort = 'amount' | 'nav'
+export type TSort = 'amount' | 'nav' | 'spam'
 type currency = 'eth' | 'usd';
 export type TCollectionParam = {
   searchCollection: string,
   networkId: string,
   walletAddress: string,
   sort: TSort,
-  includeGasUsed: boolean,
+  includeGasUsed: string,
   page: number,
   limit: number,
   order :TSortOrder,
@@ -19,7 +19,7 @@ export type ItemParam = {
   walletGroupId?: string,
   assetContract: string[],
   currency: currency,
-  includeGasUsed: boolean,
+  includeGasUsed: string,
   sort: TSort,
   order: TSortOrder,
   limit: number,
@@ -34,7 +34,17 @@ export const inventoryCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
   networkId: 'ethereum',
   walletAddress: '',
-  includeGasUsed: false,
+  includeGasUsed: 'false',
+  page: 1,
+  limit: 30,
+  sort: 'nav',
+  order :'desc',
+})
+export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
+  searchCollection: '',
+  networkId: 'ethereum',
+  walletAddress: '',
+  includeGasUsed: 'false',
   page: 1,
   limit: 30,
   sort: 'nav',
@@ -44,19 +54,20 @@ export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
   searchCollection: '',
   networkId: 'ethereum',
   walletAddress: '',
-  includeGasUsed: false,
+  includeGasUsed: 'false',
   page: 1,
   limit: 30,
-  sort: 'nav',
+  sort: 'spam',
   order: 'desc',
   includeSpam: true,
   includeCustomSpam: true,
-  includeNonSpam: false,
+  includeNonSpam: true,
 })
 // export const inventoryItemCollectionAtom = atom<TCollectionParam>({})
 export const inventoryItemListAtom = atom<ItemParam>({
+  walletAddress: '',
   networkId: 'ethereum',
-  includeGasUsed: false,
+  includeGasUsed: 'false',
   assetContract: [],
   page: 1,
   limit: 30,

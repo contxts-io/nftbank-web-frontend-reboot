@@ -13,6 +13,13 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
     </div>
   );
 };
+
+const series = [
+  {
+    name: 'Estimated',
+    data: [30, 40, 45, 50, 49, 60, 70, 91],
+  },
+];
 const HistoricalTrendChart = () => {
   const { theme } = useTheme();
   const [isPlus, setIsPlus] = useState(false);
@@ -20,6 +27,7 @@ const HistoricalTrendChart = () => {
   const markerFill = theme === 'light' ? '#FBFBFB' : '#000000';
   const borderColor = '#6B7280';
   const textSubtle = theme === 'light' ? '#4B5563' : '#9CA3AF';
+  const minValue = series[0].data[0];
   const options = {
     chart: {
       toolbar: {
@@ -47,24 +55,22 @@ const HistoricalTrendChart = () => {
       },
     },
     yaxis: {
+      tickAmount: 2,
+      opposite: true,
       labels: {
-        show: false,
+        show: true,
+        style: {
+          colors: textSubtle,
+          cssClass: 'font-caption-regular',
+        },
       },
     },
     annotations: {
       yaxis: [
         {
-          y: 40,
+          y: minValue,
           borderColor: borderColor,
           borderStyle: 'dashed',
-          label: {
-            borderWidth: 0,
-            style: {
-              color: textSubtle,
-              background: 'transparent',
-            },
-            text: '$90,311.87',
-          },
         },
       ],
     },
@@ -114,7 +120,7 @@ const HistoricalTrendChart = () => {
       show: false,
     },
     tooltip: {
-      followCursor: true,
+      followCursor: false,
       custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
         return renderToString(
           tooltip({ series, seriesIndex, dataPointIndex, w })
@@ -122,12 +128,6 @@ const HistoricalTrendChart = () => {
       },
     },
   };
-  const series = [
-    {
-      name: 'Estimated',
-      data: [30, 40, 45, 50, 49, 60, 70, 91],
-    },
-  ];
   return (
     <section className='w-full'>
       <ApexCharts

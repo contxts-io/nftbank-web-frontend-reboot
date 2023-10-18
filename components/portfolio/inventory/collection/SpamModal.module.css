@@ -1,6 +1,6 @@
 .container {
   @apply flex flex-col;
-  @apply w-[982px] max-h-[700px] rounded-none px-32 py-38;
+  @apply w-[982px] min-h-[500px] max-h-[700px] rounded-none px-32 py-38;
   @apply bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)];
 }
 .pHeader {
@@ -25,7 +25,7 @@
   @apply mr-8 h-35 w-130;
 }
 .tableWrapper {
-  @apply w-full max-h-[436px] mt-12 overflow-y-scroll;
+  @apply w-full max-h-[300px] min-h-[200px] mt-12 overflow-y-scroll;
 }
 .textSub {
   @apply text-[var(--color-text-subtle)];

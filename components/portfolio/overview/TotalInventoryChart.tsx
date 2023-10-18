@@ -4,15 +4,21 @@ import { renderToString } from 'react-dom/server';
 import { twMerge } from 'tailwind-merge';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const COLORS = ['#2563EB', '#5EEAD4', '#A855F7', '#14B8A6', '#93C5FD'];
+const LABELS = [
+  'Genesis Box',
+  'The Lockeys',
+  'GEISAI 2022 Official NFT',
+  'Project NANOPASS',
+  'Others',
+];
+const SERIES = [44, 55, 41, 17, 15];
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
-  console.log('w', w);
   const color = w.globals.colors[seriesIndex];
   const label = w.globals.labels[seriesIndex];
-  console.log('color', color);
   return (
     <div className='font-caption-regular py-8 px-16 flex flex-col items-start border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
       <div className='w-full flex items-center'>
-        <div className={`${styles[`dot--${seriesIndex}`]} w-8 h-8 m-8`} />
+        <div className={`${styles[`dot--${seriesIndex}`]} w-8 h-8 mr-8`} />
         <p className={`text-[var(--color-text-subtle)]`}>{label}</p>
       </div>
       <p className={`text-[var(--color-text-main)]`}>{series[seriesIndex]}</p>
@@ -41,20 +47,14 @@ const TotalInventoryChart = () => {
     },
     colors: COLORS,
     tooltip: {
-      followCursor: true,
+      followCursor: false,
       custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
         return renderToString(
           tooltip({ series, seriesIndex, dataPointIndex, w })
         );
       },
     },
-    labels: [
-      'Genesis Box',
-      'The Lockeys',
-      'GEISAI 2022 Official NFT',
-      'Project NANOPASS',
-      'Others',
-    ],
+    labels: LABELS,
     plotOptions: {
       customScale: 1,
       pie: {
@@ -93,13 +93,13 @@ const TotalInventoryChart = () => {
       },
     },
   };
-  const series = [44, 55, 41, 17, 15];
+
   return (
     <section className={styles.container}>
       <ApexCharts
         options={{ ...options, chart: { ...options.chart, type: 'donut' } }}
         type={'donut'}
-        series={series}
+        series={SERIES}
         height={280}
         width={280}
       />

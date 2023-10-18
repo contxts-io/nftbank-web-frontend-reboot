@@ -5,18 +5,29 @@ import { useAtom, useAtomValue } from 'jotai';
 import { inventoryItemListAtom } from '@/store/requestParam';
 import Image from 'next/image';
 import { TValuation, Token } from '@/interfaces/collection';
-import { currencyAtom } from '@/store/currency';
+import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import React, { useEffect, useMemo, useState } from 'react';
 import InventoryItemDetail from './InventoryItemDetail';
 import CaretDown from '@/public/icon/CaretDown';
-import { formatCurrency, formatDate } from '@/utils/common';
-import { useInView } from 'react-intersection-observer';
 import {
-  useInventoryItemInfinitePerformance,
-  useInventoryItemPerformance,
-} from '@/utils/hooks/queries/performance';
+  formatCurrency,
+  formatDate,
+  formatPercent,
+  isPlus,
+  mappingConstants,
+  shortenAddress,
+} from '@/utils/common';
+import { useInView } from 'react-intersection-observer';
+import { useInventoryItemPerformance } from '@/utils/hooks/queries/performance';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import { twMerge } from 'tailwind-merge';
+import Check from '@/public/icon/Check';
+import { ValuationEdit } from '@/interfaces/valuation';
+import { TValuationType } from '@/interfaces/constants';
+import CustomValuationSaveToast from './CustomValuationSaveToast';
+import { customValuationAtom } from '@/store/portfolio';
+import ClockClockwise from '@/public/icon/ClockClockwise';
+import ValuationDropdown from './ValuationDropdown';
 const HEADER = [
   {
     type: 'Item',
@@ -25,14 +36,16 @@ const HEADER = [
   {
     type: 'amount',
     name: 'Amount',
+    sort: true,
   },
   {
     type: 'costBasis',
     name: 'Cost basis',
   },
   {
-    type: 'realtimeNAV',
+    type: 'nav',
     name: 'Realtime NAV',
+    sort: true,
   },
   {
     type: 'unrealizedG&L',
@@ -55,11 +68,22 @@ const HEADER = [
     name: 'Acq. date',
   },
 ];
+type Props = {
+  onClick: (valuationType: TValuationType) => void;
+  valuations: TValuation[];
+  selectedValuation: TValuation | undefined;
+};
+
 const InventoryItemTable = () => {
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
   const [openedItem, setOpenedItem] = useState<string[]>([]);
   const currency = useAtomValue(currencyAtom);
+  const priceType = useAtomValue(priceTypeAtom);
   const { ref, inView } = useInView();
+  const [view, setView] = useState<{ key: string; open: boolean }>({
+    key: '',
+    open: false,
+  });
   const {
     fetchNextPage,
     data: inventoryItemList,
@@ -79,9 +103,9 @@ const InventoryItemTable = () => {
   }, [fetchNextPage, inView]);
   const mergePosts = useMemo(
     () => inventoryItemList?.pages,
-    [inventoryItemList?.pages]
+    [inventoryItemList?.pages, requestParam]
   );
-  const [mergedTokens, setMergedTokens] = useState<Token[]>([]);
+
   type TPage = {
     page: number;
     tokens: Token[];
@@ -95,7 +119,7 @@ const InventoryItemTable = () => {
           ...inventoryItemList,
           pages: inventoryItemList.pages.map(
             (page) =>
-              (page.page === inventoryItemListPerformance?.paging.page && {
+              (page.page === inventoryItemListPerformance?.paging?.page && {
                 ...page,
                 tokens: inventoryItemListPerformance.tokens,
               }) ||
@@ -103,48 +127,7 @@ const InventoryItemTable = () => {
           ),
         }
       );
-  }, [inventoryItemListPerformance]);
-  const [performanceTokens, setPerformanceTokens] = useState<TPage[]>([]);
-  // useEffect(() => {
-  //   collectionsPerformance &&
-  //     setPerformanceCollections((prev) =>
-  //       prev.find((item) => item.page === inventoryCollectionRequestParam.page)
-  //         ? prev.map((item) => {
-  //             return item.page === inventoryCollectionRequestParam.page
-  //               ? {
-  //                   ...item,
-  //                   collections: collectionsPerformance?.collections || [],
-  //                 }
-  //               : item;
-  //           })
-  //         : [
-  //             ...prev,
-  //             {
-  //               page: inventoryCollectionRequestParam.page,
-  //               collections: collectionsPerformance.collections || [],
-  //             },
-  //           ]
-  //     );
-  // }, [collectionsPerformance]);
-  // useEffect(() => {
-  //   const mergedTokens = inventoryItemListPerformance?.pages.flatMap(
-  //     (page) => page.tokens
-  //   );
-  //   inventoryItemList?.pages &&
-  //     setMergedTokens(inventoryItemList?.pages.flatMap((page) => page.tokens));
-  //   setMergedTokens((prev) =>
-  //     prev.map((row) => {
-  //       return (
-  //         mergedTokens?.find(
-  //           (item) =>
-  //             item.collection.assetContract === row.collection.assetContract &&
-  //             item.token.tokenId === row.token.tokenId
-  //         ) || row
-  //       );
-  //     })
-  //   );
-  // }, [inventoryItemList?.pages, inventoryItemListPerformance]);
-
+  }, [inventoryItemList, inventoryItemListPerformance, requestParam]);
   const handleOpenDetail = (target: string) => {
     setOpenedItem((prev) => {
       if (prev.includes(target)) {
@@ -154,6 +137,7 @@ const InventoryItemTable = () => {
       }
     });
   };
+
   const selectedValueType = (
     valuations: TValuation[]
   ): TValuation | undefined => {
@@ -162,134 +146,219 @@ const InventoryItemTable = () => {
       valuations.find((val) => val.default);
     return result;
   };
+  const handleSort = (type: string) => {
+    setRequestParam((prev) => ({
+      ...prev,
+      sort: type as 'amount' | 'nav',
+      order: prev.order === 'desc' ? 'asc' : 'desc',
+    }));
+  };
   return (
-    <table className={`${styles.table} dark:border-border-main-dark`}>
-      <thead className='sticky top-0 bg-elevation-surface dark:bg-elevation-surface-dark z-20'>
-        <tr
-          className={`${styles.tableHeadRow} text-text-subtle dark:text-text-subtle-dark dark:border-border-main-dark`}
-        >
-          <th className='w-12 border-0' />
-          {HEADER.map((item, index) => (
-            <th
-              key={index}
-              className={`font-caption-medium ${
-                index == 0 ? 'text-left' : 'text-right'
-              } dark:border-border-main-dark`}
-            >
-              {item.name}
-            </th>
-          ))}
-          <th className='dark:border-border-main-dark' />
-          <th className='w-12' />
-        </tr>
-      </thead>
-      <tbody>
-        {status === 'success' &&
-          mergePosts?.map((page, pageIndex) => {
-            return page.tokens.map((data, index) => {
-              const valuationType = selectedValueType(data.valuation);
-              const itemKey = `${data.collection.assetContract}-${data.token.tokenId}-${index}`;
-              const isOpen = openedItem.find((item) => item === itemKey)
-                ? true
-                : false;
+    <React.Fragment>
+      <table className={`${styles.table}`}>
+        <thead className={styles.tableHead}>
+          <tr className={`${styles.tableHeadRow}`}>
+            <th />
+            {HEADER.map((item, index) => (
+              <th
+                key={index}
+                className={`font-caption-medium ${
+                  index == 0 ? 'text-left' : 'text-right'
+                } ${item.sort && 'cursor-pointer'}`}
+                onClick={() => item.sort && handleSort(item.type)}
+              >
+                {item.name}
+              </th>
+            ))}
+            <th />
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          {status === 'success' &&
+            mergePosts?.map((page, pageIndex) => {
+              return page.tokens.map((data, index) => {
+                const valuationType = selectedValueType(data.valuation);
+                const itemKey = `${data.collection.assetContract}-${data.token.tokenId}-${index}`;
+                const isOpen = openedItem.find((item) => item === itemKey)
+                  ? true
+                  : false;
 
-              return (
-                <React.Fragment key={index}>
-                  <tr
-                    key={index}
-                    className={`font-caption-regular ${
-                      styles.tableBodyRow
-                    } text-text-main dark:text-text-main-dark
-                    border-border-disabled dark:border-border-disabled-dark hover:bg-elevation-sunken dark:hover:bg-elevation-sunken-dark ${
-                      isOpen &&
-                      'bg-elevation-sunken dark:bg-elevation-sunken-dark'
-                    }`}
-                    onClick={() => handleOpenDetail(itemKey)}
-                  >
-                    <td />
-                    <td className='text-left p-0 dark:border-border-main-dark'>
-                      <div className={`flex items-center my-8`}>
-                        <div
-                          className={twMerge(
-                            `${styles.tokenImage} dark:border-border-main-dark`
-                          )}
-                        >
-                          <Image
-                            src={
-                              data?.token.imageUrl || '/icon/nftbank_icon.svg'
-                            }
-                            fill
-                            alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
-                          />
-                        </div>
-                        <div className='font-caption-medium'>
-                          <p
-                            className={`${styles.pMain} dark:text-text-main-dark`}
-                          >
-                            {data.token.tokenId}
-                          </p>
-                          <p
-                            className={`${styles.pSub} dark:text-text-subtle-dark`}
-                          >
-                            {data.token.name}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      {data.amount}
-                    </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      {data.costBasis?.[currency] &&
-                        formatCurrency(
-                          data.costBasis[currency].amount,
-                          currency
-                        )}
-                    </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      {formatCurrency(data.nav[currency].amount, currency)}
-                    </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      {data.nav[currency].amount}
-                    </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      {data.nav[currency].amount}
-                    </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      {valuationType?.type}
-                    </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      {valuationType?.accuracy.toFixed(2)}
-                    </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      {data.acquisitionDate &&
-                        formatDate(new Date(data.acquisitionDate))}
-                    </td>
-                    <td className='text-right dark:border-border-main-dark'>
-                      <button
-                        className={`${styles.expandButton} dark:border-border-bold-dark`}
-                      >
-                        <CaretDown />
-                      </button>
-                    </td>
-                    <td />
-                  </tr>
-                  {isOpen && (
-                    <tr>
+                return (
+                  <React.Fragment key={index}>
+                    <tr
+                      key={index}
+                      className={`font-caption-regular ${styles.tableBodyRow} ${
+                        isOpen && styles.isOpen
+                      }`}
+                      onClick={() => handleOpenDetail(itemKey)}
+                    >
                       <td />
-                      <td colSpan={HEADER.length + 1}>
-                        <InventoryItemDetail token={data} />
+                      <td className='text-left p-0'>
+                        <div className={`flex items-center my-8`}>
+                          <div className={twMerge(`${styles.tokenImage} w-32`)}>
+                            <Image
+                              src={
+                                data?.token.imageUrl || '/icon/nftbank_icon.svg'
+                              }
+                              width={32}
+                              height={32}
+                              placeholder='data:image/icon/nftbank_icon.svg'
+                              alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
+                            />
+                          </div>
+                          <div className='font-caption-medium max-w-[230px]  white-space-nowrap overflow-hidden text-ellipsis'>
+                            <p className={`${styles.pMain}`}>
+                              {data.token.tokenId}
+                            </p>
+                            <p className={`${styles.pSub}`}>
+                              {data.token.name ||
+                                shortenAddress(data.collection.assetContract)}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className='text-right'>{data.amount}</td>
+                      <td className='text-right'>
+                        {priceType === 'acquisitionPrice'
+                          ? formatCurrency(
+                              data.acquisitionPrice?.[currency].amount || null,
+                              currency
+                            )
+                          : data.costBasis?.[currency] &&
+                            formatCurrency(
+                              data.costBasis[currency].amount,
+                              currency
+                            )}
+                        {/* {priceType === 'acquisitionPrice' && (
+                          <p className='text-[var(--color-text-brand)]'>
+                            {data.gasFee?.[currency]?.amount
+                              ? `GAS +${parseFloat(
+                                  data.gasFee[currency].amount || ''
+                                ).toFixed(3)} `
+                              : ''}
+                          </p>
+                        )} */}
+                      </td>
+                      <td className='text-right'>
+                        {formatCurrency(data.nav[currency].amount, currency)}
+                      </td>
+                      <td className='text-right'>
+                        <p
+                          className={`${
+                            isPlus(data.nav[currency].difference?.amount || 0)
+                              ? 'text-[var(--color-text-success)]'
+                              : 'text-[var(--color-text-danger)]'
+                          }`}
+                        >
+                          {formatCurrency(
+                            data.nav[currency].difference?.amount || null,
+                            currency
+                          )}
+                        </p>
+                      </td>
+                      <td className='text-right'>
+                        <p
+                          className={`${
+                            isPlus(
+                              data.nav[currency].difference?.percentage || 0
+                            )
+                              ? 'text-[var(--color-text-success)]'
+                              : 'text-[var(--color-text-danger)]'
+                          }`}
+                        >
+                          {formatPercent(
+                            data.nav[currency].difference?.percentage || null
+                          )}
+                        </p>
+                      </td>
+                      <td
+                        className='text-right cursor-pointer'
+                        // onClick={(e) => {
+                        //   e.stopPropagation();
+                        //   setView({
+                        //     key: `${pageIndex}-${index}`,
+                        //     open: !view.open,
+                        //   });
+                        // }}
+                      >
+                        <ValuationDropdown
+                          token={data}
+                          valuations={data.valuation}
+                        />
+                        {/* <ul className='relative ml-8'>
+                          {valuationType?.type && (
+                            <div className='flex items-center justify-end'>
+                              <p className='mr-8'>{`${mappingConstants(
+                                valuationType.type
+                              )}`}</p>
+                              <div
+                                className={`${
+                                  view.open &&
+                                  view.key === `${pageIndex}-${index}` &&
+                                  'rotate-180'
+                                }`}
+                              >
+                                <CaretDown />
+                              </div>
+                              {valuationType.selected && (
+                                <div
+                                  className={`text-[var(--color-icon-brand)]`}
+                                >
+                                  <ClockClockwise />
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {view.open &&
+                            view.key === `${pageIndex}-${index}` && (
+                              <Dropdown
+                                onClick={(valuationType: TValuationType) =>
+                                  handleSelectValuation({
+                                    assetContract:
+                                      data.collection.assetContract,
+                                    tokenId: data.token.tokenId,
+                                    networkId: 'ethereum',
+                                    valuationType: valuationType,
+                                  })
+                                }
+                                selectedValuation={valuationType}
+                                valuations={data.valuation}
+                              />
+                            )}
+                        </ul> */}
+                      </td>
+                      <td className='text-right'>
+                        {formatPercent(valuationType?.accuracy || null)}
+                      </td>
+                      <td className='text-right'>
+                        {data.acquisitionDate &&
+                          formatDate(new Date(data.acquisitionDate))}
+                      </td>
+                      <td className='text-right'>
+                        <button className={`${styles.expandButton}`}>
+                          <CaretDown />
+                        </button>
                       </td>
                       <td />
                     </tr>
-                  )}
-                </React.Fragment>
-              );
-            });
-          })}
-      </tbody>
-      <div ref={ref} className='h-43' />
-    </table>
+                    {isOpen && (
+                      <tr>
+                        <td />
+                        <td colSpan={HEADER.length + 1}>
+                          <InventoryItemDetail token={data} />
+                        </td>
+                        <td />
+                      </tr>
+                    )}
+                  </React.Fragment>
+                );
+              });
+            })}
+        </tbody>
+        <div ref={ref} className='h-43' />
+      </table>
+    </React.Fragment>
   );
 };
 export default InventoryItemTable;

@@ -45,9 +45,9 @@ const COLOR = [
   'var(--color-chart-accent-blue-bold)',
 ];
 const TotalInventoryValue = () => {
-  const [selected, setSelected] = useState<'value' | 'nfts'>('value');
+  const [selected, setSelected] = useState<'value' | 'amount'>('value');
   const handleSelect = (selected: string) => {
-    setSelected(selected as 'value' | 'nfts');
+    setSelected(selected as 'value' | 'amount');
   };
   const mathFloor = (value: string) => {
     return Math.floor(parseFloat(value)).toString();
@@ -69,10 +69,10 @@ const TotalInventoryValue = () => {
           </Button>
           <Button
             id={'/portfolio/overview/totalInventory/nfts'}
-            className={`${selected === 'nfts' && styles.selected}`}
-            onClick={() => handleSelect('nfts')}
+            className={`${selected === 'amount' && styles.selected}`}
+            onClick={() => handleSelect('amount')}
           >
-            NFTs
+            Amount
           </Button>
         </div>
       </div>
@@ -80,7 +80,7 @@ const TotalInventoryValue = () => {
         <div className='w-[260px] h-[260px] mr-80 relative'>
           <TotalInventoryChart />
           <div className='absoluteCenter flex flex-col items-center'>
-            {selected === 'nfts' ? (
+            {selected === 'amount' ? (
               <p className='font-subtitle02-bold text-[var(--color-text-main)] mb-4'>
                 2312
               </p>
@@ -98,7 +98,7 @@ const TotalInventoryValue = () => {
               </p>
             )}
             <p className='font-caption-regular text-[var(--color-text-subtle)]'>
-              {selected === 'nfts' ? 'Total Amount' : 'Total Value'}
+              {selected === 'amount' ? 'Total Amount' : 'Total Value'}
             </p>
           </div>
         </div>

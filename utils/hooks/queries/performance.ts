@@ -13,6 +13,7 @@ export function useInventoryValuePerformance(walletAddress?: string) {
       return inventoryValue;
     },
     {
+      enabled: walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -28,6 +29,7 @@ export function useInventoryCollectionListPerformance(requestParam: TCollectionP
       return inventoryCollectionList;
     },
     {
+      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -51,6 +53,7 @@ export const useInventoryCollectionsInfinitePerformance = (requestParam: TCollec
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
+    enabled: requestParam.walletAddress !== '',
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,
@@ -79,6 +82,7 @@ export const useInventoryItemInfinitePerformance = (requestParam: ItemParam) => 
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
+    enabled: requestParam.walletAddress !== '',
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,
@@ -98,6 +102,7 @@ export const useInventoryItemPerformance = (requestParam: ItemParam) => {
       return inventoryItemList;
     },
     {
+      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,

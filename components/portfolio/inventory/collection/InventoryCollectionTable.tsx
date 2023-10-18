@@ -12,15 +12,18 @@ import { selectedCollectionInventoryAtom } from '@/store/portfolio';
 import { useEffect, useMemo, useState } from 'react';
 import Ethereum from '@/public/icon/Ethereum';
 import DotsThree from '@/public/icon/DotsThree';
-import { formatCurrency, formatPercent, shortenAddress } from '@/utils/common';
-import { useInView } from 'react-intersection-observer';
 import {
-  useInventoryCollectionListPerformance,
-  useInventoryCollectionsInfinitePerformance,
-} from '@/utils/hooks/queries/performance';
-import { use } from 'chai';
+  formatCurrency,
+  formatPercent,
+  isPlus,
+  selectedValueType,
+  shortenAddress,
+} from '@/utils/common';
+import { useInView } from 'react-intersection-observer';
+import { useInventoryCollectionListPerformance } from '@/utils/hooks/queries/performance';
 import ReactQueryClient from '@/utils/ReactQueryClient';
-import Button from '@/components/buttons/Button';
+import SpamInsertDropdown from './SpamInsertDropdown';
+import { ValuationTypes } from '@/utils/ValuationTypes';
 const T_HEADER = [
   {
     name: 'Chain',
@@ -103,25 +106,6 @@ const InventoryCollectionTable = () => {
   const collections = useMemo(() => data?.pages, [data?.pages]);
   useEffect(() => {
     collectionsPerformance &&
-      setPerformanceCollections((prev) =>
-        prev.find((item) => item.page === inventoryCollectionRequestParam.page)
-          ? prev.map((item) => {
-              return item.page === inventoryCollectionRequestParam.page
-                ? {
-                    ...item,
-                    collections: collectionsPerformance?.collections || [],
-                  }
-                : item;
-            })
-          : [
-              ...prev,
-              {
-                page: inventoryCollectionRequestParam.page,
-                collections: collectionsPerformance.collections || [],
-              },
-            ]
-      );
-    collectionsPerformance &&
       data?.pages &&
       ReactQueryClient.setQueryData(
         [
@@ -140,7 +124,7 @@ const InventoryCollectionTable = () => {
           ),
         }
       );
-  }, [collectionsPerformance]);
+  }, [collectionsPerformance, data]);
   useEffect(() => {
     const isLastPage = data?.pages?.[data.pages.length - 1].isLast;
     !isLastPage &&
@@ -209,12 +193,7 @@ const InventoryCollectionTable = () => {
           {/* {mergedCollections?.map((row, index) => { */}
           {collections?.map((page, pageIndex) => {
             return page.collections?.map((row, index) => {
-              const performanceItem = performanceCollections[
-                pageIndex
-              ]?.collections.find(
-                (item) =>
-                  item.collection.assetContract === row.collection.assetContract
-              );
+              const valuation = row.valuation.find((item) => item.selected);
               return (
                 <tr
                   key={`${pageIndex}-${index}}`}
@@ -273,8 +252,7 @@ const InventoryCollectionTable = () => {
                   {/* valuation type */}
                   <td className='text-right'>
                     <p className='dark:text-text-main-dark'>
-                      {row.valuation.find((item) => item.selected)?.type ||
-                        row.valuation.find((item) => item.default)?.type}
+                      {ValuationTypes(row.valuation)}
                     </p>
                   </td>
                   {/* realtime nav */}
@@ -287,42 +265,36 @@ const InventoryCollectionTable = () => {
                     </p>
                   </td>
                   <td className='text-right'>
-                    <p
-                      className={
-                        row.nav[currency].difference?.percentage?.toFixed(2) ||
-                        0 > 0
-                          ? 'text-green-500'
-                          : 'text-red-500'
-                      }
-                    >{`${formatCurrency(
-                      row.nav[currency].difference?.amount || null,
-                      currency
-                    )}`}</p>
+                    {row.nav[currency].difference?.amount && (
+                      <p
+                        className={`${
+                          isPlus(row.nav[currency].difference?.amount || 0)
+                            ? 'text-[var(--color-text-success)]'
+                            : 'text-[var(--color-text-danger)]'
+                        }`}
+                      >{`${formatCurrency(
+                        row.nav[currency].difference?.amount || null,
+                        currency
+                      )}`}</p>
+                    )}
                   </td>
                   <td className='text-right'>
                     <p
-                      className={
-                        row.nav[currency].difference?.percentage?.toFixed(2) ||
-                        0 > 0
-                          ? 'text-green-500'
-                          : 'text-red-500'
-                      }
+                      className={`${
+                        isPlus(row.nav[currency].difference?.percentage || 0)
+                          ? 'text-[var(--color-text-success)]'
+                          : 'text-[var(--color-text-danger)]'
+                      }`}
                     >{`${formatPercent(
                       row.nav[currency].difference?.percentage || null
                     )}`}</p>
                   </td>
                   <td className='text-center'>
-                    <div className='w-full flex justify-center items-center'>
-                      <Button
-                        id={`spam-${row.collection.assetContract}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          console.log('spam');
-                        }}
-                        className='p-4 mx-10'
-                      >
-                        <DotsThree />
-                      </Button>
+                    <div
+                      className='w-full flex justify-center items-center'
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <SpamInsertDropdown collection={row} icon={true} />
                     </div>
                   </td>
                 </tr>

@@ -1,0 +1,15 @@
+.dropdownWrapper {
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.1));
+  @apply absolute top-30 min-w-196 border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface-overlay)] z-10;
+}
+
+.dropdownWrapper li {
+  @apply flex justify-between items-center w-fit whitespace-nowrap;
+  @apply text-[var(--color-text-subtle)] p-8 cursor-pointer hover:text-[var(--color-text-main)] border-b-1 border-[var(--color-border-bold)] !important;
+}
+.dropdownWrapper li p {
+  @apply text-right;
+}
+.dropdownWrapper li:last-child {
+  @apply border-0 !important;
+}

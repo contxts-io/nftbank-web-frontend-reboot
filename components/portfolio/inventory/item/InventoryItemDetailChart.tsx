@@ -2,19 +2,26 @@
 import { renderToString } from 'react-dom/server';
 import dynamic from 'next/dynamic';
 import styles from './InventoryItemDetailChart.module.css';
-import { useTheme } from 'next-themes';
+import { TokenHistory } from '@/interfaces/valuation';
+import { useEffect, useMemo } from 'react';
+import { useAtomValue } from 'jotai';
+import { currencyAtom } from '@/store/currency';
+import { customToFixed, formatDate } from '@/utils/common';
 
-const COLORS = ['#14B8A6', '#9333EA', '#16A34A', '#CA8A04', '#DC2626'];
+const COLORS = [
+  'var(--color-chart-accent-teal-bold)',
+  'var(--color-chart-accent-purple-bold)',
+  'var(--color-chart-accent-lime-bold)',
+  'var(--color-chart-accent-yellow-bolder)',
+  'var(--color-chart-accent-red-bold)',
+];
 
-type InventoryItemDetailChartProps = any;
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   return (
-    <section
-      className={`font-caption-regular ${styles.tooltip} dark:bg-elevation-surface-dark dark:text-text-subtle-dark dark:border-border-bold-dark`}
-    >
-      <div className={`${styles.header} dark:border-border-bold-dark`}>
+    <section className={`font-caption-regular ${styles.tooltip}`}>
+      <div className={`${styles.header}`}>
         {w.globals.categoryLabels[dataPointIndex]}
       </div>
       <ul className='pt-11'>
@@ -22,14 +29,10 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
           return (
             <li key={index}>
               <div className='flex items-center'>
-                <div
-                  className={`${styles.dot} ${
-                    styles[`dot--${index}`]
-                  } dark:bg-elevation-surface-dark z-20`}
-                />
+                <div className={`${styles.dot} ${styles[`dot--${index}`]}`} />
                 <p>{w.globals.seriesNames[index]}</p>
               </div>
-              <p className={`text-text-main dark:text-text-main-dark`}>
+              <p className={`text-[var(--color-text-main)]`}>
                 {series[index][dataPointIndex]}
               </p>
             </li>
@@ -39,11 +42,74 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
     </section>
   );
 };
-const InventoryItemDetailChart = (props: InventoryItemDetailChartProps) => {
-  const { theme } = useTheme();
-  const borderColor = theme === 'light' ? '#e5e7eb' : '#162130';
-  const markerFill = theme === 'light' ? '#FBFBFB' : '#000000';
-  const axisColor = theme === 'light' ? '#4B5563' : '#9CA3AF';
+type InventoryItemDetailChartProps = { historicalData: TokenHistory };
+type Series = {
+  id: string;
+  name: string;
+  data: number[];
+}[];
+const InventoryItemDetailChart = ({
+  historicalData,
+}: InventoryItemDetailChartProps) => {
+  const borderColor = 'var(--color-border-main)';
+  const markerFill = 'var(--color-elevation-surface)';
+  const axisColor = 'var(--color-text-subtle)';
+  const currency = useAtomValue(currencyAtom);
+
+  let category: string[] = [];
+
+  let seriesData = useMemo(() => {
+    let _seriesData: Series = [
+      {
+        id: 'estimate',
+        name: 'Estimated',
+        data: [],
+      },
+      {
+        id: 'floor',
+        name: 'Trait Floor',
+        data: [],
+      },
+      {
+        id: 'traitFloor',
+        name: 'Collection Floor',
+        data: [],
+      },
+      {
+        id: 'd30Avg',
+        name: '30d Avg.',
+        data: [],
+      },
+      {
+        id: 'd90Avg',
+        name: '90d Avg.',
+        data: [],
+      },
+    ];
+    historicalData &&
+      historicalData.map((item, index) => {
+        const _date = formatDate(new Date(item.processedAt)).split('/');
+        const date = `${_date[1]}/${_date[2]}`;
+        category.push(date);
+        const keys = Object.keys(item) as (keyof typeof item)[];
+        keys.map((key) => {
+          key !== 'processedAt' &&
+            _seriesData.map((series) => {
+              if (key === series.id) {
+                const prevValue = index > 0 ? series.data[index - 1] || 0 : 0;
+                const value = item[key]?.[currency]
+                  ? item[key]?.[currency]
+                  : prevValue.toString();
+                value
+                  ? series.data.push(parseFloat(value))
+                  : series.data.push(0);
+              }
+            });
+        });
+      });
+    return _seriesData;
+  }, [historicalData, currency, category]);
+
   const options = {
     chart: {
       id: 'basic-bar',
@@ -52,8 +118,11 @@ const InventoryItemDetailChart = (props: InventoryItemDetailChartProps) => {
       },
     },
     xaxis: {
-      categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
+      type: 'category' as const,
+      tickAmount: 10,
+      categories: category,
       labels: {
+        rotate: 0,
         style: {
           colors: axisColor,
           fontSize: '12px',
@@ -70,10 +139,14 @@ const InventoryItemDetailChart = (props: InventoryItemDetailChartProps) => {
       },
     },
     yaxis: {
+      tickAmount: 6,
       labels: {
         style: {
           colors: axisColor,
           fontSize: '12px',
+        },
+        formatter: function (value: any) {
+          return value ? customToFixed(value) : value;
         },
       },
     },
@@ -114,33 +187,12 @@ const InventoryItemDetailChart = (props: InventoryItemDetailChartProps) => {
       },
     },
   };
-  const series = [
-    {
-      name: 'Estimated',
-      data: [30, 40, 45, 50, 49, 60, 70, 91],
-    },
-    {
-      name: 'Trait Floor',
-      data: [40, 45, 50, 49, 60, 70, 91, 30],
-    },
-    {
-      name: 'Collection Floor',
-      data: [50, 40, 45, 30, 49, 60, 70, 91],
-    },
-    {
-      name: '30d Avg.',
-      data: [20, 35, 50, 49, 100, 70, 51, 30],
-    },
-    {
-      name: '90d Avg.',
-      data: [140, 40, 53, 79, 60, 70, 41, 30],
-    },
-  ];
+
   return (
     <section className='w-full'>
       <ApexCharts
         options={options}
-        series={series.map((item, index) => ({
+        series={seriesData.map((item, index) => ({
           ...item,
           color: COLORS[index % COLORS.length],
         }))}

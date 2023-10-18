@@ -37,6 +37,7 @@ export const getItemListPerformance = async<T = IInventoryItemList>(requestParam
       }
   })
     .join('&');
+    console.log('getItemListPerformance query',query);
   const { data } = await instance.get<{data:T}>(`/performance/token?${query.replace('&&','&')}`);
   return data.data;
 }

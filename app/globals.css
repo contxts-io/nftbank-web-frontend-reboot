@@ -134,7 +134,7 @@
   @apply opacity-70 cursor-not-allowed pointer-events-none;
 }
 .overlayBackground {
-  @apply fixed top-0 left-0 right-0 bottom-0 bg-gray-500 bg-opacity-50 z-50;
+  @apply fixed overflow-hidden top-0 left-0 right-0 bottom-0 bg-gray-500 bg-opacity-50 z-50;
 }
 .apexcharts-tooltip {
   @apply border-0 rounded-none !important;
@@ -142,24 +142,7 @@
 .toast-message {
   @apply rounded-none flex h-28 items-center !important;
 }
-:root {
-  --color-primary-accent: #2614c7;
-  --color-primary: #000;
-  --color-button: #3d486c;
-  --color-paragraph: #797979;
-  --color-button-text: rgb(255, 255, 255);
-  --color-background: #fff;
-  --color-anchor: #000aff;
-}
 
-[data-theme='dark'] {
-  --color-primary-accent: #00ff4c;
-  --color-primary: #fff;
-  --color-button: #00ff4c;
-  --color-paragraph: #8a8a8a;
-  --color-button-text: rgb(0, 0, 0);
-  --color-background: #000;
-}
 .test {
   background-color: var(--color-text-main);
   color: var(--color-text-link);
