@@ -1,4 +1,4 @@
-import { IInventoryCollectionList, IInventoryCollectionListPerformance, IInventoryItemList, IInventoryValue, RealizedValue, UnrealizedValue } from "@/interfaces/inventory";
+import { IInventoryCollectionList, IInventoryCollectionListPerformance, IInventoryItemList, IInventoryValue, UnrealizedValue } from "@/interfaces/inventory";
 import { ItemParam, TCollectionParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
