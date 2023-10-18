@@ -39,13 +39,14 @@ const T_HEADER = [
   {
     name: 'Cost basis',
     key: 'costBasis',
-    sort: 'acquisitionPrice',
+    // sort: 'acquisitionPrice',
   },
   {
     name: 'Valuation Type',
   },
   {
     name: 'Realtime NAV',
+    sort: 'nav',
   },
   {
     name: 'Unrealized G&L',
