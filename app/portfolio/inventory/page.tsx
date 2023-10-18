@@ -12,7 +12,7 @@ const getInventoryValue = async <T = IInventoryValue,>(
   try {
     const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
     const { data } = await instance.get<{ data: T }>(
-      `https://web-api-reboot.prod.nftbank.tools/v1/performance/value${query}`
+      `https://web-api-reboot.dev.nftbank.tools/v1/performance/value${query}`
     );
     // await new Promise((resolve) => {
     //   setTimeout(() => {
@@ -32,7 +32,7 @@ const getCollectionCount = async <T = { count: number },>(
   try {
     const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
     const { data } = await instance.get<{ data: T }>(
-      `https://web-api-reboot.prod.nftbank.tools/v1/inventory/collection/stat${query}`
+      `https://web-api-reboot.dev.nftbank.tools/v1/inventory/collection/stat${query}`
     );
     console.log('ssr ? getCollectionCount:', data.data);
     return data.data;
