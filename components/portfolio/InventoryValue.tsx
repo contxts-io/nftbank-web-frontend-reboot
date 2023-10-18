@@ -13,6 +13,7 @@ import { formatCurrency, formatPercent } from '@/utils/common';
 import { useInventoryValuePerformance } from '@/utils/hooks/queries/performance';
 import SkeletonLoader from '../SkeletonLoader';
 import { useMe } from '@/utils/hooks/queries/auth';
+import { useEffect } from 'react';
 const VALUE = [
   {
     type: 'inventoryValue',
@@ -46,7 +47,10 @@ const InventoryValue = () => {
     return value && parseFloat(value).toFixed(2);
   };
   const inventoryType = useAtomValue(inventoryTypeAtom);
-
+  useEffect(() => {
+    console.log('inventoryValue', inventoryValue);
+    console.log('inventoryValuePerformance', inventoryValuePerformance);
+  }, [inventoryValue, inventoryValuePerformance]);
   return (
     <section className={`${styles.container} dark:border-border-main-dark`}>
       {isLoading && <div>Loading...</div>}

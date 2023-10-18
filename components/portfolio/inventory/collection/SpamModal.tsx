@@ -8,8 +8,6 @@ import {
 import { useEffect, useState } from 'react';
 import {
   useCollectionCount,
-  useInventoryCollectionList,
-  useInventoryCollectionsInfinite,
   useInventoryValue,
 } from '@/utils/hooks/queries/inventory';
 import MagnifyingGlass from '@/public/icon/MagnifyingGlass';
@@ -17,8 +15,6 @@ import ToggleButton from '@/components/buttons/ToggleButton';
 import Button from '@/components/buttons/Button';
 import ClockClockwise from '@/public/icon/ClockClockwise';
 import SpamCollectionTable from './SpamCollectionTable';
-import CaretDown from '@/public/icon/CaretDown';
-import { Popover } from 'react-tiny-popover';
 import SpamSaveToast from './SpamSaveToast';
 import { addedSpamListAtom } from '@/store/portfolio';
 import { useInventorySpamListInfinite } from '@/utils/hooks/queries/spam';

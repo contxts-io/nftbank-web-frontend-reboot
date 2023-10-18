@@ -17,11 +17,13 @@ const InventoryItemSection = () => {
     <section className='sticky top-116 z-0'>
       <InventoryItemSelectCollection />
       <section className={`${styles.container} dark:border-border-main-dark`}>
-        {isFilterOpen && (
-          <InventoryItemFilter handleFilterOpen={setIsFilterOpen} />
-        )}
-        <div className='w-full'>
-          <div className='flex-grow px-12'>
+        <div className='w-fit h-full '>
+          {isFilterOpen && (
+            <InventoryItemFilter handleFilterOpen={setIsFilterOpen} />
+          )}
+        </div>
+        <div className='w-full border-l-1'>
+          <div className='flex-grow px-12 overflow-hidden'>
             <InventoryItemList
               isFilterOpen={isFilterOpen}
               handleFilterOpen={setIsFilterOpen}

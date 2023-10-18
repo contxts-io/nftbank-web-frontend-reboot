@@ -80,7 +80,9 @@ const ValuationDropdown = ({ token, valuations }: Props) => {
           <div className={`${isPopoverOpen && 'rotate-180'} mr-10`}>
             <CaretDown />
           </div>
-          {selectedValuation.selected && (
+          {valuations.find(
+            (valuation) => valuation.type === selectedValuation.type
+          )?.selected && (
             <ClockClockwise className='fill-[var(--color-icon-brand)]' />
           )}
         </div>

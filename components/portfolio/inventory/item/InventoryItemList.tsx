@@ -5,7 +5,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { TSort, inventoryItemListAtom } from '@/store/requestParam';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import { TValuation } from '@/interfaces/collection';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InventoryItemTable from './InventoryItemTable';
 import DotsNine from '@/public/icon/DotsNine';
 import Hamburger from '@/public/icon/Hamburger';
@@ -40,32 +40,19 @@ const InventoryItemList = (props: Props) => {
       order: order,
     });
   };
-
-  const selectedValueType = (
-    valuations: TValuation[]
-  ): TValuation | undefined => {
-    const result =
-      valuations.find((val) => val.selected) ||
-      valuations.find((val) => val.default);
-    return result;
-  };
-  const handleChangeSelect = (e: React.FormEvent) => {
-    e.stopPropagation();
-  };
+  useEffect(() => {
+    setRequestParam((prev) => ({
+      ...prev,
+      page: 1,
+      includeGasUsed: priceType === 'costBasis' ? 'true' : 'false',
+    }));
+  }, [priceType]);
   const handleChangePriceType = () => {
     setPriceType((prev) =>
       prev === 'costBasis' ? 'acquisitionPrice' : 'costBasis'
     );
   };
-  const handleOpenDetail = (target: string) => {
-    setOpenedItem((prev) => {
-      if (prev.includes(target)) {
-        return prev.filter((item) => item !== target);
-      } else {
-        return [...prev, target];
-      }
-    });
-  };
+
   return (
     <section className={styles.container}>
       <div className='flex py-12 px-24 items-center justify-between'>
@@ -86,7 +73,7 @@ const InventoryItemList = (props: Props) => {
             </span>
             <ToggleButton
               onClick={() => handleChangePriceType()}
-              checked={priceType === 'acquisitionPrice'}
+              checked={priceType === 'costBasis'}
               id={''}
             />
           </div>

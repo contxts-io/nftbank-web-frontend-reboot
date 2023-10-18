@@ -6,47 +6,66 @@ import CaretDown from '@/public/icon/CaretDown';
 import { inventorySpamCollectionAtom } from '@/store/requestParam';
 import { useAtom } from 'jotai';
 const statusList = [
-  { key: 'allStatus', value: 'All Status' },
-  { key: 'spam', value: 'Spam' },
-  { key: 'nonSpam', value: 'Non Spam' },
+  {
+    key: 'allStatus',
+    value: 'All Status',
+    param: {
+      includeSpam: true,
+      includeCustomSpam: true,
+      includeNonSpam: true,
+    },
+  },
+  {
+    key: 'spam',
+    value: 'Spam',
+    param: {
+      includeSpam: true,
+      includeCustomSpam: true,
+      includeNonSpam: false,
+    },
+  },
+  {
+    key: 'nonSpam',
+    value: 'Non Spam',
+    param: {
+      includeSpam: false,
+      includeCustomSpam: false,
+      includeNonSpam: true,
+    },
+  },
 ];
+type Status = {
+  key: string;
+  value: string;
+  param: {
+    includeSpam: boolean;
+    includeCustomSpam: boolean;
+    includeNonSpam: boolean;
+  };
+};
 type Props = {};
 const StatusDropdown = (props: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
-
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useAtom(inventorySpamCollectionAtom);
-  const [status, setStatus] = useState<{ key: string; value: string } | null>({
+  const [status, setStatus] = useState<Status | null>({
     key: 'allStatus',
     value: 'All Status',
+    param: {
+      includeSpam: true,
+      includeCustomSpam: true,
+      includeNonSpam: true,
+    },
   });
   const handleClickList = (value: { key: string; value: string }) => {
     setStatus(statusList.find((item) => item.key === value.key) || null);
   };
   useEffect(() => {
-    // status && {
-    //   status.key === 'allStatus' &&
-    //     setInventoryCollectionRequestParam({
-    //       ...inventoryCollectionRequestParam,
-    //       includeSpam: true,
-    //       includeCustomSpam: true,
-    //       includeNonSpam: true,
-    //     });
-    //   status.key === 'spam' &&
-    //     setInventoryCollectionRequestParam({
-    //       ...inventoryCollectionRequestParam,
-    //       includeSpam: true,
-    //       includeCustomSpam: true,
-    //       includeNonSpam: false,
-    //     });
-    //   status.key === 'nonSpam' &&
-    //     setInventoryCollectionRequestParam({
-    //       ...inventoryCollectionRequestParam,
-    //       includeSpam: false,
-    //       includeCustomSpam: false,
-    //       includeNonSpam: true,
-    //     })
-    // }
+    status &&
+      setInventoryCollectionRequestParam({
+        ...inventoryCollectionRequestParam,
+        ...status.param,
+      });
   }, [status]);
   return (
     <Button
