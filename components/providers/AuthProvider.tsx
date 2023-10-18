@@ -21,6 +21,7 @@ const checkMe = async (token: RequestCookie) => {
     // const URL = process.env.NEXT_PUBLIC_API_URL;
     const URL = 'https://web-api-reboot.prod.nftbank.tools/v1/user';
     const { data } = await instance.get(`${URL}`, options);
+    console.log('ssr checkME ', data.data);
     return {
       ...data.data,
       walletAddress:
@@ -37,6 +38,7 @@ export const AuthProvider = async ({ children }: any) => {
   const cookieStore = cookies();
   const TOKEN = cookieStore.get('nb_session');
   const reactQueryClient = ReactQueryClient;
+  console.log('TOKEN ? ', TOKEN);
   if (TOKEN && TOKEN?.value !== '') {
     await reactQueryClient.prefetchQuery(['me'], () => checkMe(TOKEN));
   }
