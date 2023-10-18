@@ -48,6 +48,7 @@ export const getItemList = async<T = IInventoryItemList>(requestParam: ItemParam
       }
   })
     .join('&');
+  console.log('getItemList query',query);
   const { data } = await instance.get<{data:T}>(`/inventory/token?${query.replace('&&','&')}`);
   return data.data;
 }

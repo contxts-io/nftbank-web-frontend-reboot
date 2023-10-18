@@ -23,6 +23,7 @@ import { useInView } from 'react-intersection-observer';
 import { useInventoryCollectionListPerformance } from '@/utils/hooks/queries/performance';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import SpamInsertDropdown from './SpamInsertDropdown';
+import { ValuationTypes } from '@/utils/ValuationTypes';
 const T_HEADER = [
   {
     name: 'Chain',
@@ -251,7 +252,7 @@ const InventoryCollectionTable = () => {
                   {/* valuation type */}
                   <td className='text-right'>
                     <p className='dark:text-text-main-dark'>
-                      {selectedValueType(row.valuation)}
+                      {ValuationTypes(row.valuation)}
                     </p>
                   </td>
                   {/* realtime nav */}

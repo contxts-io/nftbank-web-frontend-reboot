@@ -12,8 +12,10 @@ import {
   inventoryCollectionAtom,
   inventorySpamCollectionAtom,
 } from '@/store/requestParam';
+import { useMe } from '@/utils/hooks/queries/auth';
 
 const SpamSaveToast = () => {
+  const { data: me } = useMe();
   const [spamList, setSpamList] = useAtom(addedSpamListAtom); // [TSpam, (TSpam) => void
   const { mutate, status } = useMutationSpamList();
 
@@ -48,7 +50,14 @@ const SpamSaveToast = () => {
   }, [status]);
   const handleClickResetSpam = async () => {
     await ReactQueryClient.removeQueries(['inventorySpamList']);
-    await ReactQueryClient.removeQueries(['inventoryValuePerformance']);
+    await ReactQueryClient.invalidateQueries([
+      'inventoryValue',
+      me.walletAddress,
+    ]);
+    await ReactQueryClient.invalidateQueries([
+      'inventoryValuePerformance',
+      me.walletAddress,
+    ]);
     await ReactQueryClient.removeQueries(['collectionCount']);
     await ReactQueryClient.removeQueries(['itemCount']);
     await ReactQueryClient.removeQueries(['inventoryCollectionList']);

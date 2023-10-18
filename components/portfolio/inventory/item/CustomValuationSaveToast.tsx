@@ -7,13 +7,20 @@ import { useAtom } from 'jotai';
 import { customValuationAtom } from '@/store/portfolio';
 import { useMutationCustomValuations } from '@/utils/hooks/mutations/valuation';
 import { showToastMessage } from '@/utils/toastify';
-import { useInventoryItemInfinitePerformance } from '@/utils/hooks/queries/performance';
+import {
+  useInventoryItemInfinitePerformance,
+  useInventoryValuePerformance,
+} from '@/utils/hooks/queries/performance';
 import { inventoryItemListAtom } from '@/store/requestParam';
-import { useInventoryItemInfinite } from '@/utils/hooks/queries/inventory';
-import { QueryClient } from '@tanstack/react-query';
+import {
+  useInventoryItemInfinite,
+  useInventoryValue,
+} from '@/utils/hooks/queries/inventory';
 import ReactQueryClient from '@/utils/ReactQueryClient';
+import { useMe } from '@/utils/hooks/queries/auth';
 type Props = {};
 const CustomValuationSaveToast = (props: Props) => {
+  const { data: me } = useMe();
   const [customValuations, setCustomValuations] = useAtom(customValuationAtom);
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
   const { mutate, status } = useMutationCustomValuations();
@@ -23,6 +30,11 @@ const CustomValuationSaveToast = (props: Props) => {
     ...requestParam,
     page: 0,
   });
+  const { refetch: refetchInventoryValue } = useInventoryValue(
+    me.walletAddress
+  );
+  const { refetch: refetchInventoryValuePerformance } =
+    useInventoryValuePerformance(me.walletAddress);
   const handleClickCancel = () => {
     setCustomValuations([]);
   };
@@ -38,16 +50,29 @@ const CustomValuationSaveToast = (props: Props) => {
         code: 'success',
         toastId: 'custom-valuation',
       });
-      ReactQueryClient.removeQueries(['inventoryItemList']);
-      // setRequestParam((prev) => ({
-      //   ...prev,
-      //   page: 1,
-      // }));
+      handleClickResetSpam();
+      setRequestParam((prev) => ({
+        ...prev,
+        page: 1,
+      }));
       // refetchInventoryItemPerformance();
       // refetchInventoryItem();
     }
   }, [status]);
-
+  const handleClickResetSpam = async () => {
+    ReactQueryClient.removeQueries(['inventoryItemList']);
+    ReactQueryClient.removeQueries(['inventoryItemListPerformance']);
+    ReactQueryClient.removeQueries(['inventorySpamList']);
+    ReactQueryClient.invalidateQueries(['inventoryValue']);
+    ReactQueryClient.invalidateQueries(['inventoryValuePerformance']);
+    ReactQueryClient.removeQueries(['collectionCount']);
+    ReactQueryClient.removeQueries(['itemCount']);
+    ReactQueryClient.removeQueries(['inventoryCollectionList']);
+    ReactQueryClient.removeQueries(['inventoryCollectionListPerformance']);
+    console.log('handleclickresetspam');
+    refetchInventoryValue();
+    refetchInventoryValuePerformance();
+  };
   return (
     <div className={styles.toast}>
       <div className='flex'>

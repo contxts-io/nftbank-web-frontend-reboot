@@ -36,14 +36,16 @@ const HEADER = [
   {
     type: 'amount',
     name: 'Amount',
+    sort: true,
   },
   {
     type: 'costBasis',
     name: 'Cost basis',
   },
   {
-    type: 'realtimeNAV',
+    type: 'nav',
     name: 'Realtime NAV',
+    sort: true,
   },
   {
     type: 'unrealizedG&L',
@@ -71,30 +73,7 @@ type Props = {
   valuations: TValuation[];
   selectedValuation: TValuation | undefined;
 };
-const Dropdown = ({ onClick, valuations, selectedValuation }: Props) => {
-  return (
-    <div className={`font-caption-medium ${styles.dropdown}`}>
-      {valuations.map((valuation, index) => {
-        return (
-          <li
-            className={styles.dropdownRow}
-            key={index}
-            onClick={() => onClick(valuation.type)}
-          >
-            <p>{`${mappingConstants(valuation.type)} (${formatPercent(
-              valuation.accuracy
-            )})`}</p>
-            {selectedValuation?.type === valuation.type && (
-              <div className={styles.icon}>
-                <Check />
-              </div>
-            )}
-          </li>
-        );
-      })}
-    </div>
-  );
-};
+
 const InventoryItemTable = () => {
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
   const [openedItem, setOpenedItem] = useState<string[]>([]);
@@ -167,7 +146,13 @@ const InventoryItemTable = () => {
       valuations.find((val) => val.default);
     return result;
   };
-
+  const handleSort = (type: string) => {
+    setRequestParam((prev) => ({
+      ...prev,
+      sort: type as 'amount' | 'nav',
+      order: prev.order === 'desc' ? 'asc' : 'desc',
+    }));
+  };
   return (
     <React.Fragment>
       <table className={`${styles.table}`}>
@@ -179,7 +164,8 @@ const InventoryItemTable = () => {
                 key={index}
                 className={`font-caption-medium ${
                   index == 0 ? 'text-left' : 'text-right'
-                }`}
+                } ${item.sort && 'cursor-pointer'}`}
+                onClick={() => item.sort && handleSort(item.type)}
               >
                 {item.name}
               </th>
@@ -234,12 +220,17 @@ const InventoryItemTable = () => {
                       </td>
                       <td className='text-right'>{data.amount}</td>
                       <td className='text-right'>
-                        {data.costBasis?.[currency] &&
-                          formatCurrency(
-                            data.costBasis[currency].amount,
-                            currency
-                          )}
-                        {priceType === 'acquisitionPrice' && (
+                        {priceType === 'acquisitionPrice'
+                          ? formatCurrency(
+                              data.acquisitionPrice?.[currency].amount || null,
+                              currency
+                            )
+                          : data.costBasis?.[currency] &&
+                            formatCurrency(
+                              data.costBasis[currency].amount,
+                              currency
+                            )}
+                        {/* {priceType === 'acquisitionPrice' && (
                           <p className='text-[var(--color-text-brand)]'>
                             {data.gasFee?.[currency]?.amount
                               ? `GAS +${parseFloat(
@@ -247,7 +238,7 @@ const InventoryItemTable = () => {
                                 ).toFixed(3)} `
                               : ''}
                           </p>
-                        )}
+                        )} */}
                       </td>
                       <td className='text-right'>
                         {formatCurrency(data.nav[currency].amount, currency)}
