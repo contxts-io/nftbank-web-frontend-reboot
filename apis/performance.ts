@@ -1,4 +1,4 @@
-import { IInventoryCollectionList, IInventoryCollectionListPerformance, IInventoryItemList, IInventoryValue } from "@/interfaces/inventory";
+import { IInventoryCollectionList, IInventoryCollectionListPerformance, IInventoryItemList, IInventoryValue, UnrealizedValue } from "@/interfaces/inventory";
 import { ItemParam, TCollectionParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
@@ -6,6 +6,12 @@ export const getInventoryValuePerformance = async<T = IInventoryValue>(walletAdd
   const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
   // const { data } = await instance.get<{data:T}>(`/inventory/value${query}`);
   const { data } = await instance.get<{data:T}>(`/performance/value${query}`);
+  return data.data;
+}
+export const getInventoryUnrealizedPerformance = async<T = UnrealizedValue>(walletAddress?: string): Promise<T> => {
+  const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
+  // const { data } = await instance.get<{data:T}>(`/inventory/value${query}`);
+  const { data } = await instance.get<{data:T}>(`/performance/unrealized${query}`);
   return data.data;
 }
 type Key = keyof TCollectionParam;

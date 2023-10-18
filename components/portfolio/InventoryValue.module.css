@@ -2,19 +2,22 @@
   @apply w-full grid grid-cols-4 justify-between items-start mt-22 border-1;
 }
 .articleBox {
-  @apply border-r-1 ml-16 py-16 border-border-main;
+  @apply border-r-1 ml-16 py-16 border-[var(--color-border-main)];
 }
 .pHeader {
-  @apply border-border-accent-gray;
+  @apply border-[var(--color-border-accent-gray)];
 }
 .pValue {
   @apply text-28 font-bold;
 }
+.pMain {
+  @apply text-[var(--color-text-main)];
+}
 .plus {
-  @apply text-text-success bg-background-success;
+  @apply text-[var(--color-text-success)] bg-[var(--color-background-success)];
 }
 .minus {
-  @apply text-text-danger bg-background-danger;
+  @apply text-[var(--color-text-danger)] bg-[var(--color-background-danger)];
 }
 .valueRow {
   @apply flex items-end mt-16 h-32;
