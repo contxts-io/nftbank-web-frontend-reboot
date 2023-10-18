@@ -22,6 +22,17 @@ export type IInventoryValue = {
   },
   processedAt: string
 }
+export type UnrealizedValue = {
+    gainLoss: {
+      eth: string,
+      usd: string,
+    },
+    roi: {
+      eth: number,
+      usd: number
+    },
+    processedAt: string
+}
 export type IInventoryCollectionList = {
   collections: Collection[],
   paging: Paging,

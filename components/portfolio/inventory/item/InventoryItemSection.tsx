@@ -22,7 +22,7 @@ const InventoryItemSection = () => {
             <InventoryItemFilter handleFilterOpen={setIsFilterOpen} />
           )}
         </div>
-        <div className='w-full border-l-1'>
+        <div className='w-full'>
           <div className='flex-grow px-12 overflow-hidden'>
             <InventoryItemList
               isFilterOpen={isFilterOpen}
