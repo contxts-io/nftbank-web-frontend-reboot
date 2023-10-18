@@ -91,6 +91,7 @@ const InventoryValue = () => {
     statusInventoryValue,
     inventoryValuePerformance,
     inventoryUnrealized,
+    currency,
   ]);
   return (
     <section className={`${styles.container} dark:border-border-main-dark`}>
@@ -119,8 +120,8 @@ const InventoryValue = () => {
                         item.type == `inventoryValue`
                           ? styles.pMain
                           : item.plus
-                          ? styles.plus
-                          : styles.minus
+                          ? 'text-[var(--color-text-success)]'
+                          : 'text-[var(--color-text-danger)]'
                       }`}
                     >
                       {item.value && item.value}
