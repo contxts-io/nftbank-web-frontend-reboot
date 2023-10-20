@@ -43,8 +43,7 @@ type Status = {
     includeNonSpam: boolean;
   };
 };
-type Props = {};
-const StatusDropdown = (props: Props) => {
+const StatusDropdown = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useAtom(inventorySpamCollectionAtom);
