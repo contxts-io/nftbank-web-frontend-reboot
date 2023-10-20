@@ -6,7 +6,6 @@ type IChain = {
 }
 type Value = {
   amount: string | null,
-  currency: 'ETH' | 'USD',
 }
 type TValue = {
   eth: Value,
@@ -51,18 +50,6 @@ export type Collection = {
     eth: Value & {difference: TDifference | null},
     usd: Value & {difference: TDifference | null},
   },
-    // eth: TValue & {
-    //   difference: {
-    //     amount: string,
-    //     percentage : number,
-    //   }
-    // },
-    // usd: TValue & {
-    //   difference: {
-    //     amount: string,
-    //     percentage : number,
-    //   }
-    // },
 }
 export type Token = Collection & {
   token: {

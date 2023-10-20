@@ -1,0 +1,6 @@
+.container {
+  @apply border-1 border-[var(--color-border-main)] p-20;
+}
+.title {
+  @apply gap-12 flex items-center;
+}

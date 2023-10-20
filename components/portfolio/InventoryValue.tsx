@@ -94,7 +94,7 @@ const InventoryValue = () => {
     currency,
   ]);
   return (
-    <section className={`${styles.container} dark:border-border-main-dark`}>
+    <section className={`${styles.container}`}>
       {statusInventoryValue === 'loading' && <div>Loading...</div>}
       {statusInventoryValue === 'success' &&
         inventoryValue &&
