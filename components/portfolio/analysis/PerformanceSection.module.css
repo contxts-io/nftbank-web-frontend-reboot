@@ -4,3 +4,26 @@
 .title {
   @apply gap-12 flex items-center;
 }
+.tableWrapper {
+  @apply w-full pr-14;
+}
+.table {
+  @apply w-full;
+}
+.table thead {
+  @apply border-b-1 border-[var(--color-border-disabled)];
+}
+.table thead p {
+  @apply mb-20 w-50 text-[var(--color-text-subtle)] m-auto;
+}
+
+.table th {
+  @apply text-center;
+}
+
+.table tbody tr p {
+  @apply mt-20 m-auto;
+}
+.table td {
+  @apply text-center;
+}

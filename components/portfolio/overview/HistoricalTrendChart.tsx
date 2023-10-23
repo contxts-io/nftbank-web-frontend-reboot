@@ -1,6 +1,10 @@
-import { useTheme } from 'next-themes';
+import { currencyAtom } from '@/store/currency';
+import { formatCurrency } from '@/utils/common';
+import { useMe } from '@/utils/hooks/queries/auth';
+import { useInventoryValueHistorical } from '@/utils/hooks/queries/inventory';
+import { useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { renderToString } from 'react-dom/server';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -14,19 +18,33 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   );
 };
 
-const series = [
-  {
-    name: 'Estimated',
-    data: [30, 40, 45, 50, 49, 60, 70, 91],
-  },
-];
 const HistoricalTrendChart = () => {
-  const { theme } = useTheme();
+  const { data: me } = useMe();
+  const currency = useAtomValue(currencyAtom);
+  const {
+    data: inventoryValueHistorical,
+    status: statusInventoryValueHistorical,
+  } = useInventoryValueHistorical(me.walletAddress);
   const [isPlus, setIsPlus] = useState(false);
-  const lineColor = isPlus ? '#14b8a6' : '#EF4444';
-  const markerFill = theme === 'light' ? '#FBFBFB' : '#000000';
-  const borderColor = '#6B7280';
-  const textSubtle = theme === 'light' ? '#4B5563' : '#9CA3AF';
+  let series = [
+    {
+      name: 'inventoryValueHistorical',
+      data: [],
+    },
+  ] as { name: string; data: number[] }[];
+  useEffect(() => {
+    inventoryValueHistorical &&
+      (inventoryValueHistorical.data.map((item) => {
+        series[0].data.push(parseFloat(item.value[currency].amount));
+      }),
+      setIsPlus(true));
+  }, [inventoryValueHistorical]);
+  const lineColor = isPlus
+    ? 'var(--color-chart-success)'
+    : 'var(--color-chart-danger)';
+  const markerFill = 'var(--color-border-selected)';
+  const borderColor = 'var(--color-border-accent-gray)';
+  const textSubtle = 'var(--color-text-subtle)';
   const minValue = series[0].data[0];
   const options = {
     chart: {

@@ -1,4 +1,9 @@
-import { IInventoryCollectionList, IInventoryItemList, IInventoryValue, IStat } from "@/interfaces/inventory";
+import { AcquisitionType } from "@/interfaces/activity";
+import { TValue, Token } from "@/interfaces/collection";
+import { IInventoryCollectionList, IInventoryItemList, IInventoryValue, IStat, PositionCollection } from "@/interfaces/inventory";
+import { TSummary, TUnrealized } from "@/interfaces/summary";
+import { TToken } from "@/interfaces/token";
+import { Paging } from "@/interfaces/utils";
 import { ItemParam, TCollectionParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
@@ -50,5 +55,53 @@ export const getItemList = async<T = IInventoryItemList>(requestParam: ItemParam
     .join('&');
   console.log('getItemList query',query);
   const { data } = await instance.get<{data:T}>(`/inventory/token?${query.replace('&&','&')}`);
+  return data.data;
+}
+export const getSummaryTotalSpend = async<T = TSummary>(walletAddress?: string): Promise<T> => {
+  const {data} = await instance.get<{data:T}>(`/inventory/summary/total-spend?walletAddress=${walletAddress}`);
+  return data.data;
+}
+export const getSummaryGasSpend = async<T = TSummary>(walletAddress?: string): Promise<T> => {
+  const {data} = await instance.get<{data:T}>(`/inventory/summary/gas-spend?walletAddress=${walletAddress}`);
+  return data.data;
+}
+export const getSummaryTotalSale = async<T = TSummary>(walletAddress?: string): Promise<T> => {
+  const {data} = await instance.get<{data:T}>(`/inventory/summary/total-sale?walletAddress=${walletAddress}`);
+  return data.data;
+}
+export const getSummaryUnrealized = async<T = TUnrealized>(walletAddress?: string): Promise<T> => {
+  const {data} = await instance.get<{data:T}>(`/inventory/summary/unrealized?walletAddress=${walletAddress}`);
+  return data.data;
+}
+export const getSummaryRealized = async<T = TSummary>(walletAddress?: string): Promise<T> => {
+  const {data} = await instance.get<{data:T}>(`/inventory/summary/realized?walletAddress=${walletAddress}`);
+  return data.data;
+}
+export type TResponseInventoryValueHistory = { data: IInventoryValue[],min: TValue, max:TValue };
+export const getInventoryValueHistory = async<T =TResponseInventoryValueHistory>(period?: string): Promise<T> => {
+  const {data} = await instance.get<{data:T}>(`/inventory/value/history`);
+  return data.data;
+}
+export const getInventoryCollectionPositionValue = async<T ={data: PositionCollection[]}>(walletAddress?: string): Promise<T> => {
+  const { data } = await instance.get<{ data: T }>(`/inventory/collection/position/value?walletAddress=${walletAddress}`);
+  return data.data;
+}
+export type ResponseRealizedTokensData = {
+  data: TToken[],
+  processedAt: string,
+  paging: Paging,
+}
+export const getInventoryRealizedTokens = async<T = ResponseRealizedTokensData>(requestParam?: any): Promise<T> => {
+  const { data } = await instance.get<{ data: T }>(`/inventory/realized/token`);
+  return data.data;
+}
+
+export type ResponseAcquisitionTypesData = {
+  data: AcquisitionType[],
+  processedAt: string,
+  paging: Paging,
+}
+export const getInventoryAcquisitionType = async<T = ResponseAcquisitionTypesData>(requestParam?: any): Promise<T> => {
+  const { data } = await instance.get<{ data: T }>(`/inventory/acquisition-type`);
   return data.data;
 }

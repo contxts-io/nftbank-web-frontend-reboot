@@ -3,8 +3,11 @@ import dynamic from 'next/dynamic';
 import { renderToString } from 'react-dom/server';
 import styles from './PerformanceChart.module.css';
 import { useTheme } from 'next-themes';
-import { forwardRef, useEffect, useRef } from 'react';
-import { use } from 'chai';
+import { useEffect, useMemo } from 'react';
+import { useMe } from '@/utils/hooks/queries/auth';
+import { usePerformanceChart } from '@/utils/hooks/queries/performance';
+import { useAtomValue } from 'jotai';
+import { currencyAtom } from '@/store/currency';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   return (
@@ -15,8 +18,44 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   );
 };
 const PerformanceChart = () => {
+  const currency = useAtomValue(currencyAtom);
+  const { data: me } = useMe();
+  const { data: performanceChart, status: statusPerformanceChart } =
+    usePerformanceChart(me.walletAddress);
+
   const barBackground = 'var(--color-elevation-surface-raised)';
   const labelColor = 'var(--color-text-subtle)';
+
+  let _series = useMemo(() => {
+    if (!performanceChart || performanceChart.data.length == 0) return [];
+    return [
+      {
+        name: 'positive',
+        data: performanceChart.data
+          .map((item) =>
+            item.gainLoss?.[currency] &&
+            parseFloat(item.gainLoss[currency]) >= 0
+              ? parseFloat(item.gainLoss[currency])
+              : 0
+          )
+          .concat([0]),
+      },
+      {
+        name: 'negative',
+        data: performanceChart.data
+          .map((item) =>
+            item.gainLoss?.[currency] &&
+            parseFloat(item.gainLoss[currency]) <= 0
+              ? parseFloat(item.gainLoss[currency])
+              : 0
+          )
+          .concat([0]),
+      },
+    ];
+  }, [performanceChart]);
+  useEffect(() => {
+    console.log('_series', _series);
+  }, [_series]);
   const options = {
     chart: {
       type: 'bar',
@@ -28,9 +67,24 @@ const PerformanceChart = () => {
     plotOptions: {
       bar: {
         vertical: true,
+        columnWidth: '90%',
         barHeight: '100%',
         colors: {
-          backgroundBarColors: [barBackground],
+          backgroundBarColors: [
+            barBackground,
+            barBackground,
+            barBackground,
+            barBackground,
+            barBackground,
+            barBackground,
+            barBackground,
+            barBackground,
+            barBackground,
+            barBackground,
+            barBackground,
+            barBackground,
+            '',
+          ],
           backgroundBarOpacity: 0.6,
         },
       },
@@ -54,7 +108,7 @@ const PerformanceChart = () => {
         'Dec',
       ],
       labels: {
-        show: true,
+        show: false,
         style: {
           colors: labelColor,
           cssClass: 'font-caption-regular',
@@ -72,7 +126,9 @@ const PerformanceChart = () => {
     },
     yaxis: {
       tickAmount: 2,
-      opposite: true,
+      opposite: false,
+      maxWidth: 160,
+      minWidth: 160,
       labels: {
         show: true,
         style: {
@@ -118,7 +174,7 @@ const PerformanceChart = () => {
           },
         }}
         type='bar'
-        series={series}
+        series={_series}
         height={200}
         width='100%'
       />

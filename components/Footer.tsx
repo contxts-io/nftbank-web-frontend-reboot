@@ -3,9 +3,7 @@ import styles from './Footer.module.css';
 import TwitterLogo from '@/public/logo/TwitterLogo';
 const Footer = () => {
   return (
-    <footer
-      className={`font-button03-regular ${styles.footerWrapper} dark:text-text-subtlest-dark dark:fill-background-accent-gray-bolder-dark dark:border-border-main-dark dark:bg-etc-footer-dark`}
-    >
+    <footer className={`font-button03-regular ${styles.footerWrapper}`}>
       <ul className='flex'>
         <li>
           <DiscordLogo />

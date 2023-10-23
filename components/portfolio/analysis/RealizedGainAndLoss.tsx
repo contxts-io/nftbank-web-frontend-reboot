@@ -5,8 +5,14 @@ import Image from 'next/image';
 import CaretDown from '@/public/icon/CaretDown';
 import Export from '@/public/icon/Export';
 import Dropdown from './Dropdown';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { STATUS_LIST, TStatus, TYear } from '@/constants/period';
+import { useInventoryRealizedTokens } from '@/utils/hooks/queries/inventory';
+import { useMe } from '@/utils/hooks/queries/auth';
+import SkeletonLoader from '@/components/SkeletonLoader';
+import { useAtomValue } from 'jotai';
+import { currencyAtom } from '@/store/currency';
+import { formatCurrency, formatDate, formatPercent } from '@/utils/common';
 const THEAD = [
   { key: 'item', value: 'Item' },
   { key: 'amount', value: 'Amount' },
@@ -21,6 +27,11 @@ const THEAD = [
 type _Year = TYear & { selected: boolean };
 type _Status = TStatus & { selected: boolean };
 const RealizedGainAndLoss = () => {
+  const currency = useAtomValue(currencyAtom);
+  const { data: me } = useMe();
+  const { data: realizedTokenList, status } = useInventoryRealizedTokens(
+    me.walletAddress
+  );
   const [selectedStatus, setSelectedStatus] = useState<_Status[]>(
     STATUS_LIST.map((item) => ({
       ...item,
@@ -49,6 +60,9 @@ const RealizedGainAndLoss = () => {
       }))
     );
   };
+  useEffect(() => {
+    console.log('realizedTokenList', realizedTokenList);
+  }, [realizedTokenList]);
   return (
     <section className={styles.container}>
       <div className={styles.title}>
@@ -75,68 +89,100 @@ const RealizedGainAndLoss = () => {
         </Button>
       </div>
       <div className={styles.tableWrapper}>
-        <table className={styles.table}>
-          <thead className='font-caption-regular'>
-            <tr>
-              {THEAD.map((item, index) => (
-                <th
-                  key={index}
-                  className={index === 0 ? 'text-left' : 'text-right'}
-                >
-                  {item.value}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className='font-caption-medium'>
-            <tr>
-              <td className='text-left'>
-                <div className='flex items-center gap-8'>
-                  <div className='w-32 h-32 flex items-center justify-center border-1 border-[var(--color-border-main)]'>
-                    <Image
-                      src={'/icon/nftbank_icon.svg'}
-                      width={32}
-                      height={32}
-                      alt='nftbank'
-                    />
-                  </div>
-                  <div>
-                    <p className='text-[var(--color-text-main)]'>#9061</p>
-                    <p className='text-[var(--color-text-subtle)]'>
-                      BoredApeYachtClub
+        {status === 'loading' && (
+          <SkeletonLoader className='w-full h-[200px]' />
+        )}
+        {status === 'success' && (
+          <table className={styles.table}>
+            <thead className='font-caption-regular'>
+              <tr>
+                {THEAD.map((item, index) => (
+                  <th
+                    key={index}
+                    className={index === 0 ? 'text-left' : 'text-right'}
+                  >
+                    {item.value}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className='font-caption-medium'>
+              {realizedTokenList.data.map((item, index) => (
+                <tr key={index}>
+                  <td className='text-left'>
+                    <div className='flex items-center gap-8'>
+                      <div className='w-32 h-32 flex items-center justify-center border-1 border-[var(--color-border-main)]'>
+                        <Image
+                          src={`${
+                            item.token.imageUrl || '/icon/nftbank_icon.svg'
+                          }`}
+                          width={32}
+                          height={32}
+                          alt={`${item.collection.name}-${item.token.tokenId}`}
+                        />
+                      </div>
+                      <div>
+                        <p className='text-[var(--color-text-main)]'>
+                          {item.token.tokenId}
+                        </p>
+                        <p className='text-[var(--color-text-subtle)]'>
+                          {item.collection.name}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className='text-right'>
+                    <p className='text-[var(--color-text-main)]'>
+                      {item.amount}
                     </p>
-                  </div>
-                </div>
-              </td>
-              <td className='text-right'>
-                <p className='text-[var(--color-text-main)]'>1</p>
-              </td>
-              <td className='text-right'>
-                <p className='text-[var(--color-text-main)]'>$1,203</p>
-              </td>
-              <td className='text-right'>
-                <p className='text-[var(--color-text-main)]'>$1,203</p>
-              </td>
-              <td className='text-right'>
-                <p>+$1,188</p>
-              </td>
-              <td className='text-right'>
-                <p>+48%</p>
-              </td>
-              <td className='text-right'>
-                <p className='text-[var(--color-text-main)]'>2023/12/11</p>
-              </td>
-              <td className='text-right'>
-                <p className='text-[var(--color-text-main)]'>2023/12/11</p>
-              </td>
-              <td className='text-right'>
-                <div className='rotate-270 w-16 h-16  ml-auto'>
-                  <CaretDown />
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                  </td>
+                  <td className='text-right'>
+                    <p className='text-[var(--color-text-main)]'>
+                      {formatCurrency(
+                        item.costBasis[currency].amount || '0',
+                        currency
+                      )}
+                    </p>
+                  </td>
+                  <td className='text-right'>
+                    <p className='text-[var(--color-text-main)]'>
+                      {formatCurrency(
+                        item.proceed[currency].amount || '0',
+                        currency
+                      )}
+                    </p>
+                  </td>
+                  <td className='text-right'>
+                    <p>
+                      {formatCurrency(
+                        item.gainLoss[currency].amount || '0',
+                        currency
+                      )}
+                    </p>
+                  </td>
+                  <td className='text-right'>
+                    <p>{formatPercent(item.roi[currency])}</p>
+                  </td>
+                  <td className='text-right'>
+                    <p className='text-[var(--color-text-main)]'>
+                      {formatDate(new Date(item.acquisitionDate))}
+                    </p>
+                  </td>
+                  <td className='text-right'>
+                    <p className='text-[var(--color-text-main)]'>
+                      {formatDate(new Date(item.soldDate))}
+                    </p>
+                  </td>
+                  <td className='text-right'>
+                    <div className='rotate-270 w-16 h-16  ml-auto'>
+                      <CaretDown />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
       <div className='flex justify-center mt-20'>
         <Button id=''>Show more</Button>

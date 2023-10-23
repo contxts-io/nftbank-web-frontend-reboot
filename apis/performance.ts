@@ -1,4 +1,4 @@
-import { IInventoryCollectionList, IInventoryCollectionListPerformance, IInventoryItemList, IInventoryValue, UnrealizedValue } from "@/interfaces/inventory";
+import { IInventoryCollectionList, IInventoryCollectionListPerformance, IInventoryItemList, IInventoryValue, PerformanceCollection, UnrealizedValue } from "@/interfaces/inventory";
 import { ItemParam, TCollectionParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
@@ -45,5 +45,10 @@ export const getItemListPerformance = async<T = IInventoryItemList>(requestParam
     .join('&');
     console.log('getItemListPerformance query',query);
   const { data } = await instance.get<{data:T}>(`/performance/token?${query.replace('&&','&')}`);
+  return data.data;
+}
+
+export const getPerformanceChart = async<T = {data: PerformanceCollection[]}>(walletAddress: string): Promise<T> => {
+    const { data } = await instance.get<{data:T}>(`/performance/chart?walletAddress=${walletAddress}`);
   return data.data;
 }
