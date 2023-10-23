@@ -1,4 +1,4 @@
-type Paging = {
+export type Paging = {
   limit: number,
   page: number,
   total: number,

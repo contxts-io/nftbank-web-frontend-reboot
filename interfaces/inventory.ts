@@ -1,5 +1,6 @@
-import { Collection, PerformanceValue, Token } from "./collection";
-import { TCurrency } from "./constants";
+import { Collection, PerformanceValue, TDifference, TValue, Token, Value } from "./collection";
+import { TChain, TCurrency } from "./constants";
+import { Paging } from "./utils";
 
 export type IInventoryValue = {
   value: {
@@ -51,4 +52,28 @@ export type IInventoryItemList = {
 }
 export type IStat = {
   totalCount: number, valuableCount: number, spamCount: number, processedAt: string
+}
+export type ICollection = {
+  networkId: TChain,
+  assetContract: string,
+  name: string,
+  symbol: string,
+}
+export type PositionCollection = {
+  collection: ICollection,
+  value: {
+    eth: Value & {difference: TDifference | null},
+    usd: Value & {difference: TDifference | null},
+  },
+}
+export type PerformanceCollection = {
+  gainLoss: {
+    eth: string,
+    usd: string,
+  } | null,
+  roi: {
+    eth: number,
+    usd: number
+  }| null,
+  processedAt: string
 }

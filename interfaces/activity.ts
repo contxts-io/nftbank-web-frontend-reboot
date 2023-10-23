@@ -1,3 +1,5 @@
+import { TValue } from "./collection";
+import { Paging } from "./utils";
 
 type SendReceive = {
   fromAddress: string;
@@ -19,4 +21,8 @@ export type ActivityItem = {
   processedAt: string,
     paging: Paging
 }
-  
+export type AcquisitionType = {
+  type: 'BUY' | 'MINT' | 'TRANSFER' | 'AIRDROP',
+  amount: number,
+  costBasis : TValue,
+}

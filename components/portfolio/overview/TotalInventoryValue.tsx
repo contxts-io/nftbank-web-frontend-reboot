@@ -5,6 +5,10 @@ import { useState } from 'react';
 import { formatCurrency } from '@/utils/common';
 import { twMerge } from 'tailwind-merge';
 import TotalInventoryChart from './TotalInventoryChart';
+import { useInventoryCollectionPositionValue } from '@/utils/hooks/queries/inventory';
+import { useMe } from '@/utils/hooks/queries/auth';
+import { useAtomValue } from 'jotai';
+import { currencyAtom } from '@/store/currency';
 const LIST = [
   {
     name: 'Genesis Box',
@@ -45,7 +49,11 @@ const COLOR = [
   'var(--color-chart-accent-blue-bold)',
 ];
 const TotalInventoryValue = () => {
+  const { data: me } = useMe();
+  const currency = useAtomValue(currencyAtom);
   const [selected, setSelected] = useState<'value' | 'amount'>('value');
+  const { data: totalInventoryPositionValue, status } =
+    useInventoryCollectionPositionValue(me.walletAddress);
   const handleSelect = (selected: string) => {
     setSelected(selected as 'value' | 'amount');
   };
@@ -104,56 +112,61 @@ const TotalInventoryValue = () => {
         </div>
         <table className='w-[460px] h-[160px] table-auto'>
           <tbody>
-            {LIST.map((item, index) => {
-              const plus = parseFloat(item.change) > 0;
-              return (
-                <tr key={index} className='h-16'>
-                  <td>
-                    <div
-                      className={twMerge([
-                        styles.dot,
-                        styles[`dot--${index % 5}`],
-                      ])}
-                    />
-                  </td>
-                  <td>
-                    <p className='font-caption-medium text-[var(--color-text-main)] w-[208px] mr-20'>
-                      {item.name}
-                    </p>
-                  </td>
-                  <td>
-                    <p className='font-caption-regular mr-10'>
-                      <span className='text-[var(--color-text-main)]'>
-                        {
-                          formatCurrency(mathFloor(item.value), 'usd').split(
-                            '.'
-                          )[0]
-                        }
-                      </span>
-                      <span className='!important:text-[var(--color-subtlest)]'>
-                        {`.${item.value.split('.')[1]}`}
-                      </span>
-                    </p>
-                  </td>
-                  <td>
-                    <p
-                      className={`font-caption-medium mr-20 ' ${
-                        plus
-                          ? 'text-[var(--color-text-success)]'
-                          : 'text-[var(--color-text-danger)]'
-                      }`}
-                    >
-                      {item.change}
-                    </p>
-                  </td>
-                  <td>
-                    <p className='font-caption-regular text-[var(--color-text-subtle)]'>
-                      {item.valueType}
-                    </p>
-                  </td>
-                </tr>
-              );
-            })}
+            {status === 'success' &&
+              totalInventoryPositionValue.map((item, index) => {
+                // const plus = parseFloat(item.change) > 0;
+                const plus = true;
+                return (
+                  <tr key={index} className='h-16'>
+                    <td>
+                      <div
+                        className={twMerge([
+                          styles.dot,
+                          styles[`dot--${index % 5}`],
+                        ])}
+                      />
+                    </td>
+                    <td>
+                      <p className='font-caption-medium text-[var(--color-text-main)] w-[208px] mr-20'>
+                        {item.collection.name}
+                      </p>
+                    </td>
+                    <td>
+                      <p className='font-caption-regular mr-10'>
+                        <span className='text-[var(--color-text-main)]'>
+                          {
+                            formatCurrency(
+                              mathFloor(item.value[currency].amount || '0'),
+                              currency
+                            ).split('.')[0]
+                          }
+                        </span>
+                        {item.value[currency].amount && (
+                          <span className='!important:text-[var(--color-subtlest)]'>
+                            {`.${item.value[currency].amount?.split('.')[1]}`}
+                          </span>
+                        )}
+                      </p>
+                    </td>
+                    <td>
+                      <p
+                        className={`font-caption-medium mr-20 ' ${
+                          plus
+                            ? 'text-[var(--color-text-success)]'
+                            : 'text-[var(--color-text-danger)]'
+                        }`}
+                      >
+                        {item.value[currency].difference?.percentage}
+                      </p>
+                    </td>
+                    <td>
+                      <p className='font-caption-regular text-[var(--color-text-subtle)]'>
+                        {item.value[currency].difference?.amount}
+                      </p>
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>

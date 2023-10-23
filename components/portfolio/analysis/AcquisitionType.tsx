@@ -1,5 +1,4 @@
 'use client';
-import Button from '@/components/buttons/Button';
 import styles from './AcquisitionType.module.css';
 import ShoppingCart from '@/public/icon/ShoppingCart';
 import Jewel from '@/public/icon/Jewel';
@@ -10,52 +9,55 @@ import { useEffect, useState } from 'react';
 import CaretDown from '@/public/icon/CaretDown';
 import Dropdown from './Dropdown';
 import { PERIOD_LIST, TPeriod, TYear } from '@/constants/period';
+import { useMe } from '@/utils/hooks/queries/auth';
+import { useInventoryAcquisitionTypes } from '@/utils/hooks/queries/inventory';
+import { formatCurrency } from '@/utils/common';
+import { useAtomValue } from 'jotai';
+import { currencyAtom } from '@/store/currency';
+import { JsxChild } from 'typescript';
+import { AcquisitionType } from '@/interfaces/activity';
 const LIST = [
   {
-    type: 'buy',
-    name: 'BUY',
-    icon: <ShoppingCart className='fill-[var(--color-icon-accent-green)]' />,
+    type: 'BUY' as const,
+    name: 'Buy',
+    icon: (
+      <ShoppingCart className='fill-[var(--color-icon-accent-green)]' />
+    ) as JSX.Element,
     color: 'var(--color-border-accent-green)',
     amount: 40,
-    costBasis: 1203,
   },
   {
-    type: 'mint',
-    name: 'MINT',
+    type: 'MINT' as const,
+    name: 'Mint',
     icon: <Jewel className='fill-[var(--color-icon-accent-blue)]' />,
     color: 'var(--color-border-accent-blue)',
     amount: 40,
-    costBasis: 1203,
   },
   {
-    type: 'free_mint',
-    name: 'FREE MINT',
-    icon: <Jewel className='fill-[var(--color-icon-accent-gray)]' />,
-    color: 'var(--color-border-accent-gray)',
-    amount: 40,
-    costBasis: 1203,
-  },
-  {
-    type: 'airdrop',
-    name: 'AIRDROP',
+    type: 'AIRDROP' as const,
+    name: 'Airdrop',
     icon: <Parachute className='fill-[var(--color-icon-accent-orange)]' />,
     color: 'var(--color-border-accent-orange)',
     amount: 40,
-    costBasis: 1203,
   },
   {
-    type: 'transfer',
-    name: 'TRANSFER',
+    type: 'TRANSFER' as const,
+    name: 'Transfer',
     icon: <ArrowsDownUp className='fill-[var(--color-icon-accent-fuchsia)]' />,
     color: 'var(--color-border-accent-fuchsia)',
     amount: 40,
-    costBasis: 1203,
   },
 ];
+export type _List = (typeof LIST)[number] & Partial<AcquisitionType>;
 type _Period = TPeriod & { selected: boolean };
 type _Year = TYear & { selected: boolean };
 const AcquisitionType = () => {
-  const [list, setList] = useState<any[]>([]);
+  const { data: me } = useMe();
+  const currency = useAtomValue(currencyAtom);
+  const { data: acquisitionTypes, status } = useInventoryAcquisitionTypes(
+    me.walletAddress
+  );
+  const [list, setList] = useState<_List[]>(LIST);
   const [selectedPeriod, setSelectedPeriod] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({
       ...item,
@@ -69,8 +71,21 @@ const AcquisitionType = () => {
     { name: '2020', value: 2020, selected: false },
   ]);
   useEffect(() => {
-    setList(LIST);
-  }, []);
+    acquisitionTypes &&
+      setList((prev) => {
+        return (
+          prev.map((item) => {
+            const acquisitionType = acquisitionTypes.data?.find(
+              (acquisitionType) => acquisitionType.type === item.type
+            );
+            return {
+              ...item,
+              ...acquisitionType,
+            };
+          }) || prev
+        );
+      });
+  }, [acquisitionTypes]);
   const handleChangePeriod = (name: string) => {
     setSelectedPeriod((prev) =>
       prev.map((item) => ({
@@ -107,7 +122,17 @@ const AcquisitionType = () => {
       </div>
       <div className='w-full flex justify-center mt-20'>
         <section className='flex gap-80 items-center w-[858px]'>
-          <AcquisitionTypePieChart data={list} />
+          <div className='w-[310px] h-[260px] mr-80 relative'>
+            <AcquisitionTypePieChart data={list} />
+            <div className='absoluteCenter flex flex-col items-center'>
+              <p className='font-subtitle02-bold text-[var(--color-text-main)] mb-4'>
+                2312
+              </p>
+              <p className='font-caption-regular text-[var(--color-text-subtle)]'>
+                Total Acq. Count
+              </p>
+            </div>
+          </div>
           <table className={styles.table}>
             <thead>
               <tr>
@@ -129,14 +154,19 @@ const AcquisitionType = () => {
                       >
                         {item.icon}
                       </div>
-                      <p>{item.name}</p>
+                      <p>{item.type}</p>
                     </div>
                   </td>
                   <td className='text-right'>
-                    <p>40</p>
+                    <p>{item.amount}</p>
                   </td>
                   <td className='text-right'>
-                    <p>$1,203</p>
+                    <p>
+                      {formatCurrency(
+                        item.costBasis?.[currency].amount || '0',
+                        currency
+                      )}
+                    </p>
                   </td>
                   <td className='text-right'>
                     <div className='rotate-270 w-16 h-16 ml-auto'>

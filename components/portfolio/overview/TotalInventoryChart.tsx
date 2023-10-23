@@ -2,16 +2,13 @@ import dynamic from 'next/dynamic';
 import styles from './TotalInventoryChart.module.css';
 import { renderToString } from 'react-dom/server';
 import { twMerge } from 'tailwind-merge';
+import { useInventoryCollectionPositionValue } from '@/utils/hooks/queries/inventory';
+import { useMe } from '@/utils/hooks/queries/auth';
+import { useEffect, useState } from 'react';
+import { useAtomValue } from 'jotai';
+import { currencyAtom } from '@/store/currency';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const COLORS = ['#2563EB', '#5EEAD4', '#A855F7', '#14B8A6', '#93C5FD'];
-const LABELS = [
-  'Genesis Box',
-  'The Lockeys',
-  'GEISAI 2022 Official NFT',
-  'Project NANOPASS',
-  'Others',
-];
-const SERIES = [44, 55, 41, 17, 15];
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   const color = w.globals.colors[seriesIndex];
   const label = w.globals.labels[seriesIndex];
@@ -26,6 +23,23 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   );
 };
 const TotalInventoryChart = () => {
+  const { data: me } = useMe();
+  const currency = useAtomValue(currencyAtom);
+  const { data: totalInventoryPositionValue, status } =
+    useInventoryCollectionPositionValue(me.walletAddress);
+  const [labels, setLabels] = useState<string[]>([]);
+  const [series, setSeries] = useState<number[]>([]);
+  useEffect(() => {
+    totalInventoryPositionValue &&
+      (setLabels(
+        totalInventoryPositionValue?.map((item) => item.collection.name)
+      ),
+      setSeries(
+        totalInventoryPositionValue.map((item) =>
+          parseFloat(item.value[currency].amount || '0')
+        )
+      ));
+  }, [totalInventoryPositionValue]);
   const options = {
     chart: {
       type: 'donut',
@@ -54,41 +68,13 @@ const TotalInventoryChart = () => {
         );
       },
     },
-    labels: LABELS,
+    labels: labels,
     plotOptions: {
       customScale: 1,
       pie: {
         size: 280,
         donut: {
           size: '70%',
-          labels: {
-            show: false,
-            name: {
-              show: true,
-              fontSize: '22px',
-              fontFamily: 'Helvetica, Arial, sans-serif',
-              fontWeight: 600,
-              color: undefined,
-              offsetY: -10,
-              formatter: function (val: any) {
-                return '$173,398.02';
-              },
-            },
-            total: {
-              show: true,
-              showAlways: true,
-              label: 'Total',
-              fontSize: '22px',
-              fontFamily: 'Helvetica, Arial, sans-serif',
-              fontWeight: 600,
-              color: '#373d3f',
-              formatter: function (w: any) {
-                return w.globals.seriesTotals.reduce((a: any, b: any) => {
-                  return 'total';
-                }, 0);
-              },
-            },
-          },
         },
       },
     },
@@ -99,7 +85,7 @@ const TotalInventoryChart = () => {
       <ApexCharts
         options={{ ...options, chart: { ...options.chart, type: 'donut' } }}
         type={'donut'}
-        series={SERIES}
+        series={series}
         height={280}
         width={280}
       />

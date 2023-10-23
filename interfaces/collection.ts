@@ -1,17 +1,17 @@
-import { TChain, TCurrency, TStandard, TValuationType } from "./constants"
+import { TChain, TStandard, TValuationType } from "./constants"
 
 type IChain = {
   name: TChain,
   imageUrl: string,
 }
-type Value = {
+export type Value = {
   amount: string | null,
 }
-type TValue = {
+export type TValue = {
   eth: Value,
   usd: Value,
 }
-type TDifference = {
+export type TDifference = {
   amount: string | null,
   percentage: number | null,
 }
@@ -29,7 +29,7 @@ export type CollectionMetadata = {
   imageUrl: string,
   standard: TStandard,
   assetContract: string,
-  isSpam: boolean,
+  isSpam?: boolean,
   spamType?: 'system' | 'custom'
   
 }

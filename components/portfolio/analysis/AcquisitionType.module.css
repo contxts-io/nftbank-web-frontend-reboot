@@ -25,18 +25,15 @@
 .table tbody tr p {
   @apply text-[var(--color-text-main)];
 }
-.border--buy {
+.border--BUY {
   @apply border-1 border-[var(--color-border-accent-green)];
 }
-.border--mint {
+.border--MINT {
   @apply border-1 border-[var(--color-border-accent-blue)];
 }
-.border--free_mint {
-  @apply border-1 border-[var(--color-border-accent-gray)];
-}
-.border--airdrop {
+.border--AIRDROP {
   @apply border-1 border-[var(--color-border-accent-orange)];
 }
-.border--transfer {
+.border--TRANSFER {
   @apply border-1 border-[var(--color-border-accent-fuchsia)];
 }

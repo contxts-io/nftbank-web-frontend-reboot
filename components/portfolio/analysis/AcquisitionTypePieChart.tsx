@@ -4,6 +4,7 @@ import styles from './AcquisitionTypePieChart.module.css';
 import { renderToString } from 'react-dom/server';
 import { twMerge } from 'tailwind-merge';
 import { useEffect } from 'react';
+import { _List } from './AcquisitionType';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   const color = w.globals.colors[seriesIndex];
@@ -19,13 +20,7 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   );
 };
 type Props = {
-  data: {
-    type: string;
-    name: string;
-    color: string;
-    amount: number;
-    costBasis: number;
-  }[];
+  data: _List[];
 };
 const AcquisitionTypePieChart = (props: Props) => {
   const series = props.data.map((item) => item.amount);
