@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Ethereum from '@/public/icon/Ethereum';
 import DotsThree from '@/public/icon/DotsThree';
 import {
+  difference,
   formatCurrency,
   formatPercent,
   isPlus,
@@ -286,9 +287,13 @@ const InventoryCollectionTable = () => {
                           ? 'text-[var(--color-text-success)]'
                           : 'text-[var(--color-text-danger)]'
                       }`}
-                    >{`${formatPercent(
-                      row.nav[currency].difference?.percentage || null
-                    )}`}</p>
+                    >
+                      {`${difference(
+                        row.nav[currency].difference?.percentage || 0,
+                        'percent'
+                      )}`}
+                      {/* {difference('-123123.000001', currency)} */}
+                    </p>
                   </td>
                   <td className='text-center'>
                     <div

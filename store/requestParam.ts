@@ -1,7 +1,8 @@
+import { TCurrency } from "@/interfaces/constants";
 import { atom } from "jotai";
 export type TSortOrder = 'asc' | 'desc'
 export type TSort = 'amount' | 'nav' | 'spam'
-type currency = 'eth' | 'usd';
+
 export type TCollectionParam = {
   searchCollection: string,
   networkId: string,
@@ -18,7 +19,7 @@ export type ItemParam = {
   walletAddress?: string,
   walletGroupId?: string,
   assetContract: string[],
-  currency: currency,
+  currency: TCurrency,
   includeGasUsed: string,
   sort: TSort,
   order: TSortOrder,
