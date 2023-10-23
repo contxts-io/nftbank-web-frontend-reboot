@@ -1,12 +1,11 @@
 import { Collection, PerformanceValue, TDifference, TValue, Token, Value } from "./collection";
-import { TChain, TCurrency } from "./constants";
+import { TChain } from "./constants";
 import { Paging } from "./utils";
 
 export type IInventoryValue = {
   value: {
     eth: {
       amount: string,
-      currency: TCurrency
       difference: {
         amount: string,
         percentage: number,
@@ -14,7 +13,6 @@ export type IInventoryValue = {
     },
     usd: {
       amount: string,
-      currency: TCurrency
       difference: {
         amount: string,
         percentage: number,

@@ -67,12 +67,12 @@ const InventoryItemDetailChart = ({
       },
       {
         id: 'floor',
-        name: 'Trait Floor',
+        name: 'Collection Floor',
         data: [],
       },
       {
         id: 'traitFloor',
-        name: 'Collection Floor',
+        name: 'Trait Floor',
         data: [],
       },
       {
