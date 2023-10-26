@@ -3,3 +3,7 @@ export type Paging = {
   page: number,
   total: number,
 }
+export type PagingCursor = {
+  nextCursor: string | null,
+  hasNext: boolean,
+}

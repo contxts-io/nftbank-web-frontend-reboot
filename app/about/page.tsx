@@ -8,6 +8,7 @@ import { getIdTokenByGoogle } from '@/apis/firebase';
 import { getMe, signIn, signUp } from '@/apis/auth';
 import { setCookie } from 'cookies-next';
 import Button from '@/components/buttons/Button';
+import { useState } from 'react';
 
 const Page = () => {
   // const { address, isConnected } = useAccount();
@@ -18,6 +19,15 @@ const Page = () => {
   // const handleChangeAtom = (e: any) => {
   //   setTest('changed');
   // };
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const openDrawer = () => {
+    setIsDrawerOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+  };
   const onClickSignInGoogle = async () => {
     try {
       const token = await getIdTokenByGoogle();
@@ -71,6 +81,14 @@ const Page = () => {
         </Button>
 
         <ThemeSwitcher />
+        <button onClick={openDrawer}>Open Drawer</button>
+      </div>
+      <div className={`w-full drawer ${isDrawerOpen ? 'open' : ''}`}>
+        <div className='overlay' onClick={closeDrawer}></div>
+        <div className='content'>
+          <p>Drawer Content</p>
+          <button onClick={closeDrawer}>Close Drawer</button>
+        </div>
       </div>
     </div>
   );

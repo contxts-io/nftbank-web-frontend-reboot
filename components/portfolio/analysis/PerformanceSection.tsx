@@ -40,7 +40,7 @@ const PerformanceSection = () => {
           <table className={`font-caption-regular ${styles.table}`}>
             <thead>
               <tr>
-                <th className='w-42'>
+                <th className='w-38'>
                   <p>2023</p>
                 </th>
                 {THEAD.map((item, index) => {

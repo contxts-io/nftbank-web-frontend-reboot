@@ -1,28 +1,29 @@
 .container {
-  @apply w-full flex flex-col;
+  @apply overflow-scroll;
+  @apply w-full flex flex-col bg-[var(--color-elevation-surface)] py-24 max-h-screen border-1 border-[var(--color-border-main)];
 }
 .pSub {
   @apply text-[var(--color-text-subtle)] mb-8;
 }
 .pMain {
-  @apply text-[var(--text-main)];
+  @apply text-[var(--color-text-main)];
 }
 .metadata {
   @apply flex items-center h-[300px] w-full;
 }
 .tokenImage {
-  @apply w-[300px] h-[300px] border-1 border-[var(--color-border-main)] overflow-hidden;
+  @apply w-[300px] h-[300px] mt-24 border-1 border-[var(--color-border-main)];
   @apply flex items-center justify-center;
 }
 .typeButton {
   @apply px-24 py-8 border-0;
 }
 .traitSection {
-  @apply w-full mt-24 border-[var(--color-border-main-dark)];
+  @apply w-full px-24 border-[var(--color-border-main-dark)];
 }
 .traitContainer {
-  @apply w-full flex flex-wrap gap-x-[13px] mt-16;
+  @apply w-full flex flex-wrap mt-16 gap-8;
 }
 .traitItem {
-  @apply border-1 border-[var(--color-border-main)] p-12 mb-13 w-[calc(25%-10px)];
+  @apply border-1 border-[var(--color-border-main)] p-12 w-[calc(33%-5px)] overflow-hidden;
 }

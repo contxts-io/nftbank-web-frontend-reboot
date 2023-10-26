@@ -18,10 +18,8 @@ const checkMe = async (token: RequestCookie) => {
       withCredentials: true,
       headers: { Cookie: cookie },
     };
-    // const URL = process.env.NEXT_PUBLIC_API_URL;
-    const URL = 'https://web-api-reboot.dev.nftbank.tools/v1/user';
-    const { data } = await instance.get(`${URL}`, options);
-    console.log('ssr checkME ', data.data);
+    const URL = process.env.API_URL_SSR;
+    const { data } = await instance.get(`${URL}/v1/user`, options);
     return {
       ...data.data,
       walletAddress:

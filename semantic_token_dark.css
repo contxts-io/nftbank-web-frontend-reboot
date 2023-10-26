@@ -73,10 +73,10 @@
   --color-chart-discovery-bold: var(--color-purple-300);
   --color-chart-information: var(--color-blue-600);
   --color-chart-information-bold: var(--color-blue-300);
-  --color-interaction-hovered: var(--opacity-white50);
-  --color-interaction-pressed: var(--opacity-black50);
-  --color-etc-blanket: var(--opacity-black200);
-  --color-etc-disabled: var(--opacity-black100);
+  --color-interaction-hovered: var(--color-opacity-white50);
+  --color-interaction-pressed: var(--color-opacity-black50);
+  --color-etc-blanket: var(--color-opacity-black200);
+  --color-etc-disabled: var(--color-opacity-black100);
   --color-etc-skeleton: var(--color-gray-800);
   --color-text-accent-gray: var(--color-gray-600);
   --color-text-accent-gray-bolder: var(--color-gray-200);
@@ -188,5 +188,5 @@
   --color-chart-accent-lime-bold: var(--color-lime-500);
   --color-chart-accent-lime-bolder: var(--color-lime-400);
   --color-chart-accent-lime-boldest: var(--color-lime-300);
-  --color-etc-footer: var(--opacity-black200);
+  --color-etc-footer: var(--color-opacity-black200);
 }
