@@ -3,7 +3,7 @@ import { TValue, Token } from "@/interfaces/collection";
 import { IInventoryCollectionList, IInventoryItemList, IInventoryValue, IStat, PositionCollection } from "@/interfaces/inventory";
 import { TSummary, TUnrealized } from "@/interfaces/summary";
 import { TToken } from "@/interfaces/token";
-import { Paging } from "@/interfaces/utils";
+import { Paging, PagingCursor } from "@/interfaces/utils";
 import { ItemParam, TCollectionParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
@@ -89,7 +89,7 @@ export const getInventoryCollectionPositionValue = async<T ={data: PositionColle
 export type ResponseRealizedTokensData = {
   data: TToken[],
   processedAt: string,
-  paging: Paging,
+  paging: PagingCursor,
 }
 export const getInventoryRealizedTokens = async<T = ResponseRealizedTokensData>(requestParam?: any): Promise<T> => {
   const { data } = await instance.get<{ data: T }>(`/inventory/realized/token`);

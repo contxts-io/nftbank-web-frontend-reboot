@@ -14,11 +14,21 @@
   @apply bg-background-brand-bold;
 }
 .checked .viewTypeButtonIcon {
-  @apply fill-icon-inverse;
+  @apply fill-[var(--color-icon-inverse)];
 }
 .viewTypeButtonIcon {
-  @apply w-16 h-16 fill-icon-main;
+  @apply w-16 h-16 fill-[var(--color-icon-main)];
 }
 .filterButton {
-  @apply rounded-none border-1 bg-transparent p-8 border-border-main hover:border-border-selected text-text-subtle hover:text-text-main;
+  @apply rounded-none border-1 bg-transparent p-8 border-[var(--color-border-main)] hover:border-[var(--color-border-selected)] text-[var(--color-text-subtle)] hover:text-[var(--color-text-main)];
+}
+.sidebar {
+  @apply fixed top-0 right-0 h-screen w-0 overflow-x-hidden translate-x-[100%];
+  @apply transition-all ease-in-out duration-300;
+}
+.sidebar.open {
+  @apply w-[1036px] translate-x-0; /* 또는 원하는 폭으로 조정 */
+}
+.sidebar.hide {
+  @apply w-0;
 }

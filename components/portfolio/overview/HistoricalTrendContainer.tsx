@@ -47,7 +47,7 @@ const HistoricalTrendContainer = () => {
     inventoryValue?.value[currency].amount || '0.00',
     currency
   );
-
+  console.log('total', total);
   return (
     <section className={styles.container}>
       <div className={styles.summary}>
@@ -79,7 +79,7 @@ const HistoricalTrendContainer = () => {
             {total.split('.')[0]}
           </span>
           <span className='!important:text-[var(--color-subtlest)]'>
-            {`.${total.split('.')[1]}`}
+            {`.${total.split('.')[1] || '00'}`}
           </span>
         </p>
         {inventoryValue?.value[currency].difference && (

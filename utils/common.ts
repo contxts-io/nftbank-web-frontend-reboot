@@ -19,7 +19,28 @@ export function formatCurrency(amount: string | null, currency: TCurrency): stri
     return _formatEth(parseFloat(amount)).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   }
   return '';
-   
+}
+export function shortFormatCurrency(amount: string | null, currency: TCurrency): string {
+  if (!amount) return '';
+  if (amount === 'infinity')
+    return '-';
+    // return '∞';
+  if (currency === 'usd') {
+    return _formatFiat(parseFloat(amount), currency).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  }
+  if (currency === 'eth') {
+    return _formatEth(parseFloat(amount)).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  }
+  return '';
+}
+function formatNumber(number:number): string {
+  const suffixes = ["", "K", "M", "B", "T", "Q"];
+  const suffixNum = Math.floor(("" + number).length / 3);
+  let shortValue = parseFloat((suffixNum !== 0 ? (number / Math.pow(1000, suffixNum)) : number).toPrecision(2));
+  if (shortValue % 1 !== 0) {
+    shortValue = parseFloat(shortValue.toFixed(1));
+  }
+  return shortValue + suffixes[suffixNum];
 }
 function _formatFiat(amount: number, currency: TCurrency): string {
   if (amount !== 0 && Math.abs(amount) <= 0.01) return `< $0.01`;
@@ -34,8 +55,8 @@ function _formatEth(amount: number): string {
   } else {
     _amount = amount.toFixed(4); // 그 외의 경우, 기본 표기 방식 사용
   }
-  // return parseFloat(_amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' }).replace('ETH', 'Ξ');
-  return `Ξ ${parseFloat(_amount)}`;
+  // _amount = formatNumber(parseFloat(_amount));
+  return parseFloat(_amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' }).replace('ETH', 'Ξ');
 }
 
 export function isPlus (value: number | string): boolean {

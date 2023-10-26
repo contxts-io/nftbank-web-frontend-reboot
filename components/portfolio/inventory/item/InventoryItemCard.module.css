@@ -1,6 +1,9 @@
 .cardWrapper {
-  @apply flex flex-col items-center border-1 border-border-main;
+  @apply flex flex-col items-center border-1 border-[var(--color-border-main)] cursor-pointer;
 }
-.tokenName {
-  @apply text-text-subtle;
+.pName {
+  @apply text-[var(--color-text-subtle)];
+}
+.pValue {
+  @apply text-[var(--color-text-main)];
 }

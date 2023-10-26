@@ -13,8 +13,9 @@ import ClockClockwise from '@/public/icon/ClockClockwise';
 type Props = {
   token: Token;
   valuations: TValuation[];
+  card?: boolean;
 };
-const ValuationDropdown = ({ token, valuations }: Props) => {
+const ValuationDropdown = ({ token, valuations, card }: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const [selectedValuation, setSelectedValuation] = useState<TValuation | null>(
     valuations.find((val) => val.selected) ||
@@ -69,26 +70,34 @@ const ValuationDropdown = ({ token, valuations }: Props) => {
   };
   return (
     <div
-      className={`relative cursor-pointer`}
+      className={`${styles.container} ${card && styles.full}`}
       onClick={(e) => (e.stopPropagation(), setIsPopoverOpen((prev) => !prev))}
     >
       {selectedValuation && (
-        <div className='flex justify-end items-center'>
-          <p className='mr-8'>{`${mappingConstants(
+        <div
+          className={`flex justify-end items-center ${
+            card && 'text-[var(--color-text-subtle)]'
+          }`}
+        >
+          <p className={`mr-8`}>{`${mappingConstants(
             selectedValuation.type
           )}`}</p>
-          <div className={`${isPopoverOpen && 'rotate-180'} mr-10`}>
+          <div
+            className={`${isPopoverOpen && 'rotate-180'} ${
+              card ? 'mr-auto' : 'mr-10'
+            }`}
+          >
             <CaretDown />
           </div>
           {valuations.find(
             (valuation) => valuation.type === selectedValuation.type
           )?.selected && (
-            <ClockClockwise className='fill-[var(--color-icon-brand)]' />
+            <ClockClockwise className={`fill-[var(--color-icon-brand)]`} />
           )}
         </div>
       )}
       {isPopoverOpen && (
-        <ul className={`${styles.dropdown} z-50`}>
+        <ul className={`${styles.dropdown}`}>
           {valuations.map((valuation, index) => {
             return (
               <li

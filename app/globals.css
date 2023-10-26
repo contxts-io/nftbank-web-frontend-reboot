@@ -12,12 +12,13 @@
   /* reset */
   /* Hide scrollbar for Chrome, Safari and Opera */
   *::-webkit-scrollbar {
-    display: none;
+    /* display: none; */
   }
   /* Hide scrollbar for IE, Edge and Firefox */
   * {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    /* -ms-overflow-style: none;
+    scrollbar-width: none; */
+    @apply scrollbar-hide;
   }
   /* number input에서 위아래 화살표 삭제 - Chrome, Safari, Edge, Opera, Firefox */
   img {
@@ -134,7 +135,8 @@
   @apply opacity-70 cursor-not-allowed pointer-events-none;
 }
 .overlayBackground {
-  @apply fixed overflow-hidden top-0 left-0 right-0 bottom-0 bg-gray-500 bg-opacity-50 z-50;
+  @apply w-screen h-screen;
+  @apply fixed overflow-hidden top-0 left-0 right-0 bottom-0 bg-[var(--color-etc-blanket)] bg-opacity-50 z-50;
 }
 .apexcharts-tooltip {
   @apply border-0 rounded-none !important;
@@ -149,4 +151,39 @@
 }
 .text-text-main {
   color: var(--color-text-main);
+}
+
+.scrollbar-show::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+.scrollbar-show::-webkit-scrollbar-thumb {
+  background-color: #888;
+}
+.scrollbar-show::-webkit-scrollbar-corner {
+  display: none;
+}
+.drawer {
+  /* 초기 위치 (닫힌 상태) */
+  transition: 0.3s;
+  @apply w-0 h-full fixed top-0 right-0 bg-[var(--color-red-500)] overflow-x-hidden translate-x-[100%];
+}
+/* 열린 상태 스타일 */
+.drawer.open {
+  @apply w-[500px] translate-x-0 z-[60]; /* 또는 원하는 폭으로 조정 */
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  cursor: pointer;
+}
+
+/* 오버레이 활성화 (드로어 열린 상태) */
+.drawer.open + .overlay {
+  display: block;
 }

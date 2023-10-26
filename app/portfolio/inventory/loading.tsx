@@ -11,7 +11,7 @@ const Loading = () => {
           >
             <div className='w-fit'>
               <SkeletonLoader className={`h-16 w-100 mb-4`} />
-              <div className='border-t-1 border-dashed border-border-accent-gray dark:border-border-accent-gray-dark' />
+              <div className='border-t-1 border-dashed border-[var(--color-border-accent-gray)]' />
             </div>
             <div className={styles.valueRow}>
               <div className='mr-8 items-end'>

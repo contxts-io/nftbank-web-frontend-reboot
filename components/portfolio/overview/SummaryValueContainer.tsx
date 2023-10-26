@@ -13,6 +13,7 @@ import { useMe } from '@/utils/hooks/queries/auth';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import SkeletonLoader from '@/components/SkeletonLoader';
+import { formatCurrency, formatPercent } from '@/utils/common';
 const SummaryValueContainer = () => {
   const { data: me } = useMe();
   const currency = useAtomValue(currencyAtom);
@@ -43,7 +44,7 @@ const SummaryValueContainer = () => {
         )}
         {statusTotalSpend === 'success' && (
           <p className={`font-subtitle02-bold ${styles.title}`}>
-            {totalSpend.totalSpend[currency].amount}
+            {formatCurrency(totalSpend.totalSpend[currency].amount, currency)}
           </p>
         )}
       </article>
@@ -54,7 +55,7 @@ const SummaryValueContainer = () => {
         )}
         {statusGasSpend === 'success' && (
           <p className={`font-subtitle02-bold ${styles.title}`}>
-            {gasSpend.gasSpend[currency].amount}
+            {formatCurrency(gasSpend.gasSpend[currency].amount, currency)}
           </p>
         )}
       </article>
@@ -65,7 +66,7 @@ const SummaryValueContainer = () => {
         )}
         {statusTotalSale === 'success' && (
           <p className={`font-subtitle02-bold ${styles.title}`}>
-            {totalSale.totalSale[currency].amount}
+            {formatCurrency(totalSale.totalSale[currency].amount, currency)}
           </p>
         )}
       </article>
@@ -77,13 +78,18 @@ const SummaryValueContainer = () => {
           )}
           {statusUnrealized === 'success' && (
             <p className={`font-subtitle02-bold ${styles.title}`}>
-              {unrealized.gainLoss[currency].amount}
+              {formatCurrency(unrealized.gainLoss[currency].amount, currency)}
             </p>
           )}
           {statusUnrealized === 'success' && (
             <article className={styles.valueSubRect}>
               <div className={`${styles.diffBox} ${styles.plus}`}>
-                <p>{`${unrealized.gainLoss[currency].difference?.amount} (${unrealized.gainLoss[currency].difference?.percentage})`}</p>
+                <p>{`${formatCurrency(
+                  unrealized.gainLoss[currency].difference?.amount || null,
+                  currency
+                )} (${formatPercent(
+                  unrealized.gainLoss[currency].difference?.percentage || 0
+                )})`}</p>
               </div>
               <div className={`${styles.diffBox}`}>
                 <p>24h</p>
@@ -99,7 +105,7 @@ const SummaryValueContainer = () => {
         )}
         {statusRealized === 'success' && (
           <p className={`font-subtitle02-bold ${styles.title}`}>
-            {realized.gainLoss[currency].amount}
+            {formatCurrency(realized.gainLoss[currency].amount, currency)}
           </p>
         )}
       </article>

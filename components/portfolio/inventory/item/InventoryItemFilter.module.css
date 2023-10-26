@@ -1,26 +1,23 @@
 .container {
-  @apply flex flex-col border-r-1 border-border-main overflow-hidden;
+  @apply flex flex-col overflow-hidden;
   @apply pr-12 pb-43;
   @apply min-w-[290px] w-[290px] max-w-[290px] min-h-[calc(100vh-388px)] max-h-[calc(100vh-112px)];
 }
 .inputContainer {
   @apply w-full h-36 flex items-center justify-items-start px-12;
-  @apply border-1 border-border-main;
+  @apply border-1 border-[var(--color-border-main)];
 }
 .textInput {
   @apply w-full border-0 p-0 ml-8;
-  @apply bg-transparent placeholder:text-text-subtlest text-text-main;
+  @apply bg-transparent placeholder:text-[var(--color-text-subtlest)] text-[var(--color-text-main)];
 }
 .icon {
-  @apply fill-icon-main;
-}
-.filterButton {
-  @apply rounded-none border-1 bg-transparent p-8 border-border-main hover:border-border-selected text-text-subtle hover:text-text-main;
+  @apply fill-[var(--color-icon-main)];
 }
 .checkbox {
   @apply w-16 h-16 mr-8;
-  @apply bg-elevation-sunken border-1 border-border-bold;
+  @apply bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-bold)];
 }
 .pCollectionName {
-  @apply text-text-main;
+  @apply text-[var(--color-text-main)];
 }

@@ -16,8 +16,8 @@ const InventoryItemSection = () => {
   return (
     <section className='sticky top-116 z-0'>
       <InventoryItemSelectCollection />
-      <section className={`${styles.container} dark:border-border-main-dark`}>
-        <div className='w-fit h-full '>
+      <section className={`${styles.container}`}>
+        <div className='w-fit h-full border-r-1 border-[var(--color-border-main)] '>
           {isFilterOpen && (
             <InventoryItemFilter handleFilterOpen={setIsFilterOpen} />
           )}
