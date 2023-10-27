@@ -1,10 +1,7 @@
 import dynamic from 'next/dynamic';
 import styles from './TotalInventoryChart.module.css';
 import { renderToString } from 'react-dom/server';
-<<<<<<< HEAD
-=======
 import { twMerge } from 'tailwind-merge';
->>>>>>> bca634e7cbf174f04fa8dd1a944ea7a06e1fd533
 import {
   useInventoryCollectionPositionAmount,
   useInventoryCollectionPositionValue,
@@ -15,7 +12,6 @@ import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { formatPercent, shortenAddress } from '@/utils/common';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
-<<<<<<< HEAD
 const COLORS = [
   'var(--color-chart-information)',
   'var(--color-chart-accent-teal-boldest)',
