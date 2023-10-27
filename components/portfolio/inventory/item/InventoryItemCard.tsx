@@ -1,20 +1,28 @@
 import Image from 'next/image';
 import styles from './InventoryItemCard.module.css';
 import { Token } from '@/interfaces/collection';
-import { useAtomValue } from 'jotai';
-import { currencyAtom } from '@/store/currency';
+import { useAtom, useAtomValue } from 'jotai';
+import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import { formatCurrency, formatPercent } from '@/utils/common';
 import SkeletonLoader from '@/components/SkeletonLoader';
+import { selectedTokenAtom } from '@/store/portfolio';
+import ValuationDropdown from './ValuationDropdown';
 
 const InventoryItemCard = ({ token }: { token: Token }) => {
   const currency = useAtomValue(currencyAtom);
+  const priceType = useAtomValue(priceTypeAtom);
   const isPlus = parseFloat(token.nav[currency].difference?.amount || '0') > 0;
   const isMinus = parseFloat(token.nav[currency].difference?.amount || '0') < 0;
+  const [selectedToken, setSelectedToken] = useAtom(selectedTokenAtom);
   const isZero =
     parseFloat(token.nav[currency].difference?.amount || '0') === 0;
+  const handleClickToken = (token: Token) => {
+    setSelectedToken(token);
+  };
   return (
     <article
-      className={`font-caption-medium ${styles.cardWrapper} dark:border-border-main-dark`}
+      className={`font-caption-medium ${styles.cardWrapper}`}
+      onClick={() => handleClickToken(token)}
     >
       <div className='w-full pb-[100%] overflow-hidden relative'>
         <Image
@@ -27,40 +35,40 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
         />
       </div>
       <div className='w-full flex flex-col justify-start my-12 px-12'>
-        <p className={`${styles.tokenName} dark:text-text-subtle-dark mb-8`}>
-          {token.token.name}
-        </p>
+        <p className={`${styles.pName} mb-8`}>{token.token.name}</p>
         <div className='flex justify-between items-center mb-8'>
-          <p className='text-text-subtle dark:text-text-subtle-dark'>
-            Cost basis
-          </p>
+          <p className={styles.pName}>Cost basis</p>
           {token.costBasis ? (
-            <p className='text-text-main dark:text-text-main-dark'>
-              {formatCurrency(token.costBasis[currency].amount, currency)}
+            <p className={styles.pValue}>
+              {priceType === 'acquisitionPrice'
+                ? formatCurrency(
+                    token.acquisitionPrice?.[currency].amount || null,
+                    currency
+                  )
+                : token.costBasis?.[currency] &&
+                  formatCurrency(token.costBasis[currency].amount, currency)}
             </p>
           ) : (
             <SkeletonLoader className='h-16 w-50' />
           )}
         </div>
         <div className='flex justify-between items-center mb-8'>
-          <p className='text-text-subtle dark:text-text-subtle-dark'>
-            Realtime NAV
-          </p>
-          <p className='text-text-main dark:text-text-main-dark'>
+          <p className={styles.pName}>Realtime NAV</p>
+          <p className={styles.pValue}>
             {formatCurrency(token.nav[currency].amount, currency)}
           </p>
         </div>
         <div className='flex justify-between items-center mb-8'>
-          <p className='text-text-subtle dark:text-text-subtle-dark'>
-            Unrealized G&L
-          </p>
+          <p className={styles.pName}>Unrealized G&L</p>
           {token.nav[currency].difference?.amount ? (
             <p
               className={`${
-                isPlus && 'text-text-success dark:text-text-success-dark'
-              } 
-            ${isMinus && 'text-text-danger dark:text-text-danger-dark'} 
-            ${isZero && 'text-text-main dark:text-text-main-dark'}`}
+                isPlus
+                  ? 'text-[var(--color-text-success)]'
+                  : isMinus
+                  ? 'text-[var(--color-text-danger)]'
+                  : 'text-[var(--color-text-main)]'
+              }`}
             >
               {formatCurrency(token.nav[currency].difference?.amount, currency)}
             </p>
@@ -69,22 +77,29 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
           )}
         </div>
         <div className='flex justify-between items-center mb-8'>
-          <p className='text-text-subtle dark:text-text-subtle-dark'>
-            Unrealized ROI
-          </p>
+          <p className={styles.pName}>Unrealized ROI</p>
           {token.nav[currency].difference?.amount ? (
             <p
               className={`${
-                isPlus && 'text-text-success dark:text-text-success-dark'
-              } 
-            ${isMinus && 'text-text-danger dark:text-text-danger-dark'} 
-            ${isZero && 'text-text-main dark:text-text-main-dark'}`}
+                isPlus
+                  ? 'text-[var(--color-text-success)]'
+                  : isMinus
+                  ? 'text-[var(--color-text-danger)]'
+                  : 'text-[var(--color-text-main)]'
+              }`}
             >
               {formatPercent(token.nav[currency].difference?.percentage)}
             </p>
           ) : (
             <SkeletonLoader className='h-16 w-50' />
           )}
+        </div>
+        <div className='flex items-center mb-8'>
+          <ValuationDropdown
+            token={token}
+            valuations={token.valuation}
+            card={true}
+          />
         </div>
       </div>
     </article>

@@ -34,6 +34,9 @@
 .dot--4 {
   @apply bg-[var(--color-chart-accent-blue-boldest)];
 }
+.dot--5 {
+  @apply bg-[var(--color-chart-accent-gray-bolder)];
+}
 .body li {
   @apply items-center w-full flex items-center;
 }

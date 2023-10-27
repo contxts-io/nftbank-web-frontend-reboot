@@ -7,6 +7,8 @@ import { testAtom } from '@/store/test';
 import { getIdTokenByGoogle } from '@/apis/firebase';
 import { getMe, signIn, signUp } from '@/apis/auth';
 import { setCookie } from 'cookies-next';
+import Button from '@/components/buttons/Button';
+import { useState } from 'react';
 
 const Page = () => {
   // const { address, isConnected } = useAccount();
@@ -17,6 +19,15 @@ const Page = () => {
   // const handleChangeAtom = (e: any) => {
   //   setTest('changed');
   // };
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const openDrawer = () => {
+    setIsDrawerOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+  };
   const onClickSignInGoogle = async () => {
     try {
       const token = await getIdTokenByGoogle();
@@ -55,14 +66,30 @@ const Page = () => {
   //   return <button onClick={() => connect()}>Connect Wallet</button>;
   return (
     <div className='bg-primary'>
-      <p className='dark:text-red-300'>about</p>
       {/* <p>{address}</p>
       <p>{test}</p>
       <button onClick={handleChangeAtom}>change test</button>*/}
-      <button onClick={() => onClickSignInGoogle()}>Sign in Google</button>
-      <button onClick={() => onClickSignUpGoogle()}>Sign Up Google</button>
-      <button onClick={() => checkMe()}>get Me</button>
-      <ThemeSwitcher />
+      <div className='flex gap-6'>
+        <Button id='' onClick={() => onClickSignInGoogle()}>
+          Sign in Google
+        </Button>
+        <Button id='' onClick={() => onClickSignUpGoogle()}>
+          Sign Up Google
+        </Button>
+        <Button id='' onClick={() => checkMe()}>
+          get Me
+        </Button>
+
+        <ThemeSwitcher />
+        <button onClick={openDrawer}>Open Drawer</button>
+      </div>
+      <div className={`w-full drawer ${isDrawerOpen ? 'open' : ''}`}>
+        <div className='overlay' onClick={closeDrawer}></div>
+        <div className='content'>
+          <p>Drawer Content</p>
+          <button onClick={closeDrawer}>Close Drawer</button>
+        </div>
+      </div>
     </div>
   );
 };

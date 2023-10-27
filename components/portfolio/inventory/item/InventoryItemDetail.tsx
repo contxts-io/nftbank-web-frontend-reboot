@@ -3,16 +3,19 @@ import { Token } from '@/interfaces/collection';
 import styles from './InventoryItemDetail.module.css';
 import Image from 'next/image';
 import { useMetadata } from '@/utils/hooks/queries/metadata';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import InventoryItemActivity from './InventoryItemActivity';
 import Tag from '@/public/icon/Tag';
 import InventoryItemDetailChart from './InventoryItemDetailChart';
 import { useValuationTokenHistory } from '@/utils/hooks/queries/valuation';
 import SkeletonLoader from '@/components/SkeletonLoader';
+import { useAtom } from 'jotai';
+import { selectedTokenAtom } from '@/store/portfolio';
 type Props = {
   token: Token;
 };
 const InventoryItemDetail = ({ token }: Props) => {
+  const [selectedToken, setSelectedToken] = useAtom(selectedTokenAtom);
   const { data: inventoryItem, status } = useMetadata({
     networkId: token.collection.chain.name,
     assetContract: token.collection.assetContract,
@@ -28,40 +31,58 @@ const InventoryItemDetail = ({ token }: Props) => {
   const handleToggleViewType = (type: 'overview' | 'activity') => {
     setViewType(type);
   };
+  useEffect(() => {
+    document.body.style.cssText = `
+      position: fixed; 
+      top: -${window.scrollY}px;
+      overflow-y: scroll;
+      width: 100%;`;
+    return () => {
+      const scrollY = document.body.style.top;
+      document.body.style.cssText = '';
+      window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+      setSelectedToken(null);
+    };
+  }, []);
   return (
-    <section className={styles.container}>
-      <div className='my-26 w-full flex justify-between'>
-        <div className='font-caption-medium flex items-center'>
-          <div className='w-[300px]'>
-            <h2 className={`font-body01-medium text-[var(--color-text-main)]`}>
-              {token.token.name}
-            </h2>
-            <div className='flex items-center'>
-              <p>
-                {token.collection.name ||
-                  `${token.collection.assetContract.substring(
-                    0,
-                    4
-                  )}...${token.collection.assetContract.substring(-1, 4)}`}
-              </p>
-            </div>
-          </div>
-          <div className='mr-40'>
-            <p className={`${styles.pSub}`}>Owner</p>
-            <p className={`${styles.pMain} `}>You</p>
-          </div>
-          <div className='mr-40'>
-            <p className={`${styles.pSub}`}>Rarity Rank</p>
-            <p className={`${styles.pMain}`}>
-              {inventoryItem?.rarityRank || '-'}
+    <section className={`${styles.container} scrollbar-show scrollbar-default`}>
+      <div className='w-full flex items-center font-caption-medium px-24'>
+        <div className='w-[300px]'>
+          <h2 className={`font-body01-medium text-[var(--color-text-main)]`}>
+            {token.token.name}
+          </h2>
+          <div className='flex items-center mt-8'>
+            <Image
+              src={token.collection.imageUrl || '/icon/nftbank_icon.svg'}
+              width={16}
+              height={16}
+              className='rounded-full mr-8'
+              alt={`${token.collection.name}-${token.collection.assetContract}`}
+            />
+            <p className='font-caption-medium text-[var(--color-text-main)]'>
+              {token.collection.name ||
+                `${token.collection.assetContract.substring(
+                  0,
+                  4
+                )}...${token.collection.assetContract.substring(-1, 4)}`}
             </p>
           </div>
-          <div className='mr-40'>
-            <p className={`${styles.pSub}`}>Rarity</p>
-            <p className={`${styles.pMain}`}>{inventoryItem?.rarity || '-'}</p>
-          </div>
         </div>
-        <div className='flex items-center p-7 font-caption-medium border-1 border-[var(--color-border-main)]'>
+        <div className='mr-40'>
+          <p className={`${styles.pSub}`}>Owner</p>
+          <p className={`text-[var(--color-text-brand)]`}>You</p>
+        </div>
+        <div className='mr-40'>
+          <p className={`${styles.pSub}`}>Rarity Rank</p>
+          <p className={`${styles.pMain}`}>
+            {inventoryItem?.rarityRank || '-'}
+          </p>
+        </div>
+        <div className='mr-40'>
+          <p className={`${styles.pSub}`}>Rarity</p>
+          <p className={`${styles.pMain}`}>{inventoryItem?.rarity || '-'}</p>
+        </div>
+        <div className=' ml-auto flex items-center p-7 font-caption-medium border-1 border-[var(--color-border-main)]'>
           <button
             onClick={() => handleToggleViewType('overview')}
             className={`${styles.typeButton}
@@ -91,25 +112,23 @@ const InventoryItemDetail = ({ token }: Props) => {
 
       <div className='w-full flex flex-col'>
         {viewType === 'overview' && (
-          <article className='flex flex-col'>
-            <div className={styles.metadata}>
-              <div className={`${styles.tokenImage} relative`}>
-                <Image
-                  src={token.token.imageUrl || '/icon/nftbank_icon.svg'}
-                  fill
-                  alt={`${token.token.name}-${token.token.tokenId}`}
-                />
-              </div>
-              <div className='flex-grow'>
-                {historicalStatus === 'loading' && (
-                  <div className='w-full h-[300px] pl-24'>
-                    <SkeletonLoader className='w-full h-full' />
-                  </div>
-                )}
-                {historicalData && (
-                  <InventoryItemDetailChart historicalData={historicalData} />
-                )}
-              </div>
+          <article className='flex flex-col items-center'>
+            <div className={`${styles.tokenImage} relative`}>
+              <Image
+                src={token.token.imageUrl || '/icon/nftbank_icon.svg'}
+                fill
+                alt={`${token.token.name}-${token.token.tokenId}`}
+              />
+            </div>
+            <div className='w-full'>
+              {historicalStatus === 'loading' && (
+                <div className='w-full h-[280px] mt-20'>
+                  <SkeletonLoader className='w-full h-full' />
+                </div>
+              )}
+              {historicalData && (
+                <InventoryItemDetailChart historicalData={historicalData} />
+              )}
             </div>
             {(inventoryItem?.traits?.length || 0) > 0 && (
               //traits section
@@ -119,7 +138,7 @@ const InventoryItemDetail = ({ token }: Props) => {
                   <p
                     className={`font-body01-medium text-[var(--color-text-main)] ml-8`}
                   >
-                    Top Traits
+                    Traits
                   </p>
                 </span>
                 <div className={styles.traitContainer}>

@@ -4,7 +4,6 @@ import styles from './InventoryItemList.module.css';
 import { useAtom, useAtomValue } from 'jotai';
 import { TSort, inventoryItemListAtom } from '@/store/requestParam';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
-import { TValuation } from '@/interfaces/collection';
 import React, { useEffect, useState } from 'react';
 import InventoryItemTable from './InventoryItemTable';
 import DotsNine from '@/public/icon/DotsNine';
@@ -13,7 +12,9 @@ import { inventoryItemViewTypeAtom } from '@/store/settings';
 import ToggleButton from '@/components/buttons/ToggleButton';
 import InventoryItemCardGrid from './InventoryItemCardGrid';
 import Filter from '@/public/icon/Filter';
-import CustomValuationSaveToast from './CustomValuationSaveToast';
+import ReactModal from 'react-modal';
+import InventoryItemDetail from './InventoryItemDetail';
+import { selectedTokenAtom } from '@/store/portfolio';
 type Props = {
   isFilterOpen: boolean;
   handleFilterOpen: (state: boolean) => void;
@@ -23,10 +24,13 @@ const InventoryItemList = (props: Props) => {
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
   const [itemViewType, setItemViewType] = useAtom(inventoryItemViewTypeAtom);
   const [openedItem, setOpenedItem] = useState<string[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [priceType, setPriceType] = useAtom(priceTypeAtom);
   const { data: inventoryItemList, status } =
     useInventoryItemList(requestParam);
   const currency = useAtomValue(currencyAtom);
+  const [selectedToken, setSelectedToken] = useAtom(selectedTokenAtom);
   const handleClickSortButton = (sort: TSort) => {
     const order =
       requestParam.sort !== sort
@@ -47,6 +51,10 @@ const InventoryItemList = (props: Props) => {
       includeGasUsed: priceType === 'costBasis' ? 'true' : 'false',
     }));
   }, [priceType]);
+
+  useEffect(() => {
+    selectedToken && setShowModal(true);
+  }, [selectedToken]);
   const handleChangePriceType = () => {
     setPriceType((prev) =>
       prev === 'costBasis' ? 'acquisitionPrice' : 'costBasis'
@@ -59,16 +67,16 @@ const InventoryItemList = (props: Props) => {
         <div>
           {!isFilterOpen && (
             <button
-              className={`${styles.filterButton} dark:border-border-main-dark dark:hover:border-border-selected-dark hover:dark:text-text-main-dark`}
+              className={`${styles.filterButton}`}
               onClick={() => handleFilterOpen(true)}
             >
-              <Filter className='fill-icon-subtle dark:fill-icon-subtle-dark' />
+              <Filter className='fill-[var(--color-icon-subtle)]' />
             </button>
           )}
         </div>
         <div className='flex items-center'>
           <div className='flex px-12 mr-8'>
-            <span className='font-button03-medium text-text-subtle dark:text-text-subtle-dark mr-8'>
+            <span className='font-button03-medium text-[var(--color-text-subtle)] mr-8'>
               Include Gas fee
             </span>
             <ToggleButton
@@ -77,7 +85,7 @@ const InventoryItemList = (props: Props) => {
               id={''}
             />
           </div>
-          <div className='flex justify-between p-3 items-center border-1 w-72 border-border-main dark:border-border-main-dark'>
+          <div className='flex justify-between p-3 items-center border-1 w-72 border-[var(--color-border-main)]'>
             <div
               className={`${styles.viewType} ${
                 itemViewType === 'cardView' && styles.checked
@@ -90,7 +98,7 @@ const InventoryItemList = (props: Props) => {
                 <DotsNine
                   width={16}
                   height={16}
-                  className={`${styles.viewTypeButtonIcon} dark:fill-icon-main-dark`}
+                  className={`${styles.viewTypeButtonIcon}`}
                 />
               </button>
             </div>
@@ -106,7 +114,7 @@ const InventoryItemList = (props: Props) => {
                 <Hamburger
                   width={16}
                   height={16}
-                  className={`${styles.viewTypeButtonIcon} dark:fill-icon-main-dark`}
+                  className={`${styles.viewTypeButtonIcon}`}
                 />
               </button>
             </div>
@@ -117,6 +125,27 @@ const InventoryItemList = (props: Props) => {
         {itemViewType === 'listView' && <InventoryItemTable />}
         {itemViewType === 'cardView' && <InventoryItemCardGrid />}
       </div>
+      <ReactModal
+        isOpen={showModal}
+        contentLabel='Minimal Modal Example'
+        className='w-full max-w-[1036px] absolute top-0 right-0'
+        onRequestClose={() => {
+          setDrawerOpen(false);
+          setTimeout(() => {
+            setShowModal(false);
+          }, 200);
+        }}
+        ariaHideApp={false}
+        shouldCloseOnOverlayClick={true}
+        overlayClassName={'overlayBackground'}
+        onAfterOpen={() => {
+          setDrawerOpen(true);
+        }}
+      >
+        <div className={`${styles.sidebar} ${drawerOpen ? styles.open : ''}`}>
+          {selectedToken && <InventoryItemDetail token={selectedToken} />}
+        </div>
+      </ReactModal>
     </section>
   );
 };

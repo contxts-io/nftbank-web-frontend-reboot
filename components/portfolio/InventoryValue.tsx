@@ -10,112 +10,149 @@ import { currencyAtom } from '@/store/currency';
 import { useSearchParams } from 'next/navigation';
 import { inventoryTypeAtom } from '@/store/settings';
 import { formatCurrency, formatPercent } from '@/utils/common';
-import { useInventoryValuePerformance } from '@/utils/hooks/queries/performance';
+import {
+  useInventoryUnrealizedPerformance,
+  useInventoryValuePerformance,
+} from '@/utils/hooks/queries/performance';
 import SkeletonLoader from '../SkeletonLoader';
 import { useMe } from '@/utils/hooks/queries/auth';
-import { useEffect } from 'react';
-const VALUE = [
-  {
-    type: 'inventoryValue',
-    name: 'InventoryValue',
-  },
-  {
-    type: 'Unrealized Gain&Loss',
-    name: 'Unrealized Gain&Loss',
-  },
-  {
-    type: '',
-    name: 'Unrealized ROI',
-  },
-];
+import { useEffect, useState } from 'react';
+
 const InventoryValue = () => {
   const searchParams = useSearchParams();
   const { data: me } = useMe();
+  const [values, setValues] = useState<any[]>([]);
   const walletAddress =
     searchParams.get('walletAddress') || me.walletAddress || undefined;
 
-  const { data: inventoryValue, isLoading } = useInventoryValue(walletAddress);
+  const { data: inventoryValue, status: statusInventoryValue } =
+    useInventoryValue(walletAddress);
   const { data: inventoryValuePerformance, status: statusPerformance } =
     useInventoryValuePerformance(walletAddress);
+  const { data: inventoryUnrealized, status: statusInventoryUnrealized } =
+    useInventoryUnrealizedPerformance(walletAddress);
   const { data: collectionCount, isLoading: isLoadingCollectionCount } =
     useCollectionCount(walletAddress);
   const { data: itemCount, isLoading: isLoadingItemCount } =
     useItemCount(walletAddress);
   const currency = useAtomValue(currencyAtom);
 
-  const toFixed = (value: string | null) => {
-    return value && parseFloat(value).toFixed(2);
-  };
   const inventoryType = useAtomValue(inventoryTypeAtom);
   useEffect(() => {
-    console.log('inventoryValue', inventoryValue);
-    console.log('inventoryValuePerformance', inventoryValuePerformance);
-  }, [inventoryValue, inventoryValuePerformance]);
+    setValues([
+      {
+        type: 'inventoryValue',
+        name: 'InventoryValue',
+        status: statusInventoryValue,
+        value: formatCurrency(
+          inventoryValue?.value[currency].amount || '-',
+          currency
+        ),
+        diff: formatCurrency(
+          inventoryValuePerformance?.value[currency].difference.amount || '-',
+          currency
+        ),
+        diffPercent: formatPercent(
+          inventoryValuePerformance?.value[currency].difference.percentage || 0
+        ),
+        isPlus:
+          inventoryValuePerformance &&
+          parseFloat(
+            inventoryValuePerformance.value[currency].difference.amount
+          ) > 0,
+      },
+      {
+        type: 'unrealizedValue',
+        name: 'Unrealized Gain&Loss',
+        value: formatCurrency(
+          inventoryUnrealized?.gainLoss[currency] || '-',
+          currency
+        ),
+        diff: formatCurrency(
+          inventoryUnrealized?.gainLoss[currency] || '-',
+          currency
+        ),
+        diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || 0),
+        isPlus: parseFloat(inventoryUnrealized?.gainLoss[currency] || '0') > 0,
+        status: statusInventoryUnrealized,
+      },
+      {
+        type: 'unrealizedRoi',
+        name: 'Unrealized ROI',
+        value: formatPercent(inventoryUnrealized?.roi[currency] || 0),
+        diff: formatPercent(inventoryUnrealized?.roi[currency] || 0),
+        diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || 0),
+        isPlus: (inventoryUnrealized?.roi[currency] || 0) > 0,
+        status: statusInventoryUnrealized,
+      },
+    ]);
+  }, [
+    inventoryValue,
+    statusInventoryValue,
+    inventoryValuePerformance,
+    inventoryUnrealized,
+    currency,
+  ]);
   return (
-    <section className={`${styles.container} dark:border-border-main-dark`}>
-      {isLoading && <div>Loading...</div>}
-      {!isLoading &&
+    <section className={`${styles.container}`}>
+      {statusInventoryValue === 'loading' && <div>Loading...</div>}
+      {statusInventoryValue === 'success' &&
         inventoryValue &&
-        VALUE.map((item, index) => {
-          const isPlus =
-            inventoryValuePerformance &&
-            parseFloat(
-              inventoryValuePerformance.value[currency].difference.amount
-            ) > 0;
-          const value =
-            item.type === 'inventoryValue'
-              ? inventoryValue.value[currency].amount
-              : null;
+        values.map((item, index) => {
           return (
-            <article
-              key={index}
-              className={`${styles.articleBox} dark:border-border-main-dark`}
-            >
+            <article key={index} className={`${styles.articleBox}`}>
               <div className='w-fit'>
                 <p
-                  className={`font-caption-medium mb-4 text-text-subtle dark:text-text-subtle-dark w-fit`}
+                  className={`font-caption-medium mb-4 text-[var(--color-text-subtle)] w-fit`}
                 >
                   {item.name}
                 </p>
-                <div className='border-t-1 border-dashed border-border-accent-gray dark:border-border-accent-gray-dark' />
+                <div className='border-t-1 border-dashed border-[var(--color-border-accent-gray)]' />
               </div>
               <div className={styles.valueRow}>
-                <div className='mr-8 items-end'>
-                  <p
-                    className={`font-subtitle01-bold text-text-main dark:text-text-main-dark`}
-                  >
-                    {value && formatCurrency(value, currency)}
-                  </p>
-                </div>
-                {value && statusPerformance !== 'success' && (
+                {item.status === 'loading' && (
                   <SkeletonLoader className='h-22 w-100' />
                 )}
-                {value &&
+                {item.status === 'success' && (
+                  <div className='mr-8 items-end'>
+                    <p
+                      className={`font-subtitle01-bold ${
+                        item.type == `inventoryValue`
+                          ? styles.pMain
+                          : item.plus
+                          ? 'text-[var(--color-text-success)]'
+                          : 'text-[var(--color-text-danger)]'
+                      }`}
+                    >
+                      {item.value && item.value}
+                    </p>
+                  </div>
+                )}
+                {item.type === 'inventoryValue' &&
+                  item.value &&
+                  statusPerformance !== 'success' && (
+                    <SkeletonLoader className='h-22 w-100' />
+                  )}
+                {item.type === 'inventoryValue' &&
+                  item.value &&
                   statusPerformance === 'success' &&
                   inventoryValuePerformance && (
                     <>
                       <div
                         className={
-                          isPlus
-                            ? `${styles.diffBox} ${styles.plus} dark:text-text-success-dark  dark:bg-background-success-dark`
-                            : `${styles.diffBox} ${styles.minus} dark:text-text-danger-dark dark:bg-background-danger-dark`
+                          item.isPlus
+                            ? `${styles.diffBox} ${styles.plus}`
+                            : `${styles.diffBox} ${styles.minus}`
                         }
                       >
                         <p className='font-caption-medium'>
-                          {`${formatCurrency(
-                            inventoryValuePerformance.value[currency].difference
-                              .amount,
-                            currency
-                          )} (${formatPercent(
-                            inventoryValuePerformance.value[currency].difference
-                              .percentage
-                          )})`}
+                          {`${item.diff} (${item.diffPercent})`}
                         </p>
                       </div>
                       <div
-                        className={`${styles.diffBox} bg-elevation-surface-raised dark:bg-elevation-surface-raised-dark`}
+                        className={`${styles.diffBox} bg-[var(--color-elevation-surface-raised)]`}
                       >
-                        <p className='font-caption-medium text-text-main dark:text-text-main-dark'>
+                        <p className='font-caption-medium text-[var(--color-text-main)]'>
                           24H
                         </p>
                       </div>
@@ -129,16 +166,16 @@ const InventoryValue = () => {
       <article className='ml-16 py-16'>
         <div className='w-fit'>
           <p
-            className={`font-caption-medium mb-4 text-text-subtle dark:text-text-subtle-dark w-fit`}
+            className={`font-caption-medium mb-4 text-[var(--color-text-subtle)] w-fit`}
           >
             {inventoryType === 'collection'
               ? 'Valuable Collections'
               : 'Valuable Items'}
           </p>
-          <div className='border-t-1 border-dashed border-border-accent-gray dark:border-border-accent-gray-dark' />
+          <div className='border-t-1 border-dashed border-[var(--color-border-accent-gray)]' />
         </div>
         <p
-          className={`font-subtitle01-bold mt-16 text-text-main dark:text-text-main-dark`}
+          className={`font-subtitle01-bold mt-16 text-[var(--color-text-main)]`}
         >
           {inventoryType === 'collection'
             ? collectionCount?.totalCount

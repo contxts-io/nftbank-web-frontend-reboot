@@ -1,7 +1,6 @@
 'use client';
 import styles from './InventoryItemFilter.module.css';
 import {
-  TCollectionParam,
   inventoryItemFilterCollectionAtom,
   inventoryItemListAtom,
 } from '@/store/requestParam';
@@ -92,25 +91,21 @@ const InventoryItemFilter = (props: Props) => {
   };
   if (status === 'error') return <div>error</div>;
   return (
-    <aside className={`${styles.container} dark:border-border-main-dark`}>
+    <aside className={`${styles.container}`}>
       <div className='flex justify-between items-center my-12'>
-        <h2 className='font-subtitle02-bold text-text-main dark:text-text-main-dark'>
+        <h2 className='font-subtitle02-bold text-[var(--color-text-main)]'>
           Collection
         </h2>
         <Button onClick={() => handleFilterOpen(false)} id={'filterButton'}>
           <Filter />
         </Button>
       </div>
-      <div className={`${styles.inputContainer}  dark:border-border-main-dark`}>
-        <MagnifyingGlass
-          className={`${styles.icon} dark:fill-icon-main-dark`}
-          width={16}
-          height={16}
-        />
+      <div className={`${styles.inputContainer}`}>
+        <MagnifyingGlass className={`${styles.icon}`} width={16} height={16} />
         <input
           type='text'
           placeholder={'Search by collections'}
-          className={`${styles.textInput} font-caption-regular placeholder:dark:text-text-subtlest-dark dark:text-text-main-dark`}
+          className={`${styles.textInput} font-caption-regular`}
           onChange={handleInputText}
           value={searchText}
         />
@@ -123,7 +118,7 @@ const InventoryItemFilter = (props: Props) => {
               <input
                 type='checkbox'
                 name={item.collection.name}
-                className={`${styles.checkbox} dark:border-border-bold-dark dark:bg-elevation-sunken-dark`}
+                className={`${styles.checkbox}`}
                 checked={
                   selectedCollection?.find((collection) => {
                     return (
@@ -140,14 +135,12 @@ const InventoryItemFilter = (props: Props) => {
                 src={item.collection.imageUrl || '/icon/ethereum.svg'}
                 width={20}
                 height={20}
-                className='rounded-full mr-8 border-1 border-border-main dark:border-border-main-dark'
+                className='rounded-full mr-8 border-1 border-[var(--color-border-main)]'
                 alt={`${
                   item.collection.name || item.collection.assetContract
                 } image`}
               />
-              <p
-                className={`font-caption-medium ${styles.pCollectionName} dark:text-text-main-dark`}
-              >
+              <p className={`font-caption-medium ${styles.pCollectionName}`}>
                 {item.collection.name ||
                   shortenAddress(item.collection.assetContract)}
               </p>

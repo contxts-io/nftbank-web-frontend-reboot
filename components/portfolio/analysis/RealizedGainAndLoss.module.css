@@ -1,0 +1,27 @@
+.container {
+  @apply mt-20 border-1 border-[var(--color-border-main)] p-20;
+}
+.title {
+  @apply gap-12 flex items-center justify-between;
+}
+.tableWrapper {
+  @apply mt-20 w-full h-[310] overflow-hidden;
+}
+.table {
+  @apply w-full table-auto;
+}
+.table thead {
+  @apply border-t-1 border-b-1 border-[var(--color-border-main)];
+}
+.table tr {
+  @apply h-40;
+}
+.table thead th {
+  @apply text-[var(--color-text-subtle)];
+}
+.table tbody tr {
+  @apply cursor-pointer border-b-1 border-[var(--color-border-disabled)];
+}
+.table tbody tr:hover {
+  @apply text-[var(--color-text-main)] bg-[var(--color-elevation-sunken)];
+}

@@ -7,26 +7,20 @@ import Image from 'next/image';
 import { TValuation, Token } from '@/interfaces/collection';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import React, { useEffect, useMemo, useState } from 'react';
-import InventoryItemDetail from './InventoryItemDetail';
 import CaretDown from '@/public/icon/CaretDown';
 import {
   formatCurrency,
   formatDate,
   formatPercent,
   isPlus,
-  mappingConstants,
   shortenAddress,
 } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
 import { useInventoryItemPerformance } from '@/utils/hooks/queries/performance';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import { twMerge } from 'tailwind-merge';
-import Check from '@/public/icon/Check';
-import { ValuationEdit } from '@/interfaces/valuation';
 import { TValuationType } from '@/interfaces/constants';
-import CustomValuationSaveToast from './CustomValuationSaveToast';
-import { customValuationAtom } from '@/store/portfolio';
-import ClockClockwise from '@/public/icon/ClockClockwise';
+import { selectedTokenAtom } from '@/store/portfolio';
 import ValuationDropdown from './ValuationDropdown';
 const HEADER = [
   {
@@ -91,6 +85,7 @@ const InventoryItemTable = () => {
   } = useInventoryItemInfinite({ ...requestParam, page: 0 });
   const { data: inventoryItemListPerformance, status: statusPerformance } =
     useInventoryItemPerformance(requestParam);
+  const [selectedToken, setSelectedToken] = useAtom(selectedTokenAtom);
   useEffect(() => {
     const isLast =
       inventoryItemList?.pages?.[inventoryItemList?.pages.length - 1].isLast;
@@ -128,14 +123,15 @@ const InventoryItemTable = () => {
         }
       );
   }, [inventoryItemList, inventoryItemListPerformance, requestParam]);
-  const handleOpenDetail = (target: string) => {
-    setOpenedItem((prev) => {
-      if (prev.includes(target)) {
-        return prev.filter((item) => item !== target);
-      } else {
-        return [...prev, target];
-      }
-    });
+  const handleOpenDetail = (target: Token) => {
+    // setOpenedItem((prev) => {
+    //   if (prev.includes(target)) {
+    //     return prev.filter((item) => item !== target);
+    //   } else {
+    //     return [...prev, target];
+    //   }
+    // });
+    setSelectedToken(target);
   };
 
   const selectedValueType = (
@@ -164,7 +160,7 @@ const InventoryItemTable = () => {
                 key={index}
                 className={`font-caption-medium ${
                   index == 0 ? 'text-left' : 'text-right'
-                } ${item.sort && 'cursor-pointer'}`}
+                } ${item.sort ? 'cursor-pointer' : ''}`}
                 onClick={() => item.sort && handleSort(item.type)}
               >
                 {item.name}
@@ -191,7 +187,7 @@ const InventoryItemTable = () => {
                       className={`font-caption-regular ${styles.tableBodyRow} ${
                         isOpen && styles.isOpen
                       }`}
-                      onClick={() => handleOpenDetail(itemKey)}
+                      onClick={() => handleOpenDetail(data)}
                     >
                       <td />
                       <td className='text-left p-0'>
@@ -230,15 +226,6 @@ const InventoryItemTable = () => {
                               data.costBasis[currency].amount,
                               currency
                             )}
-                        {/* {priceType === 'acquisitionPrice' && (
-                          <p className='text-[var(--color-text-brand)]'>
-                            {data.gasFee?.[currency]?.amount
-                              ? `GAS +${parseFloat(
-                                  data.gasFee[currency].amount || ''
-                                ).toFixed(3)} `
-                              : ''}
-                          </p>
-                        )} */}
                       </td>
                       <td className='text-right'>
                         {formatCurrency(data.nav[currency].amount, currency)}
@@ -259,7 +246,7 @@ const InventoryItemTable = () => {
                       </td>
                       <td className='text-right'>
                         <p
-                          className={`${
+                          className={`mr-8 ${
                             isPlus(
                               data.nav[currency].difference?.percentage || 0
                             )
@@ -286,47 +273,6 @@ const InventoryItemTable = () => {
                           token={data}
                           valuations={data.valuation}
                         />
-                        {/* <ul className='relative ml-8'>
-                          {valuationType?.type && (
-                            <div className='flex items-center justify-end'>
-                              <p className='mr-8'>{`${mappingConstants(
-                                valuationType.type
-                              )}`}</p>
-                              <div
-                                className={`${
-                                  view.open &&
-                                  view.key === `${pageIndex}-${index}` &&
-                                  'rotate-180'
-                                }`}
-                              >
-                                <CaretDown />
-                              </div>
-                              {valuationType.selected && (
-                                <div
-                                  className={`text-[var(--color-icon-brand)]`}
-                                >
-                                  <ClockClockwise />
-                                </div>
-                              )}
-                            </div>
-                          )}
-                          {view.open &&
-                            view.key === `${pageIndex}-${index}` && (
-                              <Dropdown
-                                onClick={(valuationType: TValuationType) =>
-                                  handleSelectValuation({
-                                    assetContract:
-                                      data.collection.assetContract,
-                                    tokenId: data.token.tokenId,
-                                    networkId: 'ethereum',
-                                    valuationType: valuationType,
-                                  })
-                                }
-                                selectedValuation={valuationType}
-                                valuations={data.valuation}
-                              />
-                            )}
-                        </ul> */}
                       </td>
                       <td className='text-right'>
                         {formatPercent(valuationType?.accuracy || null)}
@@ -342,15 +288,6 @@ const InventoryItemTable = () => {
                       </td>
                       <td />
                     </tr>
-                    {isOpen && (
-                      <tr>
-                        <td />
-                        <td colSpan={HEADER.length + 1}>
-                          <InventoryItemDetail token={data} />
-                        </td>
-                        <td />
-                      </tr>
-                    )}
                   </React.Fragment>
                 );
               });

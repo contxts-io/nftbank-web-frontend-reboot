@@ -126,7 +126,7 @@ export default async function RootLayout({
   }
   return (
     <html lang='en' className={`${iosevkaCustom.className}`}>
-      <body className='relative dark:bg-elevation-surface-dark'>
+      <body className='relative bg-[var(--color-elevation-surface)]'>
         <script
           dangerouslySetInnerHTML={{
             __html: themeInitializerScript,

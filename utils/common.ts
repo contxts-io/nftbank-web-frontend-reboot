@@ -1,4 +1,5 @@
 import { TValuation } from "@/interfaces/collection";
+import { TCurrency } from "@/interfaces/constants";
 
 export function formatDate(date:  Date): string  {
   const year = date.getFullYear();
@@ -6,13 +7,58 @@ export function formatDate(date:  Date): string  {
   const day = String(date.getDate()).padStart(2, '0'); // 일을 2자리로 포맷팅
   return `${year}/${month}/${day}`;
 }
-export function formatCurrency(amount: string | null, currency: 'usd' | 'eth'): string {
+export function formatCurrency(amount: string | null, currency: TCurrency): string {
   if (!amount) return '';
   if (amount === 'infinity')
     return '-';
     // return '∞';
-  return parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: currency }).replace('ETH', 'Ξ');
+  if (currency === 'usd') {
+    return _formatFiat(parseFloat(amount),currency).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  }
+  if (currency === 'eth') {
+    return _formatEth(parseFloat(amount)).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  }
+  return '';
 }
+export function shortFormatCurrency(amount: string | null, currency: TCurrency): string {
+  if (!amount) return '';
+  if (amount === 'infinity')
+    return '-';
+    // return '∞';
+  if (currency === 'usd') {
+    return _formatFiat(parseFloat(amount), currency).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  }
+  if (currency === 'eth') {
+    return _formatEth(parseFloat(amount)).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  }
+  return '';
+}
+function formatNumber(number:number): string {
+  const suffixes = ["", "K", "M", "B", "T", "Q"];
+  const suffixNum = Math.floor(("" + number).length / 3);
+  let shortValue = parseFloat((suffixNum !== 0 ? (number / Math.pow(1000, suffixNum)) : number).toPrecision(2));
+  if (shortValue % 1 !== 0) {
+    shortValue = parseFloat(shortValue.toFixed(1));
+  }
+  return shortValue + suffixes[suffixNum];
+}
+function _formatFiat(amount: number, currency: TCurrency): string {
+  if (amount !== 0 && Math.abs(amount) <= 0.01) return `< $0.01`;
+  return parseFloat(amount.toFixed(2)).toLocaleString('en-US', { style: 'currency', currency: currency }).replace('.00', '');
+}
+function _formatEth(amount: number): string {
+  let _amount = '';
+  if (Math.abs(amount) < 1e-7 && Math.abs(amount) > 1e-5) {
+    _amount = amount.toExponential(7); // 1e-7보다 작고 1e-5보다 큰 경우
+  } else if (Math.abs(amount) < 1e-5) {
+    _amount = amount.toPrecision(7); // 1e-5보다 작은 경우, 소수점 일곱째 자리까지 표기
+  } else {
+    _amount = amount.toFixed(4); // 그 외의 경우, 기본 표기 방식 사용
+  }
+  // _amount = formatNumber(parseFloat(_amount));
+  return parseFloat(_amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' }).replace('ETH', 'Ξ');
+}
+
 export function isPlus (value: number | string): boolean {
   if (value === 'infinity') return true;
   if (typeof value === 'string') {
@@ -23,13 +69,29 @@ export function isPlus (value: number | string): boolean {
     return false;
   }
 };
-export function formatPercent(amount: number | null): string {
-  if(amount === null) return '-';
-  return (amount/100).toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 2 });
+export function formatPercent(percent: number | null): string {
+  if (percent === null) return '-';
+  if (Math.abs(percent) <= 0.001) return '0%';
+  if (Math.abs(percent) < 1 && Math.abs(percent) >= 0.001)
+    return (percent / 100).toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 3 });
+  
+  return (percent/100).toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 1 }).replace('.0', '');
 }
 export function formatEth(amount: string | null): string {
   if (!amount) return '';
   return parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' });
+}
+export function difference(diff: string | number, currency: TCurrency | 'percent') {
+  
+  if (currency === 'percent' && typeof diff === 'number') {
+    console.log('typeof ?111',typeof diff)
+    return formatPercent(diff).replace('+', '').replace('-', '');
+  }
+  else if (typeof diff === 'string' && currency !== 'percent') {
+    const mark = parseFloat(diff) > 0 ? '+' : '';
+    return `${mark}${formatCurrency(diff,currency).replace('$', '').replace('Ξ', '')}`;
+  }
+
 }
 export function shortenAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;

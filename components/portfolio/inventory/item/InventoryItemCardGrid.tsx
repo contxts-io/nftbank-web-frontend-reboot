@@ -8,12 +8,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useInventoryItemPerformance } from '@/utils/hooks/queries/performance';
 import ReactQueryClient from '@/utils/ReactQueryClient';
-import { use } from 'chai';
 import { Token } from '@/interfaces/collection';
 
 const InventoryItemCardGrid = () => {
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
-  const [mergedPosts, setMergedPosts] = useState<{ tokens: Token[] }[]>([]);
   const {
     fetchNextPage,
     data: inventoryItemList,
@@ -49,24 +47,22 @@ const InventoryItemCardGrid = () => {
           ),
         }
       );
-  }, [inventoryItemListPerformance]);
-  // const mergePosts = useMemo(
-  //   () => inventoryItemList?.pages,
-  //   [inventoryItemList?.pages]
-  // );
-  useEffect(() => {
-    inventoryItemList?.pages && setMergedPosts(inventoryItemList.pages);
-  }, [inventoryItemList]);
+  }, [inventoryItemList, inventoryItemListPerformance, requestParam]);
+
+  const mergePosts = useMemo(
+    () => inventoryItemList?.pages,
+    [inventoryItemList?.pages, requestParam]
+  );
   return (
     <section className='w-full h-full overflow-auto'>
       <div className={styles.cardListSection}>
-        {mergedPosts?.map((page, pageIndex) => {
+        {mergePosts?.map((page, pageIndex) => {
           return page.tokens.map((token, index) => {
             return token && <InventoryItemCard token={token} key={index} />;
           });
         })}
       </div>
-      <div className='w-full h-1' ref={ref} />
+      <div className='w-full h-43 mt-40' ref={ref} />
     </section>
   );
 };
