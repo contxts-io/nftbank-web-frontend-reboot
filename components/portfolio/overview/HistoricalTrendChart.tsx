@@ -74,17 +74,17 @@ const HistoricalTrendChart = (props: Props) => {
           day: 'numeric',
         });
         category.push(date);
-        _series[0].data.push(parseFloat(item.value[currency]?.amount));
+        _series[0].data.push(parseFloat(item.value?.[currency]?.amount) || 0);
       })) ||
       [];
-    todayValue && _series[0].data.push(todayValue); //마지막에 현재 값을 넣어준다. (마지막 값이 없을 경우 그전값을 넣어준다.)
-    console.log('_series', _series);
+    historicalValueParam.window !== 'ytd' &&
+      todayValue &&
+      _series[0].data.push(todayValue); //마지막에 현재 값을 넣어준다. (마지막 값이 없을 경우 그전값을 넣어준다.)
     const today = new Date().toLocaleDateString('en-us', {
       month: 'short',
       day: 'numeric',
     });
     category.push(today);
-    console.log('category', category);
     return _series;
   }, [inventoryValueHistorical, currency, category, inventoryValue?.value]);
 
