@@ -19,6 +19,9 @@
 .selected {
   @apply bg-[var(--color-elevation-surface-raised)] text-[var(--color-text-main)] !important;
 }
+.plus {
+  @apply text-[var(--color-text-success)];
+}
 .minus {
   @apply text-[var(--color-text-danger)];
 }

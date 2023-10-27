@@ -1,1 +1,12 @@
-
+.dot--0 {
+  @apply bg-[var(--color-border-accent-green)];
+}
+.dot--1 {
+  @apply bg-[var(--color-border-accent-blue)];
+}
+.dot--2 {
+  @apply bg-[var(--color-border-accent-orange)];
+}
+.dot--3 {
+  @apply bg-[var(--color-border-accent-fuchsia)];
+}

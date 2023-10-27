@@ -5,17 +5,17 @@ import Jewel from '@/public/icon/Jewel';
 import Parachute from '@/public/icon/Parachute';
 import ArrowsDownUp from '@/public/icon/ArrowsDownUp';
 import AcquisitionTypePieChart from './AcquisitionTypePieChart';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import CaretDown from '@/public/icon/CaretDown';
 import Dropdown from './Dropdown';
 import { PERIOD_LIST, TPeriod, TYear } from '@/constants/period';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useInventoryAcquisitionTypes } from '@/utils/hooks/queries/inventory';
 import { formatCurrency } from '@/utils/common';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
-import { JsxChild } from 'typescript';
 import { AcquisitionType } from '@/interfaces/activity';
+import { analysisAcquisitionParamAtom } from '@/store/requestParam';
 const LIST = [
   {
     type: 'BUY' as const,
@@ -54,9 +54,13 @@ type _Year = TYear & { selected: boolean };
 const AcquisitionType = () => {
   const { data: me } = useMe();
   const currency = useAtomValue(currencyAtom);
-  const { data: acquisitionTypes, status } = useInventoryAcquisitionTypes(
-    me.walletAddress
+  const [requestParams, setRequestParams] = useAtom(
+    analysisAcquisitionParamAtom
   );
+  const { data: acquisitionTypes, status } = useInventoryAcquisitionTypes({
+    ...requestParams,
+    walletAddress: me.walletAddress,
+  });
   const [list, setList] = useState<_List[]>(LIST);
   const [selectedPeriod, setSelectedPeriod] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({
@@ -86,6 +90,21 @@ const AcquisitionType = () => {
         );
       });
   }, [acquisitionTypes]);
+  useEffect(() => {
+    console.log('changed!');
+    setRequestParams((prev) => {
+      return {
+        ...prev,
+        year: selectedYear.find((item) => item.selected)?.value || 2023,
+        quarter: selectedPeriod.find((item) => item.selected)?.value || 'all',
+      };
+    });
+  }, [selectedPeriod, selectedYear]);
+  const totalAcqCount = useMemo(
+    () =>
+      acquisitionTypes?.data?.reduce((acc, cur) => acc + cur.amount, 0) || 0,
+    [acquisitionTypes?.data]
+  );
   const handleChangePeriod = (name: string) => {
     setSelectedPeriod((prev) =>
       prev.map((item) => ({
@@ -123,10 +142,10 @@ const AcquisitionType = () => {
       <div className='w-full flex justify-center mt-20'>
         <section className='flex gap-80 items-center w-[858px]'>
           <div className='w-[310px] h-[260px] mr-80 relative'>
-            <AcquisitionTypePieChart data={list} />
+            <AcquisitionTypePieChart data={list} totalCount={totalAcqCount} />
             <div className='absoluteCenter flex flex-col items-center'>
               <p className='font-subtitle02-bold text-[var(--color-text-main)] mb-4'>
-                2312
+                {totalAcqCount}
               </p>
               <p className='font-caption-regular text-[var(--color-text-subtle)]'>
                 Total Acq. Count
