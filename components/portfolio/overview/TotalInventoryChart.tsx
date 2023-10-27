@@ -2,14 +2,18 @@ import dynamic from 'next/dynamic';
 import styles from './TotalInventoryChart.module.css';
 import { renderToString } from 'react-dom/server';
 import { twMerge } from 'tailwind-merge';
-import { useInventoryCollectionPositionValue } from '@/utils/hooks/queries/inventory';
+import {
+  useInventoryCollectionPositionAmount,
+  useInventoryCollectionPositionValue,
+} from '@/utils/hooks/queries/inventory';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useEffect, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
+import { formatPercent, shortenAddress } from '@/utils/common';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const COLORS = ['#2563EB', '#5EEAD4', '#A855F7', '#14B8A6', '#93C5FD'];
-const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
+const tooltip = ({ series, seriesIndex, dataPointIndex, w, selected }: any) => {
   const color = w.globals.colors[seriesIndex];
   const label = w.globals.labels[seriesIndex];
   return (
@@ -18,28 +22,57 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
         <div className={`${styles[`dot--${seriesIndex}`]} w-8 h-8 mr-8`} />
         <p className={`text-[var(--color-text-subtle)]`}>{label}</p>
       </div>
-      <p className={`text-[var(--color-text-main)]`}>{series[seriesIndex]}</p>
+      {selected === 'amount' && (
+        <p className={`text-[var(--color-text-main)]`}>
+          {formatPercent(series[seriesIndex])}
+        </p>
+      )}
+      {selected === 'value' && (
+        <p className={`text-[var(--color-text-main)]`}>{series[seriesIndex]}</p>
+      )}
     </div>
   );
 };
-const TotalInventoryChart = () => {
+const TotalInventoryChart = (props: {
+  selected: 'value' | 'amount';
+  totalAmount: number;
+}) => {
+  const { selected, totalAmount } = props;
   const { data: me } = useMe();
   const currency = useAtomValue(currencyAtom);
   const { data: totalInventoryPositionValue, status } =
     useInventoryCollectionPositionValue(me.walletAddress);
+  const { data: totalInventoryPositionAmount, status: statusAmount } =
+    useInventoryCollectionPositionAmount(me.walletAddress);
   const [labels, setLabels] = useState<string[]>([]);
   const [series, setSeries] = useState<number[]>([]);
   useEffect(() => {
-    totalInventoryPositionValue &&
+    selected === 'value' &&
+      totalInventoryPositionValue &&
       (setLabels(
-        totalInventoryPositionValue?.map((item) => item.collection.name)
+        totalInventoryPositionValue?.map((item) => item.collection.name || '')
       ),
       setSeries(
         totalInventoryPositionValue.map((item) =>
           parseFloat(item.value[currency].amount || '0')
         )
       ));
-  }, [totalInventoryPositionValue]);
+    selected === 'amount' &&
+      totalInventoryPositionAmount &&
+      (setLabels(
+        totalInventoryPositionAmount?.map((item, index) => {
+          return (
+            item.collection.name ||
+            shortenAddress(item.collection.assetContract)
+          );
+        })
+      ),
+      setSeries(
+        totalInventoryPositionAmount.map(
+          (item) => (item.amount / totalAmount) * 100 || 0
+        )
+      ));
+  }, [selected, totalInventoryPositionValue, totalInventoryPositionAmount]);
   const options = {
     chart: {
       type: 'donut',
@@ -64,7 +97,7 @@ const TotalInventoryChart = () => {
       followCursor: false,
       custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
         return renderToString(
-          tooltip({ series, seriesIndex, dataPointIndex, w })
+          tooltip({ series, seriesIndex, dataPointIndex, w, selected })
         );
       },
     },

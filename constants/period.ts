@@ -1,6 +1,6 @@
 export type TPeriod = {
   name: 'All' | '1Q' | '2Q' | '3Q' | '4Q';
-  value: string;
+  value: 'q1'|'q2'|'q3'|'q4'|'all',
 };
 export const PERIOD_LIST: TPeriod[] = [
   {
@@ -9,19 +9,19 @@ export const PERIOD_LIST: TPeriod[] = [
   },
   {
     name: '1Q',
-    value: '1q',
+    value: 'q1',
   },
   {
     name: '2Q',
-    value: '2q',
+    value: 'q2',
   },
   {
     name: '3Q',
-    value: '3q',
+    value: 'q3',
   },
   {
     name: '4Q',
-    value: '4q',
+    value: 'q4',
   },
 ];
 export type TYear = {

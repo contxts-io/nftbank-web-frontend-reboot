@@ -1,10 +1,10 @@
 import { AcquisitionType } from "@/interfaces/activity";
 import { TValue, Token } from "@/interfaces/collection";
-import { IInventoryCollectionList, IInventoryItemList, IInventoryValue, IStat, PositionCollection } from "@/interfaces/inventory";
+import { IInventoryCollectionList, IInventoryItemList, IInventoryValue, IStat, PositionCollection, PositionCollectionAmount } from "@/interfaces/inventory";
 import { TSummary, TUnrealized } from "@/interfaces/summary";
 import { TToken } from "@/interfaces/token";
 import { Paging, PagingCursor } from "@/interfaces/utils";
-import { ItemParam, TCollectionParam } from "@/store/requestParam";
+import { ItemParam, TAcquisitionParam, TAnalysisGainAndLossParam, TCollectionParam, TOverviewHistoricalValueParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
 export const getInventoryValue = async<T = IInventoryValue>(walletAddress?: string): Promise<T> => {
@@ -78,12 +78,32 @@ export const getSummaryRealized = async<T = TSummary>(walletAddress?: string): P
   return data.data;
 }
 export type TResponseInventoryValueHistory = { data: IInventoryValue[],min: TValue, max:TValue };
-export const getInventoryValueHistory = async<T =TResponseInventoryValueHistory>(period?: string): Promise<T> => {
-  const {data} = await instance.get<{data:T}>(`/inventory/value/history`);
+type HistoryValueKey = keyof TOverviewHistoricalValueParam;
+export const getInventoryValueHistory = async<T = TResponseInventoryValueHistory>(requestParam: TOverviewHistoricalValueParam): Promise<T> => {
+  const query = Object.keys(requestParam)
+  .filter(function(key) {
+      return requestParam[key as HistoryValueKey] && requestParam[key as HistoryValueKey] !== ""; // 값이 있는 속성만 필터링
+  })
+    .map(function (key) {
+      const value = requestParam[key as HistoryValueKey];
+      if (Array.isArray(value)) {
+        // 만약 값이 배열이면 요소를 쉼표로 연결하여 문자열로 변환
+        return value.length > 0 ? `${encodeURIComponent(key)}=${value.map((v) => encodeURIComponent(v)).join(",")}`:'';
+      } else {
+        return `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`;
+      }
+  })
+    .join('&');
+  const {data} = await instance.get<{data:T}>(`/inventory/value/history?${query.replace('&&','&')}`);
+  // const {data} = await instance.get<{data:T}>(`/inventory/value/history?walletAddress=0x7e0de483a33bd04d2efe38686be5cb25cfd3e533&networkId=ethereum&window=7d`);
   return data.data;
 }
 export const getInventoryCollectionPositionValue = async<T ={data: PositionCollection[]}>(walletAddress?: string): Promise<T> => {
   const { data } = await instance.get<{ data: T }>(`/inventory/collection/position/value?walletAddress=${walletAddress}`);
+  return data.data;
+}
+export const getInventoryCollectionPositionAmount = async<T ={data: PositionCollectionAmount[]}>(walletAddress?: string): Promise<T> => {
+  const { data } = await instance.get<{ data: T }>(`/inventory/collection/position/amount?walletAddress=${walletAddress}`);
   return data.data;
 }
 export type ResponseRealizedTokensData = {
@@ -91,8 +111,23 @@ export type ResponseRealizedTokensData = {
   processedAt: string,
   paging: PagingCursor,
 }
-export const getInventoryRealizedTokens = async<T = ResponseRealizedTokensData>(requestParam?: any): Promise<T> => {
-  const { data } = await instance.get<{ data: T }>(`/inventory/realized/token`);
+type GainAndLossKey = keyof TAnalysisGainAndLossParam;
+export const getInventoryRealizedTokens = async<T = ResponseRealizedTokensData>(requestParam: TAnalysisGainAndLossParam): Promise<T> => {
+  const query = Object.keys(requestParam)
+  .filter(function(key) {
+      return requestParam[key as GainAndLossKey] && requestParam[key as GainAndLossKey] !== ""; // 값이 있는 속성만 필터링
+  })
+    .map(function (key) {
+      const value = requestParam[key as GainAndLossKey];
+      if (Array.isArray(value)) {
+        // 만약 값이 배열이면 요소를 쉼표로 연결하여 문자열로 변환
+        return value.length > 0 ? `${encodeURIComponent(key)}=${value.map((v) => encodeURIComponent(v)).join(",")}`:'';
+      } else {
+        return `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`;
+      }
+  })
+    .join('&');
+  const { data } = await instance.get<{ data: T }>(`/inventory/realized/token?${query.replace('&&','&')}`);
   return data.data;
 }
 
@@ -101,7 +136,22 @@ export type ResponseAcquisitionTypesData = {
   processedAt: string,
   paging: Paging,
 }
-export const getInventoryAcquisitionType = async<T = ResponseAcquisitionTypesData>(requestParam?: any): Promise<T> => {
-  const { data } = await instance.get<{ data: T }>(`/inventory/acquisition-type`);
+type AcquisitionKey = keyof TAcquisitionParam;
+export const getInventoryAcquisitionType = async<T = ResponseAcquisitionTypesData>(requestParam: TAcquisitionParam): Promise<T> => {
+  const query = Object.keys(requestParam)
+  .filter(function(key) {
+      return requestParam[key as AcquisitionKey] && requestParam[key as AcquisitionKey] !== ""; // 값이 있는 속성만 필터링
+  })
+    .map(function (key) {
+      const value = requestParam[key as AcquisitionKey];
+      if (Array.isArray(value)) {
+        // 만약 값이 배열이면 요소를 쉼표로 연결하여 문자열로 변환
+        return value.length > 0 ? `${encodeURIComponent(key)}=${value.map((v) => encodeURIComponent(v)).join(",")}`:'';
+      } else {
+        return `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`;
+      }
+  })
+    .join('&');
+  const { data } = await instance.get<{ data: T }>(`/inventory/acquisition-type?${query.replace('&&','&')}`);
   return data.data;
 }

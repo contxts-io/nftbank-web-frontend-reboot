@@ -1,55 +1,150 @@
+import SkeletonLoader from '@/components/SkeletonLoader';
 import { currencyAtom } from '@/store/currency';
-import { formatCurrency } from '@/utils/common';
+import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
+import { formatCurrency, formatDate } from '@/utils/common';
 import { useMe } from '@/utils/hooks/queries/auth';
-import { useInventoryValueHistorical } from '@/utils/hooks/queries/inventory';
-import { useAtomValue } from 'jotai';
+import {
+  useInventoryValueHistorical,
+  useInventoryValuePolling,
+} from '@/utils/hooks/queries/inventory';
+import { useAtom, useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { renderToString } from 'react-dom/server';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
+  console.log('series', series);
+  console.log('w', w);
   return (
     <div className='px-16 py-8 border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
       <p className={`font-caption-regular text-[var(--color-text-main)]`}>
-        Aug 24
+        {w.globals.categoryLabels[dataPointIndex]}
       </p>
     </div>
   );
 };
-
-const HistoricalTrendChart = () => {
+type Props = {
+  setHoverValue: (value: number | null) => void;
+  setDiffValue: (value: number | null) => void;
+};
+const HistoricalTrendChart = (props: Props) => {
   const { data: me } = useMe();
   const currency = useAtomValue(currencyAtom);
+  const [historicalValueParam, setHistoricalValueParam] = useAtom(
+    overviewHistoricalValueParamAtom
+  );
+  const { data: inventoryValue, status: statusInventoryValue } =
+    useInventoryValuePolling(me.walletAddress);
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
-  } = useInventoryValueHistorical(me.walletAddress);
+  } = useInventoryValueHistorical({
+    ...historicalValueParam,
+    walletAddress: me.walletAddress,
+  });
   const [isPlus, setIsPlus] = useState(false);
+
+  let category: string[] = [];
+
   let series = [
     {
       name: 'inventoryValueHistorical',
       data: [],
     },
   ] as { name: string; data: number[] }[];
+  // useEffect(() => {
+  //   inventoryValueHistorical &&
+  //     (inventoryValueHistorical.data.map((item) => {
+  //       series[0].data.push(parseFloat(item.value[currency].amount));
+  //     }),
+  //     setIsPlus(true));
+  //   console.log('series', series);
+  // }, [inventoryValueHistorical]);
+  let seriesData = useMemo(() => {
+    let todayValue =
+      inventoryValue?.value[currency]?.amount &&
+      parseFloat(inventoryValue.value[currency].amount); //현재값
+    let _series = series;
+    (inventoryValueHistorical &&
+      inventoryValueHistorical.data?.map((item, index) => {
+        //item.processedAt
+        const date = new Date(item.processedAt).toLocaleDateString('en-us', {
+          month: 'short',
+          day: 'numeric',
+        });
+        category.push(date);
+        _series[0].data.push(parseFloat(item.value[currency]?.amount));
+      })) ||
+      [];
+    todayValue && _series[0].data.push(todayValue); //마지막에 현재 값을 넣어준다. (마지막 값이 없을 경우 그전값을 넣어준다.)
+    console.log('_series', _series);
+    const today = new Date().toLocaleDateString('en-us', {
+      month: 'short',
+      day: 'numeric',
+    });
+    category.push(today);
+    console.log('category', category);
+    return _series;
+  }, [inventoryValueHistorical, currency, category, inventoryValue?.value]);
+
   useEffect(() => {
-    inventoryValueHistorical &&
-      (inventoryValueHistorical.data.map((item) => {
-        series[0].data.push(parseFloat(item.value[currency].amount));
-      }),
-      setIsPlus(true));
-  }, [inventoryValueHistorical]);
+    const currentValue = parseFloat(
+      inventoryValue?.value[currency]?.amount || '0'
+    );
+    seriesData[0].data[0] < currentValue ? setIsPlus(true) : setIsPlus(false);
+  }, [seriesData, inventoryValue?.value]);
+
+  let minValue = useMemo(() => {
+    let _series = seriesData;
+    let _minimumValue = _series[0]?.data[0] || 0;
+    _series[0].data.map((item) => {
+      if (item < _minimumValue) {
+        _minimumValue = item;
+      }
+    });
+    return formatCurrency(_minimumValue.toString(), currency);
+  }, [seriesData, currency, inventoryValue?.value]);
+  let maxValue = useMemo(() => {
+    let _series = seriesData;
+    let _maximumValue = 0;
+    _series[0].data.map((item) => {
+      if (item > _maximumValue) {
+        _maximumValue = item;
+      }
+    });
+    return formatCurrency(_maximumValue.toString(), currency);
+  }, [seriesData, currency, inventoryValue?.value]);
   const lineColor = isPlus
     ? 'var(--color-chart-success)'
     : 'var(--color-chart-danger)';
   const markerFill = 'var(--color-border-selected)';
   const borderColor = 'var(--color-border-accent-gray)';
   const textSubtle = 'var(--color-text-subtle)';
-  const minValue = series[0].data[0];
+  // const minValue = series[0].data[0];
   const options = {
     chart: {
       toolbar: {
         show: false,
+      },
+      events: {
+        mouseMove: function (event: any, chartContext: any, config: any) {
+          config.globals &&
+            (props.setHoverValue(
+              config.globals?.series?.[0][config.dataPointIndex] || null
+            ),
+            props.setDiffValue(
+              config.globals?.series?.[0][config.dataPointIndex] -
+                config.globals?.series?.[0][0]
+            ));
+        },
+        mouseLeave: function (event: any, chartContext: any, config: any) {
+          // ...
+          console.log('dataPointMouseLeave', chartContext);
+          console.log('dataPointMouseLeave', config);
+          props.setHoverValue(null);
+          props.setDiffValue(null);
+        },
       },
     },
     stroke: {
@@ -59,6 +154,8 @@ const HistoricalTrendChart = () => {
       enabled: false,
     },
     xaxis: {
+      type: 'category' as const,
+      categories: category,
       labels: {
         show: false,
       },
@@ -73,20 +170,26 @@ const HistoricalTrendChart = () => {
       },
     },
     yaxis: {
-      tickAmount: 2,
+      tickAmount: 1,
       opposite: true,
+      floating: true,
       labels: {
         show: true,
         style: {
           colors: textSubtle,
           cssClass: 'font-caption-regular',
         },
+        formatter: function (value: any) {
+          return value
+            ? formatCurrency(value, currency)
+            : formatCurrency('0', currency);
+        },
       },
     },
     annotations: {
       yaxis: [
         {
-          y: minValue,
+          y: series[0].data[0],
           borderColor: borderColor,
           borderStyle: 'dashed',
         },
@@ -147,17 +250,28 @@ const HistoricalTrendChart = () => {
     },
   };
   return (
-    <section className='w-full'>
-      <ApexCharts
-        options={{
-          ...options,
-          stroke: { ...options.stroke, curve: 'straight' },
-        }}
-        type='area'
-        series={series}
-        height={260}
-        width='100%'
-      />
+    <section className='w-full relative'>
+      {statusInventoryValueHistorical === 'loading' && (
+        <SkeletonLoader className='w-full h-[260px]' />
+      )}
+      {statusInventoryValueHistorical === 'success' && (
+        <>
+          <div className='absolute right-0 top-0 h-full flex flex-col justify-between items-end font-caption-regular text-[var(--color-text-subtle)]'>
+            <p className='w-fit'>{maxValue}</p>
+            <p className='w-fit'>{minValue}</p>
+          </div>
+          <ApexCharts
+            options={{
+              ...options,
+              stroke: { ...options.stroke, curve: 'straight' },
+            }}
+            type='area'
+            series={seriesData}
+            height={260}
+            width='100%'
+          />
+        </>
+      )}
     </section>
   );
 };

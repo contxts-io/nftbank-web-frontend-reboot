@@ -5,13 +5,20 @@ import Image from 'next/image';
 import CaretDown from '@/public/icon/CaretDown';
 import Export from '@/public/icon/Export';
 import Dropdown from './Dropdown';
-import { useEffect, useState } from 'react';
-import { STATUS_LIST, TStatus, TYear } from '@/constants/period';
-import { useInventoryRealizedTokens } from '@/utils/hooks/queries/inventory';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  PERIOD_LIST,
+  STATUS_LIST,
+  TPeriod,
+  TStatus,
+  TYear,
+} from '@/constants/period';
+import { useInventoryRealizedTokensInfinite } from '@/utils/hooks/queries/inventory';
 import { useMe } from '@/utils/hooks/queries/auth';
 import SkeletonLoader from '@/components/SkeletonLoader';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
+import { analysisGainAndLossParamAtom } from '@/store/requestParam';
 import { formatCurrency, formatDate, formatPercent } from '@/utils/common';
 const THEAD = [
   { key: 'item', value: 'Item' },
@@ -25,17 +32,22 @@ const THEAD = [
   { key: 'activity', value: 'Activity' },
 ];
 type _Year = TYear & { selected: boolean };
-type _Status = TStatus & { selected: boolean };
+type _Period = TPeriod & { selected: boolean };
 const RealizedGainAndLoss = () => {
   const currency = useAtomValue(currencyAtom);
-  const { data: me } = useMe();
-  const { data: realizedTokenList, status } = useInventoryRealizedTokens(
-    me.walletAddress
+  const [requestParams, setRequestParams] = useAtom(
+    analysisGainAndLossParamAtom
   );
-  const [selectedStatus, setSelectedStatus] = useState<_Status[]>(
-    STATUS_LIST.map((item) => ({
+  const { data: me } = useMe();
+  const { data: realizedTokenList, status } =
+    useInventoryRealizedTokensInfinite({
+      ...requestParams,
+      walletAddress: me.walletAddress,
+    });
+  const [selectedStatus, setSelectedStatus] = useState<_Period[]>(
+    PERIOD_LIST.map((item) => ({
       ...item,
-      selected: item.name === 'Overall' ? true : false,
+      selected: item.value === 'all' ? true : false,
     }))
   );
   const [selectedYear, setSelectedYear] = useState<_Year[]>([
@@ -60,6 +72,35 @@ const RealizedGainAndLoss = () => {
       }))
     );
   };
+  const handleClickShowMore = () => {
+    latestPage?.isLast === false &&
+      setRequestParams((prev) => {
+        return {
+          ...prev,
+          limit: 10,
+          nextCursor: latestPage.nextCursor,
+        };
+      });
+  };
+  useEffect(() => {
+    console.log('changed!');
+    setRequestParams((prev) => {
+      return {
+        ...prev,
+        year: selectedYear.find((item) => item.selected)?.value || 2023,
+        quarter: selectedStatus.find((item) => item.selected)?.value || 'all',
+      };
+    });
+  }, [selectedStatus, selectedYear]);
+
+  const mergePosts = useMemo(
+    () => realizedTokenList?.pages || [],
+    [realizedTokenList?.pages, requestParams]
+  );
+  const latestPage = useMemo(
+    () => mergePosts[mergePosts.length - 1],
+    [mergePosts]
+  );
   useEffect(() => {
     console.log('realizedTokenList', realizedTokenList);
   }, [realizedTokenList]);
@@ -71,9 +112,7 @@ const RealizedGainAndLoss = () => {
         </p>
         <Dropdown
           list={selectedStatus.map((item) => item.name)}
-          selected={
-            selectedStatus.find((item) => item.selected)?.name || 'Overall'
-          }
+          selected={selectedStatus.find((item) => item.selected)?.name || 'All'}
           onClick={(name) => handleChangeStatus(name)}
           className='w-100'
         />
@@ -107,86 +146,109 @@ const RealizedGainAndLoss = () => {
               </tr>
             </thead>
             <tbody className='font-caption-medium'>
-              {realizedTokenList.data.map((item, index) => (
-                <tr key={index}>
-                  <td className='text-left'>
-                    <div className='flex items-center gap-8'>
-                      <div className='w-32 h-32 flex items-center justify-center border-1 border-[var(--color-border-main)]'>
-                        <Image
-                          src={`${
-                            item.token.imageUrl || '/icon/nftbank_icon.svg'
-                          }`}
-                          width={32}
-                          height={32}
-                          alt={`${item.collection.name}-${item.token.tokenId}`}
-                        />
+              {mergePosts?.map((page, pageIndex) =>
+                page.data.map((item, index) => (
+                  <tr
+                    key={index}
+                    className='text-[var(--color-text-subtle)] hover:text-[var(--color-text-main)]'
+                  >
+                    <td className='text-left'>
+                      <div className='flex items-center gap-8'>
+                        <div className='w-32 h-32 flex items-center justify-center border-1 border-[var(--color-border-main)]'>
+                          <Image
+                            src={`${
+                              item.token.imageUrl || '/icon/nftbank_icon.svg'
+                            }`}
+                            width={32}
+                            height={32}
+                            alt={`${item.collection.name}-${item.token.tokenId}`}
+                          />
+                        </div>
+                        <div>
+                          <p className='text-[var(--color-text-main)]'>
+                            {item.token.tokenId}
+                          </p>
+                          <p className='text-[var(--color-text-subtle)]'>
+                            {item.collection.name}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className='text-[var(--color-text-main)]'>
-                          {item.token.tokenId}
-                        </p>
-                        <p className='text-[var(--color-text-subtle)]'>
-                          {item.collection.name}
-                        </p>
+                    </td>
+                    <td className='text-right'>
+                      <p className='text-[var(--color-text-main)]'>
+                        {item.amount}
+                      </p>
+                    </td>
+                    <td className='text-right'>
+                      <p className='text-[var(--color-text-main)]'>
+                        {formatCurrency(
+                          item.costBasis[currency].amount || '0',
+                          currency
+                        )}
+                      </p>
+                    </td>
+                    <td className='text-right'>
+                      <p className='text-[var(--color-text-main)]'>
+                        {formatCurrency(
+                          item.proceed[currency].amount || '0',
+                          currency
+                        )}
+                      </p>
+                    </td>
+                    <td className='text-right'>
+                      <p
+                        className={`${
+                          parseFloat(item.gainLoss[currency].amount || '0') > 0
+                            ? 'text-[var(--color-text-success)]'
+                            : 'text-[var(--color-text-danger)]'
+                        }`}
+                      >
+                        {formatCurrency(
+                          item.gainLoss[currency].amount || '0',
+                          currency
+                        )}
+                      </p>
+                    </td>
+                    <td className='text-right'>
+                      <p
+                        className={`${
+                          item.roi[currency] > 0
+                            ? 'text-[var(--color-text-success)]'
+                            : 'text-[var(--color-text-danger)]'
+                        }`}
+                      >
+                        {formatPercent(item.roi[currency])}
+                      </p>
+                    </td>
+                    <td className='text-right'>
+                      <p className='text-[var(--color-text-main)]'>
+                        {formatDate(new Date(item.acquisitionDate))}
+                      </p>
+                    </td>
+                    <td className='text-right'>
+                      <p className='text-[var(--color-text-main)]'>
+                        {formatDate(new Date(item.soldDate))}
+                      </p>
+                    </td>
+                    <td className='text-right'>
+                      <div className='rotate-270 w-16 h-16  ml-auto'>
+                        <CaretDown />
                       </div>
-                    </div>
-                  </td>
-                  <td className='text-right'>
-                    <p className='text-[var(--color-text-main)]'>
-                      {item.amount}
-                    </p>
-                  </td>
-                  <td className='text-right'>
-                    <p className='text-[var(--color-text-main)]'>
-                      {formatCurrency(
-                        item.costBasis[currency].amount || '0',
-                        currency
-                      )}
-                    </p>
-                  </td>
-                  <td className='text-right'>
-                    <p className='text-[var(--color-text-main)]'>
-                      {formatCurrency(
-                        item.proceed[currency].amount || '0',
-                        currency
-                      )}
-                    </p>
-                  </td>
-                  <td className='text-right'>
-                    <p>
-                      {formatCurrency(
-                        item.gainLoss[currency].amount || '0',
-                        currency
-                      )}
-                    </p>
-                  </td>
-                  <td className='text-right'>
-                    <p>{formatPercent(item.roi[currency])}</p>
-                  </td>
-                  <td className='text-right'>
-                    <p className='text-[var(--color-text-main)]'>
-                      {formatDate(new Date(item.acquisitionDate))}
-                    </p>
-                  </td>
-                  <td className='text-right'>
-                    <p className='text-[var(--color-text-main)]'>
-                      {formatDate(new Date(item.soldDate))}
-                    </p>
-                  </td>
-                  <td className='text-right'>
-                    <div className='rotate-270 w-16 h-16  ml-auto'>
-                      <CaretDown />
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         )}
       </div>
-      <div className='flex justify-center mt-20'>
-        <Button id=''>Show more</Button>
-      </div>
+      {latestPage?.isLast !== true && (
+        <div className='flex justify-center mt-20'>
+          <Button id='' onClick={() => handleClickShowMore()}>
+            Show more
+          </Button>
+        </div>
+      )}
     </section>
   );
 };

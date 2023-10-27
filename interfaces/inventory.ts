@@ -64,6 +64,11 @@ export type PositionCollection = {
     usd: Value & {difference: TDifference | null},
   },
 }
+export type PositionCollectionAmount = {
+  collection: ICollection,
+  amount: number,
+  difference: number,
+}
 export type PerformanceCollection = {
   gainLoss: {
     eth: string,

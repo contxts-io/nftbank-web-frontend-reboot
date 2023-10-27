@@ -5,22 +5,29 @@ import { renderToString } from 'react-dom/server';
 import { twMerge } from 'tailwind-merge';
 import { useEffect } from 'react';
 import { _List } from './AcquisitionType';
+import { formatPercent } from '@/utils/common';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   const color = w.globals.colors[seriesIndex];
   const label = w.globals.labels[seriesIndex];
+  const totalCount = w.globals.seriesTotals.reduce((a: number, b: number) => {
+    return a + b;
+  });
   return (
     <div className='font-caption-regular py-8 px-16 flex flex-col items-start border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
       <div className='w-full flex items-center'>
         <div className={`${styles[`dot--${seriesIndex}`]} w-8 h-8 mr-8`} />
         <p className={`text-[var(--color-text-subtle)]`}>{label}</p>
       </div>
-      <p className={`text-[var(--color-text-main)]`}>{series[seriesIndex]}</p>
+      <p className={`text-[var(--color-text-main)]`}>
+        {formatPercent((series[seriesIndex] / totalCount) * 100)}
+      </p>
     </div>
   );
 };
 type Props = {
   data: _List[];
+  totalCount: number;
 };
 const AcquisitionTypePieChart = (props: Props) => {
   const series = props.data.map((item) => item.amount);
