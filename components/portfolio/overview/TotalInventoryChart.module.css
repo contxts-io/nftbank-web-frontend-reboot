@@ -16,3 +16,6 @@
 .dot--4 {
   @apply bg-[var(--color-chart-accent-blue-boldest)];
 }
+.dot--5 {
+  @apply bg-[var(--color-chart-accent-gray-bolder)];
+}
