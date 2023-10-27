@@ -52,7 +52,7 @@ const HistoricalTrendChart = (props: Props) => {
       name: 'inventoryValueHistorical',
       data: [],
     },
-  ] as { name: string; data: number[] }[];
+  ] as { name: string; data: number[] | null[] }[];
   // useEffect(() => {
   //   inventoryValueHistorical &&
   //     (inventoryValueHistorical.data.map((item) => {
@@ -74,7 +74,9 @@ const HistoricalTrendChart = (props: Props) => {
           day: 'numeric',
         });
         category.push(date);
-        _series[0].data.push(parseFloat(item.value?.[currency]?.amount) || 0);
+        item.value?.[currency]?.amount
+          ? _series[0].data.push(parseFloat(item.value?.[currency]?.amount))
+          : _series[0].data.push(null);
       })) ||
       [];
     historicalValueParam.window !== 'ytd' &&
@@ -118,7 +120,7 @@ const HistoricalTrendChart = (props: Props) => {
   const lineColor = isPlus
     ? 'var(--color-chart-success)'
     : 'var(--color-chart-danger)';
-  const markerFill = 'var(--color-border-selected)';
+  const markerFill = 'var(--color-elevation-surface)';
   const borderColor = 'var(--color-border-accent-gray)';
   const textSubtle = 'var(--color-text-subtle)';
   // const minValue = series[0].data[0];
