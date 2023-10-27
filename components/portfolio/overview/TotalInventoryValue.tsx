@@ -189,7 +189,11 @@ const TotalInventoryValue = () => {
                       <div
                         className={twMerge([
                           styles.dot,
-                          styles[`dot--${index % 5}`],
+                          styles[
+                            `dot--${
+                              index % totalInventoryPositionAmount.length
+                            }`
+                          ],
                         ])}
                       />
                     </td>
