@@ -56,7 +56,8 @@ function _formatEth(amount: number): string {
     _amount = amount.toFixed(4); // 그 외의 경우, 기본 표기 방식 사용
   }
   // _amount = formatNumber(parseFloat(_amount));
-  return parseFloat(_amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' }).replace('ETH', 'Ξ');
+  // return parseFloat(_amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' }).replace('ETH', 'Ξ');
+  return `Ξ ${parseFloat(_amount)}`;
 }
 
 export function isPlus (value: number | string): boolean {
@@ -82,7 +83,6 @@ export function formatEth(amount: string | null): string {
   return parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' });
 }
 export function difference(diff: string | number, currency: TCurrency | 'percent') {
-  
   if (currency === 'percent' && typeof diff === 'number') {
     console.log('typeof ?111',typeof diff)
     return formatPercent(diff).replace('+', '').replace('-', '');
@@ -91,7 +91,15 @@ export function difference(diff: string | number, currency: TCurrency | 'percent
     const mark = parseFloat(diff) > 0 ? '+' : '';
     return `${mark}${formatCurrency(diff,currency).replace('$', '').replace('Ξ', '')}`;
   }
-
+}
+export function formatAmount(amount: string | number) {
+  if (amount === 'infinity') return '-';
+  if (amount === 0 || amount === '0') return '-';
+  if (typeof amount === 'string') {
+    return parseFloat(amount) > 0 ? `+${amount}` : `${amount}`;
+  } else if (typeof amount === 'number') {
+    return amount > 0 ? `+${amount}` : `${amount}`;
+  }
 }
 export function shortenAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;

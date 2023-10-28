@@ -2,7 +2,7 @@
 import Button from '@/components/buttons/Button';
 import styles from './TotalInventoryValue.module.css';
 import { useMemo, useState } from 'react';
-import { formatCurrency, shortenAddress } from '@/utils/common';
+import { formatAmount, formatCurrency, shortenAddress } from '@/utils/common';
 import { twMerge } from 'tailwind-merge';
 import TotalInventoryChart from './TotalInventoryChart';
 import {
@@ -12,46 +12,7 @@ import {
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
-import { PositionCollectionAmount } from '@/interfaces/inventory';
-const LIST = [
-  {
-    name: 'Genesis Box',
-    value: '65293.12',
-    change: '-2.3%',
-    valueType: 'Floor',
-  },
-  {
-    name: 'The Lockeys',
-    value: '65293.12',
-    change: '+2.3%',
-    valueType: 'Estimated',
-  },
-  {
-    name: 'GEISAI 2022 Official NFT',
-    value: '65293.12',
-    change: '-2.3%',
-    valueType: 'Estimated',
-  },
-  {
-    name: 'Project NANOPASS',
-    value: '65293.12',
-    change: '+2.3%',
-    valueType: 'Estimated',
-  },
-  {
-    name: 'Genesis Box',
-    value: '65293.12',
-    change: '-2.3%',
-    valueType: 'Estimated',
-  },
-];
-const COLOR = [
-  'var(--color-chart-information)',
-  'var(--color-chart-accent-teal-boldest)',
-  'var(--color-chart-accent-purple-bold)',
-  'var(--color-chart-accent-teal-bold)',
-  'var(--color-chart-accent-blue-bold)',
-];
+
 const TotalInventoryValue = () => {
   const { data: me } = useMe();
   const currency = useAtomValue(currencyAtom);
@@ -211,14 +172,17 @@ const TotalInventoryValue = () => {
                     <td>
                       <p
                         className={`font-caption-medium mr-20 ' ${
-                          item.difference > 0
+                          item.collection.name === 'Others' ||
+                          item.difference === 0
+                            ? 'text-[var(--color-text-main)]'
+                            : item.difference > 0
                             ? 'text-[var(--color-text-success)]'
                             : item.difference < 0
                             ? 'text-[var(--color-text-danger)]'
                             : 'text-[var(--color-text-main)]'
                         }`}
                       >
-                        {item.difference}
+                        {formatAmount(item.difference)}
                       </p>
                     </td>
                   </tr>

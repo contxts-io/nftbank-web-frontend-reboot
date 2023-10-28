@@ -187,3 +187,15 @@
 .drawer.open + .overlay {
   display: block;
 }
+.plus {
+  @apply bg-[var(--color-background-success)]  text-[var(--color-text-success)];
+}
+.plus p {
+  @apply text-[var(--color-text-success)];
+}
+.minus {
+  @apply bg-[var(--color-background-danger)]  text-[var(--color-text-danger)];
+}
+.minus p {
+  @apply text-[var(--color-text-danger)];
+}

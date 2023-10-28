@@ -13,9 +13,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { renderToString } from 'react-dom/server';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
-const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
-  console.log('series', series);
-  console.log('w', w);
+const tooltip = ({ series, seriesIndex, dataPointIndex, w, period }: any) => {
   return (
     <div className='px-16 py-8 border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
       <p className={`font-caption-regular text-[var(--color-text-main)]`}>
@@ -52,54 +50,62 @@ const HistoricalTrendChart = (props: Props) => {
       name: 'inventoryValueHistorical',
       data: [],
     },
-  ] as { name: string; data: number[] }[];
-  // useEffect(() => {
-  //   inventoryValueHistorical &&
-  //     (inventoryValueHistorical.data.map((item) => {
-  //       series[0].data.push(parseFloat(item.value[currency].amount));
-  //     }),
-  //     setIsPlus(true));
-  //   console.log('series', series);
-  // }, [inventoryValueHistorical]);
+  ] as { name: string; data: (number | null)[] }[];
+
   let seriesData = useMemo(() => {
+    const today = new Date().toLocaleDateString('en-us', {
+      month: 'short',
+      day: 'numeric',
+    });
     let todayValue =
       inventoryValue?.value[currency]?.amount &&
       parseFloat(inventoryValue.value[currency].amount); //현재값
     let _series = series;
     (inventoryValueHistorical &&
       inventoryValueHistorical.data?.map((item, index) => {
-        //item.processedAt
-        const date = new Date(item.processedAt).toLocaleDateString('en-us', {
-          month: 'short',
-          day: 'numeric',
-        });
-        category.push(date);
-        _series[0].data.push(parseFloat(item.value?.[currency]?.amount) || 0);
+        const option: Intl.DateTimeFormatOptions =
+          historicalValueParam.window === 'all'
+            ? { year: 'numeric', month: 'short', day: 'numeric' }
+            : {
+                month: 'short',
+                day: 'numeric',
+              };
+        const date = new Date(item.processedAt).toLocaleDateString(
+          'en-us',
+          option
+        );
+        const parts = date.replaceAll(',', '').split(' ');
+        const yDate = `${parts[2]}, ${parts[0]} ${parts[1]}`;
+        historicalValueParam.window === 'all'
+          ? category.push(yDate)
+          : category.push(date);
+        item.value?.[currency]?.amount
+          ? _series[0].data.push(parseFloat(item.value?.[currency]?.amount))
+          : _series[0].data.push(null);
       })) ||
       [];
     historicalValueParam.window !== 'ytd' &&
       todayValue &&
       _series[0].data.push(todayValue); //마지막에 현재 값을 넣어준다. (마지막 값이 없을 경우 그전값을 넣어준다.)
-    const today = new Date().toLocaleDateString('en-us', {
-      month: 'short',
-      day: 'numeric',
-    });
+
     category.push(today);
     return _series;
   }, [inventoryValueHistorical, currency, category, inventoryValue?.value]);
 
   useEffect(() => {
-    const currentValue = parseFloat(
-      inventoryValue?.value[currency]?.amount || '0'
-    );
-    seriesData[0].data[0] < currentValue ? setIsPlus(true) : setIsPlus(false);
+    const currentValue = inventoryValue?.value[currency]?.amount
+      ? parseFloat(inventoryValue.value[currency].amount)
+      : 0;
+    seriesData[0].data[0] && seriesData[0].data[0] < currentValue
+      ? setIsPlus(true)
+      : setIsPlus(false);
   }, [seriesData, inventoryValue?.value]);
 
   let minValue = useMemo(() => {
     let _series = seriesData;
     let _minimumValue = _series[0]?.data[0] || 0;
     _series[0].data.map((item) => {
-      if (item < _minimumValue) {
+      if (item && item < _minimumValue) {
         _minimumValue = item;
       }
     });
@@ -109,7 +115,7 @@ const HistoricalTrendChart = (props: Props) => {
     let _series = seriesData;
     let _maximumValue = 0;
     _series[0].data.map((item) => {
-      if (item > _maximumValue) {
+      if (item && item > _maximumValue) {
         _maximumValue = item;
       }
     });
@@ -118,7 +124,7 @@ const HistoricalTrendChart = (props: Props) => {
   const lineColor = isPlus
     ? 'var(--color-chart-success)'
     : 'var(--color-chart-danger)';
-  const markerFill = 'var(--color-border-selected)';
+  const markerFill = 'var(--color-elevation-surface)';
   const borderColor = 'var(--color-border-accent-gray)';
   const textSubtle = 'var(--color-text-subtle)';
   // const minValue = series[0].data[0];
@@ -140,8 +146,6 @@ const HistoricalTrendChart = (props: Props) => {
         },
         mouseLeave: function (event: any, chartContext: any, config: any) {
           // ...
-          console.log('dataPointMouseLeave', chartContext);
-          console.log('dataPointMouseLeave', config);
           props.setHoverValue(null);
           props.setDiffValue(null);
         },
@@ -244,7 +248,13 @@ const HistoricalTrendChart = (props: Props) => {
       followCursor: false,
       custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
         return renderToString(
-          tooltip({ series, seriesIndex, dataPointIndex, w })
+          tooltip({
+            series,
+            seriesIndex,
+            dataPointIndex,
+            w,
+            period: historicalValueParam.window,
+          })
         );
       },
     },
