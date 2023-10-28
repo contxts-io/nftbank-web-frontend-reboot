@@ -111,16 +111,16 @@ const RealizedGainAndLoss = () => {
           Realized Gain & Loss
         </p>
         <Dropdown
-          list={selectedStatus.map((item) => item.name)}
-          selected={selectedStatus.find((item) => item.selected)?.name || 'All'}
-          onClick={(name) => handleChangeStatus(name)}
-          className='w-100'
-        />
-        <Dropdown
           list={selectedYear.map((item) => item.name)}
           selected={selectedYear.find((item) => item.selected)?.name || '2023'}
           onClick={(name) => handleChangeYear(name)}
           className='w-78'
+        />
+        <Dropdown
+          list={selectedStatus.map((item) => item.name)}
+          selected={selectedStatus.find((item) => item.selected)?.name || 'All'}
+          onClick={(name) => handleChangeStatus(name)}
+          className='w-100'
         />
         <Button id='' className='ml-auto'>
           Export
