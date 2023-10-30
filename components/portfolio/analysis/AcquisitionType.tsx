@@ -57,10 +57,11 @@ const AcquisitionType = () => {
   const [requestParams, setRequestParams] = useAtom(
     analysisAcquisitionParamAtom
   );
-  const { data: acquisitionTypes, status } = useInventoryAcquisitionTypes({
-    ...requestParams,
-    walletAddress: me.walletAddress,
-  });
+  const { data: acquisitionTypes, status: acquisitionTypesStatus } =
+    useInventoryAcquisitionTypes({
+      ...requestParams,
+      walletAddress: me.walletAddress,
+    });
   const [list, setList] = useState<_List[]>(LIST);
   const [selectedPeriod, setSelectedPeriod] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({
@@ -140,25 +141,39 @@ const AcquisitionType = () => {
         />
       </div>
       <div className='w-full flex justify-center mt-20'>
-        <section className='flex gap-80 items-center w-[858px]'>
-          <div className='w-[310px] h-[260px] mr-80 relative'>
-            <AcquisitionTypePieChart data={list} totalCount={totalAcqCount} />
-            <div className='absoluteCenter flex flex-col items-center'>
-              <p className='font-subtitle02-bold text-[var(--color-text-main)] mb-4'>
-                {totalAcqCount}
-              </p>
-              <p className='font-caption-regular text-[var(--color-text-subtle)]'>
-                Total Acq. Count
-              </p>
-            </div>
+        <section className='flex items-center w-[900px]'>
+          <div className='w-[310px] h-[260px] mr-40 relative'>
+            <AcquisitionTypePieChart
+              data={list}
+              totalCount={totalAcqCount}
+              status={acquisitionTypesStatus}
+            />
+            {acquisitionTypesStatus === 'success' && (
+              <div className='absoluteCenter flex flex-col items-center'>
+                <p className='font-subtitle02-bold text-[var(--color-text-main)] mb-4'>
+                  {totalAcqCount}
+                </p>
+                <p className='font-caption-regular text-[var(--color-text-subtle)]'>
+                  Total Acq. Count
+                </p>
+              </div>
+            )}
           </div>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th className='text-left'>Acquisition Type</th>
-                <th className='text-right'>Amount</th>
-                <th className='text-right'>Total Cost Basis</th>
-                <th className='text-right'>Activity</th>
+                <th className='text-left'>
+                  <p>Acquisition Type</p>
+                </th>
+                <th className='text-right'>
+                  <p>Amount</p>
+                </th>
+                <th className='text-right'>
+                  <p>Total Cost Basis</p>
+                </th>
+                <th className='text-right'>
+                  <p>Activity</p>
+                </th>
               </tr>
             </thead>
             <tbody className='font-caption-medium'>

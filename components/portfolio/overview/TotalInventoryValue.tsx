@@ -60,28 +60,30 @@ const TotalInventoryValue = () => {
       <div className={styles.body}>
         <div className='w-[260px] h-[260px] mr-80 relative'>
           <TotalInventoryChart selected={selected} totalAmount={totalAmount} />
-          <div className='absoluteCenter flex flex-col items-center'>
-            {selected === 'amount' ? (
-              <p className='font-subtitle02-bold text-[var(--color-text-main)] mb-4'>
-                {statusAmount === 'success' && totalAmount}
+          {statusAmount === 'success' && (
+            <div className='absoluteCenter flex flex-col items-center'>
+              {selected === 'amount' ? (
+                <p className='font-subtitle02-bold text-[var(--color-text-main)] mb-4'>
+                  {statusAmount === 'success' && totalAmount}
+                </p>
+              ) : (
+                <p className='font-subtitle02-bold mb-4'>
+                  <span className='!important:text-[var(--color-subtlest)]'>
+                    $
+                  </span>
+                  <span className='text-[var(--color-text-main)]'>
+                    {mathFloor(total).split('.')[0]}
+                  </span>
+                  <span className='!important:text-[var(--color-subtlest)]'>
+                    {`.${total.split('.')[1]}`}
+                  </span>
+                </p>
+              )}
+              <p className='font-caption-regular text-[var(--color-text-subtle)]'>
+                {selected === 'amount' ? 'Total Amount' : 'Total Value'}
               </p>
-            ) : (
-              <p className='font-subtitle02-bold mb-4'>
-                <span className='!important:text-[var(--color-subtlest)]'>
-                  $
-                </span>
-                <span className='text-[var(--color-text-main)]'>
-                  {mathFloor(total).split('.')[0]}
-                </span>
-                <span className='!important:text-[var(--color-subtlest)]'>
-                  {`.${total.split('.')[1]}`}
-                </span>
-              </p>
-            )}
-            <p className='font-caption-regular text-[var(--color-text-subtle)]'>
-              {selected === 'amount' ? 'Total Amount' : 'Total Value'}
-            </p>
-          </div>
+            </div>
+          )}
         </div>
         <table className='w-[460px] h-[160px] table-auto'>
           <tbody>

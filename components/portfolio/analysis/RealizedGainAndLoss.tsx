@@ -212,7 +212,9 @@ const RealizedGainAndLoss = () => {
                     <td className='text-right'>
                       <p
                         className={`${
-                          item.roi[currency] > 0
+                          item.roi[currency] === 'infinity'
+                            ? 'text-[var(--color-text-main)]'
+                            : parseFloat(item.roi[currency] as string) > 0
                             ? 'text-[var(--color-text-success)]'
                             : 'text-[var(--color-text-danger)]'
                         }`}

@@ -60,8 +60,8 @@ function _formatEth(amount: number): string {
   return `Ξ ${parseFloat(_amount)}`;
 }
 
-export function isPlus (value: number | string): boolean {
-  if (value === 'infinity') return true;
+export function isPlus (value: number | string): boolean | '-' {
+  if (value === 'infinity' || value === null || value === '0'|| value === '-') return '-';
   if (typeof value === 'string') {
     return parseFloat(value) > 0 ? true : false;
   } else if (typeof value === 'number') {
@@ -70,8 +70,9 @@ export function isPlus (value: number | string): boolean {
     return false;
   }
 };
-export function formatPercent(percent: number | null): string {
+export function formatPercent(percent: number |'infinity'| null): string {
   if (percent === null) return '-';
+  if (percent === 'infinity') return '-';
   if (Math.abs(percent) <= 0.001) return '0%';
   if (Math.abs(percent) < 1 && Math.abs(percent) >= 0.001)
     return (percent / 100).toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 3 });
@@ -84,7 +85,6 @@ export function formatEth(amount: string | null): string {
 }
 export function difference(diff: string | number, currency: TCurrency | 'percent') {
   if (currency === 'percent' && typeof diff === 'number') {
-    console.log('typeof ?111',typeof diff)
     return formatPercent(diff).replace('+', '').replace('-', '');
   }
   else if (typeof diff === 'string' && currency !== 'percent') {

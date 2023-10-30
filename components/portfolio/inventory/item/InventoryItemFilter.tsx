@@ -5,7 +5,7 @@ import {
   inventoryItemListAtom,
 } from '@/store/requestParam';
 import Image from 'next/image';
-import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useAtom } from 'jotai';
 import { selectedCollectionInventoryAtom } from '@/store/portfolio';
