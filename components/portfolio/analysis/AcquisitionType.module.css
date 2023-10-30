@@ -5,7 +5,13 @@
   @apply gap-12 flex items-center;
 }
 .table {
-  @apply grow table-auto;
+  @apply grow table-auto w-[516px];
+}
+.table p {
+  @apply mr-40;
+}
+.table p:last-child {
+  @apply mr-0;
 }
 .table thead {
   @apply border-t-1 border-b-1 border-[var(--color-border-main)];
