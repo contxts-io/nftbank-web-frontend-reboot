@@ -259,20 +259,15 @@ const InventoryItemTable = () => {
                           )}
                         </p>
                       </td>
-                      <td
-                        className='text-right cursor-pointer'
-                        // onClick={(e) => {
-                        //   e.stopPropagation();
-                        //   setView({
-                        //     key: `${pageIndex}-${index}`,
-                        //     open: !view.open,
-                        //   });
-                        // }}
-                      >
-                        <ValuationDropdown
-                          token={data}
-                          valuations={data.valuation}
-                        />
+                      <td className='text-right cursor-pointer'>
+                        {data.valuation.length > 1 ? (
+                          <ValuationDropdown
+                            token={data}
+                            valuations={data.valuation}
+                          />
+                        ) : (
+                          <p>no available price</p>
+                        )}
                       </td>
                       <td className='text-right'>
                         {formatPercent(valuationType?.accuracy || null)}

@@ -1,3 +1,6 @@
+.container {
+  @apply flex items-center justify-center;
+}
 .dot--0 {
   @apply bg-[var(--color-border-accent-green)];
 }

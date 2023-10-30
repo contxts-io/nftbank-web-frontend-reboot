@@ -6,7 +6,7 @@ import { TokenHistory } from '@/interfaces/valuation';
 import { useEffect, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
-import { customToFixed, formatDate } from '@/utils/common';
+import { customToFixed, formatCurrency, formatDate } from '@/utils/common';
 
 const COLORS = [
   'var(--color-chart-accent-teal-bold)',
@@ -18,7 +18,8 @@ const COLORS = [
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
+const tooltip = ({ series, seriesIndex, dataPointIndex, w, currency }: any) => {
+  console.log('w', w);
   return (
     <section className={`font-caption-regular ${styles.tooltip}`}>
       <div className={`${styles.header}`}>
@@ -33,7 +34,7 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
                 <p>{w.globals.seriesNames[index]}</p>
               </div>
               <p className={`text-[var(--color-text-main)]`}>
-                {series[index][dataPointIndex]}
+                {formatCurrency(series[index][dataPointIndex], currency)}
               </p>
             </li>
           );
@@ -46,7 +47,8 @@ type InventoryItemDetailChartProps = { historicalData: TokenHistory };
 type Series = {
   id: string;
   name: string;
-  data: number[];
+  data: (number | null)[];
+  noDataIndex: number[];
 }[];
 const InventoryItemDetailChart = ({
   historicalData,
@@ -64,26 +66,31 @@ const InventoryItemDetailChart = ({
         id: 'estimate',
         name: 'Estimated',
         data: [],
+        noDataIndex: [],
       },
       {
         id: 'floor',
         name: 'Collection Floor',
         data: [],
+        noDataIndex: [],
       },
       {
         id: 'traitFloor',
         name: 'Trait Floor',
         data: [],
+        noDataIndex: [],
       },
       {
         id: 'd30Avg',
         name: '30d Avg.',
         data: [],
+        noDataIndex: [],
       },
       {
         id: 'd90Avg',
         name: '90d Avg.',
         data: [],
+        noDataIndex: [],
       },
     ];
     historicalData &&
@@ -96,13 +103,14 @@ const InventoryItemDetailChart = ({
           key !== 'processedAt' &&
             _seriesData.map((series) => {
               if (key === series.id) {
-                const prevValue = index > 0 ? series.data[index - 1] || 0 : 0;
+                const prevValue =
+                  index > 0 ? series.data[index - 1] || null : null;
                 const value = item[key]?.[currency]
                   ? item[key]?.[currency]
-                  : prevValue.toString();
+                  : prevValue?.toString();
                 value
                   ? series.data.push(parseFloat(value))
-                  : series.data.push(0);
+                  : (series.data.push(null), series.noDataIndex.push(index));
               }
             });
         });
@@ -157,7 +165,7 @@ const InventoryItemDetailChart = ({
       followCursor: true,
       custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
         return renderToString(
-          tooltip({ series, seriesIndex, dataPointIndex, w })
+          tooltip({ series, seriesIndex, dataPointIndex, w, currency })
         );
       },
     },

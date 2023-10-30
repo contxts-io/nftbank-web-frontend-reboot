@@ -8,8 +8,8 @@ export type TToken = {
   proceed: TValue,
   gainLoss: TValue,
   roi: {
-    eth: number,
-    usd: number,
+    eth: number | 'infinity',
+    usd: number | 'infinity',
   },
   acquisitionDate: string,
   soldDate: string,
