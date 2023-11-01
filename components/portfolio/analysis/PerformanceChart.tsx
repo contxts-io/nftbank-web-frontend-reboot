@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 import { renderToString } from 'react-dom/server';
 import styles from './PerformanceChart.module.css';
 import { useTheme } from 'next-themes';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { usePerformanceChart } from '@/utils/hooks/queries/performance';
 import { useAtomValue } from 'jotai';
@@ -22,7 +22,7 @@ const PerformanceChart = () => {
   const { data: me } = useMe();
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart(me.walletAddress);
-
+  const [absMax, setAbsMax] = useState(0);
   const barBackground = 'var(--color-elevation-surface-raised)';
   const labelColor = 'var(--color-text-subtle)';
 
@@ -54,7 +54,14 @@ const PerformanceChart = () => {
     ];
   }, [performanceChart]);
   useEffect(() => {
-    console.log('_series', _series);
+    _series &&
+      setAbsMax(
+        Math.max(
+          ...[...(_series[0]?.data.map((value) => Math.abs(value)) || [])],
+          ...[...(_series[1]?.data.map((value) => Math.abs(value)) || [])]
+        )
+      );
+    console.log('absMax', absMax);
   }, [_series]);
   const options = {
     chart: {
@@ -129,8 +136,10 @@ const PerformanceChart = () => {
       opposite: false,
       maxWidth: 160,
       minWidth: 160,
+      min: -100000,
+      max: 100000,
       labels: {
-        show: true,
+        show: false,
         style: {
           colors: labelColor,
           cssClass: 'font-caption-regular',
@@ -153,16 +162,7 @@ const PerformanceChart = () => {
       },
     },
   };
-  const series = [
-    {
-      name: 'positive',
-      data: [0.4, 0, 3.76, 5.88, 0, 2.1, 0, 3.8, 0, 0, 8, 4.3],
-    },
-    {
-      name: 'negative',
-      data: [0, -1.5, 0, 0, -1.4, 0, -2.85, 0, -3.96, -4.22, 0, 0],
-    },
-  ];
+
   return (
     <section className={styles.container}>
       <ApexCharts

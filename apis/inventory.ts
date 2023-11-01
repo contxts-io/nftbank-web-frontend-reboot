@@ -1,13 +1,13 @@
 import { AcquisitionType } from "@/interfaces/activity";
-import { TValue, Token } from "@/interfaces/collection";
-import { IInventoryCollectionList, IInventoryItemList, IInventoryValue, IStat, PositionCollection, PositionCollectionAmount } from "@/interfaces/inventory";
+import { ValueNested } from "@/interfaces/collection";
+import { IInventoryCollectionList, IInventoryItemList, InventoryValue, InventoryValueNested, IStat, PositionCollection, PositionCollectionAmount } from "@/interfaces/inventory";
 import { TSummary, TUnrealized } from "@/interfaces/summary";
 import { TToken } from "@/interfaces/token";
 import { Paging, PagingCursor } from "@/interfaces/utils";
 import { ItemParam, TAcquisitionParam, TAnalysisGainAndLossParam, TCollectionParam, TOverviewHistoricalValueParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
-export const getInventoryValue = async<T = IInventoryValue>(walletAddress?: string): Promise<T> => {
+export const getInventoryValue = async<T = InventoryValueNested>(walletAddress?: string): Promise<T> => {
   const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
   const { data } = await instance.get<{data:T}>(`/inventory/value${query}`);
   return data.data;
@@ -77,7 +77,7 @@ export const getSummaryRealized = async<T = TSummary>(walletAddress?: string): P
   const {data} = await instance.get<{data:T}>(`/inventory/summary/realized?walletAddress=${walletAddress}`);
   return data.data;
 }
-export type TResponseInventoryValueHistory = { data: IInventoryValue[],min: TValue, max:TValue };
+export type TResponseInventoryValueHistory = { data: InventoryValue[],min: ValueNested, max:ValueNested };
 type HistoryValueKey = keyof TOverviewHistoricalValueParam;
 export const getInventoryValueHistory = async<T = TResponseInventoryValueHistory>(requestParam: TOverviewHistoricalValueParam): Promise<T> => {
   const query = Object.keys(requestParam)
