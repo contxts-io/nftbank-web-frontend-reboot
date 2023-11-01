@@ -82,9 +82,7 @@ const HistoricalTrendContainer = () => {
 
     return (
       _value -
-      parseFloat(
-        inventoryValueHistorical?.data[0].value[currency].amount || '0.00'
-      )
+      parseFloat(inventoryValueHistorical?.data[0].value[currency] || '0.00')
     );
   }, [hoverValue, currency, inventoryValue]);
 
@@ -151,12 +149,13 @@ const HistoricalTrendContainer = () => {
               differenceValue.toString(),
               currency
             )}  (${difference(
-              (differenceValue /
-                parseFloat(
-                  inventoryValueHistorical?.data[0].value[currency].amount ||
-                    '1'
-                )) *
-                100,
+              (
+                (differenceValue /
+                  parseFloat(
+                    inventoryValueHistorical?.data[0].value[currency] || '1'
+                  )) *
+                100
+              ).toString(),
               'percent'
             )})`}
           </p>

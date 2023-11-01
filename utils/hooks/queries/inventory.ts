@@ -1,13 +1,11 @@
-import { ResponseAcquisitionTypesData, ResponseRealizedTokensData, TResponseInventoryValueHistory, getCollectionList, getCollectionValuableCount, getInventoryAcquisitionType, getInventoryCollectionPositionAmount, getInventoryCollectionPositionValue, getInventoryRealizedTokens, getInventoryValue, getInventoryValueHistory, getItemList, getItemValuableCount } from '@/apis/inventory';
-import { AcquisitionType } from '@/interfaces/activity';
-import { Token } from '@/interfaces/collection';
-import { IInventoryCollectionList, IInventoryItemList, IInventoryValue, IStat, PositionCollection, PositionCollectionAmount } from '@/interfaces/inventory';
+import { ResponseAcquisitionTypesData, TResponseInventoryValueHistory, getCollectionList, getCollectionValuableCount, getInventoryAcquisitionType, getInventoryCollectionPositionAmount, getInventoryCollectionPositionValue, getInventoryRealizedTokens, getInventoryValue, getInventoryValueHistory, getItemList, getItemValuableCount } from '@/apis/inventory';
+import { IInventoryCollectionList, IInventoryItemList, InventoryValue, InventoryValueNested, IStat, PositionCollection, PositionCollectionAmount } from '@/interfaces/inventory';
 import { ItemParam, TAcquisitionParam, TAnalysisGainAndLossParam, TCollectionParam, TOverviewHistoricalValueParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 export function useInventoryValue(walletAddress?: string) {
-  return useQuery<IInventoryValue,AxiosError>(
+  return useQuery<InventoryValueNested,AxiosError>(
     ['inventoryValue',walletAddress],
     async () => {
       const inventoryValue = await getInventoryValue(walletAddress);
@@ -232,7 +230,7 @@ export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAn
   return query;
 };
 export const useInventoryValuePolling = (walletAddress?: string) => {
-  return useQuery<IInventoryValue,AxiosError>(
+  return useQuery<InventoryValueNested,AxiosError>(
     ['inventoryValuePolling',walletAddress],
     async () => {
       const inventoryValue = await getInventoryValue(walletAddress);

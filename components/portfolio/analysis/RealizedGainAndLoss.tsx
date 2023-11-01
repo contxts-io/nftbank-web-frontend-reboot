@@ -114,13 +114,13 @@ const RealizedGainAndLoss = () => {
           list={selectedYear.map((item) => item.name)}
           selected={selectedYear.find((item) => item.selected)?.name || '2023'}
           onClick={(name) => handleChangeYear(name)}
-          className='w-78'
+          className='w-80'
         />
         <Dropdown
           list={selectedStatus.map((item) => item.name)}
           selected={selectedStatus.find((item) => item.selected)?.name || 'All'}
           onClick={(name) => handleChangeStatus(name)}
-          className='w-100'
+          className='w-65'
         />
         <Button id='' className='ml-auto'>
           Export
@@ -182,7 +182,7 @@ const RealizedGainAndLoss = () => {
                     <td className='text-right'>
                       <p className='text-[var(--color-text-main)]'>
                         {formatCurrency(
-                          item.costBasis[currency].amount || '0',
+                          item.costBasis[currency] || '0',
                           currency
                         )}
                       </p>
@@ -190,7 +190,7 @@ const RealizedGainAndLoss = () => {
                     <td className='text-right'>
                       <p className='text-[var(--color-text-main)]'>
                         {formatCurrency(
-                          item.proceed[currency].amount || '0',
+                          item.proceed[currency] || '0',
                           currency
                         )}
                       </p>
@@ -198,13 +198,13 @@ const RealizedGainAndLoss = () => {
                     <td className='text-right'>
                       <p
                         className={`${
-                          parseFloat(item.gainLoss[currency].amount || '0') > 0
+                          parseFloat(item.gainLoss[currency] || '0') > 0
                             ? 'text-[var(--color-text-success)]'
                             : 'text-[var(--color-text-danger)]'
                         }`}
                       >
                         {formatCurrency(
-                          item.gainLoss[currency].amount || '0',
+                          item.gainLoss[currency] || '0',
                           currency
                         )}
                       </p>

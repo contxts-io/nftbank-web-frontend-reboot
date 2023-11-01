@@ -1,4 +1,5 @@
-import { Collection, Token } from "@/interfaces/collection";
+import { Collection, } from "@/interfaces/collection";
+import { Token } from "@/interfaces/token";
 import { TSpam } from "@/interfaces/spam";
 import { ValuationEdit } from "@/interfaces/valuation";
 import { atom } from "jotai";

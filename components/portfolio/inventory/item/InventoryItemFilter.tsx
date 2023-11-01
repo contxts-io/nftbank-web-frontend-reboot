@@ -39,7 +39,7 @@ const InventoryItemFilter = (props: Props) => {
   const { ref, inView } = useInView();
   const { theme } = useTheme();
   const mergePosts = useMemo(
-    () => data?.pages.flatMap((page) => page.collections),
+    () => data?.pages.flatMap((page) => page.data),
     [data?.pages]
   );
   useEffect(() => {

@@ -53,12 +53,12 @@ const InventoryValue = () => {
           currency
         ),
         diffPercent: formatPercent(
-          inventoryValuePerformance?.value[currency].difference.percentage || 0
+          inventoryValuePerformance?.value[currency].difference.percentage ||
+            '0'
         ),
         isPlus:
-          inventoryValuePerformance &&
           parseFloat(
-            inventoryValuePerformance.value[currency].difference.amount
+            inventoryValuePerformance?.value[currency].difference.amount || '0'
           ) > 0,
       },
       {
@@ -72,17 +72,17 @@ const InventoryValue = () => {
           inventoryUnrealized?.gainLoss[currency] || '-',
           currency
         ),
-        diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || 0),
+        diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
         isPlus: parseFloat(inventoryUnrealized?.gainLoss[currency] || '0') > 0,
         status: statusInventoryUnrealized,
       },
       {
         type: 'unrealizedRoi',
         name: 'Unrealized ROI',
-        value: formatPercent(inventoryUnrealized?.roi[currency] || 0),
-        diff: formatPercent(inventoryUnrealized?.roi[currency] || 0),
-        diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || 0),
-        isPlus: (inventoryUnrealized?.roi[currency] || 0) > 0,
+        value: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
+        diff: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
+        diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
+        isPlus: parseFloat(inventoryUnrealized?.roi[currency] || '0') > 0,
         status: statusInventoryUnrealized,
       },
     ]);

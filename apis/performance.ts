@@ -1,8 +1,10 @@
-import { IInventoryCollectionList, IInventoryCollectionListPerformance, IInventoryItemList, IInventoryValue, PerformanceCollection, UnrealizedValue } from "@/interfaces/inventory";
+import { IInventoryCollectionList, IInventoryCollectionListPerformance, IInventoryItemList, InventoryValue, InventoryValueNested, PerformanceCollection, UnrealizedValue } from "@/interfaces/inventory";
+import { TokenPerformance } from "@/interfaces/token";
+import { Paging } from "@/interfaces/utils";
 import { ItemParam, TCollectionParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
 
-export const getInventoryValuePerformance = async<T = IInventoryValue>(walletAddress?: string): Promise<T> => {
+export const getInventoryValuePerformance = async<T = InventoryValueNested>(walletAddress?: string): Promise<T> => {
   const query = walletAddress ? `?walletAddress=${walletAddress}` : '';
   // const { data } = await instance.get<{data:T}>(`/inventory/value${query}`);
   const { data } = await instance.get<{data:T}>(`/performance/value${query}`);
@@ -28,7 +30,12 @@ export const getCollectionListPerformance = async<T = IInventoryCollectionListPe
   return data.data;
 }
 type ItemKey = keyof ItemParam;
-export const getItemListPerformance = async<T = IInventoryItemList>(requestParam: ItemParam): Promise<T> => {
+type ItemPerformanceList = {
+  data: TokenPerformance[];
+  paging: Paging;
+  processedAt: string;
+}
+export const getItemListPerformance = async<T = ItemPerformanceList>(requestParam: ItemParam): Promise<T> => {
   const query = Object.keys(requestParam)
   .filter(function(key) {
       return requestParam[key as ItemKey] && requestParam[key as ItemKey] !== ""; // 값이 있는 속성만 필터링

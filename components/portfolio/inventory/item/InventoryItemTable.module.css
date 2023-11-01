@@ -13,14 +13,23 @@
 .tableHeadRow th {
   @apply border-t-1 border-b-1 border-[var(--color-border-main)];
 }
+.tableHeadRow p {
+  @apply mr-30;
+}
 .tableHeadRow :first-child {
-  @apply w-12 border-0;
+  @apply border-0;
 }
 .tableHeadRow :last-child {
-  @apply w-12 border-0;
+  @apply border-0;
+}
+.blanc {
+  @apply w-12;
 }
 .tableBodyRow {
   @apply h-50 cursor-pointer text-[var(--color-text-main)] border-[var(--color-border-disabled)] hover:bg-[var(--color-elevation-sunken)];
+}
+.tableBodyRow p {
+  @apply mr-30;
 }
 .isOpen {
   @apply bg-[var(--color-elevation-sunken)];
@@ -41,7 +50,7 @@
   @apply text-[var(--color-text-subtle)];
 }
 .expandButton {
-  @apply rounded-none p-0 border-1 border-[var(--color-border-bold)] bg-transparent;
+  @apply rounded-none p-0 border-1 border-[var(--color-border-bold)] bg-transparent rotate-270;
 }
 .expandButton svg {
   @apply m-3;

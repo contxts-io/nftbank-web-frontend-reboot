@@ -1,5 +1,5 @@
 'use client';
-import { Token } from '@/interfaces/collection';
+import { Token } from '@/interfaces/token';
 import styles from './InventoryItemDetail.module.css';
 import Image from 'next/image';
 import { useMetadata } from '@/utils/hooks/queries/metadata';

@@ -3,7 +3,8 @@ import Check from '@/public/icon/Check';
 import styles from './ValuationDropdown.module.css';
 
 import { useEffect, useState } from 'react';
-import { TValuation, Token } from '@/interfaces/collection';
+import { TValuation } from '@/interfaces/collection';
+import { Token } from '@/interfaces/token';
 import { customValuationAtom } from '@/store/portfolio';
 import { useAtom } from 'jotai';
 import { formatPercent, mappingConstants } from '@/utils/common';

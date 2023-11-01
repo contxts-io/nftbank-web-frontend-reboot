@@ -21,7 +21,7 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
         <p className={`text-[var(--color-text-subtle)]`}>{label}</p>
       </div>
       <p className={`text-[var(--color-text-main)]`}>
-        {formatPercent((series[seriesIndex] / totalCount) * 100)}
+        {formatPercent(((series[seriesIndex] / totalCount) * 100).toString())}
       </p>
     </div>
   );

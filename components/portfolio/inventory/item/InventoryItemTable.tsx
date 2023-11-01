@@ -4,7 +4,8 @@ import styles from './InventoryItemTable.module.css';
 import { useAtom, useAtomValue } from 'jotai';
 import { inventoryItemListAtom } from '@/store/requestParam';
 import Image from 'next/image';
-import { TValuation, Token } from '@/interfaces/collection';
+import { TValuation } from '@/interfaces/collection';
+import { Token } from '@/interfaces/token';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import React, { useEffect, useMemo, useState } from 'react';
 import CaretDown from '@/public/icon/CaretDown';
@@ -116,12 +117,13 @@ const InventoryItemTable = () => {
             (page) =>
               (page.page === inventoryItemListPerformance?.paging?.page && {
                 ...page,
-                tokens: inventoryItemListPerformance.tokens,
+                data: inventoryItemListPerformance.data,
               }) ||
               page
           ),
         }
       );
+    inventoryItemList && console.log('inventoryItemList', inventoryItemList);
   }, [inventoryItemList, inventoryItemListPerformance, requestParam]);
   const handleOpenDetail = (target: Token) => {
     // setOpenedItem((prev) => {
@@ -163,7 +165,7 @@ const InventoryItemTable = () => {
                 } ${item.sort ? 'cursor-pointer' : ''}`}
                 onClick={() => item.sort && handleSort(item.type)}
               >
-                {item.name}
+                <p>{item.name}</p>
               </th>
             ))}
             <th />
@@ -173,7 +175,7 @@ const InventoryItemTable = () => {
         <tbody>
           {status === 'success' &&
             mergePosts?.map((page, pageIndex) => {
-              return page.tokens.map((data, index) => {
+              return page.data.map((data, index) => {
                 const valuationType = selectedValueType(data.valuation);
                 const itemKey = `${data.collection.assetContract}-${data.token.tokenId}-${index}`;
                 const isOpen = openedItem.find((item) => item === itemKey)
@@ -189,7 +191,7 @@ const InventoryItemTable = () => {
                       }`}
                       onClick={() => handleOpenDetail(data)}
                     >
-                      <td />
+                      <td className={styles.blanc} />
                       <td className='text-left p-0'>
                         <div className={`flex items-center my-8`}>
                           <div className={twMerge(`${styles.tokenImage} w-32`)}>
@@ -214,21 +216,27 @@ const InventoryItemTable = () => {
                           </div>
                         </div>
                       </td>
-                      <td className='text-right'>{data.amount}</td>
                       <td className='text-right'>
-                        {priceType === 'acquisitionPrice'
-                          ? formatCurrency(
-                              data.acquisitionPrice?.[currency].amount || null,
-                              currency
-                            )
-                          : data.costBasis?.[currency] &&
-                            formatCurrency(
-                              data.costBasis[currency].amount,
-                              currency
-                            )}
+                        <p>{data.amount}</p>
                       </td>
                       <td className='text-right'>
-                        {formatCurrency(data.nav[currency].amount, currency)}
+                        <p>
+                          {priceType === 'acquisitionPrice'
+                            ? formatCurrency(
+                                data.acquisitionPrice?.[currency] || null,
+                                currency
+                              )
+                            : data.costBasis?.[currency] &&
+                              formatCurrency(
+                                data.costBasis[currency],
+                                currency
+                              )}
+                        </p>
+                      </td>
+                      <td className='text-right'>
+                        <p>
+                          {formatCurrency(data.nav[currency].amount, currency)}
+                        </p>
                       </td>
                       <td className='text-right'>
                         <p
@@ -246,7 +254,7 @@ const InventoryItemTable = () => {
                       </td>
                       <td className='text-right'>
                         <p
-                          className={`mr-8 ${
+                          className={`${
                             isPlus(
                               data.nav[currency].difference?.percentage || 0
                             )
@@ -270,18 +278,20 @@ const InventoryItemTable = () => {
                         )}
                       </td>
                       <td className='text-right'>
-                        {formatPercent(valuationType?.accuracy || null)}
+                        <p>{formatPercent(valuationType?.accuracy || null)}</p>
                       </td>
                       <td className='text-right'>
-                        {data.acquisitionDate &&
-                          formatDate(new Date(data.acquisitionDate))}
+                        <p>
+                          {data.acquisitionDate &&
+                            formatDate(new Date(data.acquisitionDate))}
+                        </p>
                       </td>
                       <td className='text-right'>
                         <button className={`${styles.expandButton}`}>
                           <CaretDown />
                         </button>
                       </td>
-                      <td />
+                      <td className={styles.blanc} />
                     </tr>
                   </React.Fragment>
                 );
