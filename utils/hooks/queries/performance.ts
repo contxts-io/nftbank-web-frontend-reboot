@@ -1,12 +1,11 @@
-import { getCollectionList, getCollectionValuableCount, getInventoryValue, getItemList, getItemValuableCount } from '@/apis/inventory';
 import { getCollectionListPerformance, getInventoryUnrealizedPerformance, getInventoryValuePerformance, getItemListPerformance, getPerformanceChart } from '@/apis/performance';
-import { IInventoryCollectionList, IInventoryCollectionListPerformance, IInventoryItemList, IInventoryValue, PerformanceCollection, UnrealizedValue } from '@/interfaces/inventory';
+import { IInventoryCollectionListPerformance, IInventoryItemList, InventoryValueNested, PerformanceCollection, UnrealizedValue } from '@/interfaces/inventory';
 import { ItemParam, TCollectionParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 export function useInventoryValuePerformance(walletAddress?: string) {
-  return useQuery<IInventoryValue,AxiosError>(
+  return useQuery<InventoryValueNested,AxiosError>(
     ['inventoryValuePerformance',walletAddress],
     async () => {
       const inventoryValue = await getInventoryValuePerformance(walletAddress);
@@ -110,7 +109,7 @@ export const useInventoryItemInfinitePerformance = (requestParam: ItemParam) => 
   return query;
 };
 export const useInventoryItemPerformance = (requestParam: ItemParam) => {
-  return useQuery<IInventoryItemList,AxiosError>(
+  return useQuery(
     ['inventoryItemListPerformance',requestParam],
     async () => {
       const inventoryItemList = await getItemListPerformance(requestParam);

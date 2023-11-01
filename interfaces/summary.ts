@@ -1,15 +1,12 @@
-import { TDifference, TValue, Value } from "./collection"
+import { TDifference, ValueNested, Value } from "./collection"
 
 type SummaryType = 'totalSpend'|'gasSpend';
 export type TSummary = {
-  [key: string]: TValue, 
+  [key: string]: Value, 
 } & {
   processedAt: string
 };
 export type TUnrealized = {
-  gainLoss: {
-    eth: Value & {difference: TDifference | null},
-    usd: Value & {difference: TDifference | null},
-  },
+  gainLoss: ValueNested,
   processedAt: string
 }

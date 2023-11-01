@@ -1,50 +1,34 @@
-import { Collection, PerformanceValue, TDifference, TValue, Token, Value } from "./collection";
+import { Collection, PerformanceValue, TDifference, ValueNested, Value } from "./collection";
 import { TChain } from "./constants";
+import { Token } from "./token";
 import { Paging } from "./utils";
 
-export type IInventoryValue = {
-  value: {
-    eth: {
-      amount: string,
-      difference: {
-        amount: string,
-        percentage: number,
-      }
-    },
-    usd: {
-      amount: string,
-      difference: {
-        amount: string,
-        percentage: number,
-      }
-    },
-  },
+export type InventoryValueNested = {
+  value: ValueNested,
+  processedAt: string
+}
+export type InventoryValue = {
+  value: Value,
   processedAt: string
 }
 export type UnrealizedValue = {
-    gainLoss: {
-      eth: string,
-      usd: string,
-    },
-    roi: {
-      eth: number,
-      usd: number
-    },
+    gainLoss: Value,
+    roi: Value,
     processedAt: string
 }
 export type IInventoryCollectionList = {
-  collections: Collection[],
+  data: Collection[],
   paging: Paging,
   processedAt: string,
 }
 type CollectionPerformance = Collection & PerformanceValue;
 export type IInventoryCollectionListPerformance = {
-  collections: CollectionPerformance[],
+  data: CollectionPerformance[],
   paging: Paging,
   processedAt: string,
 }
 export type IInventoryItemList = {
-  tokens: Token[],
+  data: Token[],
   paging: Paging,
   processedAt: string,
 }
@@ -59,10 +43,7 @@ export type ICollection = {
 }
 export type PositionCollection = {
   collection: ICollection,
-  value: {
-    eth: Value & {difference: TDifference | null},
-    usd: Value & {difference: TDifference | null},
-  },
+  value: ValueNested,
 }
 export type PositionCollectionAmount = {
   collection: ICollection,
@@ -70,13 +51,7 @@ export type PositionCollectionAmount = {
   difference: number,
 }
 export type PerformanceCollection = {
-  gainLoss: {
-    eth: string,
-    usd: string,
-  } | null,
-  roi: {
-    eth: number,
-    usd: number
-  }| null,
+  gainLoss: Value | null,
+  roi: Value | null,
   processedAt: string
 }
