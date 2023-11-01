@@ -120,7 +120,7 @@ const InventoryCollectionTable = () => {
             (page) =>
               (page.page === collectionsPerformance?.paging.page && {
                 ...page,
-                collections: collectionsPerformance?.collections,
+                data: collectionsPerformance?.data,
               }) ||
               page
           ),
@@ -166,12 +166,12 @@ const InventoryCollectionTable = () => {
       <table
         className={`${styles.table} dark:border-border-main-dark h-full relative`}
       >
-        <thead className='sticky top-110 bg-elevation-surface dark:bg-elevation-surface-dark h-fit border-b-1 border-border-main dark:border-border-main-dark  z-20'>
+        <thead className='sticky top-110 bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
           <tr className='h-fit'>
             {T_HEADER.map((item, index) => (
               <th
                 key={index}
-                className={`font-caption-medium text-text-subtle dark:text-text-subtle-dark py-12
+                className={`font-caption-medium text-[var(--color-text-subtle)] py-12
                 ${
                   index == 0
                     ? 'text-center'
@@ -194,12 +194,11 @@ const InventoryCollectionTable = () => {
         <tbody className='h-full z-0'>
           {/* {mergedCollections?.map((row, index) => { */}
           {collections?.map((page, pageIndex) => {
-            return page.collections?.map((row, index) => {
-              const valuation = row.valuation.find((item) => item.selected);
+            return page.data?.map((row, index) => {
               return (
                 <tr
                   key={`${pageIndex}-${index}}`}
-                  className={`font-caption-regular cursor-pointer ${styles.tableRow} dark:border-border-disabled-dark`}
+                  className={`font-caption-regular cursor-pointer ${styles.tableRow}`}
                   onClick={() => handleClickCollection(row)}
                 >
                   <td className='flex justify-center py-10'>
@@ -216,14 +215,14 @@ const InventoryCollectionTable = () => {
                           alt={row.collection.name}
                         />
                       )}
-                      <p className='font-caption-medium dark:text-text-main-dark'>
+                      <p className='font-caption-medium'>
                         {row.collection.name ||
                           shortenAddress(row.collection.assetContract)}
                       </p>
                     </article>
                   </td>
                   <td className='text-right'>
-                    <p className='dark:text-text-main-dark'>{row.amount}</p>
+                    <p>{row.amount}</p>
                   </td>
                   {/* coast basis */}
                   {!row[priceType] ? (
@@ -234,17 +233,17 @@ const InventoryCollectionTable = () => {
                     </td>
                   ) : (
                     <td className='text-right'>
-                      <p className='dark:text-text-main-dark'>
+                      <p>
                         {formatCurrency(
-                          row[priceType]?.[currency].amount || null,
+                          row[priceType]?.[currency] || null,
                           currency
                         )}
                       </p>
                       {priceType === 'costBasis' && (
-                        <p className='text-text-brand dark:text-text-brand-dark'>
-                          {row.gasFee?.[currency]?.amount
+                        <p className='text-[var(--color-text-brand)]'>
+                          {row.gasFee?.[currency]
                             ? `GAS +${parseFloat(
-                                row.gasFee[currency].amount || ''
+                                row.gasFee[currency] || ''
                               ).toFixed(3)} `
                             : ''}
                         </p>
@@ -253,13 +252,11 @@ const InventoryCollectionTable = () => {
                   )}
                   {/* valuation type */}
                   <td className='text-right'>
-                    <p className='dark:text-text-main-dark'>
-                      {ValuationTypes(row.valuation)}
-                    </p>
+                    <p>{ValuationTypes(row.valuation)}</p>
                   </td>
                   {/* realtime nav */}
                   <td className='text-right'>
-                    <p className='dark:text-text-main-dark'>
+                    <p>
                       {formatCurrency(
                         row.nav[currency].amount || null,
                         currency
@@ -289,7 +286,7 @@ const InventoryCollectionTable = () => {
                       }`}
                     >
                       {`${difference(
-                        row.nav[currency].difference?.percentage || 0,
+                        row.nav[currency].difference?.percentage || '0',
                         'percent'
                       )}`}
                       {/* {difference('-123123.000001', currency)} */}

@@ -58,8 +58,8 @@ const HistoricalTrendChart = (props: Props) => {
       day: 'numeric',
     });
     let todayValue =
-      inventoryValue?.value[currency]?.amount &&
-      parseFloat(inventoryValue.value[currency].amount); //현재값
+      inventoryValue?.value[currency] &&
+      parseFloat(inventoryValue.value[currency].amount || '0'); //현재값
     let _series = series;
     (inventoryValueHistorical &&
       inventoryValueHistorical.data?.map((item, index) => {
@@ -79,8 +79,8 @@ const HistoricalTrendChart = (props: Props) => {
         historicalValueParam.window === 'all'
           ? category.push(yDate)
           : category.push(date);
-        item.value?.[currency]?.amount
-          ? _series[0].data.push(parseFloat(item.value?.[currency]?.amount))
+        item.value?.[currency]
+          ? _series[0].data.push(parseFloat(item.value?.[currency] || '0'))
           : _series[0].data.push(null);
       })) ||
       [];
@@ -94,7 +94,7 @@ const HistoricalTrendChart = (props: Props) => {
 
   useEffect(() => {
     const currentValue = inventoryValue?.value[currency]?.amount
-      ? parseFloat(inventoryValue.value[currency].amount)
+      ? parseFloat(inventoryValue.value[currency].amount || '0')
       : 0;
     seriesData[0].data[0] && seriesData[0].data[0] < currentValue
       ? setIsPlus(true)

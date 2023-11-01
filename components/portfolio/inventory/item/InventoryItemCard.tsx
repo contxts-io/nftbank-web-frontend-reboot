@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import styles from './InventoryItemCard.module.css';
-import { Token } from '@/interfaces/collection';
+import { Token } from '@/interfaces/token';
 import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import { formatCurrency, formatPercent } from '@/utils/common';
@@ -42,11 +42,11 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             <p className={styles.pValue}>
               {priceType === 'acquisitionPrice'
                 ? formatCurrency(
-                    token.acquisitionPrice?.[currency].amount || null,
+                    token.acquisitionPrice?.[currency] || null,
                     currency
                   )
                 : token.costBasis?.[currency] &&
-                  formatCurrency(token.costBasis[currency].amount, currency)}
+                  formatCurrency(token.costBasis[currency], currency)}
             </p>
           ) : (
             <SkeletonLoader className='h-16 w-50' />

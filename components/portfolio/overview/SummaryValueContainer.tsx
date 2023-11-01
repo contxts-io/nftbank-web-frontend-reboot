@@ -12,12 +12,7 @@ import { useMe } from '@/utils/hooks/queries/auth';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import SkeletonLoader from '@/components/SkeletonLoader';
-import {
-  difference,
-  formatCurrency,
-  formatPercent,
-  isPlus,
-} from '@/utils/common';
+import { difference, formatCurrency, isPlus } from '@/utils/common';
 const SummaryValueContainer = () => {
   const { data: me } = useMe();
   const currency = useAtomValue(currencyAtom);
@@ -44,13 +39,13 @@ const SummaryValueContainer = () => {
       <article className={styles.valueRect}>
         <div className={styles.subTitleWrapper}>
           <p className={styles.subTitle}>Total Spend</p>
-          {statusTotalSpend === 'loading' && (
-            <SkeletonLoader className='w-80 h-20' />
-          )}
         </div>
+        {statusTotalSpend === 'loading' && (
+          <SkeletonLoader className='w-80 h-20' />
+        )}
         {statusTotalSpend === 'success' && (
           <p className={`font-subtitle02-bold ${styles.title}`}>
-            {formatCurrency(totalSpend.totalSpend[currency].amount, currency)}
+            {formatCurrency(totalSpend.totalSpend[currency], currency)}
           </p>
         )}
       </article>
@@ -63,7 +58,7 @@ const SummaryValueContainer = () => {
         )}
         {statusGasSpend === 'success' && (
           <p className={`font-subtitle02-bold ${styles.title}`}>
-            {formatCurrency(gasSpend.gasSpend[currency].amount, currency)}
+            {formatCurrency(gasSpend.gasSpend[currency], currency)}
           </p>
         )}
       </article>
@@ -76,7 +71,7 @@ const SummaryValueContainer = () => {
         )}
         {statusTotalSale === 'success' && (
           <p className={`font-subtitle02-bold ${styles.title}`}>
-            {formatCurrency(totalSale.totalSale[currency].amount, currency)}
+            {formatCurrency(totalSale.totalSale[currency], currency)}
           </p>
         )}
       </article>
@@ -115,7 +110,7 @@ const SummaryValueContainer = () => {
                   unrealized.gainLoss[currency].difference?.amount || '0',
                   currency
                 )} (${difference(
-                  unrealized.gainLoss[currency].difference?.percentage || 0,
+                  unrealized.gainLoss[currency].difference?.percentage || '0',
                   'percent'
                 )})`}</p>
               </div>
@@ -135,7 +130,7 @@ const SummaryValueContainer = () => {
         )}
         {statusRealized === 'success' && (
           <p className={`font-subtitle02-bold ${styles.title}`}>
-            {formatCurrency(realized.gainLoss[currency].amount, currency)}
+            {formatCurrency(realized.gainLoss[currency], currency)}
           </p>
         )}
       </article>

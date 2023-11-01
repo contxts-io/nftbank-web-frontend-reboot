@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useInventoryItemPerformance } from '@/utils/hooks/queries/performance';
 import ReactQueryClient from '@/utils/ReactQueryClient';
-import { Token } from '@/interfaces/collection';
+import { Token } from '@/interfaces/token';
 
 const InventoryItemCardGrid = () => {
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
@@ -41,7 +41,7 @@ const InventoryItemCardGrid = () => {
             (page) =>
               (page.page === inventoryItemListPerformance?.paging.page && {
                 ...page,
-                tokens: inventoryItemListPerformance.tokens,
+                data: inventoryItemListPerformance.data,
               }) ||
               page
           ),
@@ -57,7 +57,7 @@ const InventoryItemCardGrid = () => {
     <section className='w-full h-full overflow-auto'>
       <div className={styles.cardListSection}>
         {mergePosts?.map((page, pageIndex) => {
-          return page.tokens.map((token, index) => {
+          return page.data.map((token, index) => {
             return token && <InventoryItemCard token={token} key={index} />;
           });
         })}

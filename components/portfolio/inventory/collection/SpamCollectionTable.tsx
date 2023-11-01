@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { currencyAtom } from '@/store/currency';
 import {
   formatCurrency,
-  mappingConstants,
   selectedValueType,
   shortenAddress,
 } from '@/utils/common';
@@ -17,7 +16,6 @@ import { useEffect } from 'react';
 import ClockClockwise from '@/public/icon/ClockClockwise';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import SpamInsertDropdown from './SpamInsertDropdown';
-import { TSpam } from '@/interfaces/spam';
 import { useInventorySpamListInfinite } from '@/utils/hooks/queries/spam';
 type Props = {
   onClick: (string: boolean) => void;
@@ -67,7 +65,7 @@ const SpamCollectionTable = () => {
       </thead>
       <tbody>
         {data?.pages.map((page, pageIndex) =>
-          page.collections.map((collection, index) => {
+          page.data.map((collection, index) => {
             return (
               <tr
                 key={`${pageIndex}-${index}-${collection.collection.assetContract}`}
@@ -75,13 +73,8 @@ const SpamCollectionTable = () => {
               >
                 <td className='text-left'>
                   {collection.collection.chain.imageUrl ? (
-                    <div className='rounded-full h-32 w-32 flex items-center justify-center bg-blue-500 border-1 border-[var(--color-border-main)]'>
-                      <Image
-                        src={collection.collection.chain.imageUrl}
-                        width={16}
-                        height={16}
-                        alt=''
-                      />
+                    <div className='rounded-full h-32 w-32 flex items-center justify-center border-1 border-[var(--color-border-main)]'>
+                      <Ethereum width={32} height={32} />
                     </div>
                   ) : (
                     <Ethereum />
@@ -113,12 +106,18 @@ const SpamCollectionTable = () => {
                   </p>
                 </td>
                 <td className='text-left pr-0'>
-                  <SpamInsertDropdown collection={collection} />
+                  <SpamInsertDropdown
+                    collection={collection}
+                    position={
+                      pageIndex === data?.pages.length - 1 &&
+                      index === page.data.length - 1
+                        ? 'up'
+                        : 'down'
+                    }
+                  />
                 </td>
                 <td className='text-right'>
-                  {collection.collection.spamType === 'custom' && (
-                    <ClockClockwise />
-                  )}
+                  {collection.spam.spamType === 'custom' && <ClockClockwise />}
                 </td>
               </tr>
             );
