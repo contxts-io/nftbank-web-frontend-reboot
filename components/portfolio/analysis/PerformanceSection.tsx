@@ -5,7 +5,10 @@ import PerformanceChart from './PerformanceChart';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { useMe } from '@/utils/hooks/queries/auth';
-import { usePerformanceChart } from '@/utils/hooks/queries/performance';
+import {
+  usePerformanceChart,
+  usePerformanceChartAnnual,
+} from '@/utils/hooks/queries/performance';
 import { formatCurrency, formatPercent, isPlus } from '@/utils/common';
 import { useEffect, useState } from 'react';
 const THEAD = [
@@ -27,6 +30,8 @@ const PerformanceSection = () => {
   const { data: me } = useMe();
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart(me.walletAddress);
+  const { data: performanceAnnual, status: statusPerformanceAnnual } =
+    usePerformanceChartAnnual({ walletAddress: me.walletAddress });
   const [total, setTotal] = useState(0);
   useEffect(() => {
     let _total = 0;
@@ -48,20 +53,13 @@ const PerformanceSection = () => {
       </div>
 
       <section className={styles.dataWrapper}>
-        <div className={styles.chartWrapper}>
-          <div className={styles.chartLabel}>
-            <p>{formatCurrency(total.toString(), currency)}</p>
-            <p>0</p>
-            <p>-6.4</p>
-          </div>
-          <PerformanceChart />
-        </div>
+        <PerformanceChart />
         <div className={styles.tableWrapper}>
           {performanceChart?.data && (
             <table className={`font-caption-regular ${styles.table}`}>
               <thead>
                 <tr>
-                  <th className='w-40'>
+                  <th className='w-70'>
                     <p>2023</p>
                   </th>
                   {THEAD.map((item, index) => {
@@ -99,7 +97,7 @@ const PerformanceSection = () => {
                                 : 'text-[var(--color-text-danger)]'
                             }
                           >
-                            {performanceChart.data[index].roi?.[currency] &&
+                            {performanceChart.data[index].roi &&
                               formatPercent(
                                 performanceChart.data[index].roi?.[currency] ||
                                   '0'
@@ -110,7 +108,7 @@ const PerformanceSection = () => {
                     })}
                   <td>
                     <p className='text-[var(--color-text-main)]'>
-                      {formatPercent(total.toString())}
+                      {formatPercent(performanceAnnual?.roi?.[currency] || '0')}
                     </p>
                   </td>
                 </tr>
@@ -135,9 +133,7 @@ const PerformanceSection = () => {
                                 : 'text-[var(--color-text-danger)]'
                             }
                           >
-                            {performanceChart.data[index].gainLoss?.[
-                              currency
-                            ] &&
+                            {performanceChart.data[index].gainLoss &&
                               formatCurrency(
                                 performanceChart.data[index].gainLoss?.[
                                   currency

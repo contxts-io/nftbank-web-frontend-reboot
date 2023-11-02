@@ -1,4 +1,4 @@
-import { getCollectionListPerformance, getInventoryUnrealizedPerformance, getInventoryValuePerformance, getItemListPerformance, getPerformanceChart } from '@/apis/performance';
+import { getCollectionListPerformance, getInventoryUnrealizedPerformance, getInventoryValuePerformance, getItemListPerformance, getPerformanceChart, getPerformanceChartAnnual } from '@/apis/performance';
 import { IInventoryCollectionListPerformance, IInventoryItemList, InventoryValueNested, PerformanceCollection, UnrealizedValue } from '@/interfaces/inventory';
 import { ItemParam, TCollectionParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
@@ -132,6 +132,25 @@ export function usePerformanceChart(walletAddress: string) {
     },
     {
       enabled: walletAddress !== '',
+      staleTime: Infinity,
+      cacheTime: Infinity,
+      useErrorBoundary: false,
+    },
+  );
+}
+type Param = {
+  walletAddress: string;
+  window?: string;
+}
+export function usePerformanceChartAnnual(requestParam:Param) {
+  return useQuery<PerformanceCollection,AxiosError>(
+    ['inventoryPerformanceChartAnnual',requestParam],
+    async () => {
+      const result = await getPerformanceChartAnnual({...requestParam, window: requestParam.window || 'ytd'});
+      return result.data;
+    },
+    {
+      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,

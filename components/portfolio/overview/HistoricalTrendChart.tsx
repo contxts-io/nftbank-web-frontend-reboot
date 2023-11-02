@@ -13,7 +13,20 @@ import { useEffect, useMemo, useState } from 'react';
 import { renderToString } from 'react-dom/server';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
-const tooltip = ({ series, seriesIndex, dataPointIndex, w, period }: any) => {
+const tooltip = ({
+  series,
+  seriesIndex,
+  dataPointIndex,
+  w,
+  period,
+  setHoverValue,
+  setDiffValue,
+}: any) => {
+  w.globals &&
+    (setHoverValue(w.globals?.series?.[0][dataPointIndex] || null),
+    setDiffValue(
+      w.globals?.series?.[0][dataPointIndex] - w.globals?.series?.[0][0]
+    ));
   return (
     <div className='px-16 py-8 border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
       <p className={`font-caption-regular text-[var(--color-text-main)]`}>
@@ -134,16 +147,20 @@ const HistoricalTrendChart = (props: Props) => {
         show: false,
       },
       events: {
-        mouseMove: function (event: any, chartContext: any, config: any) {
-          config.globals &&
-            (props.setHoverValue(
-              config.globals?.series?.[0][config.dataPointIndex] || null
-            ),
-            props.setDiffValue(
-              config.globals?.series?.[0][config.dataPointIndex] -
-                config.globals?.series?.[0][0]
-            ));
-        },
+        // dataPointMouseEnter: function (
+        //   event: any,
+        //   chartContext: any,
+        //   config: any
+        // ) {
+        //   config.globals &&
+        //     (props.setHoverValue(
+        //       config.globals?.series?.[0][config.dataPointIndex] || null
+        //     ),
+        //     props.setDiffValue(
+        //       config.globals?.series?.[0][config.dataPointIndex] -
+        //         config.globals?.series?.[0][0]
+        //     ));
+        // },
         mouseLeave: function (event: any, chartContext: any, config: any) {
           // ...
           props.setHoverValue(null);
@@ -254,6 +271,8 @@ const HistoricalTrendChart = (props: Props) => {
             dataPointIndex,
             w,
             period: historicalValueParam.window,
+            setHoverValue: props.setHoverValue,
+            setDiffValue: props.setDiffValue,
           })
         );
       },

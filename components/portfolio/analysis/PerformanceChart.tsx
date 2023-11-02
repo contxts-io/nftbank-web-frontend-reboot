@@ -2,12 +2,12 @@
 import dynamic from 'next/dynamic';
 import { renderToString } from 'react-dom/server';
 import styles from './PerformanceChart.module.css';
-import { useTheme } from 'next-themes';
 import { useEffect, useMemo, useState } from 'react';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { usePerformanceChart } from '@/utils/hooks/queries/performance';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
+import { formatCurrency, formatPercent } from '@/utils/common';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   return (
@@ -22,7 +22,7 @@ const PerformanceChart = () => {
   const { data: me } = useMe();
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart(me.walletAddress);
-  const [absMax, setAbsMax] = useState(0);
+  const [maxAbs, setMaxAbs] = useState(0);
   const barBackground = 'var(--color-elevation-surface-raised)';
   const labelColor = 'var(--color-text-subtle)';
 
@@ -33,9 +33,8 @@ const PerformanceChart = () => {
         name: 'positive',
         data: performanceChart.data
           .map((item) =>
-            item.gainLoss?.[currency] &&
-            parseFloat(item.gainLoss[currency]) >= 0
-              ? parseFloat(item.gainLoss[currency])
+            item.roi?.[currency] && parseFloat(item.roi[currency]) >= 0
+              ? parseFloat(item.roi[currency])
               : 0
           )
           .concat([0]),
@@ -44,24 +43,31 @@ const PerformanceChart = () => {
         name: 'negative',
         data: performanceChart.data
           .map((item) =>
-            item.gainLoss?.[currency] &&
-            parseFloat(item.gainLoss[currency]) <= 0
-              ? parseFloat(item.gainLoss[currency])
+            item.roi?.[currency] && parseFloat(item.roi[currency]) <= 0
+              ? parseFloat(item.roi[currency])
               : 0
           )
           .concat([0]),
       },
     ];
-  }, [performanceChart]);
+  }, [performanceChart, currency]);
   useEffect(() => {
-    _series &&
-      setAbsMax(
-        Math.max(
-          ...[...(_series[0]?.data.map((value) => Math.abs(value)) || [])],
-          ...[...(_series[1]?.data.map((value) => Math.abs(value)) || [])]
-        )
-      );
-    console.log('absMax', absMax);
+    console.log('series', _series);
+    if (
+      !_series ||
+      _series.length == 0 ||
+      _series[0].data.length === 0 ||
+      _series[1].data.length === 0
+    )
+      return;
+    const maxAbs = Math.max(
+      ...[
+        ..._series[0].data.map((value) => Math.abs(value)),
+        ..._series[1].data.map((value) => Math.abs(value)),
+      ]
+    );
+    console.log('maxAbs', maxAbs);
+    setMaxAbs(maxAbs);
   }, [_series]);
   const options = {
     chart: {
@@ -136,8 +142,8 @@ const PerformanceChart = () => {
       opposite: false,
       maxWidth: 160,
       minWidth: 160,
-      min: -100000,
-      max: 100000,
+      min: -maxAbs,
+      max: maxAbs,
       labels: {
         show: false,
         style: {
@@ -165,19 +171,26 @@ const PerformanceChart = () => {
 
   return (
     <section className={styles.container}>
-      <ApexCharts
-        options={{
-          ...options,
-          chart: {
-            ...options.chart,
-            type: 'bar',
-          },
-        }}
-        type='bar'
-        series={_series}
-        height={200}
-        width='100%'
-      />
+      <div className={styles.chartLabel}>
+        <p>{formatPercent(maxAbs.toString())}</p>
+        <p>0.00%</p>
+        <p>{formatPercent((-maxAbs).toString())}</p>
+      </div>
+      <div className='w-full ml-20'>
+        <ApexCharts
+          options={{
+            ...options,
+            chart: {
+              ...options.chart,
+              type: 'bar',
+            },
+          }}
+          type='bar'
+          series={_series}
+          height={200}
+          width='100%'
+        />
+      </div>
     </section>
   );
 };
