@@ -3,6 +3,13 @@ import dynamic from 'next/dynamic';
 import { renderToString } from 'react-dom/server';
 import styles from './PerformanceChart.module.css';
 import { useTheme } from 'next-themes';
+import { useAtomValue } from 'jotai';
+import { currencyAtom } from '@/store/currency';
+import { useMe } from '@/utils/hooks/queries/auth';
+import { usePerformanceChart } from '@/utils/hooks/queries/performance';
+import { useEffect, useMemo, useState } from 'react';
+import { set } from 'cypress/types/lodash';
+import SkeletonLoader from '@/components/SkeletonLoader';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   return (
@@ -13,9 +20,13 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   );
 };
 const PerformanceChart = () => {
-  const { theme } = useTheme();
-  const barBackground = theme === 'light' ? '#F3F4F6' : '#111924';
-  const labelColor = theme === 'light' ? '#4B5563' : '#9CA3AF';
+  const barBackground = 'var(--color-elevation-sunken)';
+  const labelColor = 'var(--color-text-subtle)';
+  const currency = useAtomValue(currencyAtom);
+  const { data: me } = useMe();
+  const [maxAbs, setMaxAbs] = useState(0);
+  const { data: performanceChart, status: statusPerformanceChart } =
+    usePerformanceChart(me.walletAddress);
   const options = {
     chart: {
       type: 'bar',
@@ -78,6 +89,9 @@ const PerformanceChart = () => {
           colors: labelColor,
           cssClass: 'font-caption-regular',
         },
+        formatter: (value: number) => {
+          return value.toFixed(2) + '%';
+        },
       },
     },
     legend: {
@@ -96,31 +110,69 @@ const PerformanceChart = () => {
       },
     },
   };
-  const series = [
-    {
-      name: 'positive',
-      data: [0.4, 0, 3.76, 5.88, 0, 2.1, 0, 3.8, 0, 0, 8, 4.3],
-    },
-    {
-      name: 'negative',
-      data: [0, -1.5, 0, 0, -1.4, 0, -2.85, 0, -3.96, -4.22, 0, 0],
-    },
-  ];
+  let series = useMemo(() => {
+    if (!performanceChart || performanceChart.data.length == 0) return [];
+    return [
+      {
+        name: 'positive',
+        data: performanceChart.data.map((item) =>
+          item.roi?.[currency] && parseFloat(item.roi[currency]) >= 0
+            ? parseFloat(item.roi[currency])
+            : 0
+        ),
+      },
+      {
+        name: 'negative',
+        data: performanceChart.data.map((item) =>
+          item.roi?.[currency] && parseFloat(item.roi[currency]) <= 0
+            ? parseFloat(item.roi[currency])
+            : 0
+        ),
+      },
+    ];
+  }, [performanceChart, currency]);
+  useEffect(() => {
+    console.log('series', series);
+    if (
+      !series ||
+      series.length == 0 ||
+      series[0].data.length === 0 ||
+      series[1].data.length === 0
+    )
+      return;
+    const maxAbs = Math.max(
+      ...[
+        ...series[0].data.map((value) => Math.abs(value)),
+        ...series[1].data.map((value) => Math.abs(value)),
+      ]
+    );
+    setMaxAbs(maxAbs);
+  }, [series]);
   return (
     <section className={styles.container}>
-      <ApexCharts
-        options={{
-          ...options,
-          chart: {
-            ...options.chart,
-            type: 'bar',
-          },
-        }}
-        type='bar'
-        series={series}
-        height={200}
-        width='100%'
-      />
+      {statusPerformanceChart === 'loading' && (
+        <SkeletonLoader className='w-full h-[200px]' />
+      )}
+      {statusPerformanceChart === 'success' && (
+        <ApexCharts
+          options={{
+            ...options,
+            chart: {
+              ...options.chart,
+              type: 'bar',
+            },
+            yaxis: {
+              ...options.yaxis,
+              min: -maxAbs,
+              max: maxAbs,
+            },
+          }}
+          type='bar'
+          series={series}
+          height={200}
+          width='100%'
+        />
+      )}
     </section>
   );
 };
