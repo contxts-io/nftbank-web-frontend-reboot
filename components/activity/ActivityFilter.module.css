@@ -7,6 +7,9 @@
 .inputContainer {
   @apply flex items-center h-36 mb-16 border-1 border-[var(--color-border-main)] text-[var(--color-text-subtle)] px-12;
 }
+.inputText {
+  @apply w-full text-[var(--color-text-main)];
+}
 .inputContainer input {
   @apply bg-transparent border-0;
 }
@@ -19,6 +22,6 @@
 .calendar button {
   @apply hover:bg-transparent;
 }
-.calendar button:hover {
-  @apply border-1 border-[var(--color-border-main)] !important;
+.tileClassName {
+  @apply bg-transparent !important;
 }

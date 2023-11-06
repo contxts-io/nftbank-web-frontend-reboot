@@ -1,10 +1,8 @@
 'use client';
 import styles from './ActivityFilter.module.css';
-import Button from '../buttons/Button';
 import Dropdown from '../dropdown/Dropdown';
 import { TChain } from '@/interfaces/constants';
 import { useEffect, useState } from 'react';
-import MagnifyingGlass from '@/public/icon/MagnifyingGlass';
 import SearchInput from '../searchInput/SearchInput';
 import ActivityTree from './ActivityTree';
 import ActivityMarketPlaceFilter from './ActivityMarketPlaceFilter';
@@ -16,6 +14,7 @@ import Calendar from 'react-calendar';
 import CalendarBlank from '@/public/icon/CalendarBlank';
 import { capitalizeFirstLetter } from '@/utils/common';
 import Cancel from '@/public/icon/Cancel';
+import DatePicker from 'react-date-picker';
 
 const CHAIN: { name: string; key: 'all' | TChain }[] = [
   { name: 'All Chain', key: 'all' },
@@ -73,8 +72,19 @@ const ActivityFilter = () => {
     console.log('onChange', value);
     setSelectedDate(value);
   };
+  const formatShortWeekday = (date: Date) => {
+    const _date = date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+    const month = _date.split(' ')[0];
+    const day = _date.split(' ')[1].replace(',', '');
+    const year = _date.split(' ')[2];
+    return `${year} ${month} ${day}`;
+  };
   return (
-    <div className={styles.container}>
+    <aside className={styles.container}>
       <Dropdown
         id=''
         className='w-full h-36 flex justify-between items-center mb-12'
@@ -84,37 +94,25 @@ const ActivityFilter = () => {
         onClick={(name) => handleClickList(name)}
       />
       <div className='relative'>
-        <div className={`font-body02-regular ${styles.inputContainer}`}>
-          <CalendarBlank />
-          <input
-            id=''
-            placeholder='All'
-            className='w-full'
-            onClick={() => openCalendar()}
-          />
+        <div
+          className={`font-body02-regular ${styles.inputContainer}`}
+          onClick={openCalendar}
+        >
+          <CalendarBlank className='mr-8' />
+          {selectedDate.length === 0 ? (
+            <p>All</p>
+          ) : (
+            <div className='font-caption-medium w-full flex text-[var(--color-text-main)] items-center justify-between'>
+              <p>{selectedDate[0] && formatShortWeekday(selectedDate[0])}</p>-
+              <p>{selectedDate[1] && formatShortWeekday(selectedDate[1])}</p>
+              <Cancel
+                className='fill-[var(--color-icon-subtle)]'
+                onClick={() => setSelectedDate([])}
+              />
+            </div>
+          )}
         </div>
-        {/* {selectedDate.length === 0 ? (
-          <p>All</p>
-        ) : (
-          <div className='font-caption-medium w-full flex text-[var(--color-text-main)] items-center justify-between'>
-            <p>
-              {selectedDate[0]?.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-              })}
-            </p>
-            -
-            <p>
-              {selectedDate[1]?.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-              })}
-            </p>
-            <Cancel className='fill-[var(--color-icon-subtle)]' />
-          </div>
-        )} */}
+
         {isCalendarOpen && (
           <div className='absolute top-50 bg-[var(--color-elevation-surface)] z-10 w-full'>
             <Calendar
@@ -142,7 +140,35 @@ const ActivityFilter = () => {
               selectRange={true}
               returnValue='range'
               onClickDay={(value, event) => console.log(value)}
+              tileClassName={styles.tileClassName}
             />
+            {/* <DatePicker
+              onChange={onChangeCalendar}
+              value={value}
+              className={styles.calendar}
+              formatMonthYear={(locale, date) =>
+                date.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                })
+              }
+              formatShortWeekday={(locale, date) =>
+                capitalizeFirstLetter(
+                  date
+                    .toLocaleDateString('en-US', {
+                      weekday: 'short',
+                    })
+                    .substring(0, 2)
+                )
+              }
+              formatDay={(locale, date) => date.getDate().toString()}
+              onDrillUp={() => console.log('onDrillUp')}
+              onDrillDown={() => console.log('onDrillDown')}
+              selectRange={true}
+              returnValue='range'
+              onClickDay={(value, event) => console.log(value)}
+              tileClassName={styles.tileClassName}
+            /> */}
           </div>
         )}
       </div>
@@ -171,7 +197,7 @@ const ActivityFilter = () => {
           id={''}
         />
       </div>
-    </div>
+    </aside>
   );
 };
 export default ActivityFilter;
