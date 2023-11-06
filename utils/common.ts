@@ -66,7 +66,6 @@ export function isPlus (value: number | string): boolean | '-' {
     if(parseFloat(value) === 0) return '-';
     return parseFloat(value) > 0 ? true : false;
   } else if (typeof value === 'number') {
-    if(value === 0) return '-';
     return value > 0 ? true : false;
   } else {
     return false;
@@ -147,3 +146,13 @@ export const selectedValueType = (
     valuations.find((val) => val.default);
   return mappingConstants(result?.type || '');
 };
+export function capitalizeFirstLetter(inputString:string) {
+  if (inputString.length > 0) {
+    const firstLetter = inputString[0]; // 첫 번째 글자
+    const modifiedString = firstLetter.toUpperCase() + inputString.slice(1).toLowerCase();
+    console.log('modifiedString', inputString)
+    return modifiedString;
+  }
+  
+  return inputString;
+}

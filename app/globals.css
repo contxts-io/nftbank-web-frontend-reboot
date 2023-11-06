@@ -7,6 +7,8 @@
 @import '../global_token_color.css';
 @import '../semantic_token_dark.css';
 @import '../semantic_token_light.css';
+@import 'react-date-picker/dist/DatePicker.css';
+@import 'react-calendar/dist/Calendar.css';
 /* HTML의 기본 요소에 대한 스타일을 정의합니다. (ex : <body>, <a>, <h1>) */
 @layer base {
   /* reset */

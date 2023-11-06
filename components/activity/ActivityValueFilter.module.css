@@ -1,0 +1,10 @@
+.container {
+  @apply h-screen w-[260px] overflow-y-visible py-24 pr-16 mr-16 border-r-1 border-[var(--color-border-main)];
+}
+.row {
+  @apply w-full h-16 flex items-center cursor-pointer mb-12 text-[var(--color-text-main)];
+}
+
+.checkBox {
+  @apply mr-8;
+}

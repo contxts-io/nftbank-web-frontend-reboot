@@ -1,0 +1,27 @@
+.container {
+  @apply h-screen w-[260px] overflow-y-scroll pt-24 pb-44 pr-16 mr-16 border-r-1 border-[var(--color-border-main)];
+}
+.pToggle {
+  @apply text-[var(--color-text-subtle)];
+}
+.inputContainer {
+  @apply flex items-center h-36 mb-16 border-1 border-[var(--color-border-main)] text-[var(--color-text-subtle)] px-12;
+}
+.inputText {
+  @apply w-full text-[var(--color-text-main)];
+}
+.inputContainer input {
+  @apply bg-transparent border-0;
+}
+.searchInput {
+  @apply mb-16 h-36;
+}
+.calendar {
+  @apply bg-[var(--color-elevation-surface)] text-[var(--color-text-main)];
+}
+.calendar button {
+  @apply hover:bg-transparent;
+}
+.tileClassName {
+  @apply bg-transparent !important;
+}

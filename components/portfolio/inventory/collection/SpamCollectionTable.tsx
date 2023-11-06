@@ -1,5 +1,4 @@
 'use client';
-import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory';
 import styles from './SpamCollectionTable.module.css';
 import { inventorySpamCollectionAtom } from '@/store/requestParam';
 import { useAtom, useAtomValue } from 'jotai';
