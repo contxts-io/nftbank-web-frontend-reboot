@@ -35,7 +35,7 @@
   --color-background-disabled: var(--color-gray-800);
   --color-background-neutral: var(--color-gray-900);
   --color-background-neutral-bold: var(--color-gray-600);
-  --color-background-inverse-subtle: var(--opacity-white100);
+  --color-background-inverse-subtle: var(--color-opacity-100);
   --color-icon-brand: var(--color-nb_blue-300);
   --color-icon-information: var(--color-blue-500);
   --color-icon-success: var(--color-teal-500);
@@ -73,10 +73,10 @@
   --color-chart-discovery-bold: var(--color-purple-300);
   --color-chart-information: var(--color-blue-600);
   --color-chart-information-bold: var(--color-blue-300);
-  --color-interaction-hovered: var(--color-opacity-white50);
-  --color-interaction-pressed: var(--color-opacity-black50);
-  --color-etc-blanket: var(--color-opacity-black200);
-  --color-etc-disabled: var(--color-opacity-black100);
+  --color-interaction-hovered: var(--color-opacity-50);
+  --color-interaction-pressed: var(--color-opacity-300);
+  --color-etc-blanket: var(--color-opacity-500);
+  --color-etc-disabled: var(--color-opacity-400);
   --color-etc-skeleton: var(--color-gray-800);
   --color-text-accent-gray: var(--color-gray-600);
   --color-text-accent-gray-bolder: var(--color-gray-200);
@@ -188,5 +188,5 @@
   --color-chart-accent-lime-bold: var(--color-lime-500);
   --color-chart-accent-lime-bolder: var(--color-lime-400);
   --color-chart-accent-lime-boldest: var(--color-lime-300);
-  --color-etc-footer: var(--color-opacity-black200);
+  --color-etc-footer: var(--color-opacity-500);
 }

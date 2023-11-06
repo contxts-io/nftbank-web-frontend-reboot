@@ -8,7 +8,7 @@ export function formatDate(date:  Date): string  {
   return `${year}/${month}/${day}`;
 }
 export function formatCurrency(amount: string | null, currency: TCurrency): string {
-  if (!amount) return '-';
+  if (!amount) return '';
   if (amount === 'infinity')
     return '-';
     // return '∞';
@@ -61,21 +61,18 @@ function _formatEth(amount: number): string {
 }
 
 export function isPlus (value: number | string): boolean | '-' {
-  if (value === 'infinity' || value === null || value === '0' || value === '-' || value === 0) return '-';
-  else if (typeof value === 'string') {
-    if(parseFloat(value) === 0) return '-';
+  if (value === 'infinity' || value === null || value === '0'|| value === '-') return '-';
+  if (typeof value === 'string') {
     return parseFloat(value) > 0 ? true : false;
   } else if (typeof value === 'number') {
-    if(value === 0) return '-';
     return value > 0 ? true : false;
   } else {
     return false;
   }
 };
-export function formatPercent(_percent: string |'infinity'| null): string {
-  if (_percent === null) return '-';
-  if (_percent === 'infinity') return '-';
-  const percent = parseFloat(_percent);
+export function formatPercent(percent: number |'infinity'| null): string {
+  if (percent === null) return '-';
+  if (percent === 'infinity') return '-';
   if (Math.abs(percent) <= 0.001) return '0%';
   if (Math.abs(percent) < 1 && Math.abs(percent) >= 0.001)
     return (percent / 100).toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 3 });
@@ -86,11 +83,11 @@ export function formatEth(amount: string | null): string {
   if (!amount) return '';
   return parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' });
 }
-export function difference(diff: string , currency: TCurrency | 'percent') {
-  if (currency === 'percent') {
+export function difference(diff: string | number, currency: TCurrency | 'percent') {
+  if (currency === 'percent' && typeof diff === 'number') {
     return formatPercent(diff).replace('+', '').replace('-', '');
   }
-  else {
+  else if (typeof diff === 'string' && currency !== 'percent') {
     const mark = parseFloat(diff) > 0 ? '+' : '';
     return `${mark}${formatCurrency(diff,currency).replace('$', '').replace('Ξ', '')}`;
   }
@@ -147,3 +144,13 @@ export const selectedValueType = (
     valuations.find((val) => val.default);
   return mappingConstants(result?.type || '');
 };
+export function capitalizeFirstLetter(inputString:string) {
+  if (inputString.length > 0) {
+    const firstLetter = inputString[0]; // 첫 번째 글자
+    const modifiedString = firstLetter.toUpperCase() + inputString.slice(1).toLowerCase();
+    console.log('modifiedString', modifiedString)
+    return modifiedString;
+  }
+  
+  return inputString;
+}

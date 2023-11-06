@@ -14,13 +14,13 @@
   --color-slate-900: #0f172a;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
+  --color-gray-200: #dee2eb;
   --color-gray-300: #d1d5db;
   --color-gray-400: #9ca3af;
   --color-gray-500: #6b7280;
   --color-gray-600: #4b5563;
   --color-gray-700: #374151;
-  --color-gray-800: #162130;
+  --color-gray-800: #252831;
   --color-gray-900: #111924;
   --color-zinc-50: #fafafa;
   --color-zinc-100: #f4f4f5;
@@ -232,10 +232,10 @@
   --color-rose-700: #be123c;
   --color-rose-800: #9f1239;
   --color-rose-900: #881337;
-  --color-opacity-white50: rgba(255, 255, 255, 0.2);
-  --color-opacity-white100: rgba(255, 255, 255, 0.4);
-  --color-opacity-gray200: rgba(17, 25, 36, 0.6);
-  --color-opacity-black50: rgba(0, 0, 0, 0.2);
-  --color-opacity-black100: rgba(0, 0, 0, 0.4);
-  --color-opacity-black200: rgba(0, 0, 0, 0.6);
+  --color-opacity-50: rgba(255, 255, 255, 0.2);
+  --color-opacity-100: rgba(255, 255, 255, 0.4);
+  --color-opacity-200: rgba(17, 25, 36, 0.6);
+  --color-opacity-300: rgba(0, 0, 0, 0.2);
+  --color-opacity-400: rgba(0, 0, 0, 0.4);
+  --color-opacity-500: rgba(0, 0, 0, 0.6);
 }

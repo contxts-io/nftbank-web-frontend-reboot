@@ -38,25 +38,19 @@ const InventoryCollectionSettings = () => {
   };
   return (
     <section className={`${styles.container}`}>
-      <div className={`${styles.inputContainer}  dark:border-border-main-dark`}>
-        <MagnifyingGlass
-          className={`${styles.icon} dark:fill-icon-main-dark`}
-          width={16}
-          height={16}
-        />
+      <div className={`${styles.inputContainer}  `}>
+        <MagnifyingGlass className={`${styles.icon}`} width={16} height={16} />
         <input
           type='text'
           placeholder={'Search collection'}
-          className={`${styles.textInput} font-caption-regular placeholder:dark:text-text-subtlest-dark dark:text-text-main-dark`}
+          className={`${styles.textInput} font-caption-regular`}
           onChange={handleInputText}
           value={searchText}
         />
       </div>
       <div className='flex items-center'>
         <div className='flex mr-8'>
-          <p
-            className={`font-button03-medium ${styles.pSetting} dark:text-text-subtle-dark mr-8`}
-          >
+          <p className={`font-button03-medium ${styles.pSetting} mr-8`}>
             Include Gas fee
           </p>
           <ToggleButton
