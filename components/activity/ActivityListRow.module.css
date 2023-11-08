@@ -1,0 +1,9 @@
+.row {
+  @apply w-full;
+}
+.gridRow {
+  @apply grid grid-cols-7;
+}
+.activityAssets {
+  @apply text-[var(--color-text-success)];
+}

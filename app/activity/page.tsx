@@ -1,4 +1,5 @@
 import ActivityFilter from '@/components/activity/ActivityFilter';
+import ActivityTable from '@/components/activity/ActivityTable';
 
 const ActivityPage = () => {
   return (
@@ -8,9 +9,9 @@ const ActivityPage = () => {
           Activitys
         </h2>
       </div>
-      <div className='flex '>
+      <div className='flex'>
         <ActivityFilter />
-        <div>page</div>
+        <ActivityTable />
       </div>
     </section>
   );

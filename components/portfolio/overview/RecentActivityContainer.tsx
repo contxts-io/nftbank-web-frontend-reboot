@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Tag from '@/public/icon/Tag';
 import Jewel from '@/public/icon/Jewel';
 import CaretDown from '@/public/icon/CaretDown';
+import ActivityIcon from '@/components/activity/ActivityIcon';
 type TActivity = 'BUY' | 'SELL' | 'MINT' | 'FREE MINT';
 const ACTIVITY: { type: TActivity; chain: TChain; date: string }[] = [
   {
@@ -36,84 +37,6 @@ const ACTIVITY: { type: TActivity; chain: TChain; date: string }[] = [
     date: 'Aug 31',
   },
 ];
-const Icon = ({ type, chain }: { type: TActivity; chain: TChain }) => {
-  return (
-    <>
-      {type === 'BUY' && (
-        <div
-          className={`${styles.iconWrapper} relative border-[var(--color-border-accent-green)] text-[var(--color-icon-accent-green)]`}
-        >
-          <ShoppingCart />
-          <Image
-            src={
-              chain === 'polygon'
-                ? '/logo/PolygonLogo.svg'
-                : '/logo/ETHLogo.svg'
-            }
-            width={16}
-            height={16}
-            alt={'nftbank'}
-            className='absolute top-[50%] right-[-30%]'
-          />
-        </div>
-      )}
-      {type === 'SELL' && (
-        <div
-          className={`${styles.iconWrapper} relative border-[var(--color-border-accent-red)] text-[var(--color-icon-accent-red)]`}
-        >
-          <Tag />
-          <Image
-            src={
-              chain === 'polygon'
-                ? '/logo/PolygonLogo.svg'
-                : '/logo/ETHLogo.svg'
-            }
-            width={16}
-            height={16}
-            alt={'nftbank'}
-            className='absolute top-[50%] right-[-30%]'
-          />
-        </div>
-      )}
-      {type === 'MINT' && (
-        <div
-          className={`${styles.iconWrapper} relative border-[var(--color-border-accent-teal)] text-[var(--color-icon-accent-teal)]`}
-        >
-          <Jewel />
-          <Image
-            src={
-              chain === 'polygon'
-                ? '/logo/PolygonLogo.svg'
-                : '/logo/ETHLogo.svg'
-            }
-            width={16}
-            height={16}
-            alt={'nftbank'}
-            className='absolute top-[50%] right-[-30%]'
-          />
-        </div>
-      )}
-      {type === 'FREE MINT' && (
-        <div
-          className={`${styles.iconWrapper} relative border-[var(--color-border-accent-blue)] text-[var(--color-icon-accent-blue)]`}
-        >
-          <Jewel />
-          <Image
-            src={
-              chain === 'polygon'
-                ? '/logo/PolygonLogo.svg'
-                : '/logo/ETHLogo.svg'
-            }
-            width={16}
-            height={16}
-            alt={'nftbank'}
-            className='absolute top-[50%] right-[-30%]'
-          />
-        </div>
-      )}
-    </>
-  );
-};
 const RecentActivityContainer = () => {
   return (
     <section className={styles.container}>
@@ -130,7 +53,7 @@ const RecentActivityContainer = () => {
           return (
             <li className={styles.listRow} key={index}>
               <div className={`col-span-1 flex`}>
-                <Icon type={item.type} chain={item.chain} />
+                <ActivityIcon type={item.type} chain={item.chain} />
                 <div className='ml-18'>
                   <p className='font-caption-medium text-[var(--color-text-main)]'>
                     {item.type}

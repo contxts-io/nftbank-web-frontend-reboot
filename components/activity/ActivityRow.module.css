@@ -1,0 +1,30 @@
+.rowContainer {
+  @apply border-1 overflow-hidden border-transparent transition-[height];
+}
+.listContent {
+  @apply w-full py-16 border-b-1 border-[var(--color-border-main)];
+}
+.selected {
+  @apply border-[var(--color-border-selected)];
+}
+.nonSelected {
+  @apply border-transparent transition-all duration-100;
+}
+.row {
+  @apply w-full;
+}
+.gridRow {
+  @apply grid grid-cols-7;
+}
+.bulkList {
+  @apply col-span-4 flex;
+}
+.borderDot {
+  @apply h-full w-1 border-l-1 border-dashed border-[var(--color-border-bold)];
+}
+.additionalContent {
+  @apply hidden transition-all duration-1000;
+}
+.additionalContentOpen {
+  @apply transition-all duration-1000;
+}
