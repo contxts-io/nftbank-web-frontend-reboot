@@ -13,9 +13,6 @@
 .listRow {
   @apply grid grid-cols-5 px-8 py-6 gap-x-[10px] my-2 hover:bg-[var(--color-elevation-sunken)] cursor-pointer;
 }
-.iconWrapper {
-  @apply rounded-full border-1 w-32 h-32 flex justify-center items-center;
-}
 .tokenImageWrapper {
   @apply border-1 border-[var(--color-border-main)] w-32 h-32 flex justify-center items-center mr-8;
 }

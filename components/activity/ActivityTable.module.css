@@ -1,0 +1,6 @@
+.container {
+  @apply w-full h-full mt-24;
+}
+.listHeader {
+  @apply w-full grid grid-cols-7 items-center h-48 border-b-1 border-[var(--color-border-main)] sticky top-57 z-10 bg-[var(--color-elevation-surface)];
+}
