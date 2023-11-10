@@ -64,13 +64,13 @@ const ActivityListRow = (props: Props) => {
                 selected={LIST.find((item) => item.selected)?.type || ''}
                 onClick={(type) => handleClickList(type)}
               />
-              <Dropdown
+              {/* <Dropdown
                 className='flex items-center'
                 id='activityType'
                 isOpened={isOpened}
                 setIsOpened={() => {}}
                 isEdit={isEdit}
-              />
+              /> */}
             </div>
           ) : (
             <div className='flex flex-col ml-9'>

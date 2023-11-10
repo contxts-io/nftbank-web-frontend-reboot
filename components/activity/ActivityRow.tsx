@@ -155,7 +155,7 @@ const ActivityRow = (props: ActivityRowProps) => {
                   .fill(0)
                   .map((_, index) => (
                     <li className={`${styles.listContent} `} key={index}>
-                      <ActivityListRow isOpened={true} />
+                      <ActivityListRow isOpened={true} isEdit={false} />
                     </li>
                   ))}
               </ul>
