@@ -1,0 +1,7 @@
+.button {
+  @apply border-1 px-12 py-10 flex items-center rounded-none;
+  @apply border-[var(--color-border-main)] text-[var(--color-text-subtle)];
+}
+.button:hover {
+  @apply hover:text-[var(--color-text-main)] border-[var(--color-border-selected)];
+}

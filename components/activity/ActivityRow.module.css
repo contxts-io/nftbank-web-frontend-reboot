@@ -2,13 +2,16 @@
   @apply border-1 overflow-hidden border-transparent transition-[height];
 }
 .listContent {
-  @apply w-full py-16 border-b-1 border-[var(--color-border-main)];
+  @apply w-full py-10 border-b-1 border-[var(--color-border-main)];
 }
 .selected {
-  @apply border-[var(--color-border-selected)];
+  @apply border-[var(--color-border-selected)] py-3;
 }
 .nonSelected {
   @apply border-transparent transition-all duration-100;
+}
+.editButton {
+  @apply ml-auto mt-auto w-16 h-16 p-0 border-0 text-[var(--color-icon-information)] hover:text-[var(--color-icon-selected)];
 }
 .row {
   @apply w-full;
@@ -27,4 +30,7 @@
 }
 .additionalContentOpen {
   @apply transition-all duration-1000;
+}
+.relativeListWrapper {
+  @apply h-[340px] overflow-y-scroll;
 }

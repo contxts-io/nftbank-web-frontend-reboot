@@ -6,14 +6,18 @@ import PencilSimple from '@/public/icon/PencilSimple';
 import Copy from '@/public/icon/Copy';
 import ArrowDownLeft from '@/public/icon/ArrowDownLeft';
 import { twMerge } from 'tailwind-merge';
-import ActivityIcon from './ActivityIcon';
 import Info from '@/public/icon/Info';
 import ActivityListRow from './ActivityListRow';
+import Button from '../buttons/Button';
+import CaretDown from '@/public/icon/CaretDown';
 type ActivityRowProps = {};
 const ActivityRow = (props: ActivityRowProps) => {
   const [isOpened, setIsOpened] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [isRelativeActivityOpened, setIsRelativeActivityOpened] =
+    useState(false);
   const bundle = true;
-  const relativeActivity = ['1', '2', '3', '4', '5'];
+  const relativeActivity = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
   return (
     <div
       className={`${styles.rowContainer} ${
@@ -24,7 +28,7 @@ const ActivityRow = (props: ActivityRowProps) => {
         className={`${styles.listContent}`}
         onClick={() => setIsOpened((prev) => !prev)}
       >
-        <ActivityListRow isOpened={isOpened} />
+        <ActivityListRow isOpened={isOpened} isEdit={isEdit} />
 
         <div
           className={twMerge(
@@ -51,7 +55,13 @@ const ActivityRow = (props: ActivityRowProps) => {
               <span className='text-[var(--color-text-subtle)]'>$130.98</span>
             </div>
           </div>
-          <PencilSimple className='ml-auto fill-[var(--color-icon-information)] cursor-pointer' />
+          <Button
+            className={styles.editButton}
+            id='editActivity'
+            onClick={() => setIsEdit((prev) => !prev)}
+          >
+            <PencilSimple />
+          </Button>
         </div>
       </li>
       <div
@@ -120,25 +130,37 @@ const ActivityRow = (props: ActivityRowProps) => {
       </div>
       {isOpened && relativeActivity.length > 0 && (
         <div className='font-caption-regular'>
-          <div className='flex items-center gap-8 ml-16'>
+          <div
+            className='flex items-center gap-8 mx-16 py-16'
+            onClick={() => setIsRelativeActivityOpened((prev) => !prev)}
+          >
             <span className='text-[var(--color-text-main)]'>
               Related Activity
             </span>
             <div className='bg-[var(--color-elevation-surface-raised)] px-4 py-2 text-[var(--color-text-main)]'>
-              5
+              {relativeActivity.length}
+            </div>
+            <div
+              className={`ml-auto text-[var(--color-icon-main)] transition-all duration-200 ${
+                isRelativeActivityOpened && 'rotate-180'
+              }`}
+            >
+              <CaretDown />
             </div>
           </div>
-          <ul>
-            <li className={`${styles.listContent} `}>
-              <ActivityListRow isOpened={true} />
-            </li>
-            <li className={`${styles.listContent}`}>
-              <ActivityListRow isOpened={true} />
-            </li>
-            <li className={`${styles.listContent}`}>
-              <ActivityListRow isOpened={true} />
-            </li>
-          </ul>
+          {isRelativeActivityOpened && (
+            <div className={styles.relativeListWrapper}>
+              <ul>
+                {Array(relativeActivity.length)
+                  .fill(0)
+                  .map((_, index) => (
+                    <li className={`${styles.listContent} `} key={index}>
+                      <ActivityListRow isOpened={true} />
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </div>
