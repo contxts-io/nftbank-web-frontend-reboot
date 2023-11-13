@@ -1,9 +1,12 @@
 .container {
-  @apply w-full flex items-center justify-between mt-24 mb-12;
+  @apply w-full flex items-center justify-between mt-20 mb-12;
 }
 .inputContainer {
   @apply w-[360px] h-36 flex items-center justify-items-start px-12;
-  @apply border-1 border-[var(--color-border-main)];
+  @apply border-1 border-[var(--color-border-main)] transition-all duration-200;
+}
+.focused {
+  @apply border-1 border-[var(--color-border-selected)] transition-all duration-200;
 }
 .textInput {
   @apply w-full border-0 p-0 ml-8;

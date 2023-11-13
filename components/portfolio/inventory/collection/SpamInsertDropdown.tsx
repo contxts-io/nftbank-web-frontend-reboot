@@ -70,7 +70,7 @@ const SpamInsertDropdown = ({ collection, icon, position = 'down' }: Props) => {
     <div
       className={`relative cursor-pointer ${
         icon
-          ? 'border-1 border-[var(--color-border-bold)] hover:border-[var(--color-border-selected)] text-[var(--color-icon-subtle)] hover:text-[var(--color-icon-main)] right-0'
+          ? 'border-0 border-[var(--color-border-bold)] hover:border-[var(--color-border-selected)] text-[var(--color-icon-subtle)] hover:text-[var(--color-icon-main)] right-0'
           : 'border-0 p-0 w-100'
       }`}
       onClick={(e) => (e.stopPropagation(), setIsPopoverOpen((prev) => !prev))}

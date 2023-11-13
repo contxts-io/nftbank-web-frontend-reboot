@@ -32,17 +32,15 @@ const PortfolioTabNavigation = () => {
           return (
             <div
               key={index}
-              className={`border-b-4 h-full flex items-center ${
+              className={`border-b-4 h-full flex items-center transition-all duration-400 ${
                 isActive
-                  ? 'border-border-brand dark:border-border-brand-dark'
-                  : 'border-border-main dark:border-border-main-dark'
+                  ? 'border-[var(--color-border-brand)]'
+                  : 'border-[var(--color-border-main)]'
               }`}
             >
               <Link
-                className={`font-body01-medium ${
-                  styles.link
-                } dark:hover:text-text-main-dark ${
-                  isActive && 'text-text-main dark:text-text-main-dark'
+                className={`font-body01-medium ${styles.link} ${
+                  isActive && 'text-[var(--color-text-main)]'
                 }`}
                 href={link.href}
               >
@@ -58,7 +56,7 @@ const PortfolioTabNavigation = () => {
             <button
               className={`${styles.button}  ${
                 inventoryType === 'collection'
-                  ? 'text-text-brand dark:text-text-brand-dark hover:text-text-brand hover:dark:text-text-brand-dark fill-icon-brand dark:fill-icon-brand-dark hover:fill-icon-brand dark:hover:fill-icon-brand-dark'
+                  ? 'text-[var(--color-text-brand)]  hover:text-[var(--color-text-brand)]  fill-[var(--color-icon-brand)] hover:fill-[var(--color-icon-brand)]'
                   : 'hover:text-text-main hover:fill-icon-main dark:hover:text-text-main-dark dark:hover:fill-icon-main-dark'
               }`}
               onClick={() => handleClickButton('collection')}
