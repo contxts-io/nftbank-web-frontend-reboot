@@ -11,6 +11,9 @@
   @apply w-full border-0 p-0 ml-8;
   @apply bg-transparent placeholder:text-[var(--color-text-subtlest)] text-[var(--color-text-main)];
 }
+.filterButton {
+  @apply w-36 h-36 p-0 flex items-center justify-center;
+}
 .icon {
   @apply fill-[var(--color-icon-main)];
 }

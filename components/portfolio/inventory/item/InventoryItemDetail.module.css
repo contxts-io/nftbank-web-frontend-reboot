@@ -1,6 +1,6 @@
 .container {
   @apply overflow-scroll;
-  @apply w-full flex flex-col bg-[var(--color-elevation-surface)] py-24 max-h-screen border-1 border-[var(--color-border-main)];
+  @apply w-full flex flex-col bg-[var(--color-elevation-surface)] py-24 h-screen border-1 border-[var(--color-border-main)];
 }
 .pSub {
   @apply text-[var(--color-text-subtle)] mb-8;

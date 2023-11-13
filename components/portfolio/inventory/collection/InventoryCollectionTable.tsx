@@ -25,6 +25,7 @@ import { useInventoryCollectionListPerformance } from '@/utils/hooks/queries/per
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import SpamInsertDropdown from './SpamInsertDropdown';
 import { ValuationTypes } from '@/utils/ValuationTypes';
+import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
 const T_HEADER = [
   {
     name: 'Chain',
@@ -163,9 +164,7 @@ const InventoryCollectionTable = () => {
     return <SkeletonLoader className='w-full h-[200px]' />;
   return (
     <section className={styles.container}>
-      <table
-        className={`${styles.table} dark:border-border-main-dark h-full relative`}
-      >
+      <table className={`${styles.table} h-full relative`}>
         <thead className='sticky top-110 bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
           <tr className='h-fit'>
             {T_HEADER.map((item, index) => (
@@ -185,10 +184,12 @@ const InventoryCollectionTable = () => {
                   item.sort && handleClickSortButton(item.sort as TSort)
                 }
               >
-                <p>{item.name}</p>
+                <p className={index > 1 ? 'ml-40' : ''}>{item.name}</p>
               </th>
             ))}
-            <th />
+            <th className='text-right'>
+              <p className='ml-40'> </p>
+            </th>
           </tr>
         </thead>
         <tbody className='h-full z-0'>
@@ -201,20 +202,29 @@ const InventoryCollectionTable = () => {
                   className={`font-caption-regular cursor-pointer ${styles.tableRow}`}
                   onClick={() => handleClickCollection(row)}
                 >
-                  <td className='flex justify-center py-10'>
-                    <Ethereum width={32} height={32} />
+                  <td className='flex justify-center py-6'>
+                    <Ethereum
+                      width={24}
+                      height={24}
+                      className='w-24 h-24 rounded-full flex items-center justify-center border-1 border-[var(--color-border-main)]'
+                    />
                   </td>
                   <td>
                     <article className='flex items-center'>
-                      {row.collection.imageUrl && (
+                      {row.collection.imageUrl ? (
                         <Image
-                          width={32}
-                          height={32}
+                          width={24}
+                          height={24}
                           src={row.collection.imageUrl}
-                          className='rounded-full mr-12'
+                          className='rounded-full mr-12 border-1 border-[var(--color-border-main)]'
                           alt={row.collection.name}
                         />
+                      ) : (
+                        <div className='w-24 h-24 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center rounded-full mr-12 border-1'>
+                          <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)] ' />
+                        </div>
                       )}
+
                       <p className='font-caption-medium'>
                         {row.collection.name ||
                           shortenAddress(row.collection.assetContract)}
@@ -292,9 +302,9 @@ const InventoryCollectionTable = () => {
                       {/* {difference('-123123.000001', currency)} */}
                     </p>
                   </td>
-                  <td className='text-center'>
+                  <td className='text-right'>
                     <div
-                      className='w-full flex justify-center items-center'
+                      className='w-full flex justify-end items-center'
                       onClick={(e) => e.stopPropagation()}
                     >
                       <SpamInsertDropdown collection={row} icon={true} />

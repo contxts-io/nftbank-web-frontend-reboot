@@ -116,7 +116,7 @@ const InventoryValue = () => {
                 {item.status === 'success' && (
                   <div className='mr-8 items-end'>
                     <p
-                      className={`font-subtitle01-bold ${
+                      className={`font-subtitle02-bold ${
                         item.type == `inventoryValue`
                           ? styles.pMain
                           : item.plus
@@ -163,7 +163,7 @@ const InventoryValue = () => {
           );
         })}
 
-      <article className='ml-16 py-16'>
+      <article className='ml-16 py-16 h-92 flex flex-col justify-between'>
         <div className='w-fit'>
           <p
             className={`font-caption-medium mb-4 text-[var(--color-text-subtle)] w-fit`}
@@ -175,7 +175,7 @@ const InventoryValue = () => {
           <div className='border-t-1 border-dashed border-[var(--color-border-accent-gray)]' />
         </div>
         <p
-          className={`font-subtitle01-bold mt-16 text-[var(--color-text-main)]`}
+          className={`font-subtitle02-bold mt-16 text-[var(--color-text-main)]`}
         >
           {inventoryType === 'collection'
             ? collectionCount?.totalCount

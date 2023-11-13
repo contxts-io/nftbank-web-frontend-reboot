@@ -35,7 +35,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
         />
       </div>
       <div className='w-full flex flex-col justify-start my-12 px-12'>
-        <p className={`${styles.pName} mb-8`}>{token.token.name}</p>
+        <p className={`${styles.pTitle} mb-8`}>{token.token.name}</p>
         <div className='flex justify-between items-center mb-8'>
           <p className={styles.pName}>Cost basis</p>
           {token.costBasis ? (

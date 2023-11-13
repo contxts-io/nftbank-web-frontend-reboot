@@ -49,7 +49,7 @@ const GlobalNavigation = () => {
           Watchlist
         </Link>
         <Link href={'/activity'} className={` ${styles.link}`}>
-          Activitys
+          Activities
         </Link>
         <Link href={'/report'} className={` ${styles.link}`}>
           Report

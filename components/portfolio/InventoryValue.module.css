@@ -1,8 +1,8 @@
 .container {
-  @apply w-full grid grid-cols-4 justify-between items-start mt-22 border-1 border-[var(--color-border-main)];
+  @apply w-full grid grid-cols-4 justify-between items-start mt-20 border-1 border-[var(--color-border-main)];
 }
 .articleBox {
-  @apply border-r-1 ml-16 py-16 border-[var(--color-border-main)];
+  @apply border-r-1 h-92 ml-16 py-16 border-[var(--color-border-main)];
 }
 .pHeader {
   @apply border-[var(--color-border-accent-gray)];
@@ -20,7 +20,7 @@
   @apply text-[var(--color-text-danger)] bg-[var(--color-background-danger)];
 }
 .valueRow {
-  @apply flex items-end mt-16 h-32;
+  @apply flex items-end mt-16 h-24;
 }
 .pDiff {
   @apply text-18 text-red-500 font-normal ml-16;

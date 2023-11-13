@@ -2,13 +2,14 @@
   @apply w-full table-auto overflow-y-scroll border-[var(--color-border-main)];
 }
 .tableHead {
-  @apply sticky top-0 bg-[var(--color-elevation-surface)] z-20;
+  @apply sticky top-[-1px] bg-[var(--color-elevation-surface)] z-20;
 }
 .tableHeadRow {
   @apply h-40 py-12 text-[var(--color-text-subtle)];
 }
 .tokenImage {
-  @apply w-32 h-32 border-1 flex items-center overflow-hidden justify-center border-border-main mr-8 relative;
+  @apply w-32 h-32 !important;
+  @apply border-1 border-[var(--color-border-main)] flex items-center overflow-hidden justify-center mr-8 relative;
 }
 .tableHeadRow th {
   @apply border-t-1 border-b-1 border-[var(--color-border-main)];
@@ -23,7 +24,7 @@
   @apply border-0;
 }
 .blanc {
-  @apply w-12;
+  @apply w-12 border-0;
 }
 .tableBodyRow {
   @apply h-50 cursor-pointer text-[var(--color-text-main)] border-[var(--color-border-disabled)] hover:bg-[var(--color-elevation-sunken)];
@@ -37,9 +38,9 @@
 .tableBodyRow td {
   @apply border-b-1 border-[var(--color-border-main)];
 }
-.tableBodyRow :first-child {
+/* .tableBodyRow :first-child {
   @apply border-0;
-}
+} */
 .tableBodyRow :last-child {
   @apply border-0;
 }
