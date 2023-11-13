@@ -20,7 +20,8 @@
   @apply w-16 h-16 fill-[var(--color-icon-main)];
 }
 .filterButton {
-  @apply rounded-none border-1 bg-transparent p-8 border-[var(--color-border-main)] hover:border-[var(--color-border-selected)] text-[var(--color-text-subtle)] hover:text-[var(--color-text-main)];
+  @apply w-36 h-36 p-0 flex items-center justify-center;
+  @apply rounded-none border-1 bg-transparent border-[var(--color-border-main)] hover:border-[var(--color-border-selected)] text-[var(--color-text-subtle)] hover:text-[var(--color-text-main)];
 }
 .sidebar {
   @apply fixed top-0 right-0 h-screen w-0 overflow-x-hidden translate-x-[100%];

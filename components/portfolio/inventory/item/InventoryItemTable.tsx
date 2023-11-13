@@ -169,7 +169,6 @@ const InventoryItemTable = () => {
               </th>
             ))}
             <th />
-            <th />
           </tr>
         </thead>
         <tbody>
@@ -194,7 +193,7 @@ const InventoryItemTable = () => {
                       <td className={styles.blanc} />
                       <td className='text-left p-0'>
                         <div className={`flex items-center my-8`}>
-                          <div className={twMerge(`${styles.tokenImage} w-32`)}>
+                          <div className={styles.tokenImage}>
                             <Image
                               src={
                                 data?.token.imageUrl || '/icon/nftbank_icon.svg'
@@ -285,11 +284,6 @@ const InventoryItemTable = () => {
                           {data.acquisitionDate &&
                             formatDate(new Date(data.acquisitionDate))}
                         </p>
-                      </td>
-                      <td className='text-right'>
-                        <button className={`${styles.expandButton}`}>
-                          <CaretDown />
-                        </button>
                       </td>
                       <td className={styles.blanc} />
                     </tr>

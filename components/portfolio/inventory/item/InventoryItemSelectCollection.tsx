@@ -42,7 +42,7 @@ const InventoryItemSelectCollection = () => {
       ))}
       {collections?.length > 0 && (
         <button
-          className='text-text-brand dark:text-text-brand-dark border-0 px-4'
+          className='text-[var(--color-text-brand)] border-0 px-4'
           onClick={() => handleClickClearAll()}
         >
           Clear All
