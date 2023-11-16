@@ -48,13 +48,13 @@ const HistoricalTrendContainer = () => {
   const [hoverValue, setHoverValue] = useState<number | null>(null);
   const [diffValue, setDiffValue] = useState<number | null>(null);
   const { data: inventoryValue, status: statusInventoryValue } =
-    useInventoryValuePolling(me.walletAddress);
+    useInventoryValuePolling(me?.walletAddress);
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
   } = useInventoryValueHistorical({
     ...historicalValueParam,
-    walletAddress: me.walletAddress,
+    walletAddress: me?.walletAddress,
   });
   const handleClickPeriod = (period: { name: string; value: Period }) => {
     console.log('handleClickPeriod', period);
@@ -80,10 +80,17 @@ const HistoricalTrendContainer = () => {
       hoverValue ||
       parseFloat(inventoryValue?.value[currency].amount || '0.00');
 
-    return (
-      _value -
-      parseFloat(inventoryValueHistorical?.data[0].value[currency] || '0.00')
-    );
+    const diff =
+      hoverValue == 0
+        ? 0 -
+          parseFloat(
+            inventoryValueHistorical?.data[0].value[currency] || '0.00'
+          )
+        : _value -
+          parseFloat(
+            inventoryValueHistorical?.data[0].value[currency] || '0.00'
+          );
+    return diff;
   }, [hoverValue, currency, inventoryValue]);
 
   useEffect(() => {
@@ -93,7 +100,7 @@ const HistoricalTrendContainer = () => {
     me?.walletAddress &&
       setHistoricalValueParam((prev) => ({
         ...prev,
-        walletAddress: me.walletAddress,
+        walletAddress: me?.walletAddress,
       }));
   }, [me?.walletAddress]);
   console.log('total', total);

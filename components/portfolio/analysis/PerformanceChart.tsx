@@ -7,21 +7,45 @@ import { useMe } from '@/utils/hooks/queries/auth';
 import { usePerformanceChart } from '@/utils/hooks/queries/performance';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
-import { formatCurrency, formatPercent } from '@/utils/common';
+import { formatPercent } from '@/utils/common';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
-const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
+const tooltip = ({ series, seriesIndex, dataPointIndex, w, year }: any) => {
+  const roi = series[seriesIndex][dataPointIndex];
   return (
     <div className='font-caption-regular py-8 px-16 flex flex-col items-center border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
-      <p className={`text-[var(--color-text-success)]`}>3.03%</p>
-      <p className={`text-[var(--color-text-subtle)]`}>Aug 31</p>
+      <p
+        className={`${
+          seriesIndex === 0
+            ? 'text-[var(--color-text-success)]'
+            : 'text-[var(--color-text-danger)]'
+        }`}
+      >
+        {formatPercent(roi)}
+      </p>
+      <p className={`text-[var(--color-text-subtle)]`}>
+        {`${year} ${w.globals.labels[dataPointIndex]}`}
+      </p>
     </div>
   );
 };
-const PerformanceChart = () => {
+type Props = {
+  requestParam: {
+    walletAddress: string;
+    year: number;
+    gnlChartType: 'Overall' | 'Realized' | 'Unrealized';
+  };
+};
+const PerformanceChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
   const { data: me } = useMe();
   const { data: performanceChart, status: statusPerformanceChart } =
-    usePerformanceChart(me.walletAddress);
+    usePerformanceChart({
+      ...props.requestParam,
+      gnlChartType: props.requestParam.gnlChartType.toLowerCase() as
+        | 'overall'
+        | 'realized'
+        | 'unrealized',
+    });
   const [maxAbs, setMaxAbs] = useState(0);
   const barBackground = 'var(--color-elevation-surface-raised)';
   const labelColor = 'var(--color-text-subtle)';
@@ -31,23 +55,25 @@ const PerformanceChart = () => {
     return [
       {
         name: 'positive',
-        data: performanceChart.data
-          .map((item) =>
-            item.roi?.[currency] && parseFloat(item.roi[currency]) >= 0
-              ? parseFloat(item.roi[currency])
-              : 0
-          )
-          .concat([0]),
+        data: Array(13)
+          .fill(0)
+          .map((_, index) => {
+            const value = parseFloat(
+              performanceChart.data[index]?.roi?.[currency] || '0'
+            );
+            return value >= 0 ? value : 0;
+          }),
       },
       {
         name: 'negative',
-        data: performanceChart.data
-          .map((item) =>
-            item.roi?.[currency] && parseFloat(item.roi[currency]) <= 0
-              ? parseFloat(item.roi[currency])
-              : 0
-          )
-          .concat([0]),
+        data: Array(13)
+          .fill(0)
+          .map((_, index) => {
+            const value = parseFloat(
+              performanceChart.data[index]?.roi?.[currency] || '0'
+            );
+            return value <= 0 ? value : 0;
+          }),
       },
     ];
   }, [performanceChart, currency]);
@@ -68,6 +94,7 @@ const PerformanceChart = () => {
     );
     console.log('maxAbs', maxAbs);
     setMaxAbs(maxAbs);
+    console.log('_series', _series);
   }, [_series]);
   const options = {
     chart: {
@@ -76,11 +103,14 @@ const PerformanceChart = () => {
       toolbar: {
         show: false,
       },
+      animations: {
+        enabled: false,
+      },
     },
     plotOptions: {
       bar: {
         vertical: true,
-        columnWidth: '90%',
+        columnWidth: '95%',
         barHeight: '100%',
         colors: {
           backgroundBarColors: [
@@ -163,7 +193,13 @@ const PerformanceChart = () => {
       followCursor: false,
       custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
         return renderToString(
-          tooltip({ series, seriesIndex, dataPointIndex, w })
+          tooltip({
+            series,
+            seriesIndex,
+            dataPointIndex,
+            w,
+            year: props.requestParam.year,
+          })
         );
       },
     },

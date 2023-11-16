@@ -1,5 +1,4 @@
 'use client';
-import Button from '@/components/buttons/Button';
 import styles from './PerformanceSection.module.css';
 import PerformanceChart from './PerformanceChart';
 import { useAtomValue } from 'jotai';
@@ -11,6 +10,7 @@ import {
 } from '@/utils/hooks/queries/performance';
 import { formatCurrency, formatPercent, isPlus } from '@/utils/common';
 import { useEffect, useState } from 'react';
+import Dropdown from '@/components/dropdown/Dropdown';
 const THEAD = [
   'Jan',
   'Feb',
@@ -25,13 +25,36 @@ const THEAD = [
   'Nov',
   'Dec',
 ];
+const YEARS: number[] = [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015];
+const GNL_CHART_TYPE: ('Overall' | 'Realized' | 'Unrealized')[] = [
+  'Overall',
+  'Realized',
+  'Unrealized',
+];
 const PerformanceSection = () => {
   const currency = useAtomValue(currencyAtom);
   const { data: me } = useMe();
+  const [requestParam, setRequestParam] = useState<{
+    year: number;
+    gnlChartType: 'Overall' | 'Realized' | 'Unrealized';
+  }>({
+    year: 2023,
+    gnlChartType: 'Overall',
+  });
   const { data: performanceChart, status: statusPerformanceChart } =
-    usePerformanceChart(me.walletAddress);
+    usePerformanceChart({
+      walletAddress: me?.walletAddress,
+      ...requestParam,
+      gnlChartType: requestParam.gnlChartType.toLowerCase() as
+        | 'overall'
+        | 'realized'
+        | 'unrealized',
+    });
   const { data: performanceAnnual, status: statusPerformanceAnnual } =
-    usePerformanceChartAnnual({ walletAddress: me.walletAddress });
+    usePerformanceChartAnnual({
+      walletAddress: me?.walletAddress,
+      ...requestParam,
+    });
   const [total, setTotal] = useState(0);
   useEffect(() => {
     let _total = 0;
@@ -41,26 +64,61 @@ const PerformanceSection = () => {
       );
     setTotal(_total);
   }, [performanceChart, currency]);
-
   return (
     <section className={styles.container}>
       <div className={styles.title}>
         <p className='font-subtitle02-bold text-[var(--color-text-main)]'>
           Performance
         </p>
-        <Button id=''>Overall</Button>
-        <Button id=''>2023</Button>
+
+        <Dropdown
+          id=''
+          className={styles.dropdown}
+          list={GNL_CHART_TYPE.map((item) => item)}
+          listStyle='w-full'
+          selected={
+            GNL_CHART_TYPE.find((item) => item === requestParam.gnlChartType) ||
+            'overall'
+          }
+          onClick={(name) =>
+            setRequestParam({
+              ...requestParam,
+              gnlChartType: name as 'Overall' | 'Realized' | 'Unrealized',
+            })
+          }
+        />
+        <Dropdown
+          id=''
+          className='w-80 h-36 flex justify-between items-center'
+          list={YEARS.map((item) => item.toString())}
+          listStyle='w-full'
+          selected={
+            YEARS.find((item) => item === requestParam.year)?.toString() ||
+            '2023'
+          }
+          onClick={(name) =>
+            setRequestParam({
+              ...requestParam,
+              year: parseInt(name),
+            })
+          }
+        />
       </div>
 
       <section className={styles.dataWrapper}>
-        <PerformanceChart />
+        <PerformanceChart
+          requestParam={{
+            walletAddress: me?.walletAddress,
+            ...requestParam,
+          }}
+        />
         <div className={styles.tableWrapper}>
           {performanceChart?.data && (
             <table className={`font-caption-regular ${styles.table}`}>
               <thead>
                 <tr>
                   <th className='w-70'>
-                    <p>2023</p>
+                    <p>{requestParam.year}</p>
                   </th>
                   {THEAD.map((item, index) => {
                     return (

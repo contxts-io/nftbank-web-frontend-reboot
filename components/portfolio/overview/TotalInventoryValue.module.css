@@ -1,8 +1,8 @@
 .container {
-  @apply w-full h-[390px] p-20 flex flex-col items-center border-1 border-[var(--color-border-main)] mb-20;
+  @apply w-full h-[340px] p-20 flex flex-col items-center border-1 border-[var(--color-border-main)] mb-20;
 }
 .header {
-  @apply w-full mb-20 flex justify-between items-center;
+  @apply w-full mb-40 flex justify-between items-center;
 }
 .selector {
   @apply w-190 border-1 border-[var(--color-border-main)] p-8 flex justify-between items-center;
@@ -14,7 +14,7 @@
   @apply bg-[var(--color-background-brand-bold)] text-[var(--color-text-inverse)] !important;
 }
 .body {
-  @apply flex items-center;
+  @apply flex items-center w-full px-36;
 }
 .dot {
   @apply w-4 h-4;
@@ -46,4 +46,7 @@
 }
 .dot {
   @apply w-8 h-8 mr-16;
+}
+.textSubtlest {
+  @apply text-[var(--color-text-subtlest)];
 }

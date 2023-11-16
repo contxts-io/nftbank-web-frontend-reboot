@@ -15,6 +15,7 @@ import Filter from '@/public/icon/Filter';
 import ReactModal from 'react-modal';
 import InventoryItemDetail from './InventoryItemDetail';
 import { selectedTokenAtom } from '@/store/portfolio';
+import Button from '@/components/buttons/Button';
 type Props = {
   isFilterOpen: boolean;
   handleFilterOpen: (state: boolean) => void;
@@ -91,32 +92,34 @@ const InventoryItemList = (props: Props) => {
                 itemViewType === 'cardView' && styles.checked
               }`}
             >
-              <button
+              <Button
                 className={`${styles.viewTypeButton}`}
                 onClick={() => setItemViewType('cardView')}
+                id=''
               >
                 <DotsNine
                   width={16}
                   height={16}
                   className={`${styles.viewTypeButtonIcon}`}
                 />
-              </button>
+              </Button>
             </div>
             <div
               className={`${styles.viewType} ${
                 itemViewType === 'listView' && styles.checked
               }`}
             >
-              <button
+              <Button
                 className={`${styles.viewTypeButton}`}
                 onClick={() => setItemViewType('listView')}
+                id=''
               >
                 <Hamburger
                   width={16}
                   height={16}
                   className={`${styles.viewTypeButtonIcon}`}
                 />
-              </button>
+              </Button>
             </div>
           </div>
         </div>

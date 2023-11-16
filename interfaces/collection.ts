@@ -29,7 +29,7 @@ export type TValuation = {
   
 export type CollectionMetadata = {
   chain: IChain,
-  name: string,
+  name: string | null,
   symbol: string,
   imageUrl: string,
   standard: TStandard,

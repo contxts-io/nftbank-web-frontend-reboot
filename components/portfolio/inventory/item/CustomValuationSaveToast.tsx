@@ -7,10 +7,6 @@ import { useAtom } from 'jotai';
 import { customValuationAtom } from '@/store/portfolio';
 import { useMutationCustomValuations } from '@/utils/hooks/mutations/valuation';
 import { showToastMessage } from '@/utils/toastify';
-import {
-  useInventoryItemInfinitePerformance,
-  useInventoryValuePerformance,
-} from '@/utils/hooks/queries/performance';
 import { inventoryItemListAtom } from '@/store/requestParam';
 import {
   useInventoryItemInfinite,
@@ -24,17 +20,13 @@ const CustomValuationSaveToast = (props: Props) => {
   const [customValuations, setCustomValuations] = useAtom(customValuationAtom);
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
   const { mutate, status } = useMutationCustomValuations();
-  const { data, refetch: refetchInventoryItemPerformance } =
-    useInventoryItemInfinitePerformance(requestParam);
   const { refetch: refetchInventoryItem } = useInventoryItemInfinite({
     ...requestParam,
     page: 0,
   });
   const { refetch: refetchInventoryValue } = useInventoryValue(
-    me.walletAddress
+    me?.walletAddress
   );
-  const { refetch: refetchInventoryValuePerformance } =
-    useInventoryValuePerformance(me.walletAddress);
   const handleClickCancel = () => {
     setCustomValuations([]);
   };
@@ -71,7 +63,6 @@ const CustomValuationSaveToast = (props: Props) => {
     ReactQueryClient.removeQueries(['inventoryCollectionListPerformance']);
     console.log('handleclickresetspam');
     refetchInventoryValue();
-    refetchInventoryValuePerformance();
   };
   return (
     <div className={styles.toast}>

@@ -8,21 +8,17 @@ import { TValuation } from '@/interfaces/collection';
 import { Token } from '@/interfaces/token';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import React, { useEffect, useMemo, useState } from 'react';
-import CaretDown from '@/public/icon/CaretDown';
 import {
   formatCurrency,
   formatDate,
   formatPercent,
   isPlus,
+  mappingConstants,
   shortenAddress,
 } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
-import { useInventoryItemPerformance } from '@/utils/hooks/queries/performance';
-import ReactQueryClient from '@/utils/ReactQueryClient';
-import { twMerge } from 'tailwind-merge';
 import { TValuationType } from '@/interfaces/constants';
 import { selectedTokenAtom } from '@/store/portfolio';
-import ValuationDropdown from './ValuationDropdown';
 const HEADER = [
   {
     type: 'Item',
@@ -84,8 +80,6 @@ const InventoryItemTable = () => {
     data: inventoryItemList,
     status,
   } = useInventoryItemInfinite({ ...requestParam, page: 0 });
-  const { data: inventoryItemListPerformance, status: statusPerformance } =
-    useInventoryItemPerformance(requestParam);
   const [selectedToken, setSelectedToken] = useAtom(selectedTokenAtom);
   useEffect(() => {
     const isLast =
@@ -93,7 +87,6 @@ const InventoryItemTable = () => {
     !isLast &&
       inView &&
       status !== 'loading' &&
-      statusPerformance !== 'loading' &&
       (fetchNextPage(),
       setRequestParam((prev) => ({ ...prev, page: prev.page + 1 })));
   }, [fetchNextPage, inView]);
@@ -102,37 +95,7 @@ const InventoryItemTable = () => {
     [inventoryItemList?.pages, requestParam]
   );
 
-  type TPage = {
-    page: number;
-    tokens: Token[];
-  };
-  useEffect(() => {
-    inventoryItemListPerformance &&
-      inventoryItemList?.pages &&
-      ReactQueryClient.setQueryData(
-        ['inventoryItemList', { ...requestParam, page: 0 }],
-        {
-          ...inventoryItemList,
-          pages: inventoryItemList.pages.map(
-            (page) =>
-              (page.page === inventoryItemListPerformance?.paging?.page && {
-                ...page,
-                data: inventoryItemListPerformance.data,
-              }) ||
-              page
-          ),
-        }
-      );
-    inventoryItemList && console.log('inventoryItemList', inventoryItemList);
-  }, [inventoryItemList, inventoryItemListPerformance, requestParam]);
   const handleOpenDetail = (target: Token) => {
-    // setOpenedItem((prev) => {
-    //   if (prev.includes(target)) {
-    //     return prev.filter((item) => item !== target);
-    //   } else {
-    //     return [...prev, target];
-    //   }
-    // });
     setSelectedToken(target);
   };
 
@@ -165,7 +128,11 @@ const InventoryItemTable = () => {
                 } ${item.sort ? 'cursor-pointer' : ''}`}
                 onClick={() => item.sort && handleSort(item.type)}
               >
-                <p>{item.name}</p>
+                {index === HEADER.length - 1 ? (
+                  <span>{item.name}</span>
+                ) : (
+                  <p>{item.name}</p>
+                )}
               </th>
             ))}
             <th />
@@ -180,7 +147,9 @@ const InventoryItemTable = () => {
                 const isOpen = openedItem.find((item) => item === itemKey)
                   ? true
                   : false;
-
+                const plus = isPlus(
+                  data.nav[currency].difference?.amount || '0'
+                );
                 return (
                   <React.Fragment key={index}>
                     <tr
@@ -254,9 +223,9 @@ const InventoryItemTable = () => {
                       <td className='text-right'>
                         <p
                           className={`${
-                            isPlus(
-                              data.nav[currency].difference?.percentage || 0
-                            )
+                            plus === '-'
+                              ? 'text-[var(--color-text-main)]'
+                              : plus === true
                               ? 'text-[var(--color-text-success)]'
                               : 'text-[var(--color-text-danger)]'
                           }`}
@@ -266,24 +235,24 @@ const InventoryItemTable = () => {
                           )}
                         </p>
                       </td>
-                      <td className='text-right cursor-pointer'>
-                        {data.valuation.length > 1 ? (
-                          <ValuationDropdown
-                            token={data}
-                            valuations={data.valuation}
-                          />
-                        ) : (
-                          <p>no available price</p>
-                        )}
+                      <td className='text-right'>
+                        <p>
+                          {/* {data.valuation.length > 0
+                            ? mappingConstants(data.valuation[0].type)
+                            : 'no valuation type'} */}
+                          {valuationType
+                            ? mappingConstants(valuationType.type)
+                            : 'no valuation type'}
+                        </p>
                       </td>
                       <td className='text-right'>
                         <p>{formatPercent(valuationType?.accuracy || null)}</p>
                       </td>
                       <td className='text-right'>
-                        <p>
+                        <span>
                           {data.acquisitionDate &&
                             formatDate(new Date(data.acquisitionDate))}
-                        </p>
+                        </span>
                       </td>
                       <td className={styles.blanc} />
                     </tr>

@@ -6,26 +6,23 @@ import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import Image from 'next/image';
 import { TSort, inventoryCollectionAtom } from '@/store/requestParam';
 import SkeletonLoader from '../../../SkeletonLoader';
-import { Collection } from '@/interfaces/collection';
+import { Collection, TValuation } from '@/interfaces/collection';
 import { inventoryTypeAtom } from '@/store/settings';
 import { selectedCollectionInventoryAtom } from '@/store/portfolio';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import Ethereum from '@/public/icon/Ethereum';
-import DotsThree from '@/public/icon/DotsThree';
 import {
   difference,
   formatCurrency,
-  formatPercent,
   isPlus,
-  selectedValueType,
   shortenAddress,
 } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
-import { useInventoryCollectionListPerformance } from '@/utils/hooks/queries/performance';
-import ReactQueryClient from '@/utils/ReactQueryClient';
 import SpamInsertDropdown from './SpamInsertDropdown';
 import { ValuationTypes } from '@/utils/ValuationTypes';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
+import ValuationDropdown from '../item/ValuationDropdown';
+import { twMerge } from 'tailwind-merge';
 const T_HEADER = [
   {
     name: 'Chain',
@@ -70,70 +67,16 @@ const InventoryCollectionTable = () => {
     ...inventoryCollectionRequestParam,
     page: 0,
   });
-  // const {
-  //   fetchNextPage: fetchNextPagePerformance,
-  //   data: dataPerformance,
-  //   status: statusPerformance,
-  // } = useInventoryCollectionsInfinitePerformance({
-  //   ...inventoryCollectionRequestParam,
-  //   page: 0,
-  // });
-  const { data: collectionsPerformance, status: statusListPerformance } =
-    useInventoryCollectionListPerformance(inventoryCollectionRequestParam);
-  const [mergedCollections, setMergedCollections] = useState<Collection[]>([]);
   type TPage = {
     page: number;
     collections: Collection[];
   };
-  const [performanceCollections, setPerformanceCollections] = useState<TPage[]>(
-    []
-  );
-
-  // useEffect(() => {
-  //   const mergedCollections = dataPerformance?.pages.flatMap(
-  //     (page) => page.collections
-  //   );
-  //   data?.pages &&
-  //     setMergedCollections(data?.pages.flatMap((page) => page.collections));
-  //   setMergedCollections((prev) =>
-  //     prev.map((row) => {
-  //       return (
-  //         mergedCollections?.find(
-  //           (item) =>
-  //             item.collection.assetContract === row.collection.assetContract
-  //         ) || row
-  //       );
-  //     })
-  //   );
-  // }, [data?.pages, dataPerformance]);
   const collections = useMemo(() => data?.pages, [data?.pages]);
-  useEffect(() => {
-    collectionsPerformance &&
-      data?.pages &&
-      ReactQueryClient.setQueryData(
-        [
-          'inventoryCollectionList',
-          { ...inventoryCollectionRequestParam, page: 0 },
-        ],
-        {
-          ...data,
-          pages: data.pages.map(
-            (page) =>
-              (page.page === collectionsPerformance?.paging.page && {
-                ...page,
-                data: collectionsPerformance?.data,
-              }) ||
-              page
-          ),
-        }
-      );
-  }, [collectionsPerformance, data]);
   useEffect(() => {
     const isLastPage = data?.pages?.[data.pages.length - 1].isLast;
     !isLastPage &&
       inView &&
       status !== 'loading' &&
-      statusListPerformance !== 'loading' &&
       (fetchNextPage(),
       setInventoryCollectionRequestParam((prev) => ({
         ...prev,
@@ -158,7 +101,14 @@ const InventoryCollectionTable = () => {
     setSelectedCollection([collection]);
     setInventoryType('item');
   };
-
+  const selectedValueType = (
+    valuations: TValuation[]
+  ): TValuation | undefined => {
+    const result =
+      valuations.find((val) => val.selected) ||
+      valuations.find((val) => val.default);
+    return result;
+  };
   if (status === 'error') return <div>error</div>;
   if (status === 'loading')
     return <SkeletonLoader className='w-full h-[200px]' />;
@@ -174,7 +124,7 @@ const InventoryCollectionTable = () => {
                 ${
                   index == 0
                     ? 'text-center'
-                    : index > 1
+                    : index > 1 && index !== 4
                     ? 'text-right'
                     : 'text-left'
                 }
@@ -184,7 +134,7 @@ const InventoryCollectionTable = () => {
                   item.sort && handleClickSortButton(item.sort as TSort)
                 }
               >
-                <p className={index > 1 ? 'ml-40' : ''}>{item.name}</p>
+                <p className={index > 1 ? styles.pTd : 'mr-40'}>{item.name}</p>
               </th>
             ))}
             <th className='text-right'>
@@ -193,16 +143,16 @@ const InventoryCollectionTable = () => {
           </tr>
         </thead>
         <tbody className='h-full z-0'>
-          {/* {mergedCollections?.map((row, index) => { */}
           {collections?.map((page, pageIndex) => {
             return page.data?.map((row, index) => {
+              const valuationType = selectedValueType(row.valuation);
               return (
                 <tr
                   key={`${pageIndex}-${index}}`}
                   className={`font-caption-regular cursor-pointer ${styles.tableRow}`}
                   onClick={() => handleClickCollection(row)}
                 >
-                  <td className='flex justify-center py-6'>
+                  <td className='flex justify-center items-center h-full mr-40'>
                     <Ethereum
                       width={24}
                       height={24}
@@ -217,7 +167,9 @@ const InventoryCollectionTable = () => {
                           height={24}
                           src={row.collection.imageUrl}
                           className='rounded-full mr-12 border-1 border-[var(--color-border-main)]'
-                          alt={row.collection.name}
+                          alt={
+                            row.collection.name || row.collection.assetContract
+                          }
                         />
                       ) : (
                         <div className='w-24 h-24 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center rounded-full mr-12 border-1'>
@@ -232,7 +184,7 @@ const InventoryCollectionTable = () => {
                     </article>
                   </td>
                   <td className='text-right'>
-                    <p>{row.amount}</p>
+                    <p className={styles.pTd}>{row.amount}</p>
                   </td>
                   {/* coast basis */}
                   {!row[priceType] ? (
@@ -243,14 +195,16 @@ const InventoryCollectionTable = () => {
                     </td>
                   ) : (
                     <td className='text-right'>
-                      <p>
+                      <p className={styles.pTd}>
                         {formatCurrency(
                           row[priceType]?.[currency] || null,
                           currency
                         )}
                       </p>
                       {priceType === 'costBasis' && (
-                        <p className='text-[var(--color-text-brand)]'>
+                        <p
+                          className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                        >
                           {row.gasFee?.[currency]
                             ? `GAS +${parseFloat(
                                 row.gasFee[currency] || ''
@@ -261,12 +215,20 @@ const InventoryCollectionTable = () => {
                     </td>
                   )}
                   {/* valuation type */}
-                  <td className='text-right'>
-                    <p>{ValuationTypes(row.valuation)}</p>
+                  <td className='text-left'>
+                    {/* <p>{ValuationTypes(row.valuation)}</p> */}
+                    {row.valuation.length > 1 ? (
+                      <ValuationDropdown
+                        collection={row}
+                        valuations={row.valuation}
+                      />
+                    ) : (
+                      <p>no available price</p>
+                    )}
                   </td>
                   {/* realtime nav */}
                   <td className='text-right'>
-                    <p>
+                    <p className={styles.pTd}>
                       {formatCurrency(
                         row.nav[currency].amount || null,
                         currency
@@ -276,7 +238,7 @@ const InventoryCollectionTable = () => {
                   <td className='text-right'>
                     {row.nav[currency].difference?.amount && (
                       <p
-                        className={`${
+                        className={`${styles.pTd} ${
                           isPlus(row.nav[currency].difference?.amount || 0)
                             ? 'text-[var(--color-text-success)]'
                             : 'text-[var(--color-text-danger)]'
@@ -289,7 +251,7 @@ const InventoryCollectionTable = () => {
                   </td>
                   <td className='text-right'>
                     <p
-                      className={`${
+                      className={`${styles.pTd} ${
                         isPlus(row.nav[currency].difference?.percentage || 0)
                           ? 'text-[var(--color-text-success)]'
                           : 'text-[var(--color-text-danger)]'
@@ -299,7 +261,6 @@ const InventoryCollectionTable = () => {
                         row.nav[currency].difference?.percentage || '0',
                         'percent'
                       )}`}
-                      {/* {difference('-123123.000001', currency)} */}
                     </p>
                   </td>
                   <td className='text-right'>

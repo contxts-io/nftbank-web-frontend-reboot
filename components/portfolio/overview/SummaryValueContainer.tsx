@@ -12,24 +12,29 @@ import { useMe } from '@/utils/hooks/queries/auth';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import SkeletonLoader from '@/components/SkeletonLoader';
-import { difference, formatCurrency, isPlus } from '@/utils/common';
+import {
+  difference,
+  formatCurrency,
+  formatPercent,
+  isPlus,
+} from '@/utils/common';
 const SummaryValueContainer = () => {
   const { data: me } = useMe();
   const currency = useAtomValue(currencyAtom);
   const { data: totalSpend, status: statusTotalSpend } = useSummaryTotalSpend(
-    me.walletAddress
+    me?.walletAddress
   );
   const { data: gasSpend, status: statusGasSpend } = useSummaryGasSpend(
-    me.walletAddress
+    me?.walletAddress
   );
   const { data: totalSale, status: statusTotalSale } = useSummaryTotalSale(
-    me.walletAddress
+    me?.walletAddress
   );
   const { data: unrealized, status: statusUnrealized } = useSummaryUnrealized(
-    me.walletAddress
+    me?.walletAddress
   );
   const { data: realized, status: statusRealized } = useSummaryRealized(
-    me.walletAddress
+    me?.walletAddress
   );
   useEffect(() => {
     totalSpend && console.log(totalSpend);
@@ -109,9 +114,8 @@ const SummaryValueContainer = () => {
                 <p>{`${difference(
                   unrealized.gainLoss[currency].difference?.amount || '0',
                   currency
-                )} (${difference(
-                  unrealized.gainLoss[currency].difference?.percentage || '0',
-                  'percent'
+                )} (${formatPercent(
+                  unrealized.gainLoss[currency].difference?.percentage || '0'
                 )})`}</p>
               </div>
               <div className={`${styles.diffBox}`}>

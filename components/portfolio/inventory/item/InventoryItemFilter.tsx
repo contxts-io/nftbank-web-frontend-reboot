@@ -115,50 +115,56 @@ const InventoryItemFilter = (props: Props) => {
           value={searchText}
         />
       </div>
-
-      <ul className='mt-12 w-full h-full overflow-y-scroll flex flex-col'>
-        {mergePosts?.map((item, index) => {
-          const isSelected = selectedCollection?.find((collection) => {
+      <div className='h-full overflow-y-scroll'>
+        <ul className='mt-12 w-full flex flex-col'>
+          {mergePosts?.map((item, index) => {
+            const isSelected = selectedCollection?.find((collection) => {
+              return (
+                collection.collection.assetContract ===
+                item.collection.assetContract
+              );
+            })
+              ? true
+              : false;
             return (
-              collection.collection.assetContract ===
-              item.collection.assetContract
-            );
-          })
-            ? true
-            : false;
-          return (
-            <Fragment key={`${item.collection.assetContract}-${index}`}>
-              <li className='h-26 flex mb-12 items-center'>
-                <CheckBox
-                  checked={isSelected}
+              <Fragment key={`${item.collection.assetContract}-${index}`}>
+                <li
+                  className='flex mb-12 items-center cursor-pointer'
                   onClick={() => handleClickCheckBox(item)}
-                  className={`mr-8 ${
-                    isSelected && 'bg-[var(--color-background-brand-bold)]'
-                  }`}
-                />
-                <Image
-                  src={item.collection.imageUrl || '/icon/ethereum.svg'}
-                  width={20}
-                  height={20}
-                  className='rounded-full mr-8 border-1 border-[var(--color-border-main)]'
-                  alt={`${
-                    item.collection.name || item.collection.assetContract
-                  } image`}
-                />
-                <p className={`font-caption-medium ${styles.pCollectionName}`}>
-                  {item.collection.name ||
-                    shortenAddress(item.collection.assetContract)}
-                </p>
-              </li>
-            </Fragment>
-          );
-        })}
-        {!data?.pages?.[data?.pages.length - 1].isLast && (
-          <li ref={ref} className='h-43 '>
-            more
-          </li>
-        )}
-      </ul>
+                >
+                  <CheckBox
+                    checked={isSelected}
+                    onClick={() => handleClickCheckBox(item)}
+                    className={`mr-8 ${
+                      isSelected && 'bg-[var(--color-background-brand-bold)]'
+                    }`}
+                  />
+                  <Image
+                    src={item.collection.imageUrl || '/icon/ethereum.svg'}
+                    width={20}
+                    height={20}
+                    className='rounded-full mr-8 border-1 border-[var(--color-border-main)]'
+                    alt={`${
+                      item.collection.name || item.collection.assetContract
+                    } image`}
+                  />
+                  <p
+                    className={`font-caption-medium ${styles.pCollectionName}`}
+                  >
+                    {item.collection.name ||
+                      shortenAddress(item.collection.assetContract)}
+                  </p>
+                </li>
+              </Fragment>
+            );
+          })}
+          {!data?.pages?.[data?.pages.length - 1].isLast && (
+            <li ref={ref} className='h-43 '>
+              more
+            </li>
+          )}
+        </ul>
+      </div>
       <div>
         {isFetching && !isFetchingNextPage ? 'Background Updating...' : null}
       </div>

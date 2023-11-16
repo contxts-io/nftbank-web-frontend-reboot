@@ -52,11 +52,11 @@ const SpamSaveToast = () => {
     await ReactQueryClient.removeQueries(['inventorySpamList']);
     await ReactQueryClient.invalidateQueries([
       'inventoryValue',
-      me.walletAddress,
+      me?.walletAddress,
     ]);
     await ReactQueryClient.invalidateQueries([
       'inventoryValuePerformance',
-      me.walletAddress,
+      me?.walletAddress,
     ]);
     await ReactQueryClient.removeQueries(['collectionCount']);
     await ReactQueryClient.removeQueries(['itemCount']);

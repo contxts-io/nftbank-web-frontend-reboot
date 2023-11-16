@@ -39,11 +39,14 @@ const RealizedGainAndLoss = () => {
     analysisGainAndLossParamAtom
   );
   const { data: me } = useMe();
-  const { data: realizedTokenList, status } =
-    useInventoryRealizedTokensInfinite({
-      ...requestParams,
-      walletAddress: me.walletAddress,
-    });
+  const {
+    data: realizedTokenList,
+    status,
+    fetchNextPage,
+  } = useInventoryRealizedTokensInfinite({
+    ...requestParams,
+    walletAddress: me?.walletAddress,
+  });
   const [selectedStatus, setSelectedStatus] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({
       ...item,
@@ -74,13 +77,14 @@ const RealizedGainAndLoss = () => {
   };
   const handleClickShowMore = () => {
     latestPage?.isLast === false &&
-      setRequestParams((prev) => {
+      (setRequestParams((prev) => {
         return {
           ...prev,
-          limit: 10,
+          limit: 1,
           nextCursor: latestPage.nextCursor,
         };
-      });
+      }),
+      fetchNextPage());
   };
   useEffect(() => {
     console.log('changed!');
@@ -153,7 +157,7 @@ const RealizedGainAndLoss = () => {
                     className='text-[var(--color-text-subtle)] hover:text-[var(--color-text-main)]'
                   >
                     <td className='text-left'>
-                      <div className='flex items-center gap-8'>
+                      <div className='flex items-center gap-x-8'>
                         <div className='w-32 h-32 flex items-center justify-center border-1 border-[var(--color-border-main)]'>
                           <Image
                             src={`${
@@ -224,7 +228,9 @@ const RealizedGainAndLoss = () => {
                     </td>
                     <td className='text-right'>
                       <p className='text-[var(--color-text-main)]'>
-                        {formatDate(new Date(item.acquisitionDate))}
+                        {item.acquisitionDate
+                          ? formatDate(new Date(item.acquisitionDate))
+                          : '-'}
                       </p>
                     </td>
                     <td className='text-right'>

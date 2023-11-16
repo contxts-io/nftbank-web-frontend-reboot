@@ -201,19 +201,21 @@ export const useInventoryCollectionPositionAmount = (walletAddress?: string) => 
   );
 }
 export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAndLossParam) => {
-  console.log('useInventoryRealizedTokens', requestParam);
-  const fetchData = async () => {
-    const result = await getInventoryRealizedTokens({...requestParam});
+  const fetchData = async ({ pageParam = null }) => {
+    const result = await getInventoryRealizedTokens({ ...requestParam, nextCursor: pageParam});
     const isLast = result.paging.hasNext ? false : true;
         
     return {
       ...result,
+      // page: pageParam,
+      // nextPage: pageParam + 1,
+      currentCursor: pageParam,
       nextCursor: result.paging.nextCursor,
       isLast,
     };
   }
 
-  const query = useInfiniteQuery(['inventoryRealizedTokens',requestParam],fetchData, {
+  const query = useInfiniteQuery(['inventoryRealizedTokens',{...requestParam,nextCursor:null}],fetchData, {
     getNextPageParam: (lastPage) => {
       if (!lastPage.isLast) return lastPage.nextCursor;
       return undefined;

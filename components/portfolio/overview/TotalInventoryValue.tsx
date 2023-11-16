@@ -1,8 +1,14 @@
 'use client';
 import Button from '@/components/buttons/Button';
 import styles from './TotalInventoryValue.module.css';
-import { useMemo, useState } from 'react';
-import { formatAmount, formatCurrency, shortenAddress } from '@/utils/common';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  formatAmount,
+  formatCurrency,
+  formatPercent,
+  isPlus,
+  shortenAddress,
+} from '@/utils/common';
 import { twMerge } from 'tailwind-merge';
 import TotalInventoryChart from './TotalInventoryChart';
 import {
@@ -18,16 +24,38 @@ const TotalInventoryValue = () => {
   const currency = useAtomValue(currencyAtom);
   const [selected, setSelected] = useState<'value' | 'amount'>('value');
   const { data: totalInventoryPositionValue, status: statusValue } =
-    useInventoryCollectionPositionValue(me.walletAddress);
+    useInventoryCollectionPositionValue(me?.walletAddress);
   const { data: totalInventoryPositionAmount, status: statusAmount } =
-    useInventoryCollectionPositionAmount(me.walletAddress);
+    useInventoryCollectionPositionAmount(me?.walletAddress);
+  const [percent, setPercent] = useState<number[]>([100]);
+  useEffect(() => {
+    if (totalInventoryPositionValue) {
+      const total = totalInventoryPositionValue.reduce((a: number, b) => {
+        return a + parseFloat(b.value[currency].amount || '0');
+      }, 0);
+      console.log('total', total);
+      // setPercent(
+      //   totalInventoryPositionValue.map((item) =>
+      //     formatPercent(item.value[currency].amount / total || 0)
+      //   )
+      // );
+    }
+  }, [totalInventoryPositionValue]);
   const handleSelect = (selected: string) => {
     setSelected(selected as 'value' | 'amount');
   };
   const mathFloor = (value: string) => {
     return Math.floor(parseFloat(value)).toString();
   };
-  const total = '165293.12';
+  const totalValue = useMemo(() => {
+    let total = 0;
+    if (totalInventoryPositionValue) {
+      total = totalInventoryPositionValue.reduce((a: number, b) => {
+        return a + parseFloat(b.value[currency].amount || '0');
+      }, 0);
+    }
+    return total;
+  }, [totalInventoryPositionValue]);
   const totalAmount = useMemo(() => {
     let total = 0;
     totalInventoryPositionAmount &&
@@ -58,7 +86,7 @@ const TotalInventoryValue = () => {
         </div>
       </div>
       <div className={styles.body}>
-        <div className='w-[260px] h-[260px] mr-80 relative'>
+        <div className='w-[200px] h-[200px] mr-80 relative'>
           <TotalInventoryChart selected={selected} totalAmount={totalAmount} />
           {statusAmount === 'success' && (
             <div className='absoluteCenter flex flex-col items-center'>
@@ -68,14 +96,26 @@ const TotalInventoryValue = () => {
                 </p>
               ) : (
                 <p className='font-subtitle02-bold mb-4'>
-                  <span className='!important:text-[var(--color-subtlest)]'>
-                    $
+                  <span className={styles.textSubtlest}>
+                    {formatCurrency(totalValue.toString(), currency).substring(
+                      0,
+                      1
+                    )}
                   </span>
                   <span className='text-[var(--color-text-main)]'>
-                    {mathFloor(total).split('.')[0]}
+                    {/* {mathFloor(totalValue).split('.')[0]} */}
+                    {
+                      formatCurrency(totalValue.toString(), currency)
+                        .substring(1)
+                        .split('.')[0]
+                    }
                   </span>
-                  <span className='!important:text-[var(--color-subtlest)]'>
-                    {`.${total.split('.')[1]}`}
+                  <span className={styles.textSubtlest}>
+                    {`.${
+                      formatCurrency(totalValue.toString(), currency).split(
+                        '.'
+                      )[1]
+                    }`}
                   </span>
                 </p>
               )}
@@ -91,14 +131,30 @@ const TotalInventoryValue = () => {
               selected === 'value' &&
               totalInventoryPositionValue.map((item, index) => {
                 // const plus = parseFloat(item.change) > 0;
-                const plus = true;
+                // const plus =
+                //   parseFloat(
+                //     item.value[currency].difference.percentage || '0'
+                //   ) > 0
+                //     ? true
+                //     : parseFloat(
+                //         item.value[currency].difference.percentage || '0'
+                //       ) < 0
+                //     ? false
+                //     : undefined;
+                const plus = isPlus(
+                  item.value[currency].difference.percentage || '0'
+                );
+                const amount = formatCurrency(
+                  item.value[currency].amount,
+                  currency
+                );
                 return (
                   <tr key={index} className='h-16'>
                     <td>
                       <div
                         className={twMerge([
                           styles.dot,
-                          styles[`dot--${index % 5}`],
+                          styles[`dot--${index % 6}`],
                         ])}
                       />
                     </td>
@@ -107,39 +163,37 @@ const TotalInventoryValue = () => {
                         {item.collection.name}
                       </p>
                     </td>
-                    <td>
+                    {/* <td>
                       <p className='font-caption-regular mr-10'>
                         <span className='text-[var(--color-text-main)]'>
-                          {
-                            formatCurrency(
-                              mathFloor(item.value[currency].amount || '0'),
-                              currency
-                            ).split('.')[0]
-                          }
+                          {amount.split('.')[0]}
                         </span>
                         {item.value[currency].amount && (
                           <span className='!important:text-[var(--color-subtlest)]'>
-                            {`.${item.value[currency].amount?.split('.')[1]}`}
+                            {`.${amount?.split('.')[1]}`}
                           </span>
                         )}
                       </p>
-                    </td>
-                    <td>
+                    </td> */}
+                    <td className='text-right'>
                       <p
-                        className={`font-caption-medium mr-20 ' ${
-                          plus
-                            ? 'text-[var(--color-text-success)]'
-                            : 'text-[var(--color-text-danger)]'
-                        }`}
+                        className={`font-caption-medium text-[var(--color-text-subtle)] text-right`}
                       >
-                        {item.value[currency].difference?.percentage}
+                        {formatPercent(
+                          (
+                            (parseFloat(item.value[currency].amount || '0') /
+                              totalValue) *
+                            100
+                          ).toString()
+                        )}
                       </p>
                     </td>
-                    <td>
+                    {/* <td>
                       <p className='font-caption-regular text-[var(--color-text-subtle)]'>
-                        {item.value[currency].difference?.amount}
+                        {item.valuation?.type &&
+                          mappingConstants(item.valuation?.type)}
                       </p>
-                    </td>
+                    </td> */}
                   </tr>
                 );
               })}

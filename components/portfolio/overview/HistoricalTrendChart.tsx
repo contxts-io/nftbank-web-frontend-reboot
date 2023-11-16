@@ -22,11 +22,13 @@ const tooltip = ({
   setHoverValue,
   setDiffValue,
 }: any) => {
+  const value = w.globals?.series?.[0][dataPointIndex] || 0;
+  console.log(
+    'value - w.globals?.series?.[0][0]',
+    value - w.globals?.series?.[0][0]
+  );
   w.globals &&
-    (setHoverValue(w.globals?.series?.[0][dataPointIndex] || null),
-    setDiffValue(
-      w.globals?.series?.[0][dataPointIndex] - w.globals?.series?.[0][0]
-    ));
+    (setHoverValue(value), setDiffValue(value - w.globals?.series?.[0][0]));
   return (
     <div className='px-16 py-8 border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
       <p className={`font-caption-regular text-[var(--color-text-main)]`}>
@@ -46,16 +48,15 @@ const HistoricalTrendChart = (props: Props) => {
     overviewHistoricalValueParamAtom
   );
   const { data: inventoryValue, status: statusInventoryValue } =
-    useInventoryValuePolling(me.walletAddress);
+    useInventoryValuePolling(me?.walletAddress);
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
   } = useInventoryValueHistorical({
     ...historicalValueParam,
-    walletAddress: me.walletAddress,
+    walletAddress: me?.walletAddress,
   });
   const [isPlus, setIsPlus] = useState(false);
-
   let category: string[] = [];
 
   let series = [
@@ -104,16 +105,15 @@ const HistoricalTrendChart = (props: Props) => {
     category.push(today);
     return _series;
   }, [inventoryValueHistorical, currency, category, inventoryValue?.value]);
-
   useEffect(() => {
     const currentValue = inventoryValue?.value[currency]?.amount
       ? parseFloat(inventoryValue.value[currency].amount || '0')
       : 0;
-    seriesData[0].data[0] && seriesData[0].data[0] < currentValue
-      ? setIsPlus(true)
-      : setIsPlus(false);
-  }, [seriesData, inventoryValue?.value]);
-
+    const initValue = parseFloat(
+      inventoryValueHistorical?.data[0].value?.[currency] || '0'
+    );
+    initValue < currentValue ? setIsPlus(true) : setIsPlus(false);
+  }, [inventoryValue?.value, inventoryValueHistorical?.data[0]]);
   let minValue = useMemo(() => {
     let _series = seriesData;
     let _minimumValue = _series[0]?.data[0] || 0;
@@ -165,6 +165,7 @@ const HistoricalTrendChart = (props: Props) => {
           // ...
           props.setHoverValue(null);
           props.setDiffValue(null);
+          handleHover(null);
         },
       },
     },
@@ -271,17 +272,27 @@ const HistoricalTrendChart = (props: Props) => {
             dataPointIndex,
             w,
             period: historicalValueParam.window,
-            setHoverValue: props.setHoverValue,
+            setHoverValue: handleHover,
             setDiffValue: props.setDiffValue,
           })
         );
       },
     },
   };
+  const handleHover = (value: any) => {
+    const currentValue = inventoryValue?.value[currency]?.amount
+      ? parseFloat(inventoryValue.value[currency].amount || '0')
+      : 0;
+    const initValue = seriesData[0].data[0] || 0;
+    initValue < value ? setIsPlus(true) : setIsPlus(false);
+    props.setHoverValue(value);
+    value === null &&
+      (initValue < currentValue ? setIsPlus(true) : setIsPlus(false));
+  };
   return (
     <section className='w-full relative'>
       {statusInventoryValueHistorical === 'loading' && (
-        <SkeletonLoader className='w-full h-[260px]' />
+        <SkeletonLoader className='w-full h-full' />
       )}
       {statusInventoryValueHistorical === 'success' && (
         <>
@@ -296,7 +307,7 @@ const HistoricalTrendChart = (props: Props) => {
             }}
             type='area'
             series={seriesData}
-            height={260}
+            height={200}
             width='100%'
           />
         </>
