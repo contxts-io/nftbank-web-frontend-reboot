@@ -1,4 +1,4 @@
-import { Collection, PerformanceValue, TDifference, ValueNested, Value } from "./collection";
+import { Collection, PerformanceValue, TDifference, ValueNested, Value, TValuation } from "./collection";
 import { TChain } from "./constants";
 import { Token } from "./token";
 import { Paging } from "./utils";
@@ -44,6 +44,7 @@ export type ICollection = {
 export type PositionCollection = {
   collection: ICollection,
   value: ValueNested,
+  valuation: TValuation | null,
 }
 export type PositionCollectionAmount = {
   collection: ICollection,

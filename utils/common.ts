@@ -57,7 +57,7 @@ function _formatEth(amount: number): string {
   }
   // _amount = formatNumber(parseFloat(_amount));
   // return parseFloat(_amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' }).replace('ETH', 'Ξ');
-  return `Ξ ${parseFloat(_amount)}`;
+  return `Ξ${parseFloat(_amount)}`;
 }
 
 export function isPlus (value: number | string): boolean | '-' {
@@ -85,7 +85,8 @@ export function formatEth(amount: string | null): string {
   if (!amount) return '';
   return parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' });
 }
-export function difference(diff: string , currency: TCurrency | 'percent') {
+export function difference(diff: string, currency: TCurrency | 'percent') {
+  console.log('diff diff',diff)
   if (currency === 'percent') {
     return formatPercent(diff).replace('+', '').replace('-', '');
   }
@@ -133,8 +134,9 @@ export const mappingConstants = (value: string): string => {
     'COLLECTION_FLOOR_PRICE' : 'Floor Price',
     'ESTIMATED_PRICE' : 'Estimated',
     'TRAIT_FLOOR_PRICE': 'Trait Floor',
-    'AVERAGE_PRICE_30D':'Average Price 30D',
-    'AVERAGE_PRICE_90D':'Average Price 90D'
+    'AVERAGE_PRICE_30D':'30d Avg.',
+    'AVERAGE_PRICE_90D': '90d Avg.',
+    // 'PREMIUM_ESTIMATED_PRICE': 'Premium Estimated',
   }
   return mappingTable[value] || value;
 }

@@ -22,20 +22,19 @@ const InventoryItemSection = () => {
       <div className={collections.length > 0 ? styles.show : styles.hide}>
         <InventoryItemSelectCollection />
       </div>
-      <section className={`${styles.container}`}>
+      <section className={`${styles.container} mt-16`}>
         <div className='w-fit h-full'>
           {isFilterOpen && (
             <InventoryItemFilter handleFilterOpen={setIsFilterOpen} />
           )}
         </div>
         <div className='w-full'>
-          <div className='flex-grow px-12 overflow-hidden'>
+          <div className='px-12 overflow-hidden'>
             <InventoryItemList
               isFilterOpen={isFilterOpen}
               handleFilterOpen={setIsFilterOpen}
             />
           </div>
-          {customValuations.length > 0 && <CustomValuationSaveToast />}
         </div>
       </section>
     </section>

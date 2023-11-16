@@ -19,7 +19,7 @@ const ActivityCollection = () => {
     useState<TCollectionParam>({
       searchCollection: '',
       networkId: 'ethereum',
-      walletAddress: me.walletAddress,
+      walletAddress: me?.walletAddress,
       includeGasUsed: 'false',
       page: 0,
       limit: 3,

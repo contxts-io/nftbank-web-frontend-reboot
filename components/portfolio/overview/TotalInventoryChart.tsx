@@ -10,7 +10,12 @@ import { useMe } from '@/utils/hooks/queries/auth';
 import { useEffect, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
-import { formatPercent, shortenAddress } from '@/utils/common';
+import {
+  formatCurrency,
+  formatPercent,
+  mappingConstants,
+  shortenAddress,
+} from '@/utils/common';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const COLORS = [
   'var(--color-chart-information)',
@@ -20,27 +25,72 @@ const COLORS = [
   'var(--color-chart-accent-blue-boldest)',
   'var(--color-chart-accent-gray-bolder)',
 ];
-const tooltip = ({ series, seriesIndex, dataPointIndex, w, selected }: any) => {
+const tooltip = ({
+  series,
+  seriesIndex,
+  dataPointIndex,
+  w,
+  selected,
+  totalInventoryPositionValue,
+  currency,
+}: any) => {
   const color = w.globals.colors[seriesIndex];
   const label = w.globals.labels[seriesIndex];
+  const positionCollection = totalInventoryPositionValue?.[seriesIndex];
+
+  const amount = formatCurrency(
+    totalInventoryPositionValue?.[seriesIndex].value[currency].amount,
+    currency
+  );
   return (
-    <div className='font-caption-regular py-8 px-16 flex flex-col items-start border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
-      <div className='w-full flex items-center'>
-        <div
-          className={`${
-            styles[`dot--${seriesIndex % series.length}`]
-          } w-8 h-8 mr-8`}
-        />
-        <p className={`text-[var(--color-text-subtle)]`}>{label}</p>
+    <div className='relative bg-[var(--color-elevation-surface)]'>
+      <div className='font-caption-regular py-8 px-16 flex flex-col items-start border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
+        <div className='w-full flex items-center'>
+          <div
+            className={`${
+              styles[`dot--${seriesIndex % series.length}`]
+            } w-8 h-8 mr-8`}
+          />
+          <p className={`text-[var(--color-text-main)]`}>{label}</p>
+        </div>
+        {selected === 'amount' && (
+          <p className={`text-[var(--color-text-main)]`}>
+            {formatPercent(series[seriesIndex])}
+          </p>
+        )}
+        {selected === 'value' && (
+          <div>
+            <div className='flex justify-between items-center'>
+              <span className='text-[var(--color-text-subtle)] mr-41'>
+                {positionCollection.valuation
+                  ? mappingConstants(positionCollection.valuation.type)
+                  : 'none'}
+              </span>
+              <p>
+                <span className='text-[var(--color-text-main)]'>
+                  {amount.split('.')[0]}
+                </span>
+                {totalInventoryPositionValue?.[seriesIndex].value[currency]
+                  .amount && (
+                  <span className={styles.textSubtlest}>
+                    {`.${amount?.split('.')[1]}`}
+                  </span>
+                )}
+              </p>
+            </div>
+            <div className='flex justify-between items-center'>
+              <span className='text-[var(--color-text-subtle)] mr-41'>
+                Rate of Change(24h)
+              </span>
+              <p className={`text-[var(--color-text-main)]`}>
+                {formatPercent(
+                  positionCollection.value[currency].difference?.percentage
+                )}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
-      {selected === 'amount' && (
-        <p className={`text-[var(--color-text-main)]`}>
-          {formatPercent(series[seriesIndex])}
-        </p>
-      )}
-      {selected === 'value' && (
-        <p className={`text-[var(--color-text-main)]`}>{series[seriesIndex]}</p>
-      )}
     </div>
   );
 };
@@ -52,9 +102,9 @@ const TotalInventoryChart = (props: {
   const { data: me } = useMe();
   const currency = useAtomValue(currencyAtom);
   const { data: totalInventoryPositionValue, status } =
-    useInventoryCollectionPositionValue(me.walletAddress);
+    useInventoryCollectionPositionValue(me?.walletAddress);
   const { data: totalInventoryPositionAmount, status: statusAmount } =
-    useInventoryCollectionPositionAmount(me.walletAddress);
+    useInventoryCollectionPositionAmount(me?.walletAddress);
   const [labels, setLabels] = useState<string[]>([]);
   const [series, setSeries] = useState<number[]>([]);
   useEffect(() => {
@@ -105,10 +155,17 @@ const TotalInventoryChart = (props: {
     },
     colors: COLORS,
     tooltip: {
-      followCursor: false,
       custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
         return renderToString(
-          tooltip({ series, seriesIndex, dataPointIndex, w, selected })
+          tooltip({
+            series,
+            seriesIndex,
+            dataPointIndex,
+            w,
+            selected,
+            totalInventoryPositionValue,
+            currency,
+          })
         );
       },
     },
@@ -116,7 +173,7 @@ const TotalInventoryChart = (props: {
     plotOptions: {
       customScale: 1,
       pie: {
-        size: 280,
+        size: 260,
         donut: {
           size: '70%',
         },
@@ -125,13 +182,13 @@ const TotalInventoryChart = (props: {
   };
 
   return (
-    <section className={styles.container}>
+    <section className={`${styles.container} relative`}>
       <ApexCharts
         options={{ ...options, chart: { ...options.chart, type: 'donut' } }}
         type={'donut'}
         series={series}
-        height={280}
-        width={280}
+        height={240}
+        width={240}
       />
     </section>
   );

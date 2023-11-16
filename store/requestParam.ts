@@ -98,13 +98,13 @@ export const inventoryItemListAtom = atom<ItemParam>({
   includeGasUsed: 'false',
   assetContract: [],
   page: 1,
-  limit: 30,
+  limit: 10,
   currency: 'eth',
   sort: 'nav',
   order: 'desc',
 })
 export const analysisGainAndLossParamAtom = atom<TAnalysisGainAndLossParam>({
-  limit: 5,
+  limit: 1,
   nextCursor: null,
   year: 2023,
   quarter: 'all',

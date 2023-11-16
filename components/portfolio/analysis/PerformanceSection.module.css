@@ -45,3 +45,6 @@
 .table td {
   @apply text-center;
 }
+.dropdown {
+  @apply px-12 w-120 h-36 flex justify-between items-center;
+}

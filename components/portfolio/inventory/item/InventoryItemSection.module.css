@@ -1,14 +1,15 @@
 .container {
-  @apply flex border-t-1 border-[var(--color-border-main)]  max-h-[600px] h-[600px];
+  @apply flex flex-1 border-t-1 border-[var(--color-border-main)]  max-h-[600px] h-[600px];
 }
 .show {
   opacity: 1;
-  max-height: 500px; /* 최대 높이 설정 */
   transition: opacity 0.2s ease, max-height 0.3s ease; /* 트랜지션 효과 추가 */
+  @apply max-h-52;
 }
 
 .hide {
   opacity: 0;
   max-height: 0;
   transition: opacity 0.4s ease, max-height 0.3s ease; /* 트랜지션 효과 추가 */
+  @apply w-10 h-52;
 }

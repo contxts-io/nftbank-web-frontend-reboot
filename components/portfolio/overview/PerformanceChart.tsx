@@ -10,23 +10,42 @@ import { usePerformanceChart } from '@/utils/hooks/queries/performance';
 import { useEffect, useMemo, useState } from 'react';
 import { set } from 'cypress/types/lodash';
 import SkeletonLoader from '@/components/SkeletonLoader';
+import { formatPercent } from '@/utils/common';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
+  console.log('w.globals.', w.globals);
+  const roi = series[seriesIndex][dataPointIndex];
   return (
     <div className='font-caption-regular py-8 px-16 flex flex-col items-center border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
-      <p className={`text-[var(--color-text-success)]`}>3.03%</p>
-      <p className={`text-[var(--color-text-subtle)]`}>Aug 31</p>
+      <p
+        className={`${
+          seriesIndex === 0
+            ? 'text-[var(--color-text-success)]'
+            : 'text-[var(--color-text-danger)]'
+        }`}
+      >
+        {formatPercent(roi)}
+      </p>
+      <p className={`text-[var(--color-text-subtle)]`}>
+        {w.globals.labels[dataPointIndex]}
+      </p>
     </div>
   );
 };
-const PerformanceChart = () => {
+type Props = {
+  requestParam: {
+    walletAddress: string;
+    year: number;
+    gnlChartType: 'overall' | 'realized' | 'unrealized';
+  };
+};
+const PerformanceChart = (props: Props) => {
   const barBackground = 'var(--color-elevation-sunken)';
   const labelColor = 'var(--color-text-subtle)';
   const currency = useAtomValue(currencyAtom);
-  const { data: me } = useMe();
   const [maxAbs, setMaxAbs] = useState(0);
   const { data: performanceChart, status: statusPerformanceChart } =
-    usePerformanceChart(me.walletAddress);
+    usePerformanceChart(props.requestParam);
   const options = {
     chart: {
       type: 'bar',
@@ -39,6 +58,7 @@ const PerformanceChart = () => {
       bar: {
         vertical: true,
         barHeight: '100%',
+        columnWidth: '90%',
         colors: {
           backgroundBarColors: [barBackground],
           backgroundBarOpacity: 0.6,

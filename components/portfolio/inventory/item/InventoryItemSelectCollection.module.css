@@ -1,3 +1,3 @@
 .box {
-  @apply border-1 border-border-brand text-text-brand p-8 flex items-center;
+  @apply border-1 border-[var(--color-border-brand)] text-[var(--color-text-brand)] p-8 flex items-center;
 }

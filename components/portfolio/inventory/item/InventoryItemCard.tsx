@@ -3,7 +3,11 @@ import styles from './InventoryItemCard.module.css';
 import { Token } from '@/interfaces/token';
 import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
-import { formatCurrency, formatPercent } from '@/utils/common';
+import {
+  formatCurrency,
+  formatPercent,
+  mappingConstants,
+} from '@/utils/common';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { selectedTokenAtom } from '@/store/portfolio';
 import ValuationDropdown from './ValuationDropdown';
@@ -95,11 +99,11 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
           )}
         </div>
         <div className='flex items-center mb-8'>
-          <ValuationDropdown
-            token={token}
-            valuations={token.valuation}
-            card={true}
-          />
+          <p className={styles.pTitle}>
+            {token.valuation.length > 0
+              ? mappingConstants(token.valuation[0].type)
+              : 'no valuation type'}
+          </p>
         </div>
       </div>
     </article>

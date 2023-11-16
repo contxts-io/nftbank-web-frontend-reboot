@@ -1,6 +1,9 @@
 .container {
   @apply w-full h-full flex items-center justify-center;
 }
+.textSubtlest {
+  @apply text-[var(--color-text-subtlest)];
+}
 .dot--0 {
   @apply bg-[var(--color-chart-information)];
 }

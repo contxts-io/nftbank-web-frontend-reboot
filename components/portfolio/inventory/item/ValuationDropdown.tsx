@@ -3,7 +3,7 @@ import Check from '@/public/icon/Check';
 import styles from './ValuationDropdown.module.css';
 
 import { useEffect, useState } from 'react';
-import { TValuation } from '@/interfaces/collection';
+import { Collection, TValuation } from '@/interfaces/collection';
 import { Token } from '@/interfaces/token';
 import { customValuationAtom } from '@/store/portfolio';
 import { useAtom } from 'jotai';
@@ -12,11 +12,11 @@ import CaretDown from '@/public/icon/CaretDown';
 import ClockClockwise from '@/public/icon/ClockClockwise';
 
 type Props = {
-  token: Token;
+  collection: Collection;
   valuations: TValuation[];
   card?: boolean;
 };
-const ValuationDropdown = ({ token, valuations, card }: Props) => {
+const ValuationDropdown = ({ collection, valuations, card }: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const [selectedValuation, setSelectedValuation] = useState<TValuation | null>(
     valuations.find((val) => val.selected) ||
@@ -28,9 +28,8 @@ const ValuationDropdown = ({ token, valuations, card }: Props) => {
   useEffect(() => {
     const _valuation = customValuations.find(
       (item) =>
-        item.assetContract === token.collection.assetContract &&
-        item.networkId === token.collection.chain.name &&
-        item.tokenId === token.token.tokenId
+        item.assetContract === collection.collection.assetContract &&
+        item.networkId === collection.collection.chain.name
     );
     // _valuation && setSelectedValuation(_valuation.valuationType);
   }, [customValuations]);
@@ -54,16 +53,14 @@ const ValuationDropdown = ({ token, valuations, card }: Props) => {
         .filter(
           (item) =>
             !(
-              item.assetContract === token.collection.assetContract &&
-              item.networkId === token.collection.chain.name &&
-              item.tokenId === token.token.tokenId
+              item.assetContract === collection.collection.assetContract &&
+              item.networkId === collection.collection.chain.name
             )
         )
         .concat([
           {
-            assetContract: token.collection.assetContract,
-            networkId: token.collection.chain.name,
-            tokenId: token.token.tokenId,
+            assetContract: collection.collection.assetContract,
+            networkId: collection.collection.chain.name,
             valuationType: valuationType.type,
           },
         ])
@@ -76,11 +73,11 @@ const ValuationDropdown = ({ token, valuations, card }: Props) => {
     >
       {selectedValuation && (
         <div
-          className={`flex justify-end items-center ${
+          className={`flex justify-start items-center ${
             card && 'text-[var(--color-text-subtle)]'
           }`}
         >
-          <p className={`mr-8`}>{`${mappingConstants(
+          <p className={`mr-8 min-w-107`}>{`${mappingConstants(
             selectedValuation.type
           )}`}</p>
           <div
