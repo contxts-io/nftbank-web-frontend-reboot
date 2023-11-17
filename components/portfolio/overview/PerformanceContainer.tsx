@@ -7,7 +7,7 @@ import { usePerformanceChartAnnual } from '@/utils/hooks/queries/performance';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
-import { formatPercent } from '@/utils/common';
+import { formatPercent, isPlus } from '@/utils/common';
 import { useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 const YEARS: number[] = [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015];
@@ -25,9 +25,15 @@ const PerformanceContainer = () => {
     usePerformanceChartAnnual({
       walletAddress: me?.walletAddress,
       window: 'all',
+      ...requestParam,
     });
   const { data: performanceAnnualYTD, status: statusPerformanceAnnualYTD } =
-    usePerformanceChartAnnual({ walletAddress: me?.walletAddress });
+    usePerformanceChartAnnual({
+      walletAddress: me?.walletAddress,
+      ...requestParam,
+      window: 'ytd',
+    });
+
   return (
     <section className={styles.container}>
       <div className={styles.row}>
@@ -59,7 +65,13 @@ const PerformanceContainer = () => {
         <div className='w-[50%] flex justify-between items-center'>
           <p className='text-[var(--color-text-subtle)]'>YTD Performance</p>
           {statusPerformanceAnnualAll === 'success' && (
-            <p className='text-[var(--color-text-success)] mr-20'>
+            <p
+              className={
+                isPlus(performanceAnnualYTD?.roi?.[currency] || '0')
+                  ? 'text-[var(--color-text-success)]  mr-20'
+                  : 'text-[var(--color-text-danger)]  mr-20'
+              }
+            >
               {formatPercent(performanceAnnualYTD?.roi?.[currency] || '0')}
             </p>
           )}
@@ -69,7 +81,13 @@ const PerformanceContainer = () => {
             All time Performance
           </p>
           {statusPerformanceAnnualYTD === 'success' && (
-            <p className='text-[var(--color-text-success)]'>
+            <p
+              className={
+                isPlus(performanceAnnualAll?.roi?.[currency] || '0')
+                  ? `text-[var(--color-text-success)]`
+                  : 'text-[var(--color-text-danger)]'
+              }
+            >
               {formatPercent(performanceAnnualAll?.roi?.[currency] || '0')}
             </p>
           )}

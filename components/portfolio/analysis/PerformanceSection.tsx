@@ -55,6 +55,10 @@ const PerformanceSection = () => {
     usePerformanceChartAnnual({
       walletAddress: me?.walletAddress,
       ...requestParam,
+      gnlChartType: requestParam.gnlChartType.toLowerCase() as
+        | 'overall'
+        | 'realized'
+        | 'unrealized',
     });
   const [total, setTotal] = useState(0);
   useEffect(() => {
