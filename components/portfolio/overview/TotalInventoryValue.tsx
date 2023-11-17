@@ -114,7 +114,7 @@ const TotalInventoryValue = () => {
                     {`.${
                       formatCurrency(totalValue.toString(), currency).split(
                         '.'
-                      )[1]
+                      )[1] || '00'
                     }`}
                   </span>
                 </p>
@@ -179,13 +179,17 @@ const TotalInventoryValue = () => {
                       <p
                         className={`font-caption-medium text-[var(--color-text-subtle)] text-right`}
                       >
-                        {formatPercent(
-                          (
-                            (parseFloat(item.value[currency].amount || '0') /
-                              totalValue) *
-                            100
-                          ).toString()
-                        )}
+                        {totalValue && totalValue > 0
+                          ? formatPercent(
+                              (
+                                (parseFloat(
+                                  item.value[currency].amount || '0'
+                                ) /
+                                  totalValue) *
+                                100
+                              ).toString()
+                            )
+                          : '-'}
                       </p>
                     </td>
                     {/* <td>
