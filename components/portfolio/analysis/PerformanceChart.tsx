@@ -8,6 +8,7 @@ import { usePerformanceChart } from '@/utils/hooks/queries/performance';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { formatPercent } from '@/utils/common';
+import SkeletonLoader from '@/components/SkeletonLoader';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w, year }: any) => {
   const roi = series[seriesIndex][dataPointIndex];
@@ -76,7 +77,7 @@ const PerformanceChart = (props: Props) => {
           }),
       },
     ];
-  }, [performanceChart, currency]);
+  }, [performanceChart, currency, props.requestParam]);
   useEffect(() => {
     console.log('series', _series);
     if (
@@ -102,6 +103,11 @@ const PerformanceChart = (props: Props) => {
       stacked: true,
       toolbar: {
         show: false,
+      },
+      animations: {
+        dynamicAnimation: {
+          enabled: false,
+        },
       },
     },
     plotOptions: {
@@ -209,20 +215,22 @@ const PerformanceChart = (props: Props) => {
         <p>0.00%</p>
         <p>{formatPercent((-maxAbs).toString())}</p>
       </div>
-      <div className='w-full ml-20'>
-        <ApexCharts
-          options={{
-            ...options,
-            chart: {
-              ...options.chart,
-              type: 'bar',
-            },
-          }}
-          type='bar'
-          series={_series}
-          height={200}
-          width='100%'
-        />
+      <div className='w-full ml-20 h-200'>
+        {statusPerformanceChart === 'success' && (
+          <ApexCharts
+            options={{
+              ...options,
+              chart: {
+                ...options.chart,
+                type: 'bar',
+              },
+            }}
+            type='bar'
+            series={_series}
+            height={200}
+            width='100%'
+          />
+        )}
       </div>
     </section>
   );

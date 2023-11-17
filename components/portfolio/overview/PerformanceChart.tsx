@@ -53,6 +53,11 @@ const PerformanceChart = (props: Props) => {
       toolbar: {
         show: false,
       },
+      animations: {
+        dynamicAnimation: {
+          enabled: false,
+        },
+      },
     },
     plotOptions: {
       bar: {
