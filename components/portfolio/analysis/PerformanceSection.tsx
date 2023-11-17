@@ -146,7 +146,7 @@ const PerformanceSection = () => {
                     .fill(0)
                     .map((_, index) => {
                       const plus = isPlus(
-                        performanceChart.data[index].roi?.[currency] || '0'
+                        performanceChart.data[index]?.roi?.[currency] || '0'
                       );
                       return (
                         <td key={index}>
@@ -159,7 +159,7 @@ const PerformanceSection = () => {
                                 : 'text-[var(--color-text-danger)]'
                             }
                           >
-                            {performanceChart.data[index].roi &&
+                            {performanceChart.data[index]?.roi &&
                               formatPercent(
                                 performanceChart.data[index].roi?.[currency] ||
                                   '0'
@@ -182,7 +182,8 @@ const PerformanceSection = () => {
                     .fill(0)
                     .map((_, index) => {
                       const plus = isPlus(
-                        performanceChart.data[index].gainLoss?.[currency] || '0'
+                        performanceChart.data[index]?.gainLoss?.[currency] ||
+                          '0'
                       );
                       return (
                         <td key={index}>
@@ -195,7 +196,7 @@ const PerformanceSection = () => {
                                 : 'text-[var(--color-text-danger)]'
                             }
                           >
-                            {performanceChart.data[index].gainLoss &&
+                            {performanceChart.data[index]?.gainLoss &&
                               formatCurrency(
                                 performanceChart.data[index].gainLoss?.[
                                   currency
