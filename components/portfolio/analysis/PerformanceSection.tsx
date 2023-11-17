@@ -11,6 +11,7 @@ import {
 import { formatCurrency, formatPercent, isPlus } from '@/utils/common';
 import { useEffect, useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
+import SkeletonLoader from '@/components/SkeletonLoader';
 const THEAD = [
   'Jan',
   'Feb',
@@ -113,6 +114,9 @@ const PerformanceSection = () => {
           }}
         />
         <div className={styles.tableWrapper}>
+          {statusPerformanceChart === 'loading' && (
+            <SkeletonLoader className='w-full h-115' />
+          )}
           {performanceChart?.data && (
             <table className={`font-caption-regular ${styles.table}`}>
               <thead>
@@ -203,7 +207,7 @@ const PerformanceSection = () => {
                       );
                     })}
                   <td>
-                    <p className='text-[var(--color-text-main)]'>
+                    <p className='text-[var(--color-text-main)] text-ellipsis'>
                       {formatCurrency(total.toString(), currency)}
                     </p>
                   </td>

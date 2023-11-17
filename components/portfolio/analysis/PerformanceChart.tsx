@@ -103,9 +103,6 @@ const PerformanceChart = (props: Props) => {
       toolbar: {
         show: false,
       },
-      animations: {
-        enabled: false,
-      },
     },
     plotOptions: {
       bar: {

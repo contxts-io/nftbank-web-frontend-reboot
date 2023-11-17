@@ -92,7 +92,15 @@ const HistoricalTrendContainer = () => {
           );
     return diff;
   }, [hoverValue, currency, inventoryValue]);
-
+  useEffect(() => {
+    setSelectedPeriod('1W');
+    return () => {
+      setHistoricalValueParam((prev) => ({
+        ...prev,
+        window: '7d',
+      }));
+    };
+  }, []);
   useEffect(() => {
     console.log('hoverValue', hoverValue);
   }, [hoverValue]);
@@ -103,7 +111,6 @@ const HistoricalTrendContainer = () => {
         walletAddress: me?.walletAddress,
       }));
   }, [me?.walletAddress]);
-  console.log('total', total);
   return (
     <section className={styles.container}>
       <div className={styles.summary}>

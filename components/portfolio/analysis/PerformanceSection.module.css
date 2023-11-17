@@ -20,7 +20,7 @@
   @apply gap-12 flex items-center;
 }
 .tableWrapper {
-  @apply flex flex-col w-full;
+  @apply flex flex-col w-full min-h-115;
 }
 .dataSection {
   @apply w-full;

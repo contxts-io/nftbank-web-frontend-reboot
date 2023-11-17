@@ -118,8 +118,11 @@ const HistoricalTrendChart = (props: Props) => {
     let _series = seriesData;
     let _minimumValue = _series[0]?.data[0] || 0;
     _series[0].data.map((item) => {
+      console.log('minimumValue', item, item && item < _minimumValue);
       if (item && item < _minimumValue) {
         _minimumValue = item;
+      } else {
+        // item === 0 && (_minimumValue = 0);
       }
     });
     return formatCurrency(_minimumValue.toString(), currency);
@@ -292,26 +295,27 @@ const HistoricalTrendChart = (props: Props) => {
   return (
     <section className='w-full relative'>
       {statusInventoryValueHistorical === 'loading' && (
-        <SkeletonLoader className='w-full h-full' />
+        <SkeletonLoader className='w-full h-200' />
       )}
-      {statusInventoryValueHistorical === 'success' && (
-        <>
-          <div className='absolute right-0 top-0 h-full flex flex-col justify-between items-end font-caption-regular text-[var(--color-text-subtle)]'>
-            <p className='w-fit'>{maxValue}</p>
-            <p className='w-fit'>{minValue}</p>
-          </div>
-          <ApexCharts
-            options={{
-              ...options,
-              stroke: { ...options.stroke, curve: 'straight' },
-            }}
-            type='area'
-            series={seriesData}
-            height={200}
-            width='100%'
-          />
-        </>
-      )}
+      {statusInventoryValueHistorical === 'success' &&
+        statusInventoryValue === 'success' && (
+          <>
+            <div className='absolute right-0 top-0 h-200 flex flex-col justify-between items-end font-caption-regular text-[var(--color-text-subtle)]'>
+              <p className='w-fit'>{maxValue}</p>
+              <p className='w-fit'>{minValue}</p>
+            </div>
+            <ApexCharts
+              options={{
+                ...options,
+                stroke: { ...options.stroke, curve: 'straight' },
+              }}
+              type='area'
+              series={seriesData}
+              height={200}
+              width='100%'
+            />
+          </>
+        )}
     </section>
   );
 };
