@@ -38,7 +38,7 @@ type Param = {
   walletAddress: string;
   window?: string;
 }
-export function usePerformanceChartAnnual(requestParam:PerformanceParam & {window: string}) {
+export function usePerformanceChartAnnual(requestParam:PerformanceParam & {window?: string}) {
   return useQuery<PerformanceCollection,AxiosError>(
     ['inventoryPerformanceChartAnnual',requestParam],
     async () => {
