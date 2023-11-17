@@ -6,6 +6,7 @@ import { twMerge } from 'tailwind-merge';
 import { useEffect } from 'react';
 import { _List } from './AcquisitionType';
 import { formatPercent } from '@/utils/common';
+import SkeletonLoader from '@/components/SkeletonLoader';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   const color = w.globals.colors[seriesIndex];
@@ -20,7 +21,7 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
         <p className={`text-[var(--color-text-subtle)]`}>{label}</p>
       </div>
       <p className={`text-[var(--color-text-main)]`}>
-        {formatPercent((series[seriesIndex] / totalCount) * 100)}
+        {formatPercent(((series[seriesIndex] / totalCount) * 100).toString())}
       </p>
     </div>
   );
@@ -28,6 +29,7 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
 type Props = {
   data: _List[];
   totalCount: number;
+  status: 'loading' | 'success' | 'error';
 };
 const AcquisitionTypePieChart = (props: Props) => {
   const series = props.data.map((item) => item.amount);
@@ -101,13 +103,18 @@ const AcquisitionTypePieChart = (props: Props) => {
 
   return (
     <section className={styles.container}>
-      <ApexCharts
-        options={{ ...options, chart: { ...options.chart, type: 'donut' } }}
-        type={'donut'}
-        series={series}
-        height={300}
-        width={300}
-      />
+      {props.status === 'loading' && (
+        <SkeletonLoader className='w-[260px] h-[260px] ml-auto mr-auto' />
+      )}
+      {props.status === 'success' && (
+        <ApexCharts
+          options={{ ...options, chart: { ...options.chart, type: 'donut' } }}
+          type={'donut'}
+          series={series}
+          height={300}
+          width={300}
+        />
+      )}
     </section>
   );
 };

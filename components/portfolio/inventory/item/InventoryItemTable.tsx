@@ -4,24 +4,21 @@ import styles from './InventoryItemTable.module.css';
 import { useAtom, useAtomValue } from 'jotai';
 import { inventoryItemListAtom } from '@/store/requestParam';
 import Image from 'next/image';
-import { TValuation, Token } from '@/interfaces/collection';
+import { TValuation } from '@/interfaces/collection';
+import { Token } from '@/interfaces/token';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import React, { useEffect, useMemo, useState } from 'react';
-import CaretDown from '@/public/icon/CaretDown';
 import {
   formatCurrency,
   formatDate,
   formatPercent,
   isPlus,
+  mappingConstants,
   shortenAddress,
 } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
-import { useInventoryItemPerformance } from '@/utils/hooks/queries/performance';
-import ReactQueryClient from '@/utils/ReactQueryClient';
-import { twMerge } from 'tailwind-merge';
 import { TValuationType } from '@/interfaces/constants';
 import { selectedTokenAtom } from '@/store/portfolio';
-import ValuationDropdown from './ValuationDropdown';
 const HEADER = [
   {
     type: 'Item',
@@ -83,8 +80,6 @@ const InventoryItemTable = () => {
     data: inventoryItemList,
     status,
   } = useInventoryItemInfinite({ ...requestParam, page: 0 });
-  const { data: inventoryItemListPerformance, status: statusPerformance } =
-    useInventoryItemPerformance(requestParam);
   const [selectedToken, setSelectedToken] = useAtom(selectedTokenAtom);
   useEffect(() => {
     const isLast =
@@ -92,7 +87,6 @@ const InventoryItemTable = () => {
     !isLast &&
       inView &&
       status !== 'loading' &&
-      statusPerformance !== 'loading' &&
       (fetchNextPage(),
       setRequestParam((prev) => ({ ...prev, page: prev.page + 1 })));
   }, [fetchNextPage, inView]);
@@ -101,36 +95,7 @@ const InventoryItemTable = () => {
     [inventoryItemList?.pages, requestParam]
   );
 
-  type TPage = {
-    page: number;
-    tokens: Token[];
-  };
-  useEffect(() => {
-    inventoryItemListPerformance &&
-      inventoryItemList?.pages &&
-      ReactQueryClient.setQueryData(
-        ['inventoryItemList', { ...requestParam, page: 0 }],
-        {
-          ...inventoryItemList,
-          pages: inventoryItemList.pages.map(
-            (page) =>
-              (page.page === inventoryItemListPerformance?.paging?.page && {
-                ...page,
-                tokens: inventoryItemListPerformance.tokens,
-              }) ||
-              page
-          ),
-        }
-      );
-  }, [inventoryItemList, inventoryItemListPerformance, requestParam]);
   const handleOpenDetail = (target: Token) => {
-    // setOpenedItem((prev) => {
-    //   if (prev.includes(target)) {
-    //     return prev.filter((item) => item !== target);
-    //   } else {
-    //     return [...prev, target];
-    //   }
-    // });
     setSelectedToken(target);
   };
 
@@ -163,23 +128,28 @@ const InventoryItemTable = () => {
                 } ${item.sort ? 'cursor-pointer' : ''}`}
                 onClick={() => item.sort && handleSort(item.type)}
               >
-                {item.name}
+                {index === HEADER.length - 1 ? (
+                  <span>{item.name}</span>
+                ) : (
+                  <p>{item.name}</p>
+                )}
               </th>
             ))}
-            <th />
             <th />
           </tr>
         </thead>
         <tbody>
           {status === 'success' &&
             mergePosts?.map((page, pageIndex) => {
-              return page.tokens.map((data, index) => {
+              return page.data.map((data, index) => {
                 const valuationType = selectedValueType(data.valuation);
                 const itemKey = `${data.collection.assetContract}-${data.token.tokenId}-${index}`;
                 const isOpen = openedItem.find((item) => item === itemKey)
                   ? true
                   : false;
-
+                const plus = isPlus(
+                  data.nav[currency].difference?.amount || '0'
+                );
                 return (
                   <React.Fragment key={index}>
                     <tr
@@ -189,10 +159,10 @@ const InventoryItemTable = () => {
                       }`}
                       onClick={() => handleOpenDetail(data)}
                     >
-                      <td />
+                      <td className={styles.blanc} />
                       <td className='text-left p-0'>
                         <div className={`flex items-center my-8`}>
-                          <div className={twMerge(`${styles.tokenImage} w-32`)}>
+                          <div className={styles.tokenImage}>
                             <Image
                               src={
                                 data?.token.imageUrl || '/icon/nftbank_icon.svg'
@@ -214,21 +184,27 @@ const InventoryItemTable = () => {
                           </div>
                         </div>
                       </td>
-                      <td className='text-right'>{data.amount}</td>
                       <td className='text-right'>
-                        {priceType === 'acquisitionPrice'
-                          ? formatCurrency(
-                              data.acquisitionPrice?.[currency].amount || null,
-                              currency
-                            )
-                          : data.costBasis?.[currency] &&
-                            formatCurrency(
-                              data.costBasis[currency].amount,
-                              currency
-                            )}
+                        <p>{data.amount}</p>
                       </td>
                       <td className='text-right'>
-                        {formatCurrency(data.nav[currency].amount, currency)}
+                        <p>
+                          {priceType === 'acquisitionPrice'
+                            ? formatCurrency(
+                                data.acquisitionPrice?.[currency] || null,
+                                currency
+                              )
+                            : data.costBasis?.[currency] &&
+                              formatCurrency(
+                                data.costBasis[currency],
+                                currency
+                              )}
+                        </p>
+                      </td>
+                      <td className='text-right'>
+                        <p>
+                          {formatCurrency(data.nav[currency].amount, currency)}
+                        </p>
                       </td>
                       <td className='text-right'>
                         <p
@@ -246,10 +222,10 @@ const InventoryItemTable = () => {
                       </td>
                       <td className='text-right'>
                         <p
-                          className={`mr-8 ${
-                            isPlus(
-                              data.nav[currency].difference?.percentage || 0
-                            )
+                          className={`${
+                            plus === '-'
+                              ? 'text-[var(--color-text-main)]'
+                              : plus === true
                               ? 'text-[var(--color-text-success)]'
                               : 'text-[var(--color-text-danger)]'
                           }`}
@@ -259,34 +235,26 @@ const InventoryItemTable = () => {
                           )}
                         </p>
                       </td>
-                      <td
-                        className='text-right cursor-pointer'
-                        // onClick={(e) => {
-                        //   e.stopPropagation();
-                        //   setView({
-                        //     key: `${pageIndex}-${index}`,
-                        //     open: !view.open,
-                        //   });
-                        // }}
-                      >
-                        <ValuationDropdown
-                          token={data}
-                          valuations={data.valuation}
-                        />
+                      <td className='text-right'>
+                        <p>
+                          {/* {data.valuation.length > 0
+                            ? mappingConstants(data.valuation[0].type)
+                            : 'no valuation type'} */}
+                          {valuationType
+                            ? mappingConstants(valuationType.type)
+                            : 'no valuation type'}
+                        </p>
                       </td>
                       <td className='text-right'>
-                        {formatPercent(valuationType?.accuracy || null)}
+                        <p>{formatPercent(valuationType?.accuracy || null)}</p>
                       </td>
                       <td className='text-right'>
-                        {data.acquisitionDate &&
-                          formatDate(new Date(data.acquisitionDate))}
+                        <span>
+                          {data.acquisitionDate &&
+                            formatDate(new Date(data.acquisitionDate))}
+                        </span>
                       </td>
-                      <td className='text-right'>
-                        <button className={`${styles.expandButton}`}>
-                          <CaretDown />
-                        </button>
-                      </td>
-                      <td />
+                      <td className={styles.blanc} />
                     </tr>
                   </React.Fragment>
                 );

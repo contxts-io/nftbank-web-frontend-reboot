@@ -10,10 +10,7 @@ import { currencyAtom } from '@/store/currency';
 import { useSearchParams } from 'next/navigation';
 import { inventoryTypeAtom } from '@/store/settings';
 import { formatCurrency, formatPercent } from '@/utils/common';
-import {
-  useInventoryUnrealizedPerformance,
-  useInventoryValuePerformance,
-} from '@/utils/hooks/queries/performance';
+import { useInventoryUnrealizedPerformance } from '@/utils/hooks/queries/performance';
 import SkeletonLoader from '../SkeletonLoader';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useEffect, useState } from 'react';
@@ -27,8 +24,8 @@ const InventoryValue = () => {
 
   const { data: inventoryValue, status: statusInventoryValue } =
     useInventoryValue(walletAddress);
-  const { data: inventoryValuePerformance, status: statusPerformance } =
-    useInventoryValuePerformance(walletAddress);
+  // const { data: inventoryValuePerformance, status: statusPerformance } =
+  //   useInventoryValuePerformance(walletAddress);
   const { data: inventoryUnrealized, status: statusInventoryUnrealized } =
     useInventoryUnrealizedPerformance(walletAddress);
   const { data: collectionCount, isLoading: isLoadingCollectionCount } =
@@ -49,17 +46,15 @@ const InventoryValue = () => {
           currency
         ),
         diff: formatCurrency(
-          inventoryValuePerformance?.value[currency].difference.amount || '-',
+          inventoryValue?.value[currency].difference.amount || '-',
           currency
         ),
         diffPercent: formatPercent(
-          inventoryValuePerformance?.value[currency].difference.percentage || 0
+          inventoryValue?.value[currency].difference.percentage || '0'
         ),
         isPlus:
-          inventoryValuePerformance &&
-          parseFloat(
-            inventoryValuePerformance.value[currency].difference.amount
-          ) > 0,
+          parseFloat(inventoryValue?.value[currency].difference.amount || '0') >
+          0,
       },
       {
         type: 'unrealizedValue',
@@ -72,32 +67,25 @@ const InventoryValue = () => {
           inventoryUnrealized?.gainLoss[currency] || '-',
           currency
         ),
-        diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || 0),
+        diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
         isPlus: parseFloat(inventoryUnrealized?.gainLoss[currency] || '0') > 0,
         status: statusInventoryUnrealized,
       },
       {
         type: 'unrealizedRoi',
         name: 'Unrealized ROI',
-        value: formatPercent(inventoryUnrealized?.roi[currency] || 0),
-        diff: formatPercent(inventoryUnrealized?.roi[currency] || 0),
-        diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || 0),
-        isPlus: (inventoryUnrealized?.roi[currency] || 0) > 0,
+        value: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
+        diff: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
+        diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
+        isPlus: parseFloat(inventoryUnrealized?.roi[currency] || '0') > 0,
         status: statusInventoryUnrealized,
       },
     ]);
-  }, [
-    inventoryValue,
-    statusInventoryValue,
-    inventoryValuePerformance,
-    inventoryUnrealized,
-    currency,
-  ]);
+  }, [inventoryValue, statusInventoryValue, inventoryUnrealized, currency]);
   return (
     <section className={`${styles.container}`}>
-      {statusInventoryValue === 'loading' && <div>Loading...</div>}
-      {statusInventoryValue === 'success' &&
-        inventoryValue &&
+      {/* {statusInventoryValue === 'loading' && <div>Loading...</div>} */}
+      {inventoryValue &&
         values.map((item, index) => {
           return (
             <article key={index} className={`${styles.articleBox}`}>
@@ -116,7 +104,7 @@ const InventoryValue = () => {
                 {item.status === 'success' && (
                   <div className='mr-8 items-end'>
                     <p
-                      className={`font-subtitle01-bold ${
+                      className={`font-subtitle02-bold ${
                         item.type == `inventoryValue`
                           ? styles.pMain
                           : item.plus
@@ -128,42 +116,39 @@ const InventoryValue = () => {
                     </p>
                   </div>
                 )}
-                {item.type === 'inventoryValue' &&
+                {/* {item.type === 'inventoryValue' &&
                   item.value &&
                   statusPerformance !== 'success' && (
                     <SkeletonLoader className='h-22 w-100' />
-                  )}
-                {item.type === 'inventoryValue' &&
-                  item.value &&
-                  statusPerformance === 'success' &&
-                  inventoryValuePerformance && (
-                    <>
-                      <div
-                        className={
-                          item.isPlus
-                            ? `${styles.diffBox} ${styles.plus}`
-                            : `${styles.diffBox} ${styles.minus}`
-                        }
-                      >
-                        <p className='font-caption-medium'>
-                          {`${item.diff} (${item.diffPercent})`}
-                        </p>
-                      </div>
-                      <div
-                        className={`${styles.diffBox} bg-[var(--color-elevation-surface-raised)]`}
-                      >
-                        <p className='font-caption-medium text-[var(--color-text-main)]'>
-                          24H
-                        </p>
-                      </div>
-                    </>
-                  )}
+                  )} */}
+                {item.type === 'inventoryValue' && item.value && (
+                  <>
+                    <div
+                      className={
+                        item.isPlus
+                          ? `${styles.diffBox} ${styles.plus}`
+                          : `${styles.diffBox} ${styles.minus}`
+                      }
+                    >
+                      <p className='font-caption-medium'>
+                        {`${item.diff} (${item.diffPercent})`}
+                      </p>
+                    </div>
+                    <div
+                      className={`${styles.diffBox} bg-[var(--color-elevation-surface-raised)]`}
+                    >
+                      <p className='font-caption-medium text-[var(--color-text-main)]'>
+                        24H
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
             </article>
           );
         })}
 
-      <article className='ml-16 py-16'>
+      <article className='ml-16 py-16 h-92 flex flex-col justify-between'>
         <div className='w-fit'>
           <p
             className={`font-caption-medium mb-4 text-[var(--color-text-subtle)] w-fit`}
@@ -175,7 +160,7 @@ const InventoryValue = () => {
           <div className='border-t-1 border-dashed border-[var(--color-border-accent-gray)]' />
         </div>
         <p
-          className={`font-subtitle01-bold mt-16 text-[var(--color-text-main)]`}
+          className={`font-subtitle02-bold mt-16 text-[var(--color-text-main)]`}
         >
           {inventoryType === 'collection'
             ? collectionCount?.totalCount

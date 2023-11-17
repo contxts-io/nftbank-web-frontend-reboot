@@ -16,6 +16,5 @@ export type TokenHistory = {
 export type ValuationEdit = {
   networkId: TChain,
   assetContract: string,
-  tokenId: number,
   valuationType: TValuationType
 }

@@ -1,13 +1,11 @@
-import { ResponseAcquisitionTypesData, ResponseRealizedTokensData, TResponseInventoryValueHistory, getCollectionList, getCollectionValuableCount, getInventoryAcquisitionType, getInventoryCollectionPositionAmount, getInventoryCollectionPositionValue, getInventoryRealizedTokens, getInventoryValue, getInventoryValueHistory, getItemList, getItemValuableCount } from '@/apis/inventory';
-import { AcquisitionType } from '@/interfaces/activity';
-import { Token } from '@/interfaces/collection';
-import { IInventoryCollectionList, IInventoryItemList, IInventoryValue, IStat, PositionCollection, PositionCollectionAmount } from '@/interfaces/inventory';
+import { ResponseAcquisitionTypesData, TResponseInventoryValueHistory, getCollectionList, getCollectionValuableCount, getInventoryAcquisitionType, getInventoryCollectionPositionAmount, getInventoryCollectionPositionValue, getInventoryRealizedTokens, getInventoryValue, getInventoryValueHistory, getItemList, getItemValuableCount } from '@/apis/inventory';
+import { IInventoryCollectionList, IInventoryItemList, InventoryValue, InventoryValueNested, IStat, PositionCollection, PositionCollectionAmount } from '@/interfaces/inventory';
 import { ItemParam, TAcquisitionParam, TAnalysisGainAndLossParam, TCollectionParam, TOverviewHistoricalValueParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 export function useInventoryValue(walletAddress?: string) {
-  return useQuery<IInventoryValue,AxiosError>(
+  return useQuery<InventoryValueNested,AxiosError>(
     ['inventoryValue',walletAddress],
     async () => {
       const inventoryValue = await getInventoryValue(walletAddress);
@@ -203,19 +201,21 @@ export const useInventoryCollectionPositionAmount = (walletAddress?: string) => 
   );
 }
 export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAndLossParam) => {
-  console.log('useInventoryRealizedTokens', requestParam);
-  const fetchData = async () => {
-    const result = await getInventoryRealizedTokens({...requestParam});
+  const fetchData = async ({ pageParam = null }) => {
+    const result = await getInventoryRealizedTokens({ ...requestParam, nextCursor: pageParam});
     const isLast = result.paging.hasNext ? false : true;
         
     return {
       ...result,
+      // page: pageParam,
+      // nextPage: pageParam + 1,
+      currentCursor: pageParam,
       nextCursor: result.paging.nextCursor,
       isLast,
     };
   }
 
-  const query = useInfiniteQuery(['inventoryRealizedTokens',requestParam],fetchData, {
+  const query = useInfiniteQuery(['inventoryRealizedTokens',{...requestParam,nextCursor:null}],fetchData, {
     getNextPageParam: (lastPage) => {
       if (!lastPage.isLast) return lastPage.nextCursor;
       return undefined;
@@ -232,7 +232,7 @@ export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAn
   return query;
 };
 export const useInventoryValuePolling = (walletAddress?: string) => {
-  return useQuery<IInventoryValue,AxiosError>(
+  return useQuery<InventoryValueNested,AxiosError>(
     ['inventoryValuePolling',walletAddress],
     async () => {
       const inventoryValue = await getInventoryValue(walletAddress);

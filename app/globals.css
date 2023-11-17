@@ -7,6 +7,8 @@
 @import '../global_token_color.css';
 @import '../semantic_token_dark.css';
 @import '../semantic_token_light.css';
+@import 'react-date-picker/dist/DatePicker.css';
+@import 'react-calendar/dist/Calendar.css';
 /* HTML의 기본 요소에 대한 스타일을 정의합니다. (ex : <body>, <a>, <h1>) */
 @layer base {
   /* reset */
@@ -165,8 +167,7 @@
 }
 .drawer {
   /* 초기 위치 (닫힌 상태) */
-  transition: 0.3s;
-  @apply w-0 h-full fixed top-0 right-0 bg-[var(--color-red-500)] overflow-x-hidden translate-x-[100%];
+  @apply w-0 h-full fixed top-0 right-0 bg-[var(--color-red-500)] overflow-x-hidden translate-x-[100%] duration-300;
 }
 /* 열린 상태 스타일 */
 .drawer.open {
@@ -177,7 +178,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100%; 
   background: rgba(0, 0, 0, 0.5);
   display: none;
   cursor: pointer;
@@ -186,4 +187,16 @@
 /* 오버레이 활성화 (드로어 열린 상태) */
 .drawer.open + .overlay {
   display: block;
+}
+.plus {
+  @apply bg-[var(--color-background-success)]  text-[var(--color-text-success)];
+}
+.plus p {
+  @apply text-[var(--color-text-success)];
+}
+.minus {
+  @apply bg-[var(--color-background-danger)]  text-[var(--color-text-danger)];
+}
+.minus p {
+  @apply text-[var(--color-text-danger)];
 }

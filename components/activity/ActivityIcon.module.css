@@ -1,0 +1,3 @@
+.iconWrapper {
+  @apply rounded-full border-1 w-32 h-32 flex justify-center items-center;
+}

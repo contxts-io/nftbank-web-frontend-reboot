@@ -3,10 +3,10 @@ import styles from './page.module.css';
 import { Hydrate, dehydrate } from '@tanstack/react-query';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import instance from '@/utils/axiosInterceptor';
-import { IInventoryValue } from '@/interfaces/inventory';
+import { InventoryValueNested } from '@/interfaces/inventory';
 import InventoryContainer from '@/components/portfolio/inventory/InventoryContainer';
 
-const getInventoryValue = async <T = IInventoryValue,>(
+const getInventoryValue = async <T = InventoryValueNested,>(
   walletAddress?: string
 ): Promise<T> => {
   try {
@@ -51,14 +51,14 @@ const InventoryPage = async (context: any) => {
   const walletAddress =
     context.searchParams?.walletAddress || me?.walletAddress || undefined;
 
-  // walletAddress &&
-  //   queryClient.prefetchQuery(['inventoryValue', walletAddress], () =>
-  //     getInventoryValue(walletAddress)
-  //   );
-  // walletAddress &&
-  //   queryClient.prefetchQuery(['collectionCount', walletAddress], () =>
-  //     getCollectionCount(walletAddress)
-  //   );
+  walletAddress &&
+    queryClient.prefetchQuery(['inventoryValue', walletAddress], () =>
+      getInventoryValue(walletAddress)
+    );
+  walletAddress &&
+    queryClient.prefetchQuery(['collectionCount', walletAddress], () =>
+      getCollectionCount(walletAddress)
+    );
   const dehydratedState = dehydrate(queryClient);
   return (
     <Hydrate state={dehydratedState}>

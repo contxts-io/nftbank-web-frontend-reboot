@@ -3,19 +3,49 @@ import dynamic from 'next/dynamic';
 import { renderToString } from 'react-dom/server';
 import styles from './PerformanceChart.module.css';
 import { useTheme } from 'next-themes';
+import { useAtomValue } from 'jotai';
+import { currencyAtom } from '@/store/currency';
+import { useMe } from '@/utils/hooks/queries/auth';
+import { usePerformanceChart } from '@/utils/hooks/queries/performance';
+import { useEffect, useMemo, useState } from 'react';
+import { set } from 'cypress/types/lodash';
+import SkeletonLoader from '@/components/SkeletonLoader';
+import { formatPercent } from '@/utils/common';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
+  console.log('w.globals.', w.globals);
+  const roi = series[seriesIndex][dataPointIndex];
   return (
     <div className='font-caption-regular py-8 px-16 flex flex-col items-center border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
-      <p className={`text-[var(--color-text-success)]`}>3.03%</p>
-      <p className={`text-[var(--color-text-subtle)]`}>Aug 31</p>
+      <p
+        className={`${
+          seriesIndex === 0
+            ? 'text-[var(--color-text-success)]'
+            : 'text-[var(--color-text-danger)]'
+        }`}
+      >
+        {formatPercent(roi)}
+      </p>
+      <p className={`text-[var(--color-text-subtle)]`}>
+        {w.globals.labels[dataPointIndex]}
+      </p>
     </div>
   );
 };
-const PerformanceChart = () => {
-  const { theme } = useTheme();
-  const barBackground = theme === 'light' ? '#F3F4F6' : '#111924';
-  const labelColor = theme === 'light' ? '#4B5563' : '#9CA3AF';
+type Props = {
+  requestParam: {
+    walletAddress: string;
+    year: number;
+    gnlChartType: 'overall' | 'realized' | 'unrealized';
+  };
+};
+const PerformanceChart = (props: Props) => {
+  const barBackground = 'var(--color-elevation-sunken)';
+  const labelColor = 'var(--color-text-subtle)';
+  const currency = useAtomValue(currencyAtom);
+  const [maxAbs, setMaxAbs] = useState(0);
+  const { data: performanceChart, status: statusPerformanceChart } =
+    usePerformanceChart(props.requestParam);
   const options = {
     chart: {
       type: 'bar',
@@ -23,11 +53,17 @@ const PerformanceChart = () => {
       toolbar: {
         show: false,
       },
+      animations: {
+        dynamicAnimation: {
+          enabled: false,
+        },
+      },
     },
     plotOptions: {
       bar: {
         vertical: true,
         barHeight: '100%',
+        columnWidth: '90%',
         colors: {
           backgroundBarColors: [barBackground],
           backgroundBarOpacity: 0.6,
@@ -78,6 +114,9 @@ const PerformanceChart = () => {
           colors: labelColor,
           cssClass: 'font-caption-regular',
         },
+        formatter: (value: number) => {
+          return value.toFixed(2) + '%';
+        },
       },
     },
     legend: {
@@ -96,31 +135,69 @@ const PerformanceChart = () => {
       },
     },
   };
-  const series = [
-    {
-      name: 'positive',
-      data: [0.4, 0, 3.76, 5.88, 0, 2.1, 0, 3.8, 0, 0, 8, 4.3],
-    },
-    {
-      name: 'negative',
-      data: [0, -1.5, 0, 0, -1.4, 0, -2.85, 0, -3.96, -4.22, 0, 0],
-    },
-  ];
+  let series = useMemo(() => {
+    if (!performanceChart || performanceChart.data.length == 0) return [];
+    return [
+      {
+        name: 'positive',
+        data: performanceChart.data.map((item) =>
+          item.roi?.[currency] && parseFloat(item.roi[currency]) >= 0
+            ? parseFloat(item.roi[currency])
+            : 0
+        ),
+      },
+      {
+        name: 'negative',
+        data: performanceChart.data.map((item) =>
+          item.roi?.[currency] && parseFloat(item.roi[currency]) <= 0
+            ? parseFloat(item.roi[currency])
+            : 0
+        ),
+      },
+    ];
+  }, [performanceChart, currency]);
+  useEffect(() => {
+    console.log('series', series);
+    if (
+      !series ||
+      series.length == 0 ||
+      series[0].data.length === 0 ||
+      series[1].data.length === 0
+    )
+      return;
+    const maxAbs = Math.max(
+      ...[
+        ...series[0].data.map((value) => Math.abs(value)),
+        ...series[1].data.map((value) => Math.abs(value)),
+      ]
+    );
+    setMaxAbs(maxAbs);
+  }, [series]);
   return (
     <section className={styles.container}>
-      <ApexCharts
-        options={{
-          ...options,
-          chart: {
-            ...options.chart,
-            type: 'bar',
-          },
-        }}
-        type='bar'
-        series={series}
-        height={200}
-        width='100%'
-      />
+      {statusPerformanceChart === 'loading' && (
+        <SkeletonLoader className='w-full h-[200px]' />
+      )}
+      {statusPerformanceChart === 'success' && (
+        <ApexCharts
+          options={{
+            ...options,
+            chart: {
+              ...options.chart,
+              type: 'bar',
+            },
+            yaxis: {
+              ...options.yaxis,
+              min: -maxAbs,
+              max: maxAbs,
+            },
+          }}
+          type='bar'
+          series={series}
+          height={200}
+          width='100%'
+        />
+      )}
     </section>
   );
 };

@@ -1,9 +1,13 @@
 .dropdown {
   filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.1));
-  @apply absolute top-30 right-0 min-w-106 border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface-overlay)] z-10 !important;
+  @apply absolute top-30 right-0;
+  @apply overflow-y-auto min-w-106 border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface-overlay)] z-[150] !important;
+}
+.up {
+  @apply top-[-70px];
 }
 .dropdown li {
-  @apply flex justify-between items-center w-fit whitespace-nowrap w-full;
+  @apply flex justify-between items-center w-full whitespace-nowrap;
   @apply p-8 cursor-pointer hover:text-[var(--color-text-main)] border-b-1 border-[var(--color-border-bold)];
 }
 .pSpam {

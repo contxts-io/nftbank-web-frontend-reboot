@@ -1,6 +1,9 @@
 .cardWrapper {
   @apply flex flex-col items-center border-1 border-[var(--color-border-main)] cursor-pointer;
 }
+.pTitle {
+  @apply text-[var(--color-text-main)];
+}
 .pName {
   @apply text-[var(--color-text-subtle)];
 }

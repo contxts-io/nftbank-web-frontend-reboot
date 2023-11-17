@@ -1,0 +1,15 @@
+.article {
+  @apply flex flex-col w-full;
+}
+.article :last-child {
+  @apply mb-0;
+}
+.row {
+  @apply w-full h-16 flex items-center cursor-pointer mb-8 text-[var(--color-text-main)];
+}
+.checkBox {
+  @apply mr-8;
+}
+.childList {
+  @apply ml-24 flex flex-col;
+}

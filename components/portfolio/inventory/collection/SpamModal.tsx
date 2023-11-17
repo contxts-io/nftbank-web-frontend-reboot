@@ -27,7 +27,7 @@ const SpamModal = () => {
   const { data: me } = useMe();
   const searchParams = useSearchParams();
   const walletAddress =
-    searchParams.get('walletAddress') || me.walletAddress || undefined;
+    searchParams.get('walletAddress') || me?.walletAddress || undefined;
 
   const [inventorySpamCollectionParam, setInventorySpamCollectionParam] =
     useAtom(inventorySpamCollectionAtom);

@@ -1,14 +1,32 @@
 .container {
   @apply border-1 border-[var(--color-border-main)] p-20;
 }
+.dataWrapper {
+  @apply flex flex-col w-full;
+}
+.chartWrapper {
+  @apply flex w-full;
+}
+.label {
+  @apply flex flex-col;
+}
+.chartLabel {
+  @apply flex flex-col w-20 h-200 pt-30 pb-15 justify-between overflow-x-visible z-10;
+}
+.chartLabel p {
+  @apply text-[var(--color-text-subtle)];
+}
 .title {
   @apply gap-12 flex items-center;
 }
 .tableWrapper {
-  @apply w-full pr-14;
+  @apply flex flex-col w-full min-h-115;
+}
+.dataSection {
+  @apply w-full;
 }
 .table {
-  @apply w-full;
+  @apply w-full table-fixed;
 }
 .table thead {
   @apply border-b-1 border-[var(--color-border-disabled)];
@@ -26,4 +44,7 @@
 }
 .table td {
   @apply text-center;
+}
+.dropdown {
+  @apply px-12 w-120 h-36 flex justify-between items-center;
 }

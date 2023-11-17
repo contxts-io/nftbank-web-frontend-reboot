@@ -5,7 +5,7 @@ import {
   inventoryItemListAtom,
 } from '@/store/requestParam';
 import Image from 'next/image';
-import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useAtom } from 'jotai';
 import { selectedCollectionInventoryAtom } from '@/store/portfolio';
@@ -16,6 +16,7 @@ import { shortenAddress } from '@/utils/common';
 import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory';
 import { useTheme } from 'next-themes';
 import Button from '@/components/buttons/Button';
+import CheckBox from '@/components/checkBox/CheckBox';
 type Props = {
   handleFilterOpen: (state: boolean) => void;
 };
@@ -39,7 +40,7 @@ const InventoryItemFilter = (props: Props) => {
   const { ref, inView } = useInView();
   const { theme } = useTheme();
   const mergePosts = useMemo(
-    () => data?.pages.flatMap((page) => page.collections),
+    () => data?.pages.flatMap((page) => page.data),
     [data?.pages]
   );
   useEffect(() => {
@@ -96,7 +97,11 @@ const InventoryItemFilter = (props: Props) => {
         <h2 className='font-subtitle02-bold text-[var(--color-text-main)]'>
           Collection
         </h2>
-        <Button onClick={() => handleFilterOpen(false)} id={'filterButton'}>
+        <Button
+          onClick={() => handleFilterOpen(false)}
+          id={'filterButton'}
+          className={styles.filterButton}
+        >
           <Filter />
         </Button>
       </div>
@@ -110,49 +115,56 @@ const InventoryItemFilter = (props: Props) => {
           value={searchText}
         />
       </div>
-
-      <ul className='mt-12 w-full h-full overflow-y-scroll flex flex-col'>
-        {mergePosts?.map((item, index) => (
-          <Fragment key={`${item.collection.assetContract}-${index}`}>
-            <li className='h-26 flex mb-12 items-center'>
-              <input
-                type='checkbox'
-                name={item.collection.name}
-                className={`${styles.checkbox}`}
-                checked={
-                  selectedCollection?.find((collection) => {
-                    return (
-                      collection.collection.assetContract ===
-                      item.collection.assetContract
-                    );
-                  })
-                    ? true
-                    : false
-                }
-                onChange={() => handleClickCheckBox(item)}
-              />
-              <Image
-                src={item.collection.imageUrl || '/icon/ethereum.svg'}
-                width={20}
-                height={20}
-                className='rounded-full mr-8 border-1 border-[var(--color-border-main)]'
-                alt={`${
-                  item.collection.name || item.collection.assetContract
-                } image`}
-              />
-              <p className={`font-caption-medium ${styles.pCollectionName}`}>
-                {item.collection.name ||
-                  shortenAddress(item.collection.assetContract)}
-              </p>
+      <div className='h-full overflow-y-scroll'>
+        <ul className='mt-12 w-full flex flex-col'>
+          {mergePosts?.map((item, index) => {
+            const isSelected = selectedCollection?.find((collection) => {
+              return (
+                collection.collection.assetContract ===
+                item.collection.assetContract
+              );
+            })
+              ? true
+              : false;
+            return (
+              <Fragment key={`${item.collection.assetContract}-${index}`}>
+                <li
+                  className='flex mb-12 items-center cursor-pointer'
+                  onClick={() => handleClickCheckBox(item)}
+                >
+                  <CheckBox
+                    checked={isSelected}
+                    onClick={() => handleClickCheckBox(item)}
+                    className={`mr-8 ${
+                      isSelected && 'bg-[var(--color-background-brand-bold)]'
+                    }`}
+                  />
+                  <Image
+                    src={item.collection.imageUrl || '/icon/ethereum.svg'}
+                    width={20}
+                    height={20}
+                    className='rounded-full mr-8 border-1 border-[var(--color-border-main)]'
+                    alt={`${
+                      item.collection.name || item.collection.assetContract
+                    } image`}
+                  />
+                  <p
+                    className={`font-caption-medium ${styles.pCollectionName}`}
+                  >
+                    {item.collection.name ||
+                      shortenAddress(item.collection.assetContract)}
+                  </p>
+                </li>
+              </Fragment>
+            );
+          })}
+          {!data?.pages?.[data?.pages.length - 1].isLast && (
+            <li ref={ref} className='h-43 '>
+              more
             </li>
-          </Fragment>
-        ))}
-        {!data?.pages?.[data?.pages.length - 1].isLast && (
-          <li ref={ref} className='h-43 '>
-            more
-          </li>
-        )}
-      </ul>
+          )}
+        </ul>
+      </div>
       <div>
         {isFetching && !isFetchingNextPage ? 'Background Updating...' : null}
       </div>

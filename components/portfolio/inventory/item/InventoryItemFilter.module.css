@@ -1,7 +1,7 @@
 .container {
   @apply flex flex-col overflow-hidden;
   @apply pr-12 pb-43;
-  @apply min-w-[290px] w-[290px] max-w-[290px] min-h-[calc(100vh-388px)] max-h-[calc(100vh-112px)];
+  @apply min-w-[290px] w-[290px] max-w-[290px] min-h-[calc(100vh-112px)] max-h-[calc(100vh-112px)] border-r-1 border-[var(--color-border-main)];
 }
 .inputContainer {
   @apply w-full h-36 flex items-center justify-items-start px-12;
@@ -10,6 +10,9 @@
 .textInput {
   @apply w-full border-0 p-0 ml-8;
   @apply bg-transparent placeholder:text-[var(--color-text-subtlest)] text-[var(--color-text-main)];
+}
+.filterButton {
+  @apply w-36 h-36 p-0 flex items-center justify-center;
 }
 .icon {
   @apply fill-[var(--color-icon-main)];

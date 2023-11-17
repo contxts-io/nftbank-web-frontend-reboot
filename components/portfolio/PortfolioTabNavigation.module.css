@@ -1,11 +1,11 @@
 .navigation {
-  @apply w-full h-60 flex items-center justify-between sticky top-55 bg-elevation-surface z-40;
+  @apply w-full h-60 flex items-center justify-between sticky top-55 bg-[var(--color-elevation-surface)] z-40;
 }
 .links {
-  @apply bottom-0 h-60 w-full flex items-center text-text-subtlest;
+  @apply bottom-0 h-60 w-full flex items-center text-[var(--color-text-subtlest)];
 }
 .link {
-  @apply px-24 py-18 hover:text-text-main;
+  @apply px-24 py-18 hover:text-[var(--color-text-main)];
 }
 .button {
   @apply border-0 bg-transparent flex items-center fill-icon-subtlest px-24 py-14;
@@ -14,5 +14,5 @@
   @apply fill-icon-subtlest hover:fill-icon-main;
 }
 .subButtons {
-  @apply border-b-4 flex h-full text-text-subtlest fill-icon-subtlest;
+  @apply border-b-4 flex h-full text-[var(--color-text-subtlest)] fill-[var(--color-icon-subtlest)];
 }

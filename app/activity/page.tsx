@@ -1,8 +1,12 @@
+import ActivityFilter from '@/components/activity/ActivityFilter';
+import ActivityTable from '@/components/activity/ActivityTable';
+
 const ActivityPage = () => {
   return (
-    <div>
-      <h1>ActivityPage</h1>
-    </div>
+    <section className='flex'>
+      <ActivityFilter />
+      <ActivityTable />
+    </section>
   );
 };
 export default ActivityPage;

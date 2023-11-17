@@ -1,5 +1,5 @@
 .container {
-  @apply w-full h-[400px] p-20 border-1 border-[var(--color-border-main)] mb-20;
+  @apply w-full h-[340px] p-20 border-1 border-[var(--color-border-main)] mb-20;
 }
 .title {
   @apply text-[var(--color-text-main)];

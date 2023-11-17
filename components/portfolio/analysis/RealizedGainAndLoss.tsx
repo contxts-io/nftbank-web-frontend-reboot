@@ -39,11 +39,14 @@ const RealizedGainAndLoss = () => {
     analysisGainAndLossParamAtom
   );
   const { data: me } = useMe();
-  const { data: realizedTokenList, status } =
-    useInventoryRealizedTokensInfinite({
-      ...requestParams,
-      walletAddress: me.walletAddress,
-    });
+  const {
+    data: realizedTokenList,
+    status,
+    fetchNextPage,
+  } = useInventoryRealizedTokensInfinite({
+    ...requestParams,
+    walletAddress: me?.walletAddress,
+  });
   const [selectedStatus, setSelectedStatus] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({
       ...item,
@@ -74,13 +77,14 @@ const RealizedGainAndLoss = () => {
   };
   const handleClickShowMore = () => {
     latestPage?.isLast === false &&
-      setRequestParams((prev) => {
+      (setRequestParams((prev) => {
         return {
           ...prev,
-          limit: 10,
+          limit: 1,
           nextCursor: latestPage.nextCursor,
         };
-      });
+      }),
+      fetchNextPage());
   };
   useEffect(() => {
     console.log('changed!');
@@ -111,16 +115,16 @@ const RealizedGainAndLoss = () => {
           Realized Gain & Loss
         </p>
         <Dropdown
-          list={selectedStatus.map((item) => item.name)}
-          selected={selectedStatus.find((item) => item.selected)?.name || 'All'}
-          onClick={(name) => handleChangeStatus(name)}
-          className='w-100'
-        />
-        <Dropdown
           list={selectedYear.map((item) => item.name)}
           selected={selectedYear.find((item) => item.selected)?.name || '2023'}
           onClick={(name) => handleChangeYear(name)}
-          className='w-78'
+          className='w-80'
+        />
+        <Dropdown
+          list={selectedStatus.map((item) => item.name)}
+          selected={selectedStatus.find((item) => item.selected)?.name || 'All'}
+          onClick={(name) => handleChangeStatus(name)}
+          className='w-65'
         />
         <Button id='' className='ml-auto'>
           Export
@@ -153,7 +157,7 @@ const RealizedGainAndLoss = () => {
                     className='text-[var(--color-text-subtle)] hover:text-[var(--color-text-main)]'
                   >
                     <td className='text-left'>
-                      <div className='flex items-center gap-8'>
+                      <div className='flex items-center gap-x-8'>
                         <div className='w-32 h-32 flex items-center justify-center border-1 border-[var(--color-border-main)]'>
                           <Image
                             src={`${
@@ -182,7 +186,7 @@ const RealizedGainAndLoss = () => {
                     <td className='text-right'>
                       <p className='text-[var(--color-text-main)]'>
                         {formatCurrency(
-                          item.costBasis[currency].amount || '0',
+                          item.costBasis[currency] || '0',
                           currency
                         )}
                       </p>
@@ -190,7 +194,7 @@ const RealizedGainAndLoss = () => {
                     <td className='text-right'>
                       <p className='text-[var(--color-text-main)]'>
                         {formatCurrency(
-                          item.proceed[currency].amount || '0',
+                          item.proceed[currency] || '0',
                           currency
                         )}
                       </p>
@@ -198,13 +202,13 @@ const RealizedGainAndLoss = () => {
                     <td className='text-right'>
                       <p
                         className={`${
-                          parseFloat(item.gainLoss[currency].amount || '0') > 0
+                          parseFloat(item.gainLoss[currency] || '0') > 0
                             ? 'text-[var(--color-text-success)]'
                             : 'text-[var(--color-text-danger)]'
                         }`}
                       >
                         {formatCurrency(
-                          item.gainLoss[currency].amount || '0',
+                          item.gainLoss[currency] || '0',
                           currency
                         )}
                       </p>
@@ -212,7 +216,9 @@ const RealizedGainAndLoss = () => {
                     <td className='text-right'>
                       <p
                         className={`${
-                          item.roi[currency] > 0
+                          item.roi[currency] === 'infinity'
+                            ? 'text-[var(--color-text-main)]'
+                            : parseFloat(item.roi[currency] as string) > 0
                             ? 'text-[var(--color-text-success)]'
                             : 'text-[var(--color-text-danger)]'
                         }`}
@@ -222,7 +228,9 @@ const RealizedGainAndLoss = () => {
                     </td>
                     <td className='text-right'>
                       <p className='text-[var(--color-text-main)]'>
-                        {formatDate(new Date(item.acquisitionDate))}
+                        {item.acquisitionDate
+                          ? formatDate(new Date(item.acquisitionDate))
+                          : '-'}
                       </p>
                     </td>
                     <td className='text-right'>

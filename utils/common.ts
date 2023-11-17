@@ -8,7 +8,7 @@ export function formatDate(date:  Date): string  {
   return `${year}/${month}/${day}`;
 }
 export function formatCurrency(amount: string | null, currency: TCurrency): string {
-  if (!amount) return '';
+  if (!amount) return '-';
   if (amount === 'infinity')
     return '-';
     // return '∞';
@@ -56,12 +56,14 @@ function _formatEth(amount: number): string {
     _amount = amount.toFixed(4); // 그 외의 경우, 기본 표기 방식 사용
   }
   // _amount = formatNumber(parseFloat(_amount));
-  return parseFloat(_amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' }).replace('ETH', 'Ξ');
+  // return parseFloat(_amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' }).replace('ETH', 'Ξ');
+  return `Ξ${parseFloat(_amount)}`;
 }
 
-export function isPlus (value: number | string): boolean {
-  if (value === 'infinity') return true;
-  if (typeof value === 'string') {
+export function isPlus (value: number | string): boolean | '-' {
+  if (value === 'infinity' || value === null || value === '0' || value === '-' || value === 0) return '-';
+  else if (typeof value === 'string') {
+    if(parseFloat(value) === 0) return '-';
     return parseFloat(value) > 0 ? true : false;
   } else if (typeof value === 'number') {
     return value > 0 ? true : false;
@@ -69,8 +71,10 @@ export function isPlus (value: number | string): boolean {
     return false;
   }
 };
-export function formatPercent(percent: number | null): string {
-  if (percent === null) return '-';
+export function formatPercent(_percent: string |'infinity'| null): string {
+  if (_percent === null) return '-';
+  if (_percent === 'infinity') return '-';
+  const percent = parseFloat(_percent);
   if (Math.abs(percent) <= 0.001) return '0%';
   if (Math.abs(percent) < 1 && Math.abs(percent) >= 0.001)
     return (percent / 100).toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 3 });
@@ -81,17 +85,24 @@ export function formatEth(amount: string | null): string {
   if (!amount) return '';
   return parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' });
 }
-export function difference(diff: string | number, currency: TCurrency | 'percent') {
-  
-  if (currency === 'percent' && typeof diff === 'number') {
-    console.log('typeof ?111',typeof diff)
+export function difference(diff: string, currency: TCurrency | 'percent') {
+  console.log('diff diff',diff)
+  if (currency === 'percent') {
     return formatPercent(diff).replace('+', '').replace('-', '');
   }
-  else if (typeof diff === 'string' && currency !== 'percent') {
+  else {
     const mark = parseFloat(diff) > 0 ? '+' : '';
     return `${mark}${formatCurrency(diff,currency).replace('$', '').replace('Ξ', '')}`;
   }
-
+}
+export function formatAmount(amount: string | number) {
+  if (amount === 'infinity') return '-';
+  if (amount === 0 || amount === '0') return '-';
+  if (typeof amount === 'string') {
+    return parseFloat(amount) > 0 ? `+${amount}` : `${amount}`;
+  } else if (typeof amount === 'number') {
+    return amount > 0 ? `+${amount}` : `${amount}`;
+  }
 }
 export function shortenAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -123,8 +134,9 @@ export const mappingConstants = (value: string): string => {
     'COLLECTION_FLOOR_PRICE' : 'Floor Price',
     'ESTIMATED_PRICE' : 'Estimated',
     'TRAIT_FLOOR_PRICE': 'Trait Floor',
-    'AVERAGE_PRICE_30D':'Average Price 30D',
-    'AVERAGE_PRICE_90D':'Average Price 90D'
+    'AVERAGE_PRICE_30D':'30d Avg.',
+    'AVERAGE_PRICE_90D': '90d Avg.',
+    // 'PREMIUM_ESTIMATED_PRICE': 'Premium Estimated',
   }
   return mappingTable[value] || value;
 }
@@ -136,3 +148,13 @@ export const selectedValueType = (
     valuations.find((val) => val.default);
   return mappingConstants(result?.type || '');
 };
+export function capitalizeFirstLetter(inputString:string) {
+  if (inputString.length > 0) {
+    const firstLetter = inputString[0]; // 첫 번째 글자
+    const modifiedString = firstLetter.toUpperCase() + inputString.slice(1).toLowerCase();
+    console.log('modifiedString', inputString)
+    return modifiedString;
+  }
+  
+  return inputString;
+}

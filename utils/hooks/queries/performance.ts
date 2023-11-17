@@ -1,25 +1,9 @@
-import { getCollectionList, getCollectionValuableCount, getInventoryValue, getItemList, getItemValuableCount } from '@/apis/inventory';
-import { getCollectionListPerformance, getInventoryUnrealizedPerformance, getInventoryValuePerformance, getItemListPerformance, getPerformanceChart } from '@/apis/performance';
-import { IInventoryCollectionList, IInventoryCollectionListPerformance, IInventoryItemList, IInventoryValue, PerformanceCollection, UnrealizedValue } from '@/interfaces/inventory';
+import { PerformanceParam, getInventoryUnrealizedPerformance, getPerformanceChart, getPerformanceChartAnnual } from '@/apis/performance';
+import { IInventoryCollectionListPerformance, IInventoryItemList, InventoryValueNested, PerformanceCollection, UnrealizedValue } from '@/interfaces/inventory';
 import { ItemParam, TCollectionParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-export function useInventoryValuePerformance(walletAddress?: string) {
-  return useQuery<IInventoryValue,AxiosError>(
-    ['inventoryValuePerformance',walletAddress],
-    async () => {
-      const inventoryValue = await getInventoryValuePerformance(walletAddress);
-      return inventoryValue;
-    },
-    {
-      enabled: walletAddress !== '',
-      staleTime: Infinity,
-      cacheTime: Infinity,
-      useErrorBoundary: false,
-    },
-  );
-}
 export function useInventoryUnrealizedPerformance(walletAddress?: string) {
   return useQuery<UnrealizedValue,AxiosError>(
     ['inventoryUnrealizedValuePerformance',walletAddress],
@@ -35,104 +19,34 @@ export function useInventoryUnrealizedPerformance(walletAddress?: string) {
     },
   );
 }
-
-export function useInventoryCollectionListPerformance(requestParam: TCollectionParam) {
-  return useQuery<IInventoryCollectionListPerformance,AxiosError>(
-    ['inventoryCollectionListPerformance',requestParam],
-    async () => {
-      const inventoryCollectionList = await getCollectionListPerformance(requestParam);
-      return inventoryCollectionList;
-    },
-    {
-      enabled: requestParam.walletAddress !== '',
-      staleTime: Infinity,
-      cacheTime: Infinity,
-      useErrorBoundary: false,
-    },
-  );
-}
-export const useInventoryCollectionsInfinitePerformance = (requestParam: TCollectionParam) => {
-  const fetchData = async ({ pageParam = 1 }) => {
-    const result = await getCollectionListPerformance({...requestParam, page: pageParam});
-    const isLast = (result.paging.total / result.paging.limit) == result.paging.page;
-        
-    return {
-      ...result,
-      nextPage: pageParam + 1,
-      isLast,
-    };
-  }
-
-  const query = useInfiniteQuery(['inventoryCollectionListPerformance',requestParam], fetchData, {
-    getNextPageParam: (lastPage) => {
-      if (!lastPage.isLast) return lastPage.nextPage;
-      return undefined;
-    },
-    enabled: requestParam.walletAddress !== '',
-    staleTime: Infinity,
-    cacheTime: Infinity,
-    useErrorBoundary: false,
-    refetchOnWindowFocus: false,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
-    retry: 2,
-  });
-
-  return query;
-};
-export const useInventoryItemInfinitePerformance = (requestParam: ItemParam) => {
-  const fetchData = async ({ pageParam = 1 }) => {
-    const result = await getItemListPerformance({...requestParam, page: pageParam});
-    const isLast = (result.paging.total / result.paging.limit) == result.paging.page;
-        
-    return {
-      ...result,
-      nextPage: pageParam + 1,
-      isLast,
-    };
-  }
-
-  const query = useInfiniteQuery(['inventoryItemListPerformance',requestParam], fetchData, {
-    getNextPageParam: (lastPage) => {
-      if (!lastPage.isLast) return lastPage.nextPage;
-      return undefined;
-    },
-    enabled: requestParam.walletAddress !== '',
-    staleTime: Infinity,
-    cacheTime: Infinity,
-    useErrorBoundary: false,
-    refetchOnWindowFocus: false,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
-    retry: 1,
-  });
-
-  return query;
-};
-export const useInventoryItemPerformance = (requestParam: ItemParam) => {
-  return useQuery<IInventoryItemList,AxiosError>(
-    ['inventoryItemListPerformance',requestParam],
-    async () => {
-      const inventoryItemList = await getItemListPerformance(requestParam);
-      return inventoryItemList;
-    },
-    {
-      enabled: requestParam.walletAddress !== '',
-      staleTime: Infinity,
-      cacheTime: Infinity,
-      useErrorBoundary: false,
-    },
-  );
-}
-export function usePerformanceChart(walletAddress: string) {
+export function usePerformanceChart(requestParam: PerformanceParam) {
   return useQuery<{data: PerformanceCollection[]},AxiosError>(
-    ['inventoryPerformanceChart',walletAddress],
+    ['inventoryPerformanceChart',requestParam],
     async () => {
-      const result = await getPerformanceChart(walletAddress);
+      const result = await getPerformanceChart(requestParam);
       return result;
     },
     {
-      enabled: walletAddress !== '',
+      enabled: requestParam.walletAddress !== '',
+      staleTime: Infinity,
+      cacheTime: Infinity,
+      useErrorBoundary: false,
+    },
+  );
+}
+type Param = {
+  walletAddress: string;
+  window?: string;
+}
+export function usePerformanceChartAnnual(requestParam:PerformanceParam & {window?: string}) {
+  return useQuery<PerformanceCollection,AxiosError>(
+    ['inventoryPerformanceChartAnnual',requestParam],
+    async () => {
+      const result = await getPerformanceChartAnnual({...requestParam, window: requestParam.window || 'ytd'});
+      return result.data;
+    },
+    {
+      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,

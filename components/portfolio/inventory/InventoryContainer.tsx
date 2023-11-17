@@ -16,7 +16,8 @@ import ReactModal from 'react-modal';
 import SpamModal from './collection/SpamModal';
 import { useMe } from '@/utils/hooks/queries/auth';
 import SpamSaveToast from './collection/SpamSaveToast';
-import { addedSpamListAtom } from '@/store/portfolio';
+import { addedSpamListAtom, customValuationAtom } from '@/store/portfolio';
+import CustomValuationSaveToast from './item/CustomValuationSaveToast';
 
 const InventoryContainer = () => {
   const searchParams = useSearchParams();
@@ -32,6 +33,10 @@ const InventoryContainer = () => {
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useAtom(inventorySpamCollectionAtom);
   const [inventoryItem, setInventoryItem] = useAtom(inventoryItemListAtom);
+  const [customValuations, setCustomValuations] = useAtom(customValuationAtom);
+  useEffect(() => {
+    setCustomValuations([]);
+  }, []);
   const spamList = useAtomValue(addedSpamListAtom);
   useEffect(() => {
     setInventoryCollection({
@@ -59,10 +64,11 @@ const InventoryContainer = () => {
           <InventoryCollectionSettings />
           <InventoryCollectionTable />
           {spamList.length > 0 && <SpamSaveToast />}
+          {customValuations.length > 0 && <CustomValuationSaveToast />}
         </>
       )}
       {inventoryType === 'item' && (
-        <div className='sticky top-116'>
+        <div className='sticky top-116 mt-20'>
           <InventoryItemSection />
         </div>
       )}

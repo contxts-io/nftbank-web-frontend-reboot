@@ -1,9 +1,13 @@
 import Image from 'next/image';
 import styles from './InventoryItemCard.module.css';
-import { Token } from '@/interfaces/collection';
+import { Token } from '@/interfaces/token';
 import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
-import { formatCurrency, formatPercent } from '@/utils/common';
+import {
+  formatCurrency,
+  formatPercent,
+  mappingConstants,
+} from '@/utils/common';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { selectedTokenAtom } from '@/store/portfolio';
 import ValuationDropdown from './ValuationDropdown';
@@ -35,18 +39,18 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
         />
       </div>
       <div className='w-full flex flex-col justify-start my-12 px-12'>
-        <p className={`${styles.pName} mb-8`}>{token.token.name}</p>
+        <p className={`${styles.pTitle} mb-8`}>{token.token.name}</p>
         <div className='flex justify-between items-center mb-8'>
           <p className={styles.pName}>Cost basis</p>
           {token.costBasis ? (
             <p className={styles.pValue}>
               {priceType === 'acquisitionPrice'
                 ? formatCurrency(
-                    token.acquisitionPrice?.[currency].amount || null,
+                    token.acquisitionPrice?.[currency] || null,
                     currency
                   )
                 : token.costBasis?.[currency] &&
-                  formatCurrency(token.costBasis[currency].amount, currency)}
+                  formatCurrency(token.costBasis[currency], currency)}
             </p>
           ) : (
             <SkeletonLoader className='h-16 w-50' />
@@ -95,11 +99,11 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
           )}
         </div>
         <div className='flex items-center mb-8'>
-          <ValuationDropdown
-            token={token}
-            valuations={token.valuation}
-            card={true}
-          />
+          <p className={styles.pTitle}>
+            {token.valuation.length > 0
+              ? mappingConstants(token.valuation[0].type)
+              : 'no valuation type'}
+          </p>
         </div>
       </div>
     </article>

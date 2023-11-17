@@ -1,8 +1,9 @@
 'use client';
-import { Token } from '@/interfaces/collection';
+
 import styles from './InventoryItemActivity.module.css';
 import { useActivityItem } from '@/utils/hooks/queries/activity';
 import SkeletonLoader from '@/components/SkeletonLoader';
+import { Token } from '@/interfaces/token';
 
 const TableBodyCell = ({ address }: { address: string }) => {
   return (

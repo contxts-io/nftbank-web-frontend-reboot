@@ -2,14 +2,16 @@
   @apply w-full;
 }
 .table {
-  @apply w-full border-y-1 border-border-main;
+  @apply w-full border-y-1 border-[var(--color-border-main)] table-auto;
 }
 
-.tableHeader {
-  @apply h-32;
-  @apply grid grid-cols-11 items-center grid-rows-1 overflow-hidden text-12 text-gray-500 font-medium border-b border-gray-200;
-}
 .tableRow {
-  @apply py-10 border-b-1 border-border-disabled;
-  @apply text-text-main;
+  @apply py-8 border-b-1 border-[var(--color-border-disabled)];
+  @apply text-[var(--color-text-main)] hover:bg-[var(--color-elevation-sunken)] transition-all duration-200;
+}
+.tableRow td {
+  @apply py-8;
+}
+.pTd {
+  @apply mr-80;
 }
