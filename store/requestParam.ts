@@ -104,7 +104,7 @@ export const inventoryItemListAtom = atom<ItemParam>({
   order: 'desc',
 })
 export const analysisGainAndLossParamAtom = atom<TAnalysisGainAndLossParam>({
-  limit: 1,
+  limit: 5,
   nextCursor: null,
   year: 2023,
   quarter: 'all',
