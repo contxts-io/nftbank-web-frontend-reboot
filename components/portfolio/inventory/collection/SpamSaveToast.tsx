@@ -54,17 +54,10 @@ const SpamSaveToast = () => {
       'inventoryValue',
       me?.walletAddress,
     ]);
-    await ReactQueryClient.invalidateQueries([
-      'inventoryValuePerformance',
-      me?.walletAddress,
-    ]);
     await ReactQueryClient.removeQueries(['collectionCount']);
     await ReactQueryClient.removeQueries(['itemCount']);
     await ReactQueryClient.removeQueries(['inventoryCollectionList']);
-    await ReactQueryClient.removeQueries([
-      'inventoryCollectionListPerformance',
-    ]);
-    await ReactQueryClient.removeQueries(['inventoryItemListPerformance']);
+    await ReactQueryClient.removeQueries(['inventoryItemList']);
     setInventorySpamCollectionParam((prev) => {
       return {
         ...prev,

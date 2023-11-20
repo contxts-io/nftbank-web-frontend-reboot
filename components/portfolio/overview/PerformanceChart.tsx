@@ -10,11 +10,12 @@ import { usePerformanceChart } from '@/utils/hooks/queries/performance';
 import { useEffect, useMemo, useState } from 'react';
 import { set } from 'cypress/types/lodash';
 import SkeletonLoader from '@/components/SkeletonLoader';
-import { formatPercent } from '@/utils/common';
+import { formatPercent, mathSqrt } from '@/utils/common';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   console.log('w.globals.', w.globals);
-  const roi = series[seriesIndex][dataPointIndex];
+  const roi = series[seriesIndex].data[dataPointIndex] || 0;
+  // const roi = series[seriesIndex][dataPointIndex];
   return (
     <div className='font-caption-regular py-8 px-16 flex flex-col items-center border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
       <p
@@ -115,7 +116,13 @@ const PerformanceChart = (props: Props) => {
           cssClass: 'font-caption-regular',
         },
         formatter: (value: number) => {
-          return value.toFixed(2) + '%';
+          if (value > 0) {
+            return `${maxAbs.toFixed(2)}%`;
+          }
+          if (value < 0) {
+            return `-${maxAbs.toFixed(2)}%`;
+          }
+          return '0%';
         },
       },
     },
@@ -130,12 +137,12 @@ const PerformanceChart = (props: Props) => {
       followCursor: false,
       custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
         return renderToString(
-          tooltip({ series, seriesIndex, dataPointIndex, w })
+          tooltip({ series: seriesData, seriesIndex, dataPointIndex, w })
         );
       },
     },
   };
-  let series = useMemo(() => {
+  let seriesData = useMemo(() => {
     if (!performanceChart || performanceChart.data.length == 0) return [];
     return [
       {
@@ -157,22 +164,22 @@ const PerformanceChart = (props: Props) => {
     ];
   }, [performanceChart, currency]);
   useEffect(() => {
-    console.log('series', series);
+    console.log('series', seriesData);
     if (
-      !series ||
-      series.length == 0 ||
-      series[0].data.length === 0 ||
-      series[1].data.length === 0
+      !seriesData ||
+      seriesData.length == 0 ||
+      seriesData[0].data.length === 0 ||
+      seriesData[1].data.length === 0
     )
       return;
     const maxAbs = Math.max(
       ...[
-        ...series[0].data.map((value) => Math.abs(value)),
-        ...series[1].data.map((value) => Math.abs(value)),
+        ...seriesData[0].data.map((value) => Math.abs(value)),
+        ...seriesData[1].data.map((value) => Math.abs(value)),
       ]
     );
     setMaxAbs(maxAbs);
-  }, [series]);
+  }, [seriesData]);
   return (
     <section className={styles.container}>
       {statusPerformanceChart === 'loading' && (
@@ -188,12 +195,33 @@ const PerformanceChart = (props: Props) => {
             },
             yaxis: {
               ...options.yaxis,
-              min: -maxAbs,
-              max: maxAbs,
+              min: mathSqrt(-maxAbs),
+              max: mathSqrt(maxAbs),
             },
           }}
           type='bar'
-          series={series}
+          // series={series}
+          // series={[
+          //   ...series.map((series) => {
+          //     return {
+          //       name: series.name,
+          //       data: series.data.map((item) => {
+          //         return item && mathSqrt(item);
+          //       }),
+          //     };
+          //   }),
+          // ]}
+          series={[
+            ...seriesData.map((series) => {
+              return {
+                name: series.name,
+                data: series.data.map((item) => {
+                  console.log('item', item, mathSqrt(item));
+                  return item && mathSqrt(item);
+                }),
+              };
+            }),
+          ]}
           height={200}
           width='100%'
         />
