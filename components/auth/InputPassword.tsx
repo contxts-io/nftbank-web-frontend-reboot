@@ -14,7 +14,6 @@ const InputPassword = (props: InputPasswordProps) => {
   // const [inputText, setInputText] = useState<string>('');
   const inputText = props.password[0];
   const setInputText = props.password[1];
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [textType, setTextType] = useState<'text' | 'password'>('password');
   const handleInputText = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
