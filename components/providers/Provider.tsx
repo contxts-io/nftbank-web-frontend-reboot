@@ -6,17 +6,37 @@ import ReactQueryClient from '@/utils/ReactQueryClient';
 import { Provider as JotaiProvider } from 'jotai';
 import { ThemeProvider } from './ThemeProvider';
 import { ToastContainer } from 'react-toastify';
-import { WagmiConfig, configureChains, createConfig, mainnet } from 'wagmi';
+import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import { useTheme } from 'next-themes';
 import { AuthProvider } from './AuthProvider';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
+import { mainnet, optimism } from 'wagmi/chains';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet],
   [publicProvider()]
 );
-
+const coinBaseConnector = new CoinbaseWalletConnector({
+  chains: [mainnet, optimism],
+  options: {
+    appName: 'wagmi.sh',
+    jsonRpcUrl: 'https://eth-mainnet.alchemyapi.io/v2/yourAlchemyId',
+  },
+});
 const config = createConfig({
+  connectors: [
+    coinBaseConnector,
+    new InjectedConnector({ chains }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        projectId: '...',
+      },
+    }),
+  ],
   autoConnect: true,
   publicClient,
   webSocketPublicClient,
