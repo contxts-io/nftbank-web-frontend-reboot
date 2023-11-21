@@ -1,0 +1,6 @@
+.container {
+  @apply w-full;
+}
+.inputText {
+  @apply w-full mt-4;
+}

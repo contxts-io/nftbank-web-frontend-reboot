@@ -134,7 +134,7 @@ export default async function RootLayout({
         ></script>
         <Providers>
           <AuthProvider>
-            <div className='flex flex-col w-screen h-fit max-w-[1440]'>
+            <div className='flex flex-col w-screen max-w-[1440] h-screen'>
               <GlobalNavigation />
               {children}
               <Footer />
