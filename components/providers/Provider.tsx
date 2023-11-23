@@ -104,11 +104,11 @@ function Providers({ children }: React.PropsWithChildren) {
             <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
               <ToastContainer />
               {children}
+              <ReactQueryDevtools initialIsOpen={false} />
             </ThemeProvider>
           </ThirdwebProvider>
         </WagmiConfig>
       </JotaiProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

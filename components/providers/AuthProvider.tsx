@@ -19,7 +19,7 @@ const checkMe = async (token: RequestCookie) => {
       headers: { Cookie: cookie },
     };
     const URL = process.env.API_URL_SSR;
-    const { data } = await instance.get(`${URL}/v1/user`, options);
+    const { data } = await instance.get(`${URL}/v1/auth/me`, options);
     return {
       ...data.data,
       walletAddress:

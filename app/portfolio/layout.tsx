@@ -1,3 +1,4 @@
+'use client';
 import PortfolioTabNavigation from '@/components/portfolio/PortfolioTabNavigation';
 import ProfileComponent from '@/components/profile/ProfileComponent';
 

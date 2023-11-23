@@ -8,6 +8,7 @@ import localFont from 'next/font/local';
 import Footer from '@/components/Footer';
 import 'react-toastify/dist/ReactToastify.css';
 import ProfileComponent from '@/components/profile/ProfileComponent';
+import LoginProvider from '@/components/providers/LoginProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -136,7 +137,7 @@ export default async function RootLayout({
           <AuthProvider>
             <div className='flex flex-col w-screen max-w-[1440] h-screen'>
               <GlobalNavigation />
-              {children}
+              <LoginProvider>{children}</LoginProvider>
               <Footer />
             </div>
           </AuthProvider>
