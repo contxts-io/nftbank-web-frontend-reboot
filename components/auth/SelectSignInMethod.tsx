@@ -5,15 +5,44 @@ import styles from './SelectSignInMethod.module.css';
 import Google from '@/public/icon/Google';
 import Email from '@/public/icon/Email';
 import ReactModal from 'react-modal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CloseX from '@/public/icon/CloseX';
 import ConnectWallet from './ConnectWallet';
 import { useRouter } from 'next/navigation';
+import { getIdTokenByGoogle } from '@/apis/firebase';
+import { setCookie } from 'cookies-next';
+import { getMe, sign } from '@/apis/auth';
+import { useMe, useMeManual } from '@/utils/hooks/queries/auth';
+import ReactQueryClient from '@/utils/ReactQueryClient';
+
 const SelectSignInMethod = () => {
   const router = useRouter();
+  const { data: me, refetch } = useMeManual();
   const [showModal, setShowModal] = useState(false);
   const handleClickEmail = () => {
     router.push('/auth/email');
+  };
+  const checkMe = async () => {
+    const result = await getMe();
+    return result.data.data;
+  };
+  const handleClickGoogle = async () => {
+    try {
+      const token = await getIdTokenByGoogle();
+      if (token) {
+        // setCookie('accessToken', token);
+        await sign({ token, provider: 'google.com' }).then(async () => {
+          // const me = await checkMe();
+          // me && router.push('/portfolio');
+          (await refetch()).data && router.push('/portfolio');
+        });
+      } else {
+        console.log('token is null');
+      }
+    } catch (error) {
+      console.log('error: ', error);
+      throw error;
+    }
   };
   return (
     <>
@@ -32,7 +61,11 @@ const SelectSignInMethod = () => {
               <Wallet className={styles.icon} />
               <p>Continue with Wallet</p>
             </Button>
-            <Button id='' className={styles.button}>
+            <Button
+              id=''
+              className={styles.button}
+              onClick={() => handleClickGoogle()}
+            >
               <Google className={styles.icon} />
               <p>Continue with Google</p>
             </Button>

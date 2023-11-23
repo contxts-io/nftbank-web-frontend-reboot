@@ -1,5 +1,6 @@
 import { TValuation } from "@/interfaces/collection";
 import { TCurrency } from "@/interfaces/constants";
+import jwt from 'jsonwebtoken';
 
 export function formatDate(date:  Date): string  {
   const year = date.getFullYear();
@@ -171,4 +172,23 @@ export function mathSqrt(value: string | number) {
 }
 function minMaxNormalization(value:number, min:number, max:number) {
   return (value - min) / (max - min);
+}
+type WalletData = {walletAddress: `0x${string}`, provider:string, type : 'evm'}
+export function formatToken (data: WalletData) {
+  let walletJwt = '';
+  const SECRET = process.env.NEXT_PUBLIC_AUTH_JWT_SECRET || '';
+  try {
+    let walletJwt = jwt.sign(
+      {
+        networkName: data.type || 'evm',
+        address: data.walletAddress,
+        provider: data.provider,
+      },SECRET
+    );
+    console.log('return walletJwt', walletJwt);
+    return walletJwt;
+  } catch (e) {
+    console.log('err', e);
+  }
+  return walletJwt;
 }

@@ -10,9 +10,26 @@ export function useMe() {
       return data.data;
     },
     {
+      retry: 1,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+    },
+  );
+}
+export function useMeManual() {
+  return useQuery<any,AxiosError>(
+    ['me'],
+    async () => {
+      const { data } = await getMe();
+      console.log('useMeManual',data)
+      return data.data;
+    },
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+      useErrorBoundary: false,
+      enabled: false,
     },
   );
 }

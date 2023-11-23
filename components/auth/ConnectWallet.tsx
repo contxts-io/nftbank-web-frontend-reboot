@@ -4,9 +4,11 @@ import styles from './ConnectWallet.module.css';
 import Button from '../buttons/Button';
 import CloseX from '@/public/icon/CloseX';
 import Image from 'next/image';
+import jwt from 'jsonwebtoken';
+
 import {
   useConnect,
-  // useDisconnect,
+  useDisconnect,
   useAddress,
 
   // import the wallet you want to connect
@@ -31,13 +33,18 @@ import {
 } from '@thirdweb-dev/wallets';
 
 import { useEffect } from 'react';
-import { useAccount, useDisconnect } from 'wagmi';
+import { useAccount, useDisconnect as useDisconnectWagmi } from 'wagmi';
 import {
   ConnectorName,
   useConnectCustom,
 } from '@/utils/hooks/useConnectCustom';
 import { useAtom } from 'jotai';
 import { connectedWalletAddressAtom } from '@/store/account';
+import { useMutationSignInUp } from '@/utils/hooks/mutations/auth';
+import { formatToken } from '@/utils/common';
+import { getMe } from '@/apis/auth';
+import { useMeManual } from '@/utils/hooks/queries/auth';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   onClose: () => void;
@@ -47,11 +54,15 @@ type TWallet = {
   icon: string;
 };
 const ConnectWallet = (props: Props) => {
+  const router = useRouter();
+  const { data, mutate: signInUp, status } = useMutationSignInUp();
+  const { data: me, refetch } = useMeManual();
   const [connectedWalletAddress, setConnectedWalletAddress] = useAtom(
     connectedWalletAddressAtom
   );
   const connect = useConnect();
   const address = useAddress();
+  const _useDisconnectWagmi = useDisconnectWagmi();
   // const disconnect = useDisconnect();
   const chain = useChain();
   const connectWithRainbow = useRainbowWallet();
@@ -75,11 +86,14 @@ const ConnectWallet = (props: Props) => {
   const connectCustom = useConnectCustom({
     onConnect: () => console.log('onConnect'),
   });
-  const { disconnect } = useDisconnect();
+  const disconnect = useDisconnect();
   const handleCustom = (wallet: ConnectorName) => {
     connectCustom.connect(wallet);
   };
-
+  const checkMe = async () => {
+    const result = await getMe();
+    return result.data.data;
+  };
   const handleClickButton = async (wallet: TWallet) => {
     console.log('wallet', wallet);
     try {
@@ -142,12 +156,34 @@ const ConnectWallet = (props: Props) => {
     }
   };
   useEffect(() => {
+    me && router.push('/portfolio');
+  }, [me]);
+  useEffect(() => {
     address?.startsWith('0x') &&
       setConnectedWalletAddress(address as `0x${string}`);
   }, [address]);
   useEffect(() => {
     console.log('connectedWalletAddress', connectedWalletAddress);
     console.log('chain', chain);
+    if (connectedWalletAddress) {
+      const token = formatToken({
+        walletAddress: connectedWalletAddress,
+        provider: 'metamask',
+        type: 'evm',
+      });
+      signInUp(
+        {
+          token: token,
+          provider: 'wallet',
+        },
+        {
+          onSuccess: async (data) => {
+            const me = await checkMe();
+            me && router.push('/portfolio');
+          },
+        }
+      );
+    }
   }, [connectedWalletAddress, chain]);
   const checkWallet = async () => {
     console.log('afdasdfd');
@@ -199,6 +235,10 @@ const ConnectWallet = (props: Props) => {
       icon: '/logo/Zerion.svg',
     },
   ];
+  const disconnectWallet = () => {
+    disconnect();
+    _useDisconnectWagmi.disconnect();
+  };
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -215,9 +255,9 @@ const ConnectWallet = (props: Props) => {
         </Button>
       </div>
       <div className={`font-button03-medium ${styles.body}`}>
-        {/* <div>
-          <button onClick={() => disconnect()}>Disconnect</button>
-        </div> */}
+        <div>
+          <button onClick={() => disconnectWallet()}>Disconnect</button>
+        </div>
 
         {/* {connectors.map((connector) => (
           <Button

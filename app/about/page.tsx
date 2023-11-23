@@ -32,7 +32,7 @@ const Page = () => {
     try {
       const token = await getIdTokenByGoogle();
       if (token) {
-        setCookie('accessToken', token);
+        // setCookie('accessToken', token);
         const user = token ? await signIn(token) : null;
         console.log('user: ', user);
       } else {
@@ -47,8 +47,8 @@ const Page = () => {
     try {
       const token = await getIdTokenByGoogle();
       if (token) {
-        setCookie('accessToken', token);
-        const user = token ? await signUp({ token, nickname: 'julian' }) : null;
+        // setCookie('accessToken', token);
+        const user = token ? await signUp({ token, nickname: '' }) : null;
         console.log('user: ', user);
       } else {
         console.log('token is null');
