@@ -1,4 +1,5 @@
-import { AuthProvider } from "@/interfaces/constants";
+import { AuthProvider, TCurrency } from "@/interfaces/constants";
+import { TMe } from "@/interfaces/user";
 import instance from "@/utils/axiosInterceptor"
 
 // export const postUser = async <T = User, R = UserPostType>(body: R): Promise<T> => {
@@ -22,9 +23,16 @@ export const sign = async (postData:TSignInUp) => {
   console.log('sign', result);
   return result;
 }
-export const getMe = async () => {
-  const result = await instance.get('/auth/me');
-  console.log('me', result);
+export const getMe = async<T = TMe> () => {
+  const result = await instance.get<{data:T}>('/auth/me');
+  return result;
+}
+export type UpdateMeType = {
+  nickname?: string,
+  currency?: TCurrency,
+}
+export const updateMe = async<T = TMe> (postData:UpdateMeType) => {
+  const result = await instance.put<{data:T}>('/auth/me',postData);
   return result;
 }
 export const signUp = async ({token,nickname}:{token:string,nickname:string}) => {

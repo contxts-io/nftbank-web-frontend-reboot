@@ -1,9 +1,13 @@
+'use client';
 import Image from 'next/image';
 import WalletFilled from '@/public/icon/WalletFilled';
 import FolderFilled from '@/public/icon/FolderFilled';
 import ShareNetwork from '@/public/icon/ShareNetwork';
 import Eye from '@/public/icon/Eye';
+import { useMe } from '@/utils/hooks/queries/auth';
 const ProfileComponent = () => {
+  const { data: me, status } = useMe();
+  if (status === 'loading') return <div>loading</div>;
   return (
     <section className='w-full px-24 py-24 flex items-center justify-between'>
       <div className='flex items-center'>
@@ -19,15 +23,15 @@ const ProfileComponent = () => {
             <h2
               className={`font-subtitle01-bold mr-16 text-text-main dark:text-text-main-dark`}
             >
-              Cooldaram
+              {me?.nickname || me?.email}
             </h2>
-            <ShareNetwork className='mr-12 fill-icon-subtle dark:fill-icon-subtle-dark' />
-            <Eye className=' fill-icon-subtle dark:fill-icon-subtle-dark' />
+            <ShareNetwork className='mr-12 fill-[var(--color-icon-subtle)]' />
+            <Eye className=' fill-[var(--color-icon-subtle)]' />
           </div>
-          <div className='font-caption-regular flex items-center text-text-subtle dark:text-text-subtle-dark'>
+          <div className='font-caption-regular flex items-center text-[var(--color-text-subtle)]'>
             <span className='flex items-center mr-16'>
               <WalletFilled
-                className='mr-4 fill-icon-disabled dark:fill-icon-disabled-dark'
+                className='mr-4 fill-[var(--color-icon-disabled)]'
                 width={14}
                 height={14}
               />
@@ -35,7 +39,7 @@ const ProfileComponent = () => {
             </span>
             <span className='flex items-center'>
               <FolderFilled
-                className='mr-4 fill-icon-disabled dark:fill-icon-disabled-dark'
+                className='mr-4 fill-[var(--color-icon-disabled)] '
                 width={14}
                 height={14}
               />
@@ -45,20 +49,18 @@ const ProfileComponent = () => {
         </div>
       </div>
       <div className='flex flex-col items-end'>
-        <p className='font-caption-medium mb-8 text-text-subtlest dark:text-text-subtlest-dark'>
+        <p className='font-caption-medium mb-8 text-[var(--color-text-subtlest)]'>
           Current Balance
         </p>
-        <p className='font-header03-bold mb-4 text-text-main dark:text-text-main-dark'>
+        <p className='font-header03-bold mb-4 text-[var(--color-text-main)]'>
           $173,398
         </p>
         <div className='font-caption-medium flex'>
-          <div className='px-8 py-4 bg-background-danger dark:bg-background-danger-dark'>
-            <p className='text-text-danger dark:text-text-danger-dark'>
-              -2,117(2.3%)
-            </p>
+          <div className='px-8 py-4 bg-[var(--color-background-danger)]'>
+            <p className='text-[var(--color-text-danger)]'>-2,117(2.3%)</p>
           </div>
-          <div className='px-8 py-4 bg-elevation-surface-raised dark:bg-elevation-surface-raised-dark'>
-            <p className='text-text-main dark:text-text-main-dark'>24h</p>
+          <div className='px-8 py-4 bg-[var(--color-elevation-surface-raised)]'>
+            <p className='text-[var(--color-text-main)]'>24h</p>
           </div>
         </div>
       </div>
