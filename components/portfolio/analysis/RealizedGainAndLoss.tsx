@@ -45,7 +45,7 @@ const RealizedGainAndLoss = () => {
     fetchNextPage,
   } = useInventoryRealizedTokensInfinite({
     ...requestParams,
-    walletAddress: me?.walletAddress,
+    walletAddress: me?.walletAddress || '',
   });
   const [selectedStatus, setSelectedStatus] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({

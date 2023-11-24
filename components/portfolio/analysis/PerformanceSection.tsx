@@ -44,7 +44,7 @@ const PerformanceSection = () => {
   });
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart({
-      walletAddress: me?.walletAddress,
+      walletAddress: me?.walletAddress || '',
       ...requestParam,
       gnlChartType: requestParam.gnlChartType.toLowerCase() as
         | 'overall'
@@ -53,7 +53,7 @@ const PerformanceSection = () => {
     });
   const { data: performanceAnnual, status: statusPerformanceAnnual } =
     usePerformanceChartAnnual({
-      walletAddress: me?.walletAddress,
+      walletAddress: me?.walletAddress || '',
       ...requestParam,
       gnlChartType: requestParam.gnlChartType.toLowerCase() as
         | 'overall'
@@ -113,7 +113,7 @@ const PerformanceSection = () => {
       <section className={styles.dataWrapper}>
         <PerformanceChart
           requestParam={{
-            walletAddress: me?.walletAddress,
+            walletAddress: me?.walletAddress || '',
             ...requestParam,
           }}
         />

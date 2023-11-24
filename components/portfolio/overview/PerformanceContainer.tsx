@@ -23,13 +23,13 @@ const PerformanceContainer = () => {
   });
   const { data: performanceAnnualAll, status: statusPerformanceAnnualAll } =
     usePerformanceChartAnnual({
-      walletAddress: me?.walletAddress,
+      walletAddress: me?.walletAddress || '',
       window: 'all',
       ...requestParam,
     });
   const { data: performanceAnnualYTD, status: statusPerformanceAnnualYTD } =
     usePerformanceChartAnnual({
-      walletAddress: me?.walletAddress,
+      walletAddress: me?.walletAddress || '',
       ...requestParam,
       window: 'ytd',
     });
@@ -57,7 +57,7 @@ const PerformanceContainer = () => {
       </div>
       <PerformanceChart
         requestParam={{
-          walletAddress: me?.walletAddress,
+          walletAddress: me?.walletAddress || '',
           ...requestParam,
         }}
       />

@@ -54,7 +54,7 @@ const HistoricalTrendContainer = () => {
     status: statusInventoryValueHistorical,
   } = useInventoryValueHistorical({
     ...historicalValueParam,
-    walletAddress: me?.walletAddress,
+    walletAddress: me?.walletAddress || '',
   });
   const handleClickPeriod = (period: { name: string; value: Period }) => {
     console.log('handleClickPeriod', period);
@@ -108,7 +108,7 @@ const HistoricalTrendContainer = () => {
     me?.walletAddress &&
       setHistoricalValueParam((prev) => ({
         ...prev,
-        walletAddress: me?.walletAddress,
+        walletAddress: me?.walletAddress || '',
       }));
   }, [me?.walletAddress]);
   return (

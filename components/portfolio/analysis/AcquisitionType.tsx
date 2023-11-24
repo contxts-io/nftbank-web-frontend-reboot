@@ -60,7 +60,7 @@ const AcquisitionType = () => {
   const { data: acquisitionTypes, status: acquisitionTypesStatus } =
     useInventoryAcquisitionTypes({
       ...requestParams,
-      walletAddress: me?.walletAddress,
+      walletAddress: me?.walletAddress || '',
     });
   const [list, setList] = useState<_List[]>(LIST);
   const [selectedPeriod, setSelectedPeriod] = useState<_Period[]>(
