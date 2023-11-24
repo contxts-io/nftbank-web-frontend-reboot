@@ -5,7 +5,12 @@ import { twMerge } from 'tailwind-merge';
 // import * as gtag from '@/lib/gtag';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
-const Button = ({ id, children, ...props }: { id: string } & ButtonProps) => {
+const Button = ({
+  id,
+  children,
+  className,
+  ...props
+}: { id: string } & ButtonProps) => {
   const handleClick = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
@@ -24,7 +29,7 @@ const Button = ({ id, children, ...props }: { id: string } & ButtonProps) => {
   return (
     <button
       {...props}
-      className={twMerge(`${styles.button} ${props.className}`)}
+      className={twMerge(`${styles.button} ${className}`)}
       id={id}
       onClick={handleClick}
     >
