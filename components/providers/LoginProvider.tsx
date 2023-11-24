@@ -17,11 +17,11 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
     status === 'success' && me && !me.nickname && setShowModal(true);
     status === 'success' && me && me.nickname && setShowModal(false);
   }, [me, status]);
-  if (status === 'loading') {
-    // 데이터 로딩 중에는 로딩 스피너 또는 다른 로딩 상태를 표시할 수 있습니다.
-    return <div>Loading...</div>;
-  }
   if (!path.includes('/auth')) {
+    // if (status === 'loading') {
+    //   // 데이터 로딩 중에는 로딩 스피너 또는 다른 로딩 상태를 표시할 수 있습니다.
+    //   return <div>Loading...</div>;
+    // }
     if (isError || !me) {
       // 에러 또는 데이터가 없는 경우 로그인 페이지로 리다이렉트
       router.push('/auth/signin');
@@ -29,7 +29,7 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }
   return (
-    <div>
+    <>
       {children}
       <ReactModal
         isOpen={showModal}
@@ -46,7 +46,7 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
           <NicknameSetting />
         </div>
       </ReactModal>
-    </div>
+    </>
   );
 };
 export default LoginProvider;

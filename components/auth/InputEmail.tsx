@@ -14,12 +14,12 @@ const InputEMail = (props: Props) => {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      <p className='text-[var(--color-text-subtle)] mt-4'>
+      {/* <p className='text-[var(--color-text-subtle)] mt-4'>
         Looks like you already have an account.{' '}
         <span className='text-[var(--color-text-brand)] cursor-pointer'>
           Please Continue with Google.
         </span>
-      </p>
+      </p> */}
     </div>
   );
 };
