@@ -20,7 +20,7 @@ const InventoryValue = () => {
   const { data: me } = useMe();
   const [values, setValues] = useState<any[]>([]);
   const walletAddress =
-    searchParams.get('walletAddress') || me.walletAddress || undefined;
+    searchParams.get('walletAddress') || me?.walletAddress || undefined;
 
   const { data: inventoryValue, status: statusInventoryValue } =
     useInventoryValue(walletAddress);

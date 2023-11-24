@@ -204,7 +204,7 @@ const ConnectWallet = (props: Props) => {
     }
   };
   useEffect(() => {
-    checkWallet();
+    // checkWallet();
     typeof window !== 'undefined'
       ? console.log('window', window)
       : console.log('winodw', 'no window');

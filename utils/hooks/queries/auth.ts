@@ -1,9 +1,10 @@
 import { getMe } from "@/apis/auth";
 import { AxiosError } from "axios";
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { TMe } from "@/interfaces/user";
 
 export function useMe() {
-  return useQuery<any,AxiosError>(
+  return useQuery<TMe,AxiosError>(
     ['me'],
     async () => {
       const { data } = await getMe();
@@ -18,11 +19,10 @@ export function useMe() {
   );
 }
 export function useMeManual() {
-  return useQuery<any,AxiosError>(
+  return useQuery<TMe,AxiosError>(
     ['me'],
     async () => {
       const { data } = await getMe();
-      console.log('useMeManual',data)
       return data.data;
     },
     {

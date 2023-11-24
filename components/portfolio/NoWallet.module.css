@@ -1,0 +1,6 @@
+.container {
+  @apply flex flex-col items-center;
+}
+.addButton {
+  @apply bg-[var(--color-background-brand-bold)] text-[var(--color-text-inverse)] px-40 py-10;
+}

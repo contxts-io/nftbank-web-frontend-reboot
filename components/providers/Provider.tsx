@@ -100,6 +100,7 @@ function Providers({ children }: React.PropsWithChildren) {
           <ThirdwebProvider
             supportedWallets={[metamaskWallet(), rainbowWallet()]}
             clientId={THIRD_WEB_API_KEY}
+            autoConnect={false}
           >
             <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
               <ToastContainer />

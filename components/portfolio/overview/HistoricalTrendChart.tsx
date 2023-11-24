@@ -54,7 +54,7 @@ const HistoricalTrendChart = (props: Props) => {
     status: statusInventoryValueHistorical,
   } = useInventoryValueHistorical({
     ...historicalValueParam,
-    walletAddress: me?.walletAddress,
+    walletAddress: me?.walletAddress || '',
   });
   const [isPlus, setIsPlus] = useState(false);
   let category: string[] = [];
