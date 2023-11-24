@@ -20,11 +20,22 @@ const checkMe = async (token: RequestCookie) => {
     };
     const URL = process.env.API_URL_SSR;
     const { data } = await instance.get(`${URL}/v1/auth/me`, options);
-    return {
-      ...data.data,
-      walletAddress:
-        WALLET_ADDRESS[Math.floor(Math.random() * WALLET_ADDRESS.length)],
+    return data.data;
+  } catch (error) {
+    // throw new Error('Failed to fetch data');
+    return { name: 'fail' };
+  }
+};
+const checkWallet = async (token: RequestCookie) => {
+  try {
+    const cookie = `${token.name}=${token.value}`;
+    const options = {
+      withCredentials: true,
+      headers: { Cookie: cookie },
     };
+    const URL = process.env.API_URL_SSR;
+    const { data } = await instance.get(`${URL}/v1/wallet`, options);
+    return data.data;
   } catch (error) {
     // throw new Error('Failed to fetch data');
     return { name: 'fail' };
@@ -38,7 +49,8 @@ export const AuthProvider = async ({ children }: any) => {
   const reactQueryClient = ReactQueryClient;
   console.log('TOKEN ? ', TOKEN);
   if (TOKEN && TOKEN?.value !== '') {
-    await reactQueryClient.prefetchQuery(['me'], () => checkMe(TOKEN));
+    await (reactQueryClient.prefetchQuery(['me'], () => checkMe(TOKEN)),
+    reactQueryClient.prefetchQuery(['walletList'], () => checkWallet(TOKEN)));
   }
   const dehydratedState = dehydrate(reactQueryClient);
   return <Hydrate state={dehydratedState}>{children}</Hydrate>;

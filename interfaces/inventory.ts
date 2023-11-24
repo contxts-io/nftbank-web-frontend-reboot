@@ -56,3 +56,7 @@ export type PerformanceCollection = {
   roi: Value | null,
   processedAt: string
 }
+export type TWallet = {
+  address: string,
+  name: string,
+}
