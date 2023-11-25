@@ -44,3 +44,8 @@ export const signUp = async ({token,nickname}:{token:string,nickname:string}) =>
   console.log('signUp', result);
   return result;
 }
+export const signOut = async () => {
+  const result = await instance.post('/auth/signout');
+  console.log('signOut', result);
+  return result;
+}

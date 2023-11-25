@@ -8,7 +8,7 @@ import { useAtom } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import Wallet from '@/public/icon/Wallet';
 import Ghost from '@/public/icon/Ghost';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import GhostOn from '@/public/icon/GhostOn';
 import EthereumIcon from '@/public/icon/EthereumIcon';
 import Usd from '@/public/icon/Usd';
@@ -16,9 +16,12 @@ import Button from './buttons/Button';
 import { logout } from '@/apis/firebase';
 import { useRouter } from 'next/navigation';
 import ReactQueryClient from '@/utils/ReactQueryClient';
+import { signOut } from '@/apis/auth';
+import { useMeManual } from '@/utils/hooks/queries/auth';
 
 const GlobalNavigation = () => {
   const router = useRouter();
+  const { data: me, refetch, status } = useMeManual();
   const [currency, setCurrency] = useAtom(currencyAtom);
   const [isGhost, setIsGhost] = useState<boolean>(false);
   const changeCurrency = () => {
@@ -30,12 +33,13 @@ const GlobalNavigation = () => {
     setIsGhost((prev) => !prev);
   };
   const handleClickLogout = async () => {
-    ReactQueryClient.removeQueries(['me']);
-    ReactQueryClient.clear();
-    await logout();
-
-    router.push('/auth/signin');
+    await signOut().then(() => {
+      console.log('logout');
+      ReactQueryClient.removeQueries(['me']);
+      ReactQueryClient.removeQueries(['walletList']);
+    });
   };
+
   return (
     <nav
       className={`${styles.navigation} border-border-main text-text-subtle dark:bg-elevation-surface-dark dark:border-border-main-dark py-12`}
