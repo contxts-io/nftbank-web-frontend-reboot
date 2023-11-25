@@ -33,10 +33,12 @@ const GlobalNavigation = () => {
     setIsGhost((prev) => !prev);
   };
   const handleClickLogout = async () => {
-    await signOut().then(() => {
+    await signOut().then(async () => {
       console.log('logout');
-      ReactQueryClient.removeQueries(['me']);
-      ReactQueryClient.removeQueries(['walletList']);
+      await ReactQueryClient.removeQueries(['me']);
+      await ReactQueryClient.removeQueries(['walletList']);
+      await ReactQueryClient.clear();
+      console.log('logout 2');
     });
   };
 
