@@ -68,7 +68,6 @@ const SelectSignInMethod = () => {
               id=''
               className={styles.button}
               onClick={() => setShowModal(true)}
-              disabled={status === 'loading'}
             >
               <Wallet className={styles.icon} />
               <p>Continue with Wallet</p>
@@ -77,7 +76,6 @@ const SelectSignInMethod = () => {
               id=''
               className={styles.button}
               onClick={() => handleClickGoogle()}
-              disabled={status === 'loading'}
             >
               <Google className={styles.icon} />
               <p>Continue with Google</p>
@@ -86,7 +84,6 @@ const SelectSignInMethod = () => {
               id=''
               className={styles.button}
               onClick={() => handleClickEmail()}
-              disabled={status === 'loading'}
             >
               <Email className={styles.icon} />
               <p>Continue with Email</p>
