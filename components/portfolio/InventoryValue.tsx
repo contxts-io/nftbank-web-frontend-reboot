@@ -12,15 +12,17 @@ import { inventoryTypeAtom } from '@/store/settings';
 import { formatCurrency, formatPercent } from '@/utils/common';
 import { useInventoryUnrealizedPerformance } from '@/utils/hooks/queries/performance';
 import SkeletonLoader from '../SkeletonLoader';
-import { useMe } from '@/utils/hooks/queries/auth';
 import { useEffect, useState } from 'react';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 
 const InventoryValue = () => {
   const searchParams = useSearchParams();
-  const { data: me } = useMe();
+  const { data: walletList } = useMyWalletList();
   const [values, setValues] = useState<any[]>([]);
   const walletAddress =
-    searchParams.get('walletAddress') || me.walletAddress || undefined;
+    searchParams.get('walletAddress') ||
+    walletList?.[0].walletAddress ||
+    undefined;
 
   const { data: inventoryValue, status: statusInventoryValue } =
     useInventoryValue(walletAddress);

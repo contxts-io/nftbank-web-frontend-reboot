@@ -13,6 +13,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { difference, formatCurrency, formatPercent } from '@/utils/common';
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 //'1d'| '3d'| '7d'| '30d'| '90d'| 'ytd'| '365d'| 'all'
 const PERIOD: { name: string; value: Period }[] = [
   {
@@ -39,7 +40,7 @@ const PERIOD: { name: string; value: Period }[] = [
 type Period = '1d' | '3d' | '7d' | '30d' | '90d' | 'ytd' | '365d' | 'all';
 const HistoricalTrendContainer = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('1W');
-  const { data: me } = useMe();
+  const { data: walletList } = useMyWalletList();
   const currency = useAtomValue(currencyAtom);
 
   const [historicalValueParam, setHistoricalValueParam] = useAtom(
@@ -48,13 +49,13 @@ const HistoricalTrendContainer = () => {
   const [hoverValue, setHoverValue] = useState<number | null>(null);
   const [diffValue, setDiffValue] = useState<number | null>(null);
   const { data: inventoryValue, status: statusInventoryValue } =
-    useInventoryValuePolling(me?.walletAddress);
+    useInventoryValuePolling(walletList?.[0].walletAddress || '');
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
   } = useInventoryValueHistorical({
     ...historicalValueParam,
-    walletAddress: me?.walletAddress,
+    walletAddress: walletList?.[0].walletAddress || '',
   });
   const handleClickPeriod = (period: { name: string; value: Period }) => {
     console.log('handleClickPeriod', period);
@@ -105,12 +106,12 @@ const HistoricalTrendContainer = () => {
     console.log('hoverValue', hoverValue);
   }, [hoverValue]);
   useEffect(() => {
-    me?.walletAddress &&
+    walletList?.[0].walletAddress &&
       setHistoricalValueParam((prev) => ({
         ...prev,
-        walletAddress: me?.walletAddress,
+        walletAddress: walletList?.[0].walletAddress || '',
       }));
-  }, [me?.walletAddress]);
+  }, [walletList]);
   return (
     <section className={styles.container}>
       <div className={styles.summary}>

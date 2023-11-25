@@ -20,12 +20,10 @@ const PortfolioTabNavigation = () => {
     setInventoryType(type);
   };
   return (
-    <nav
-      className={`${styles.navigation} border-border-main dark:border-border-main-dark dark:bg-elevation-surface-dark`}
-    >
+    <nav className={`${styles.navigation} border-[var(--color-border-main)]`}>
       <div className={styles.links}>
         <div
-          className={`w-24 h-full border-b-4 border-border-main dark:border-border-main-dark`}
+          className={`w-24 h-full border-b-4 border-[var(--color-border-main)]`}
         />
         {navLinks.map((link, index) => {
           const isActive = pathname === link.href;
@@ -50,14 +48,12 @@ const PortfolioTabNavigation = () => {
           );
         })}
         {pathname === '/portfolio/inventory' ? (
-          <div
-            className={`font-body01-medium  ${styles.subButtons} dark:border-border-main-dark dark:text-text-subtlest-dark dark:fill-icon-subtlest-dark`}
-          >
+          <div className={`font-body01-medium  ${styles.subButtons}`}>
             <button
               className={`${styles.button}  ${
                 inventoryType === 'collection'
                   ? 'text-[var(--color-text-brand)]  hover:text-[var(--color-text-brand)]  fill-[var(--color-icon-brand)] hover:fill-[var(--color-icon-brand)]'
-                  : 'hover:text-text-main hover:fill-icon-main dark:hover:text-text-main-dark dark:hover:fill-icon-main-dark'
+                  : 'hover:text-[var(--color-text-main)] hover:fill-[var(--color-icon-main)]'
               }`}
               onClick={() => handleClickButton('collection')}
             >
@@ -68,8 +64,8 @@ const PortfolioTabNavigation = () => {
             <button
               className={`${styles.button}  ${
                 inventoryType === 'item'
-                  ? 'text-text-brand dark:text-text-brand-dark hover:text-text-brand hover:dark:text-text-brand-dark fill-icon-brand dark:fill-icon-brand-dark hover:fill-icon-brand dark:hover:fill-icon-brand-dark'
-                  : 'hover:text-text-main hover:fill-icon-main dark:hover:text-text-main-dark dark:hover:fill-icon-main-dark'
+                  ? 'text-[var(--color-text-brand)] hover:text-[var(--color-text-brand)] fill-[var(--color-icon-brand)] hover:fill-[var(--color-icon-brand)]'
+                  : 'hover:text-[var(--color-text-main)] hover:fill-[var(--color-icon-main)]'
               }`}
               onClick={() => handleClickButton('item')}
             >
@@ -80,7 +76,7 @@ const PortfolioTabNavigation = () => {
         ) : (
           <div />
         )}
-        <div className='flex-grow h-full border-b-4 dark:border-border-main-dark' />
+        <div className='flex-grow h-full border-b-4 border-[var(--color-border-main)]' />
       </div>
     </nav>
   );

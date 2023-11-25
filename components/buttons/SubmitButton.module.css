@@ -1,0 +1,10 @@
+.button {
+  @apply flex items-center justify-center;
+  @apply bg-[var(--color-background-brand-bold)] text-[var(--color-text-inverse)] !important;
+}
+.button span p {
+  @apply text-[var(--color-text-inverse)];
+}
+.button:disabled {
+  @apply bg-[var(--color-background-disabled)] text-[var(--color-text-disabled)] cursor-not-allowed hover:border-transparent hover:text-[var(--color-text-disabled)] !important;
+}

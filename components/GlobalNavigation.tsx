@@ -13,8 +13,12 @@ import GhostOn from '@/public/icon/GhostOn';
 import EthereumIcon from '@/public/icon/EthereumIcon';
 import Usd from '@/public/icon/Usd';
 import Button from './buttons/Button';
+import { logout } from '@/apis/firebase';
+import { useRouter } from 'next/navigation';
+import ReactQueryClient from '@/utils/ReactQueryClient';
 
 const GlobalNavigation = () => {
+  const router = useRouter();
   const [currency, setCurrency] = useAtom(currencyAtom);
   const [isGhost, setIsGhost] = useState<boolean>(false);
   const changeCurrency = () => {
@@ -24,6 +28,13 @@ const GlobalNavigation = () => {
   };
   const handleGhostMode = () => {
     setIsGhost((prev) => !prev);
+  };
+  const handleClickLogout = async () => {
+    ReactQueryClient.removeQueries(['me']);
+    ReactQueryClient.clear();
+    await logout();
+
+    router.push('/auth/signin');
   };
   return (
     <nav
@@ -71,6 +82,9 @@ const GlobalNavigation = () => {
             {currency === 'eth' ? <EthereumIcon /> : <Usd />}
           </div>
           {currency.toUpperCase()}
+        </Button>
+        <Button id='logout' onClick={() => handleClickLogout()}>
+          <p>Logout</p>
         </Button>
       </div>
     </nav>

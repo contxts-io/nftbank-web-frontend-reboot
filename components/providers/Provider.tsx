@@ -6,18 +6,85 @@ import ReactQueryClient from '@/utils/ReactQueryClient';
 import { Provider as JotaiProvider } from 'jotai';
 import { ThemeProvider } from './ThemeProvider';
 import { ToastContainer } from 'react-toastify';
-import { WagmiConfig, configureChains, createConfig, mainnet } from 'wagmi';
+import { WagmiConfig, configureChains, createConfig } from 'wagmi';
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { publicProvider } from 'wagmi/providers/public';
 import { useTheme } from 'next-themes';
 import { AuthProvider } from './AuthProvider';
-
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
+import { mainnet, optimism } from 'wagmi/chains';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { LedgerConnector } from '@wagmi/connectors/ledger';
+import {
+  ThirdwebProvider,
+  // import the wallets you want
+  metamaskWallet,
+  rainbowWallet,
+} from '@thirdweb-dev/react';
+const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '';
+const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID || '';
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [mainnet],
-  [publicProvider()]
+  [alchemyProvider({ apiKey: ALCHEMY_ID }), publicProvider()]
 );
+export const metamaskConnector = new MetaMaskConnector({
+  chains,
+  options: {
+    UNSTABLE_shimOnConnectSelectAccount: true,
+    shimDisconnect: true,
+  },
+});
+export const coinBaseConnector = new CoinbaseWalletConnector({
+  chains: [mainnet, optimism],
+  options: {
+    appName: 'NFTBank',
+    jsonRpcUrl: 'https://eth-mainnet.alchemyapi.io/v2/yourAlchemyId',
+  },
+});
 
+export const walletConnectConnector = new WalletConnectConnector({
+  options: {
+    projectId: WC_PROJECT_ID,
+    showQrModal: true,
+  },
+});
+export const trustWalletConnector = new InjectedConnector({
+  chains,
+  options: {
+    name: 'trustwallet',
+    shimDisconnect: true,
+    getProvider: () =>
+      typeof window !== 'undefined' ? window.trustwallet : undefined,
+  },
+});
+export const ledgerConnector = new LedgerConnector({
+  chains: [mainnet],
+  options: {
+    projectId: WC_PROJECT_ID,
+  },
+});
+
+export const zerionWalletConnector = new InjectedConnector({
+  chains,
+  options: {
+    name: 'zerionWallet',
+    shimDisconnect: true,
+    getProvider: () =>
+      typeof window !== 'undefined' ? window.zerionWallet : undefined,
+  },
+});
 const config = createConfig({
-  autoConnect: true,
+  connectors: [
+    metamaskConnector,
+    coinBaseConnector,
+    walletConnectConnector,
+    trustWalletConnector,
+    zerionWalletConnector,
+    ledgerConnector,
+  ],
+  autoConnect: false,
   publicClient,
   webSocketPublicClient,
 });
@@ -29,6 +96,7 @@ const contextClass = {
   default: 'bg-indigo-600',
   dark: 'bg-white-600 font-gray-300',
 };
+const THIRD_WEB_API_KEY = process.env.NEXT_PUBLIC_THIRD_WEB_API_KEY || '';
 type Key = 'success' | 'error' | 'info' | 'warning' | 'default' | 'dark';
 function Providers({ children }: React.PropsWithChildren) {
   const [client] = React.useState(ReactQueryClient);
@@ -38,13 +106,19 @@ function Providers({ children }: React.PropsWithChildren) {
     <QueryClientProvider client={client}>
       <JotaiProvider>
         <WagmiConfig config={config}>
-          <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-            <ToastContainer />
-            {children}
-          </ThemeProvider>
+          <ThirdwebProvider
+            supportedWallets={[metamaskWallet(), rainbowWallet()]}
+            clientId={THIRD_WEB_API_KEY}
+            autoConnect={false}
+          >
+            <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
+              <ToastContainer />
+              {children}
+              <ReactQueryDevtools initialIsOpen={false} />
+            </ThemeProvider>
+          </ThirdwebProvider>
         </WagmiConfig>
       </JotaiProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

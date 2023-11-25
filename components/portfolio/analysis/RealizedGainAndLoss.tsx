@@ -20,6 +20,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { analysisGainAndLossParamAtom } from '@/store/requestParam';
 import { formatCurrency, formatDate, formatPercent } from '@/utils/common';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const THEAD = [
   { key: 'item', value: 'Item' },
   { key: 'amount', value: 'Amount' },
@@ -38,14 +39,15 @@ const RealizedGainAndLoss = () => {
   const [requestParams, setRequestParams] = useAtom(
     analysisGainAndLossParamAtom
   );
-  const { data: me } = useMe();
+  // const { data: me } = useMe();
+  const { data: walletList } = useMyWalletList();
   const {
     data: realizedTokenList,
     status,
     fetchNextPage,
   } = useInventoryRealizedTokensInfinite({
     ...requestParams,
-    walletAddress: me?.walletAddress,
+    walletAddress: walletList?.[0].walletAddress || '',
   });
   const [selectedStatus, setSelectedStatus] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({

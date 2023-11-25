@@ -1,5 +1,6 @@
 import { TValuation } from "@/interfaces/collection";
 import { TCurrency } from "@/interfaces/constants";
+import jwt from 'jsonwebtoken';
 
 export function formatDate(date:  Date): string  {
   const year = date.getFullYear();
@@ -157,4 +158,37 @@ export function capitalizeFirstLetter(inputString:string) {
   }
   
   return inputString;
+}
+export function mathSqrt(value: string | number) {
+  let _value:number = 0;
+  if (typeof value === 'string') {
+    _value = parseFloat(value);
+  }
+  if(typeof value === 'number') {
+    _value = value;
+  }
+  // return _value && _value >= 0 ? Math.sqrt(_value) : -(Math.sqrt(Math.abs(_value)));
+  return _value && _value >= 0 ? Math.log(_value) : -(Math.log(Math.abs(_value)));
+}
+function minMaxNormalization(value:number, min:number, max:number) {
+  return (value - min) / (max - min);
+}
+type WalletData = {walletAddress: `0x${string}`, provider:string, type : 'evm'}
+export function formatToken (data: WalletData) {
+  let walletJwt = '';
+  const SECRET = process.env.NEXT_PUBLIC_AUTH_JWT_SECRET || '';
+  try {
+    let walletJwt = jwt.sign(
+      {
+        networkName: data.type || 'evm',
+        address: data.walletAddress,
+        provider: data.provider,
+      },SECRET
+    );
+    console.log('return walletJwt', walletJwt);
+    return walletJwt;
+  } catch (e) {
+    console.log('err', e);
+  }
+  return walletJwt;
 }

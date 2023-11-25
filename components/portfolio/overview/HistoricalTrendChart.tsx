@@ -1,12 +1,13 @@
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { currencyAtom } from '@/store/currency';
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
-import { formatCurrency, formatDate } from '@/utils/common';
+import { formatCurrency, formatDate, mathSqrt } from '@/utils/common';
 import { useMe } from '@/utils/hooks/queries/auth';
 import {
   useInventoryValueHistorical,
   useInventoryValuePolling,
 } from '@/utils/hooks/queries/inventory';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { useAtom, useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';
@@ -22,7 +23,7 @@ const tooltip = ({
   setHoverValue,
   setDiffValue,
 }: any) => {
-  const value = w.globals?.series?.[0][dataPointIndex] || 0;
+  const value = series[0].data[dataPointIndex] || 0;
   console.log(
     'value - w.globals?.series?.[0][0]',
     value - w.globals?.series?.[0][0]
@@ -42,19 +43,19 @@ type Props = {
   setDiffValue: (value: number | null) => void;
 };
 const HistoricalTrendChart = (props: Props) => {
-  const { data: me } = useMe();
+  const { data: walletList } = useMyWalletList();
   const currency = useAtomValue(currencyAtom);
   const [historicalValueParam, setHistoricalValueParam] = useAtom(
     overviewHistoricalValueParamAtom
   );
   const { data: inventoryValue, status: statusInventoryValue } =
-    useInventoryValuePolling(me?.walletAddress);
+    useInventoryValuePolling(walletList?.[0].walletAddress || '');
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
   } = useInventoryValueHistorical({
     ...historicalValueParam,
-    walletAddress: me?.walletAddress,
+    walletAddress: walletList?.[0].walletAddress || '',
   });
   const [isPlus, setIsPlus] = useState(false);
   let category: string[] = [];
@@ -118,7 +119,6 @@ const HistoricalTrendChart = (props: Props) => {
     let _series = seriesData;
     let _minimumValue = _series[0]?.data[0] || 0;
     _series[0].data.map((item) => {
-      console.log('minimumValue', item, item && item < _minimumValue);
       if (item && item < _minimumValue) {
         _minimumValue = item;
       } else {
@@ -270,7 +270,7 @@ const HistoricalTrendChart = (props: Props) => {
       custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
         return renderToString(
           tooltip({
-            series,
+            series: seriesData,
             seriesIndex,
             dataPointIndex,
             w,
@@ -310,7 +310,17 @@ const HistoricalTrendChart = (props: Props) => {
                 stroke: { ...options.stroke, curve: 'straight' },
               }}
               type='area'
-              series={seriesData}
+              series={[
+                ...seriesData.map((series) => {
+                  return {
+                    name: series.name,
+                    data: series.data.map((item) => {
+                      return item && mathSqrt(item);
+                    }),
+                  };
+                }),
+              ]}
+              // series={seriesData}
               height={200}
               width='100%'
             />

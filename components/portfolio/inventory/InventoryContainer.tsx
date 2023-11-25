@@ -18,10 +18,11 @@ import { useMe } from '@/utils/hooks/queries/auth';
 import SpamSaveToast from './collection/SpamSaveToast';
 import { addedSpamListAtom, customValuationAtom } from '@/store/portfolio';
 import CustomValuationSaveToast from './item/CustomValuationSaveToast';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 
 const InventoryContainer = () => {
   const searchParams = useSearchParams();
-  const { data: me } = useMe();
+  const { data: walletList } = useMyWalletList();
   const walletAddress = searchParams.get('walletAddress');
   const inventoryType = useAtomValue(inventoryTypeAtom);
   const [inventoryCollection, setInventoryCollection] = useAtom(
@@ -39,23 +40,24 @@ const InventoryContainer = () => {
   }, []);
   const spamList = useAtomValue(addedSpamListAtom);
   useEffect(() => {
+    const wallet = walletList?.[0].walletAddress;
     setInventoryCollection({
       ...inventoryCollection,
-      walletAddress: walletAddress || me?.walletAddress || '',
+      walletAddress: walletAddress || wallet || '',
     });
     setInventoryCollectionFilter({
       ...inventoryCollectionFilter,
-      walletAddress: walletAddress || me?.walletAddress || '',
+      walletAddress: walletAddress || wallet || '',
     });
     setInventoryItem({
       ...inventoryItem,
-      walletAddress: walletAddress || me?.walletAddress || '',
+      walletAddress: walletAddress || wallet || '',
     });
     setInventoryCollectionRequestParam({
       ...inventoryCollectionRequestParam,
-      walletAddress: walletAddress || me?.walletAddress || '',
+      walletAddress: walletAddress || wallet || '',
     });
-  }, [walletAddress, me?.walletAddress]);
+  }, [walletAddress, walletList]);
 
   return (
     <section className='w-full'>

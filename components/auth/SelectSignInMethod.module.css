@@ -1,0 +1,17 @@
+.container {
+}
+.body {
+  @apply border-1 border-[var(--color-border-main)] w-[448px] h-[440px] py-40 px-20 mb-16;
+}
+.title {
+  @apply text-[var(--color-text-main)] text-center;
+}
+.methodContainer {
+  @apply mt-40 w-full;
+}
+.button {
+  @apply w-full py-11 flex items-center justify-center mb-16;
+}
+.icon {
+  @apply mr-8 fill-[var(--color-icon-main)];
+}

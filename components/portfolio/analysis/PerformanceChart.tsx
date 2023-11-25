@@ -7,11 +7,13 @@ import { useMe } from '@/utils/hooks/queries/auth';
 import { usePerformanceChart } from '@/utils/hooks/queries/performance';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
-import { formatPercent } from '@/utils/common';
+import { formatPercent, mathSqrt } from '@/utils/common';
 import SkeletonLoader from '@/components/SkeletonLoader';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w, year }: any) => {
-  const roi = series[seriesIndex][dataPointIndex];
+  // const roi = series[seriesIndex][dataPointIndex];
+  const roi = series[seriesIndex].data[dataPointIndex] || 0;
   return (
     <div className='font-caption-regular py-8 px-16 flex flex-col items-center border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
       <p
@@ -38,7 +40,6 @@ type Props = {
 };
 const PerformanceChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
-  const { data: me } = useMe();
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart({
       ...props.requestParam,
@@ -51,7 +52,7 @@ const PerformanceChart = (props: Props) => {
   const barBackground = 'var(--color-elevation-surface-raised)';
   const labelColor = 'var(--color-text-subtle)';
 
-  let _series = useMemo(() => {
+  let seriesData = useMemo(() => {
     if (!performanceChart || performanceChart.data.length == 0) return [];
     return [
       {
@@ -79,24 +80,24 @@ const PerformanceChart = (props: Props) => {
     ];
   }, [performanceChart, currency, props.requestParam]);
   useEffect(() => {
-    console.log('series', _series);
+    console.log('series', seriesData);
     if (
-      !_series ||
-      _series.length == 0 ||
-      _series[0].data.length === 0 ||
-      _series[1].data.length === 0
+      !seriesData ||
+      seriesData.length == 0 ||
+      seriesData[0].data.length === 0 ||
+      seriesData[1].data.length === 0
     )
       return;
     const maxAbs = Math.max(
       ...[
-        ..._series[0].data.map((value) => Math.abs(value)),
-        ..._series[1].data.map((value) => Math.abs(value)),
+        ...seriesData[0].data.map((value) => Math.abs(value)),
+        ...seriesData[1].data.map((value) => Math.abs(value)),
       ]
     );
     console.log('maxAbs', maxAbs);
     setMaxAbs(maxAbs);
-    console.log('_series', _series);
-  }, [_series]);
+    console.log('seriesData', seriesData);
+  }, [seriesData]);
   const options = {
     chart: {
       type: 'bar',
@@ -129,7 +130,7 @@ const PerformanceChart = (props: Props) => {
             barBackground,
             barBackground,
             barBackground,
-            '',
+            'transparent',
           ],
           backgroundBarOpacity: 0.6,
         },
@@ -175,8 +176,8 @@ const PerformanceChart = (props: Props) => {
       opposite: false,
       maxWidth: 160,
       minWidth: 160,
-      min: -maxAbs,
-      max: maxAbs,
+      min: mathSqrt(-maxAbs),
+      max: mathSqrt(maxAbs),
       labels: {
         show: false,
         style: {
@@ -197,7 +198,7 @@ const PerformanceChart = (props: Props) => {
       custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
         return renderToString(
           tooltip({
-            series,
+            series: seriesData,
             seriesIndex,
             dataPointIndex,
             w,
@@ -226,7 +227,18 @@ const PerformanceChart = (props: Props) => {
               },
             }}
             type='bar'
-            series={_series}
+            // series={_series}
+            series={[
+              ...seriesData.map((series) => {
+                return {
+                  name: series.name,
+                  data: series.data.map((item) => {
+                    console.log('item', item, mathSqrt(item));
+                    return item && mathSqrt(item);
+                  }),
+                };
+              }),
+            ]}
             height={200}
             width='100%'
           />

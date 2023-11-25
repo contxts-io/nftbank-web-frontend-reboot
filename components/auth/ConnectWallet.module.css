@@ -1,0 +1,25 @@
+.container {
+  @apply border-1 border-[var(--color-border-main)] p-16 bg-[var(--color-elevation-surface)];
+  @apply w-[405px];
+}
+.header {
+  @apply w-full flex items-center;
+}
+.closeButton {
+  @apply border-0 ml-auto p-0;
+}
+.title {
+  @apply text-[var(--color-text-main)];
+}
+.body {
+  @apply my-20;
+}
+.button {
+  @apply mb-8 w-full h-40 flex items-center px-12;
+}
+.button img {
+  @apply mr-8;
+}
+.footer {
+  @apply bg-[var(--color-elevation-sunken)] w-full p-16;
+}

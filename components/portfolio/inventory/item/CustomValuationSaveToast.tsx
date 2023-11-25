@@ -14,9 +14,10 @@ import {
 } from '@/utils/hooks/queries/inventory';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import { useMe } from '@/utils/hooks/queries/auth';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 type Props = {};
 const CustomValuationSaveToast = (props: Props) => {
-  const { data: me } = useMe();
+  const { data: walletList } = useMyWalletList();
   const [customValuations, setCustomValuations] = useAtom(customValuationAtom);
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
   const { mutate, status } = useMutationCustomValuations();
@@ -25,7 +26,7 @@ const CustomValuationSaveToast = (props: Props) => {
     page: 0,
   });
   const { refetch: refetchInventoryValue } = useInventoryValue(
-    me?.walletAddress
+    walletList?.[0].walletAddress
   );
   const handleClickCancel = () => {
     setCustomValuations([]);
