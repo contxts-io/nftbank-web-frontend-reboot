@@ -1,3 +1,7 @@
 import { atom } from "jotai";
 
-export const connectedWalletAddressAtom = atom<`0x${string}` | undefined>(undefined);
+type WalletAccount = {
+  address: `0x${string}`;
+  provider: string;
+};
+export const connectedWalletAddressAtom = atom< WalletAccount| null >(null);

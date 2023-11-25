@@ -9,22 +9,33 @@ import { useEffect, useState } from 'react';
 import CloseX from '@/public/icon/CloseX';
 import ConnectWallet from './ConnectWallet';
 import { useRouter } from 'next/navigation';
-import { getIdTokenByGoogle } from '@/apis/firebase';
+import { getIdTokenByGoogle, logout } from '@/apis/firebase';
 import { setCookie } from 'cookies-next';
 import { getMe, sign } from '@/apis/auth';
 import { useMe, useMeManual } from '@/utils/hooks/queries/auth';
 import ReactQueryClient from '@/utils/ReactQueryClient';
+import { useDisconnect as useDisconnectThirdWeb } from '@thirdweb-dev/react';
+import { useDisconnect as useDisconnectWagmi } from 'wagmi';
 
 const SelectSignInMethod = () => {
   const router = useRouter();
-  const { data: me, refetch } = useMeManual();
+  const { data: me, refetch, status } = useMeManual();
   const [showModal, setShowModal] = useState(false);
+  const disconnectThirdWeb = useDisconnectThirdWeb();
+  const { disconnect: disconnectWagmi } = useDisconnectWagmi();
+  useEffect(() => {
+    disconnectWallet();
+  }, []);
+  useEffect(() => {
+    me && router.push('/portfolio');
+  }, [me]);
   const handleClickEmail = () => {
     router.push('/auth/email');
   };
-  const checkMe = async () => {
-    const result = await getMe();
-    return result.data.data;
+
+  const disconnectWallet = () => {
+    disconnectThirdWeb();
+    disconnectWagmi();
   };
   const handleClickGoogle = async () => {
     try {
@@ -57,6 +68,7 @@ const SelectSignInMethod = () => {
               id=''
               className={styles.button}
               onClick={() => setShowModal(true)}
+              disabled={status === 'loading'}
             >
               <Wallet className={styles.icon} />
               <p>Continue with Wallet</p>
@@ -65,6 +77,7 @@ const SelectSignInMethod = () => {
               id=''
               className={styles.button}
               onClick={() => handleClickGoogle()}
+              disabled={status === 'loading'}
             >
               <Google className={styles.icon} />
               <p>Continue with Google</p>
@@ -73,6 +86,7 @@ const SelectSignInMethod = () => {
               id=''
               className={styles.button}
               onClick={() => handleClickEmail()}
+              disabled={status === 'loading'}
             >
               <Email className={styles.icon} />
               <p>Continue with Email</p>

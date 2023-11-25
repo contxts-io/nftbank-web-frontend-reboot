@@ -3,14 +3,14 @@ import CaretDown from '@/public/icon/CaretDown';
 import CheckBox from '../checkBox/CheckBox';
 import styles from './ActivityCollection.module.css';
 import { useEffect, useMemo, useState } from 'react';
-import { useMe } from '@/utils/hooks/queries/auth';
 import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory';
 import Image from 'next/image';
 import { Collection } from '@/interfaces/collection';
 import { useInView } from 'react-intersection-observer';
 import { TCollectionParam } from '@/store/requestParam';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const ActivityCollection = () => {
-  const { data: me } = useMe();
+  const { data: walletList } = useMyWalletList();
 
   const { ref, inView } = useInView();
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -19,7 +19,7 @@ const ActivityCollection = () => {
     useState<TCollectionParam>({
       searchCollection: '',
       networkId: 'ethereum',
-      walletAddress: me?.walletAddress || '',
+      walletAddress: walletList?.[0].walletAddress || '',
       includeGasUsed: 'false',
       page: 0,
       limit: 3,

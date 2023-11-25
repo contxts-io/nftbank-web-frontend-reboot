@@ -20,6 +20,7 @@ import {
   useWalletConnect,
   useTrustWallet,
   useCoinbaseWallet,
+  useWallet,
   // WalletConfig,
 
   // wallet list
@@ -65,6 +66,8 @@ const ConnectWallet = (props: Props) => {
   const _useDisconnectWagmi = useDisconnectWagmi();
   // const disconnect = useDisconnect();
   const chain = useChain();
+  const walletInstance = useWallet();
+
   const connectWithRainbow = useRainbowWallet();
   const connectWithWalletConnect = useWalletConnect();
   const connectWithTrust = useTrustWallet();
@@ -128,6 +131,8 @@ const ConnectWallet = (props: Props) => {
         // handleCustom('rainbow');
       } else if (wallet.name === 'Zerion') {
         handleCustom('zerion');
+      } else if (wallet.name === 'Ledger') {
+        handleCustom('ledger');
       } else if (wallet.name === 'Coinbase') {
         console.log('coinbase');
         //* coinbase useConnect* //
@@ -156,19 +161,28 @@ const ConnectWallet = (props: Props) => {
     }
   };
   useEffect(() => {
+    disconnectWallet();
+  }, []);
+  useEffect(() => {
     me && router.push('/portfolio');
   }, [me]);
   useEffect(() => {
     address?.startsWith('0x') &&
-      setConnectedWalletAddress(address as `0x${string}`);
-  }, [address]);
+      walletInstance?.walletId &&
+      setConnectedWalletAddress({
+        provider: walletInstance.walletId,
+        address: address as `0x${string}`,
+      });
+  }, [address, walletInstance]);
   useEffect(() => {
     console.log('connectedWalletAddress', connectedWalletAddress);
     console.log('chain', chain);
+    console.log('walletInstance', walletInstance);
+
     if (connectedWalletAddress) {
       const token = formatToken({
-        walletAddress: connectedWalletAddress,
-        provider: 'metamask',
+        walletAddress: connectedWalletAddress.address,
+        provider: connectedWalletAddress.provider,
         type: 'evm',
       });
       signInUp(
@@ -178,37 +192,15 @@ const ConnectWallet = (props: Props) => {
         },
         {
           onSuccess: async (data) => {
-            const me = await checkMe();
+            // const me = await checkMe();
+            refetch();
             me && router.push('/portfolio');
           },
         }
       );
     }
-  }, [connectedWalletAddress, chain]);
-  const checkWallet = async () => {
-    console.log('afdasdfd');
-    if (window.ethereum) {
-      // Ethereum provider가 존재하는 경우
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts',
-      });
-      console.log('accounts', accounts);
+  }, [connectedWalletAddress, chain, walletInstance]);
 
-      if (accounts.length > 0) {
-        console.log('현재 연결된 지갑 주소들:', accounts);
-      } else {
-        console.log('현재 연결된 지갑이 없습니다.');
-      }
-    } else {
-      console.log('Ethereum provider가 지원되지 않습니다.');
-    }
-  };
-  useEffect(() => {
-    // checkWallet();
-    typeof window !== 'undefined'
-      ? console.log('window', window)
-      : console.log('winodw', 'no window');
-  }, []);
   const WALLETS: TWallet[] = [
     {
       name: 'Metamask',
@@ -232,6 +224,10 @@ const ConnectWallet = (props: Props) => {
     },
     {
       name: 'Zerion',
+      icon: '/logo/Zerion.svg',
+    },
+    {
+      name: 'Ledger',
       icon: '/logo/Zerion.svg',
     },
   ];

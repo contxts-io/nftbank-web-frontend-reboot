@@ -9,6 +9,7 @@ import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { formatPercent, mathSqrt } from '@/utils/common';
 import SkeletonLoader from '@/components/SkeletonLoader';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w, year }: any) => {
   // const roi = series[seriesIndex][dataPointIndex];
@@ -39,7 +40,6 @@ type Props = {
 };
 const PerformanceChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
-  const { data: me } = useMe();
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart({
       ...props.requestParam,

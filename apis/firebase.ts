@@ -6,6 +6,7 @@ import {
   sendPasswordResetEmail,
   confirmPasswordReset,
   fetchSignInMethodsForEmail,
+  signOut,
 } from 'firebase/auth';
 import { auth } from '@/utils/firebase/config';
 
@@ -70,3 +71,13 @@ export const updatePassword = async (oobCode: string, newPassword: string) => {
       throw { ...error, message: errorMessage(error?.code) };
     });
 };
+export const logout = async () => { 
+  return await signOut(auth)
+    .then(() => {
+      console.log('logout');
+      return true;
+    })
+    .catch((error) => {
+      throw { ...error, message: errorMessage(error?.code) };
+    });
+}

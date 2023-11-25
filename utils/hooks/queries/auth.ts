@@ -15,6 +15,7 @@ export function useMe() {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      refetchOnWindowFocus: false, 
     },
   );
 }
@@ -30,6 +31,7 @@ export function useMeManual() {
       cacheTime: Infinity,
       useErrorBoundary: false,
       enabled: false,
+      refetchOnWindowFocus: false, 
     },
   );
 }

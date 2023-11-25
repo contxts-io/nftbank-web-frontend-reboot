@@ -23,11 +23,14 @@ import ReactQueryClient from '@/utils/ReactQueryClient';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useSearchParams } from 'next/navigation';
 import StatusDropdown from './StatusDropdown';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const SpamModal = () => {
-  const { data: me } = useMe();
+  const { data: walletList } = useMyWalletList();
   const searchParams = useSearchParams();
   const walletAddress =
-    searchParams.get('walletAddress') || me?.walletAddress || undefined;
+    searchParams.get('walletAddress') ||
+    walletList?.[0].walletAddress ||
+    undefined;
 
   const [inventorySpamCollectionParam, setInventorySpamCollectionParam] =
     useAtom(inventorySpamCollectionAtom);

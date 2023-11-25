@@ -17,6 +17,9 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
     status === 'success' && me && !me.nickname && setShowModal(true);
     status === 'success' && me && me.nickname && setShowModal(false);
   }, [me, status]);
+  if (path.includes('/auth')) {
+    me && me.nickname && router.push('/portfolio');
+  }
   if (!path.includes('/auth')) {
     // if (status === 'loading') {
     //   // 데이터 로딩 중에는 로딩 스피너 또는 다른 로딩 상태를 표시할 수 있습니다.

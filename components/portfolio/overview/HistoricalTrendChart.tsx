@@ -7,6 +7,7 @@ import {
   useInventoryValueHistorical,
   useInventoryValuePolling,
 } from '@/utils/hooks/queries/inventory';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { useAtom, useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';
@@ -42,19 +43,19 @@ type Props = {
   setDiffValue: (value: number | null) => void;
 };
 const HistoricalTrendChart = (props: Props) => {
-  const { data: me } = useMe();
+  const { data: walletList } = useMyWalletList();
   const currency = useAtomValue(currencyAtom);
   const [historicalValueParam, setHistoricalValueParam] = useAtom(
     overviewHistoricalValueParamAtom
   );
   const { data: inventoryValue, status: statusInventoryValue } =
-    useInventoryValuePolling(me?.walletAddress);
+    useInventoryValuePolling(walletList?.[0].walletAddress || '');
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
   } = useInventoryValueHistorical({
     ...historicalValueParam,
-    walletAddress: me?.walletAddress || '',
+    walletAddress: walletList?.[0].walletAddress || '',
   });
   const [isPlus, setIsPlus] = useState(false);
   let category: string[] = [];

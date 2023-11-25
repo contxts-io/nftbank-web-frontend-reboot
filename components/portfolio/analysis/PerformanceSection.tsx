@@ -12,6 +12,7 @@ import { formatCurrency, formatPercent, isPlus } from '@/utils/common';
 import { useEffect, useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 import SkeletonLoader from '@/components/SkeletonLoader';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const THEAD = [
   'Jan',
   'Feb',
@@ -34,7 +35,7 @@ const GNL_CHART_TYPE: ('Overall' | 'Realized' | 'Unrealized')[] = [
 ];
 const PerformanceSection = () => {
   const currency = useAtomValue(currencyAtom);
-  const { data: me } = useMe();
+  const { data: walletList } = useMyWalletList();
   const [requestParam, setRequestParam] = useState<{
     year: number;
     gnlChartType: 'Overall' | 'Realized' | 'Unrealized';
@@ -44,7 +45,7 @@ const PerformanceSection = () => {
   });
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart({
-      walletAddress: me?.walletAddress || '',
+      walletAddress: walletList?.[0].walletAddress || '',
       ...requestParam,
       gnlChartType: requestParam.gnlChartType.toLowerCase() as
         | 'overall'
@@ -53,7 +54,7 @@ const PerformanceSection = () => {
     });
   const { data: performanceAnnual, status: statusPerformanceAnnual } =
     usePerformanceChartAnnual({
-      walletAddress: me?.walletAddress || '',
+      walletAddress: walletList?.[0].walletAddress || '',
       ...requestParam,
       gnlChartType: requestParam.gnlChartType.toLowerCase() as
         | 'overall'
@@ -113,7 +114,7 @@ const PerformanceSection = () => {
       <section className={styles.dataWrapper}>
         <PerformanceChart
           requestParam={{
-            walletAddress: me?.walletAddress || '',
+            walletAddress: walletList?.[0].walletAddress || '',
             ...requestParam,
           }}
         />
