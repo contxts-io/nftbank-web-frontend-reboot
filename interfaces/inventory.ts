@@ -57,6 +57,6 @@ export type PerformanceCollection = {
   processedAt: string
 }
 export type TWallet = {
-  address: string,
+  walletAddress: string,
   name: string,
 }

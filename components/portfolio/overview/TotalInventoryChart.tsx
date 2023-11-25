@@ -16,6 +16,7 @@ import {
   mappingConstants,
   shortenAddress,
 } from '@/utils/common';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const COLORS = [
   'var(--color-chart-information)',
@@ -99,12 +100,12 @@ const TotalInventoryChart = (props: {
   totalAmount: number;
 }) => {
   const { selected, totalAmount } = props;
-  const { data: me } = useMe();
+  const { data: walletList } = useMyWalletList();
   const currency = useAtomValue(currencyAtom);
   const { data: totalInventoryPositionValue, status } =
-    useInventoryCollectionPositionValue(me?.walletAddress);
+    useInventoryCollectionPositionValue(walletList?.[0].walletAddress || '');
   const { data: totalInventoryPositionAmount, status: statusAmount } =
-    useInventoryCollectionPositionAmount(me?.walletAddress);
+    useInventoryCollectionPositionAmount(walletList?.[0].walletAddress || '');
   const [labels, setLabels] = useState<string[]>([]);
   const [series, setSeries] = useState<number[]>([]);
   useEffect(() => {

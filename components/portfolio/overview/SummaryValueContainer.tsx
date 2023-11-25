@@ -18,23 +18,24 @@ import {
   formatPercent,
   isPlus,
 } from '@/utils/common';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const SummaryValueContainer = () => {
-  const { data: me } = useMe();
+  const { data: walletList } = useMyWalletList();
   const currency = useAtomValue(currencyAtom);
   const { data: totalSpend, status: statusTotalSpend } = useSummaryTotalSpend(
-    me?.walletAddress
+    walletList?.[0].walletAddress || ''
   );
   const { data: gasSpend, status: statusGasSpend } = useSummaryGasSpend(
-    me?.walletAddress
+    walletList?.[0].walletAddress || ''
   );
   const { data: totalSale, status: statusTotalSale } = useSummaryTotalSale(
-    me?.walletAddress
+    walletList?.[0].walletAddress || ''
   );
   const { data: unrealized, status: statusUnrealized } = useSummaryUnrealized(
-    me?.walletAddress
+    walletList?.[0].walletAddress || ''
   );
   const { data: realized, status: statusRealized } = useSummaryRealized(
-    me?.walletAddress
+    walletList?.[0].walletAddress || ''
   );
   useEffect(() => {
     totalSpend && console.log(totalSpend);

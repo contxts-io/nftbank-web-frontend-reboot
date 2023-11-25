@@ -4,6 +4,7 @@ import {
   trustWalletConnector,
   walletConnectConnector,
   zerionWalletConnector,
+  ledgerConnector,
 } from '@/components/providers/Provider';
 import { connectedWalletAddressAtom } from '@/store/account';
 import { useAtom, useSetAtom } from 'jotai';
@@ -16,7 +17,8 @@ export type ConnectorName =
   | 'wc'
   | 'trust'
   | 'rainbow'
-  | 'zerion';
+  | 'zerion'
+  | 'ledger';
 
 interface UseConnectProps {
   onConnect: () => void;
@@ -33,9 +35,15 @@ export const useConnectCustom = ({
   const { address, connector, isConnected } = useAccount();
   useEffect(() => {
     if (isConnected) {
-      setConnectedWalletAddress(address);
+      console.log('connector', connector);
+      address &&
+        connector?.name &&
+        setConnectedWalletAddress({
+          provider: connector.name,
+          address: address,
+        });
     }
-  }, [address]);
+  }, [address, isConnected, connector]);
   const {
     pendingConnector,
     connect: connectMetamask,
@@ -63,6 +71,10 @@ export const useConnectCustom = ({
     connector: zerionWalletConnector,
   });
 
+  const { connect: connectLedger, isLoading: isLedgerLoading } = useConnect({
+    connector: ledgerConnector,
+  });
+
   const connect = (connectorName: ConnectorName) => {
     switch (connectorName) {
       case 'metamask':
@@ -79,6 +91,11 @@ export const useConnectCustom = ({
         connectTrustWallet();
         console.log('connect trust');
         break;
+      case 'ledger':
+        onConnect();
+        connectLedger();
+        console.log('connect ledger');
+        break;
       case 'zerion':
         onConnect();
         connectZerion();
@@ -94,6 +111,8 @@ export const useConnectCustom = ({
       isMetamaskLoading ||
       isWalletConnectLoading ||
       isTrustWalletLoading ||
-      isZerionLoading,
+      isZerionLoading ||
+      isCoinbaseLoading ||
+      isLedgerLoading,
   };
 };

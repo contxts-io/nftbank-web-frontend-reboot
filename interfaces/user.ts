@@ -6,5 +6,4 @@ export type TUser = {
 export type TMe = TUser & {
   email: string;
   config: string;
-  walletAddress: string;
 }

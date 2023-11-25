@@ -231,7 +231,7 @@ export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAn
   });
   return query;
 };
-export const useInventoryValuePolling = (walletAddress?: string) => {
+export const useInventoryValuePolling = (walletAddress: string) => {
   return useQuery<InventoryValueNested,AxiosError>(
     ['inventoryValuePolling',walletAddress],
     async () => {

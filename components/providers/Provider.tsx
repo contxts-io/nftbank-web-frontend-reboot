@@ -16,6 +16,7 @@ import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { mainnet, optimism } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { LedgerConnector } from '@wagmi/connectors/ledger';
 import {
   ThirdwebProvider,
   // import the wallets you want
@@ -58,6 +59,13 @@ export const trustWalletConnector = new InjectedConnector({
       typeof window !== 'undefined' ? window.trustwallet : undefined,
   },
 });
+export const ledgerConnector = new LedgerConnector({
+  chains: [mainnet],
+  options: {
+    projectId: WC_PROJECT_ID,
+  },
+});
+
 export const zerionWalletConnector = new InjectedConnector({
   chains,
   options: {
@@ -74,6 +82,7 @@ const config = createConfig({
     walletConnectConnector,
     trustWalletConnector,
     zerionWalletConnector,
+    ledgerConnector,
   ],
   autoConnect: false,
   publicClient,
