@@ -4,33 +4,41 @@ import { useRouter, usePathname } from 'next/navigation';
 import { ReactNode, useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import NicknameSetting from '../NicknameSetting';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/utils/firebase/config';
+import { useAtom, useSetAtom } from 'jotai';
+import { userStatusAtom } from '@/store/account';
+import { cookies } from 'next/headers';
 
 const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: me, status, isError } = useMe();
+  const [userStatus, setUserStatus] = useAtom(userStatusAtom);
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const path = usePathname();
   useEffect(() => {
-    console.log('status', status);
-  }, [status]);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUserStatus('SIGN_IN');
+        console.log('로그인 상태', user);
+      } else {
+        //세션이 끊긴경우. 로그아웃상태.
+        console.log('로그아웃 상태');
+      }
+    });
+    return () => unsubscribe();
+  }, []);
   useEffect(() => {
-    status === 'success' && me && !me.nickname && setShowModal(true);
-    status === 'success' && me && me.nickname && setShowModal(false);
-  }, [me, status]);
-  if (path && path.includes('/auth')) {
-    me && me.nickname && router.push('/portfolio');
-  }
-  if (path && !path.includes('/auth')) {
-    // if (status === 'loading') {
-    //   // 데이터 로딩 중에는 로딩 스피너 또는 다른 로딩 상태를 표시할 수 있습니다.
-    //   return <div>Loading...</div>;
-    // }
-    if (isError || !me) {
-      // 에러 또는 데이터가 없는 경우 로그인 페이지로 리다이렉트
+    document.cookie = `sign_in=${userStatus}`;
+  }, [userStatus]);
+  useEffect(() => {
+    if (!me) {
       router.push('/auth/signin');
-      return null; // 리다이렉트를 시작하면 렌더링 중단
+    } else if (me && me.nickname === null) {
+      setShowModal(true);
     }
-  }
+  }, [me]);
+  //
   return (
     <>
       {children}

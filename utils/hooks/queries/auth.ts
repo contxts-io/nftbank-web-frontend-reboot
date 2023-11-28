@@ -3,8 +3,11 @@ import { AxiosError } from "axios";
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { TMe } from "@/interfaces/user";
 import { AuthProvider } from "@/interfaces/constants";
+import { useAtomValue } from "jotai";
+import { userStatusAtom } from "@/store/account";
 
 export function useMe() {
+  const userStatus = useAtomValue(userStatusAtom);
   return useQuery<TMe,AxiosError>(
     ['me'],
     async () => {
@@ -17,6 +20,7 @@ export function useMe() {
       cacheTime: Infinity,
       useErrorBoundary: false,
       refetchOnWindowFocus: false, 
+      enabled: userStatus === 'SIGN_IN',
     },
   );
 }
