@@ -49,3 +49,20 @@ export const signOut = async () => {
   console.log('signOut', result);
   return result;
 }
+export type TSendEmailVerificationCode = { email: `${string}@${string}` };
+export const sendEmailVerificationCode = async (postData: TSendEmailVerificationCode) => {
+  console.log('sendEmailVerificationCode postData', postData)
+  const result = await instance.post('/auth/email/verify/code',postData);
+  console.log('signOut', result);
+  return result;
+}
+export type TVerifyEmailByVerificationCode = { email: `${string}@${string}`,code: string };
+export const verifyEmailByVerificationCode = async (postData: TVerifyEmailByVerificationCode) => {
+  const result = await instance.post('/auth/email/verify',postData);
+  console.log('signOut', result);
+  return result;
+}
+export const getProvider = async (postData: { email: `${string}@${string}` }) => {
+  const result = await instance.post<{data:{provider: AuthProvider[]}}>('/auth/sign/info', postData);
+  return result.data;
+}
