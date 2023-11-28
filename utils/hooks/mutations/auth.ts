@@ -1,5 +1,5 @@
-import { TSendEmailVerificationCode, TSignInUp, TVerifyEmailByVerificationCode, UpdateMeType, sendEmailVerificationCode, sign, updateMe, verifyEmailByVerificationCode } from "@/apis/auth";
-import { useMutation } from "@tanstack/react-query";
+import { TSendEmailVerificationCode, TSignInUp, TVerifyEmailByVerificationCode, UpdateMeType, sendEmailVerificationCode, sign, signOut, updateMe, verifyEmailByVerificationCode } from "@/apis/auth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
 export function useMutationSignInUp() {
@@ -34,3 +34,19 @@ export function useMutationVerificationEmail() {
     },
   );
 }
+export const useMutationSignOut = () => {
+  const queryClient = useQueryClient();
+  return useMutation(signOut, {
+    onSuccess: () => {
+      // queryClient.clear();
+      queryClient.setQueryData(["me"], null);
+      queryClient.setQueryData(["walletList"], []);
+      document.cookie = `sign_in=SIGN_OUT`;
+    },
+    onError: (error: any) => {
+      // TODO : error message
+      // toast.error();
+      throw error;
+    },
+  });
+};

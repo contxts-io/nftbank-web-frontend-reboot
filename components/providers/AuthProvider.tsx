@@ -45,10 +45,12 @@ const checkWallet = async (token: RequestCookie) => {
 export const AuthProvider = async ({ children }: any) => {
   // const cookieStore = getCookies();
   const cookieStore = cookies();
+  const SIGN_IN = cookieStore.get('sign_in')?.value || false;
   const TOKEN = cookieStore.get('nb_session');
   const reactQueryClient = ReactQueryClient;
   console.log('TOKEN ? ', TOKEN);
-  if (TOKEN && TOKEN?.value !== '') {
+  if (SIGN_IN === 'SIGN_IN' && TOKEN && TOKEN?.value !== '') {
+    console.log('여기로 온것인가');
     await (reactQueryClient.prefetchQuery(['me'], () => checkMe(TOKEN)),
     reactQueryClient.prefetchQuery(['walletList'], () => checkWallet(TOKEN)));
   }
