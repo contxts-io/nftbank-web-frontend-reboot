@@ -192,3 +192,14 @@ export function formatToken (data: WalletData) {
   }
   return walletJwt;
 }
+export function passwordValidation(password: string) {
+  const regExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*#?&]{6,}$/;
+  return regExp.test(password);
+}
+export function validationEmail (email: string): boolean {
+  //email is valid
+  const regex =
+    // eslint-disable-next-line no-control-regex
+    /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+  return regex.test(email);
+};

@@ -9,8 +9,9 @@ const Button = ({
   id,
   children,
   className,
+  isLoading,
   ...props
-}: { id: string } & ButtonProps) => {
+}: { id: string; isLoading?: boolean } & ButtonProps) => {
   const handleClick = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
@@ -33,7 +34,7 @@ const Button = ({
       id={id}
       onClick={handleClick}
     >
-      {children}
+      {isLoading ? <div>Loading...</div> : children}
     </button>
   );
 };

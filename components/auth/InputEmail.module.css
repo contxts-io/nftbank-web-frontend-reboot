@@ -4,3 +4,9 @@
 .inputText {
   @apply w-full mt-4;
 }
+.inputText:disabled {
+  @apply bg-[var(--color-elevation-sunken)] text-[var(--color-text-subtle)];
+}
+.inputText:disabled:hover {
+  @apply border-transparent !important;
+}

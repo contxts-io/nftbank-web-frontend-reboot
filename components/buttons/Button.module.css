@@ -5,3 +5,9 @@
 .button:hover {
   @apply hover:text-[var(--color-text-main)] border-[var(--color-border-selected)];
 }
+.button:disabled {
+  @apply text-[var(--color-text-disabled)] border-[var(--color-border-disabled)];
+}
+.button:disabled:hover {
+  @apply text-[var(--color-text-disabled)] border-[var(--color-border-disabled)];
+}

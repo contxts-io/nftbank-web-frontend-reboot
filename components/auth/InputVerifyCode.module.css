@@ -1,0 +1,9 @@
+.container {
+  @apply w-full;
+}
+.inputText {
+  @apply w-full mt-4;
+}
+.sendVerifyCodeButton {
+  @apply px-40 h-44;
+}
