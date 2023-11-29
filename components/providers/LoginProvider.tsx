@@ -21,7 +21,6 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setUserStatus('SIGN_IN');
         console.log('로그인 상태', user);
       } else {
         //세션이 끊긴경우. 로그아웃상태.

@@ -20,7 +20,7 @@ export function useMe() {
       cacheTime: Infinity,
       useErrorBoundary: false,
       refetchOnWindowFocus: false, 
-      enabled: userStatus === 'SIGN_IN',
+      // enabled: userStatus === 'SIGN_IN',
     },
   );
 }
