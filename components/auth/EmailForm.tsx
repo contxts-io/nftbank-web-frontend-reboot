@@ -107,7 +107,7 @@ const EmailForm = () => {
             <Button
               id=''
               className={styles.submitButton}
-              disabled={isVerifiedPassword}
+              disabled={!isVerifiedPassword}
               onClick={() => handleSignInEmail()}
             >
               <span className='text-[var(--color-text-main)]'>Sign in</span>

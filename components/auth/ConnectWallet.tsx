@@ -214,10 +214,6 @@ const ConnectWallet = (props: Props) => {
         </Button>
       </div>
       <div className={`font-button03-medium ${styles.body}`}>
-        <div>
-          <button onClick={() => disconnectWallet()}>Disconnect</button>
-        </div>
-
         {/* {connectors.map((connector) => (
           <Button
             id=''
