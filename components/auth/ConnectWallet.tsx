@@ -78,8 +78,6 @@ const ConnectWallet = (props: Props) => {
   // const address = useAddress();
   const connectWithMetamask = useMetamask();
 
-  const rainbowWalletConfig = rainbowWallet();
-
   const setIsWalletModalOpen = useSetIsWalletModalOpen();
   const openModal = () => {
     setIsWalletModalOpen(true);
@@ -110,50 +108,15 @@ const ConnectWallet = (props: Props) => {
         console.log('connected to ', wallet);
       } else if (wallet.name === 'WalletConnect') {
         handleCustom('wc');
-        console.log('connected to ', wallet);
       } else if (wallet.name === 'Trust') {
-        console.log('trust');
         handleCustom('trust');
       } else if (wallet.name === 'Rainbow') {
-        // *rainbow useConnect* //
-        await connect(rainbowWalletConfig);
-
-        // *rainbow hooks* //
-        // connectWithRainbow()
-        //   .then((wallet) => {
-        //     console.log('wallet', wallet);
-        //   })
-        //   .catch((error) => {
-        //     console.log('error', error);
-        //   });
-
-        // *rainbow wagmi* //
-        // handleCustom('rainbow');
+        handleCustom('rainbow');
       } else if (wallet.name === 'Zerion') {
         handleCustom('zerion');
       } else if (wallet.name === 'Ledger') {
         handleCustom('ledger');
       } else if (wallet.name === 'Coinbase') {
-        console.log('coinbase');
-        //* coinbase useConnect* //
-        // const _wallet = new CoinbaseWallet();
-        // _wallet
-        //   .connect()
-        //   .then((wallet) => {
-        //     console.log('wallet', wallet);
-        //   })
-        //   .catch((error) => {
-        //     console.log('error', error);
-        //   });
-
-        // *coinbase hooks* //
-        // connectWithCoinbase()
-        //   .then((wallet) => {
-        //     console.log('wallet', wallet);
-        //   })
-        //   .catch((error) => {
-        //     console.log('error', error);
-        //   });
         handleCustom('coinbase');
       }
     } catch (error) {
