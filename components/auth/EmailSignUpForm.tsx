@@ -62,7 +62,7 @@ const EmailSignUpForm = () => {
           <Button
             id=''
             className={`font-button03-medium ${styles.cancelButton} absolute left-0`}
-            onClick={() => router.back()}
+            onClick={() => router.push('/auth/signin')}
           >
             Cancel
           </Button>
@@ -81,6 +81,7 @@ const EmailSignUpForm = () => {
         <InputPassword
           password={password}
           setIsVerifiedPassword={setIsVerifiedPassword}
+          isSignUp={true}
         />
         <SubmitButton
           id=''

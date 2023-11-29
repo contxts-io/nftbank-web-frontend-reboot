@@ -6,7 +6,7 @@
   @apply w-full flex items-center;
 }
 .closeButton {
-  @apply border-0 ml-auto p-0;
+  @apply border-0 ml-auto p-0 !important;
 }
 .title {
   @apply text-[var(--color-text-main)];

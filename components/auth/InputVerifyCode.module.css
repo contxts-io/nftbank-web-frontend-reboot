@@ -4,6 +4,9 @@
 .inputText {
   @apply w-full mt-4;
 }
+.inputText:disabled {
+  @apply text-[var(--color-text-disabled)] border-[var(--color-border-disabled)] hover:border-[var(--color-border-disabled)] !important;
+}
 .sendVerifyCodeButton {
   @apply p-0 w-136 h-44 flex items-center justify-center;
 }

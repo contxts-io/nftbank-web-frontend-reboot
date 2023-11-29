@@ -3,5 +3,5 @@
   @apply bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-main)];
 }
 .cancelButton {
-  @apply border-transparent;
+  @apply border-transparent p-0 border-0;
 }
