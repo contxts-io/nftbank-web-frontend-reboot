@@ -4,6 +4,10 @@
 .inputText {
   @apply w-full mt-4;
 }
+.invalid {
+  @apply border-[var(--color-border-danger)];
+}
+
 .inputText:disabled {
   @apply bg-[var(--color-elevation-sunken)] text-[var(--color-text-subtle)];
 }
