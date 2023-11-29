@@ -5,5 +5,8 @@
   @apply w-full mt-4;
 }
 .sendVerifyCodeButton {
-  @apply px-40 h-44;
+  @apply p-0 w-136 h-44 flex items-center justify-center;
+}
+.sendVerifyCodeButton:disabled {
+  @apply text-[var(--color-text-disabled)] border-[var(--color-border-disabled)] hover:border-[var(--color-border-disabled)] !important;
 }

@@ -20,7 +20,6 @@ const InputVerifyCode = (props: Props) => {
   const [resendTimer, setResendTimer] = useState<number>(-1);
   const [sendMailTimer, setSendMailTimer] = useState<number>(-1);
   const [timeUp, setTimeUp] = useState<boolean>(false);
-  const [isWaiting, setIsWaiting] = useState<boolean>(false);
   const [isSendCodeLoading, setIsSendCodeLoading] = useState<boolean>(false);
   const { theme } = useTheme();
   const { mutate: sendVerificationCode } = useMutationSendVerificationCode();
@@ -42,7 +41,8 @@ const InputVerifyCode = (props: Props) => {
       if (resendTimer > 0) {
         setResendTimer(resendTimer - 1);
       }
-      resendTimer === 0 && (clearInterval(countdown), setIsWaiting(false));
+      resendTimer === 0 &&
+        (clearInterval(countdown), setIsSendCodeLoading(false));
     }, 1000);
     return () => clearInterval(countdown);
   }, [resendTimer]);
@@ -76,17 +76,33 @@ const InputVerifyCode = (props: Props) => {
       { email: props.email as `${string}@${string}`, code: verifyCode },
       {
         onSuccess: (data) => {
-          console.log('handleVerifyEmail result', data);
-          data.statusText === 'OK' &&
-            (setIsWaiting(false),
-            props.setIsVerified(true),
-            showToastMessage({
-              message: 'Verification completed!',
-              code: 'success',
-              toastId: 'custom-valuation',
-              theme: theme === 'light' ? 'light' : 'dark',
-              position: 'top-center',
-            }));
+          data.statusText === 'OK'
+            ? (setIsSendCodeLoading(false),
+              props.setIsVerified(true),
+              showToastMessage({
+                message: 'Verification completed!',
+                code: 'success',
+                toastId: 'custom-valuation',
+                theme: theme === 'light' ? 'light' : 'dark',
+                position: 'top-center',
+              }))
+            : showToastMessage({
+                message: 'Invalid code',
+                code: 'error',
+                toastId: 'custom-valuation',
+                theme: theme === 'light' ? 'light' : 'dark',
+                position: 'top-center',
+              });
+        },
+        onError: (error) => {
+          console.log('error', error);
+          showToastMessage({
+            message: 'Invalid code',
+            code: 'error',
+            toastId: 'custom-valuation',
+            theme: theme === 'light' ? 'light' : 'dark',
+            position: 'top-center',
+          });
         },
       }
     );
@@ -103,7 +119,7 @@ const InputVerifyCode = (props: Props) => {
             theme: theme === 'light' ? 'light' : 'dark',
             position: 'top-center',
           });
-          setIsWaiting(true);
+          setIsSendCodeLoading(true);
           setTimeUp(false);
           setResendTimer(RESEND_CODE_SEC);
           setSendMailTimer(REMAIN_INPUT_CODE_SEC);
@@ -119,6 +135,7 @@ const InputVerifyCode = (props: Props) => {
             Email Verification code
           </span>
           <input
+            disabled={sendMailTimer <= 0}
             type='number'
             placeholder='Verification code'
             className={styles.inputText}
@@ -149,10 +166,10 @@ const InputVerifyCode = (props: Props) => {
           handleClickSendVerificationCode()
         }
         className={`${styles.sendVerifyCodeButton} mt-20`}
-        isLoading={resendTimer > 0}
-        disabled={!validationEmail(props.email) && resendTimer > 0}
+        isLoading={isSendCodeLoading}
+        disabled={!validationEmail(props.email)}
       >
-        {resendTimer <= 0 ? 'Resend' : 'Get code'}
+        {sendMailTimer > 0 ? 'Resend' : 'Get code'}
       </Button>
     </div>
   );
