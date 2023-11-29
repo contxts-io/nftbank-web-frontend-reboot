@@ -1,0 +1,9 @@
+.container {
+  @apply w-[240px] h-full;
+}
+.menuWrapper {
+  @apply w-full flex flex-col items-center;
+}
+.menuWrapper li {
+  @apply w-full h-42 px-24 flex items-center text-[var(--color-text-subtle)];
+}
