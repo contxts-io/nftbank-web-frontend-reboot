@@ -99,7 +99,7 @@ const InputVerifyCode = (props: Props) => {
           showToastMessage({
             message: 'Invalid code',
             code: 'error',
-            toastId: 'custom-valuation',
+            toastId: 'invalid-code',
             theme: theme === 'light' ? 'light' : 'dark',
             position: 'top-center',
           });
@@ -115,7 +115,7 @@ const InputVerifyCode = (props: Props) => {
           showToastMessage({
             message: 'Verification code sent successfully',
             code: 'success',
-            toastId: 'custom-valuation',
+            toastId: 'verification-code-sent',
             theme: theme === 'light' ? 'light' : 'dark',
             position: 'top-center',
           });
@@ -128,50 +128,54 @@ const InputVerifyCode = (props: Props) => {
     );
   };
   return (
-    <div className='flex gap-x-8 mt-24'>
-      <div className='flex-1'>
-        <div className={styles.container}>
-          <span className='font-caption-regular text-[var(--color-text-subtle)]'>
-            Email Verification code
-          </span>
-          <input
-            disabled={sendMailTimer <= 0}
-            type='number'
-            placeholder='Verification code'
-            className={styles.inputText}
-            value={verifyCode}
-            onChange={(e) =>
-              setVerifyCode(e.target.value.toString().substring(0, 6))
-            }
-            name='verifyCode'
-            maxLength={6}
-          />
-          {sendMailTimer > 0 && (
-            <p className='font-caption-regular text-[var(--color-text-brand)] mt-4'>{`Time remaining: ${formatSeconds(
-              sendMailTimer
-            )}`}</p>
-          )}
-          {timeUp == true && (
-            <p className={styles.error}>
-              Verification expired. please try again.
-            </p>
-          )}
+    <>
+      <div className='flex gap-x-8 mt-24'>
+        <div className='flex-1'>
+          <div className={styles.container}>
+            <span className='font-caption-regular text-[var(--color-text-subtle)]'>
+              Email Verification code
+            </span>
+            <input
+              disabled={sendMailTimer <= 0}
+              type='number'
+              placeholder='Verification code'
+              className={styles.inputText}
+              value={verifyCode}
+              onChange={(e) =>
+                setVerifyCode(e.target.value.toString().substring(0, 6))
+              }
+              name='verifyCode'
+              maxLength={6}
+            />
+            {sendMailTimer > 0 && (
+              <p className='font-caption-regular text-[var(--color-text-brand)] mt-4'>{`Time remaining: ${formatSeconds(
+                sendMailTimer
+              )}`}</p>
+            )}
+          </div>
         </div>
+        <Button
+          id=''
+          onClick={() =>
+            !isSendCodeLoading &&
+            resendTimer <= 0 &&
+            handleClickSendVerificationCode()
+          }
+          className={`${styles.sendVerifyCodeButton} mt-20`}
+          isLoading={isSendCodeLoading}
+          disabled={!validationEmail(props.email)}
+        >
+          {sendMailTimer > 0 ? 'Resend' : 'Get code'}
+        </Button>
       </div>
-      <Button
-        id=''
-        onClick={() =>
-          !isSendCodeLoading &&
-          resendTimer <= 0 &&
-          handleClickSendVerificationCode()
-        }
-        className={`${styles.sendVerifyCodeButton} mt-20`}
-        isLoading={isSendCodeLoading}
-        disabled={!validationEmail(props.email)}
-      >
-        {sendMailTimer > 0 ? 'Resend' : 'Get code'}
-      </Button>
-    </div>
+      {timeUp === true && (
+        <p
+          className={`font-caption-regular text-[var(--color-text-danger)] mt-4`}
+        >
+          Verification expired. please try again.
+        </p>
+      )}
+    </>
   );
 };
 export default InputVerifyCode;

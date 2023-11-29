@@ -23,7 +23,7 @@ const ProfileComponent = () => {
             <h2
               className={`font-subtitle01-bold mr-16 text-text-main dark:text-text-main-dark`}
             >
-              {me?.nickname || ''}
+              {me?.nickname || 'Welcome'}
             </h2>
             <ShareNetwork className='mr-12 fill-[var(--color-icon-subtle)]' />
             <Eye className=' fill-[var(--color-icon-subtle)]' />

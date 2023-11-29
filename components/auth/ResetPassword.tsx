@@ -11,12 +11,14 @@ import CaretDown from '@/public/icon/CaretDown';
 import { sendPasswordReset, updatePassword } from '@/apis/firebase';
 import { validationEmail } from '@/utils/common';
 import InputPassword from './InputPassword';
+import { showToastMessage } from '@/utils/toastify';
+import { useTheme } from 'next-themes';
 type Props = {
   oobCode?: string;
 };
 const ResetPassword = (props: Props) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const { theme } = useTheme();
   const emailAtomValue = useAtomValue(emailAtom);
   const email = useState<string>(emailAtomValue);
   const password = useState<string>('');
@@ -41,7 +43,15 @@ const ResetPassword = (props: Props) => {
     try {
       props.oobCode &&
         updatePassword(props.oobCode, password[0]).then((data) => {
-          data === true && router.push('/auth/signin');
+          data === true &&
+            (showToastMessage({
+              message: 'Password has been changed successfully!',
+              code: 'success',
+              toastId: 'reset-password',
+              theme: theme === 'light' ? 'light' : 'dark',
+              position: 'top-center',
+            }),
+            router.push('/auth/signin'));
         });
     } catch (error) {
       throw error;
@@ -54,9 +64,11 @@ const ResetPassword = (props: Props) => {
   return (
     <section className={styles.container}>
       <div className='w-full flex items-center justify-center relative mb-40'>
-        <Button id='' className={styles.button} onClick={() => router.back()}>
-          <CaretDown />
-        </Button>
+        {step !== 'EDIT_PASSWORD' && (
+          <Button id='' className={styles.button} onClick={() => router.back()}>
+            <CaretDown />
+          </Button>
+        )}
         <p className='font-body01-regular text-[var(--color-text-main)]'>
           Reset Password
         </p>

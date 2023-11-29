@@ -39,6 +39,7 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
     } else if (me.nickname === null) {
       setShowModal(true);
     }
+    me?.nickname && setShowModal(false);
   }, [me, path]);
   //
   return (

@@ -63,7 +63,7 @@ const SelectSignInMethod = () => {
             Welcome to NFTBank! <br />
             Connect your wallet to get started
           </h2>
-          <div className={styles.methodContainer}>
+          <div className={`font-button03-medium ${styles.methodContainer}`}>
             <Button
               id=''
               className={styles.button}
