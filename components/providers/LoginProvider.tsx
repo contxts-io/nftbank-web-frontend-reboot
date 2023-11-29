@@ -9,9 +9,11 @@ import { auth } from '@/utils/firebase/config';
 import { useAtom, useSetAtom } from 'jotai';
 import { userStatusAtom } from '@/store/account';
 import { cookies } from 'next/headers';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 
 const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: me, status, isError } = useMe();
+  const { data: walletList } = useMyWalletList();
   const [userStatus, setUserStatus] = useAtom(userStatusAtom);
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();

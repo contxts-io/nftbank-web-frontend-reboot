@@ -49,6 +49,7 @@ export const AuthProvider = async ({ children }: any) => {
   const TOKEN = cookieStore.get('nb_session');
   const reactQueryClient = ReactQueryClient;
   console.log('TOKEN ? ', TOKEN);
+  // if (SIGN_IN === 'SIGN_IN' && TOKEN && TOKEN?.value !== '') {
   if (SIGN_IN === 'SIGN_IN' && TOKEN && TOKEN?.value !== '') {
     console.log('여기로 온것인가');
     await (reactQueryClient.prefetchQuery(['me'], () => checkMe(TOKEN)),
