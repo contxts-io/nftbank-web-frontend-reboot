@@ -17,7 +17,6 @@ export function useMyWalletList() {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      enabled: userStatus === 'SIGN_IN',
     },
   );
 }
