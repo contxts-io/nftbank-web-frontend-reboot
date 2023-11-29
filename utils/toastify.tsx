@@ -20,7 +20,15 @@ export const showToastMessage = ({
     toastId,
     position: position,
     className: `toast-message ${className}`,
-    icon: ({ theme, type }) => <ToastIcon />,
+    icon: ({ theme, type }) => (
+      <ToastIcon
+        className={`${
+          code === 'success'
+            ? 'fill-[var(--color-icon-success)]'
+            : 'fill-[var(--color-icon-danger)]'
+        }`}
+      />
+    ),
     theme: theme,
   };
   toast[code](message, { ...options });
