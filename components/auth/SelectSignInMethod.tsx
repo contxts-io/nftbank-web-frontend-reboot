@@ -6,14 +6,11 @@ import Google from '@/public/icon/Google';
 import Email from '@/public/icon/Email';
 import ReactModal from 'react-modal';
 import { useEffect, useState } from 'react';
-import CloseX from '@/public/icon/CloseX';
 import ConnectWallet from './ConnectWallet';
 import { useRouter } from 'next/navigation';
-import { getIdTokenByGoogle, logout } from '@/apis/firebase';
-import { setCookie } from 'cookies-next';
+import { getIdTokenByGoogle } from '@/apis/firebase';
 import { getMe, sign } from '@/apis/auth';
 import { useMe, useMeManual } from '@/utils/hooks/queries/auth';
-import ReactQueryClient from '@/utils/ReactQueryClient';
 import { useDisconnect as useDisconnectThirdWeb } from '@thirdweb-dev/react';
 import { useDisconnect as useDisconnectWagmi } from 'wagmi';
 
