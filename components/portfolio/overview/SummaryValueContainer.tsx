@@ -22,21 +22,21 @@ import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const SummaryValueContainer = () => {
   const { data: walletList } = useMyWalletList();
   const currency = useAtomValue(currencyAtom);
-  const { data: totalSpend, status: statusTotalSpend } = useSummaryTotalSpend(
-    walletList?.[0].walletAddress || ''
-  );
-  const { data: gasSpend, status: statusGasSpend } = useSummaryGasSpend(
-    walletList?.[0].walletAddress || ''
-  );
-  const { data: totalSale, status: statusTotalSale } = useSummaryTotalSale(
-    walletList?.[0].walletAddress || ''
-  );
-  const { data: unrealized, status: statusUnrealized } = useSummaryUnrealized(
-    walletList?.[0].walletAddress || ''
-  );
-  const { data: realized, status: statusRealized } = useSummaryRealized(
-    walletList?.[0].walletAddress || ''
-  );
+  const { data: totalSpend, status: statusTotalSpend } =
+    useSummaryTotalSpend();
+    // walletList?.[0].walletAddress || ''
+  const { data: gasSpend, status: statusGasSpend } =
+    useSummaryGasSpend();
+    // walletList?.[0].walletAddress || ''
+  const { data: totalSale, status: statusTotalSale } =
+    useSummaryTotalSale();
+    // walletList?.[0].walletAddress || ''
+  const { data: unrealized, status: statusUnrealized } =
+    useSummaryUnrealized();
+    // walletList?.[0].walletAddress || ''
+  const { data: realized, status: statusRealized } =
+    useSummaryRealized();
+    // walletList?.[0].walletAddress || ''
   useEffect(() => {
     totalSpend && console.log(totalSpend);
   }, [totalSpend]);

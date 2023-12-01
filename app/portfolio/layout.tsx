@@ -8,12 +8,15 @@ import { useEffect } from 'react';
 
 const PortfolioLayout = ({ children }: { children: React.ReactNode }) => {
   const { data: walletList, status, error } = useMyWalletList();
+  useEffect(() => {
+    console.log('PortfolioLayout walletList', walletList);
+  }, [walletList]);
   return (
     <section className='w-full h-full'>
       <ProfileComponent />
       {status === 'success' && (
         <>
-          {walletList?.length > 0 ? (
+          {walletList?.data.length > 0 ? (
             <>
               <PortfolioTabNavigation />
               {children}

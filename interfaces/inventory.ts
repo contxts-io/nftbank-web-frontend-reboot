@@ -40,6 +40,7 @@ export type ICollection = {
   assetContract: string,
   name: string,
   symbol: string,
+  imageUrl: string,
 }
 export type PositionCollection = {
   collection: ICollection,
@@ -59,4 +60,20 @@ export type PerformanceCollection = {
 export type TWallet = {
   walletAddress: string,
   name: string,
+  networkName: string,
+  provider: string,
+  groups: TGroups[],
+  value: Value,
+  position: PositionCollection[],
+}
+export type TGroups = {
+  id: string,
+  name: string,
+}
+export type TWalletGroup = {
+  id: string,
+  name: string,
+  walletsCount: number,
+  value: Value,
+  position: PositionCollection[],
 }
