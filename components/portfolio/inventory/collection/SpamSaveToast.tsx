@@ -3,8 +3,8 @@ import FloppyDisk from '@/public/icon/FloppyDisk';
 import styles from './SpamSaveToast.module.css';
 import Button from '@/components/buttons/Button';
 import { useMutationSpamList } from '@/utils/hooks/mutations/spam';
-import { useAtom } from 'jotai';
-import { addedSpamListAtom } from '@/store/portfolio';
+import { useAtom, useAtomValue } from 'jotai';
+import { addedSpamListAtom, portfolioUserAtom } from '@/store/portfolio';
 import { useEffect } from 'react';
 import { showToastMessage } from '@/utils/toastify';
 import ReactQueryClient from '@/utils/ReactQueryClient';
@@ -12,11 +12,9 @@ import {
   inventoryCollectionAtom,
   inventorySpamCollectionAtom,
 } from '@/store/requestParam';
-import { useMe } from '@/utils/hooks/queries/auth';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 
 const SpamSaveToast = () => {
-  const { data: walletList } = useMyWalletList();
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   const [spamList, setSpamList] = useAtom(addedSpamListAtom); // [TSpam, (TSpam) => void
   const { mutate, status } = useMutationSpamList();
 
@@ -51,10 +49,7 @@ const SpamSaveToast = () => {
   }, [status]);
   const handleClickResetSpam = async () => {
     await ReactQueryClient.removeQueries(['inventorySpamList']);
-    await ReactQueryClient.invalidateQueries([
-      'inventoryValue',
-      walletList?.[0].walletAddress,
-    ]);
+    await ReactQueryClient.invalidateQueries(['inventoryValue']);
     await ReactQueryClient.removeQueries(['collectionCount']);
     await ReactQueryClient.removeQueries(['itemCount']);
     await ReactQueryClient.removeQueries(['inventoryCollectionList']);

@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { set } from 'cypress/types/lodash';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { formatPercent, mathSqrt } from '@/utils/common';
+import { BasicParam } from '@/interfaces/request';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   console.log('w.globals.', w.globals);
@@ -34,8 +35,7 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   );
 };
 type Props = {
-  requestParam: {
-    walletAddress: string;
+  requestParam: BasicParam & {
     year: number;
     gnlChartType: 'overall' | 'realized' | 'unrealized';
   };
@@ -143,6 +143,12 @@ const PerformanceChart = (props: Props) => {
     },
   };
   let seriesData = useMemo(() => {
+    console.log(
+      'performanceChart 1112222 : ',
+      performanceChart?.data.map(
+        (item, i) => item.roi?.[currency] && parseFloat(item.roi[currency])
+      )
+    );
     if (!performanceChart || performanceChart.data.length == 0) return [];
     return [
       {
@@ -216,7 +222,7 @@ const PerformanceChart = (props: Props) => {
               return {
                 name: series.name,
                 data: series.data.map((item) => {
-                  console.log('item', item, mathSqrt(item));
+                  console.log('item mathSqrt : ', item, mathSqrt(2));
                   return item && mathSqrt(item);
                 }),
               };

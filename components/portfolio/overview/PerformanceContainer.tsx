@@ -11,10 +11,11 @@ import { formatPercent, isPlus } from '@/utils/common';
 import { useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { portfolioUserAtom } from '@/store/portfolio';
 const YEARS: number[] = [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015];
 const PerformanceContainer = () => {
   const currency = useAtomValue(currencyAtom);
-  const { data: walletList } = useMyWalletList();
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   const [requestParam, setRequestParam] = useState<{
     year: number;
     gnlChartType: 'overall' | 'realized' | 'unrealized';
@@ -24,14 +25,15 @@ const PerformanceContainer = () => {
   });
   const { data: performanceAnnualAll, status: statusPerformanceAnnualAll } =
     usePerformanceChartAnnual({
-      walletAddress: walletList?.[0].walletAddress || '',
       window: 'all',
       ...requestParam,
+      ...portfolioUser,
+      networkId: 'ethereum',
     });
   const { data: performanceAnnualYTD, status: statusPerformanceAnnualYTD } =
     usePerformanceChartAnnual({
-      walletAddress: walletList?.[0].walletAddress || '',
       ...requestParam,
+      ...portfolioUser,
       window: 'ytd',
     });
 
@@ -58,7 +60,7 @@ const PerformanceContainer = () => {
       </div>
       <PerformanceChart
         requestParam={{
-          walletAddress: walletList?.[0].walletAddress || '',
+          ...portfolioUser,
           ...requestParam,
         }}
       />

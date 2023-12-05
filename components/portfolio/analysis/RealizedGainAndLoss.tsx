@@ -21,6 +21,7 @@ import { currencyAtom } from '@/store/currency';
 import { analysisGainAndLossParamAtom } from '@/store/requestParam';
 import { formatCurrency, formatDate, formatPercent } from '@/utils/common';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { portfolioUserAtom } from '@/store/portfolio';
 const THEAD = [
   { key: 'item', value: 'Item' },
   { key: 'amount', value: 'Amount' },
@@ -36,18 +37,17 @@ type _Year = TYear & { selected: boolean };
 type _Period = TPeriod & { selected: boolean };
 const RealizedGainAndLoss = () => {
   const currency = useAtomValue(currencyAtom);
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   const [requestParams, setRequestParams] = useAtom(
     analysisGainAndLossParamAtom
   );
-  // const { data: me } = useMe();
-  const { data: walletList } = useMyWalletList();
   const {
     data: realizedTokenList,
     status,
     fetchNextPage,
   } = useInventoryRealizedTokensInfinite({
+    ...portfolioUser,
     ...requestParams,
-    walletAddress: walletList?.[0].walletAddress || '',
   });
   const [selectedStatus, setSelectedStatus] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({

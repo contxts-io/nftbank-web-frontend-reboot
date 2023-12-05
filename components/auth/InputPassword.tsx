@@ -10,22 +10,30 @@ type InputPasswordProps = {
   className?: string;
   password: [string, React.Dispatch<React.SetStateAction<string>>];
   setIsVerifiedPassword: React.Dispatch<React.SetStateAction<boolean>>;
+  isSignUp?: boolean;
 };
 const InputPassword = (props: InputPasswordProps) => {
   // const [inputText, setInputText] = useState<string>('');
   const inputText = props.password[0];
   const setInputText = props.password[1];
   const [textType, setTextType] = useState<'text' | 'password'>('password');
-  const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
+  const [isPasswordValid, setIsPasswordValid] = useState<boolean>(
+    props.isSignUp !== true ? true : false
+  );
   const handleInputText = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setInputText(value);
   };
   useEffect(() => {
-    setIsPasswordValid(passwordValidation(inputText));
+    console.log('props.isSignUp', props.isSignUp === true);
+    if (props.isSignUp === true)
+      setIsPasswordValid(passwordValidation(inputText));
   }, [inputText]);
   useEffect(() => {
     props.setIsVerifiedPassword(isPasswordValid);
+  }, [isPasswordValid]);
+  useEffect(() => {
+    console.log('isPasswordValid', isPasswordValid);
   }, [isPasswordValid]);
   return (
     <div className={`font-caption-regular w-full mt-24`}>
@@ -68,7 +76,7 @@ const InputPassword = (props: InputPasswordProps) => {
         </div>
       </div>
       {inputText.length > 0 && !isPasswordValid && (
-        <p className='font-caption-regular text-[var(--color-text-danger)]'>
+        <p className='font-caption-regular text-[var(--color-text-danger)] mt-4'>
           Must have at least 6 to 20 characters.
         </p>
       )}

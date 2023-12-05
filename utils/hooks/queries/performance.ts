@@ -1,25 +1,25 @@
 import { PerformanceParam, getInventoryUnrealizedPerformance, getPerformanceChart, getPerformanceChartAnnual } from '@/apis/performance';
 import { IInventoryCollectionListPerformance, IInventoryItemList, InventoryValueNested, PerformanceCollection, UnrealizedValue } from '@/interfaces/inventory';
+import { BasicParam } from '@/interfaces/request';
 import { ItemParam, TCollectionParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-export function useInventoryUnrealizedPerformance(walletAddress?: string) {
+export function useInventoryUnrealizedPerformance(searchParam: BasicParam) {
   return useQuery<UnrealizedValue,AxiosError>(
-    ['inventoryUnrealizedValuePerformance',walletAddress],
+    ['inventoryUnrealizedValuePerformance',searchParam],
     async () => {
-      const unrealizedValue = await getInventoryUnrealizedPerformance(walletAddress);
+      const unrealizedValue = await getInventoryUnrealizedPerformance(searchParam);
       return unrealizedValue;
     },
     {
-      enabled: walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
     },
   );
 }
-export function usePerformanceChart(requestParam: PerformanceParam) {
+export function usePerformanceChart(requestParam: PerformanceParam & BasicParam) {
   return useQuery<{data: PerformanceCollection[]},AxiosError>(
     ['inventoryPerformanceChart',requestParam],
     async () => {
@@ -27,7 +27,6 @@ export function usePerformanceChart(requestParam: PerformanceParam) {
       return result;
     },
     {
-      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -38,7 +37,7 @@ type Param = {
   walletAddress: string;
   window?: string;
 }
-export function usePerformanceChartAnnual(requestParam:PerformanceParam & {window?: string}) {
+export function usePerformanceChartAnnual(requestParam: PerformanceParam & BasicParam & {window?: string}) {
   return useQuery<PerformanceCollection,AxiosError>(
     ['inventoryPerformanceChartAnnual',requestParam],
     async () => {

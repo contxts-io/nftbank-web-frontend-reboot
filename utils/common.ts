@@ -168,10 +168,7 @@ export function mathSqrt(value: string | number) {
     _value = value;
   }
   // return _value && _value >= 0 ? Math.sqrt(_value) : -(Math.sqrt(Math.abs(_value)));
-  return _value && _value >= 0 ? Math.log(_value) : -(Math.log(Math.abs(_value)));
-}
-function minMaxNormalization(value:number, min:number, max:number) {
-  return (value - min) / (max - min);
+  return _value && _value >= 0 ? Math.log((_value + 1)*10 ) : -(Math.log(Math.abs((_value - 1)*10)));
 }
 type WalletData = {walletAddress: `0x${string}`, provider:string, type : 'evm'}
 export function formatToken (data: WalletData) {
@@ -203,3 +200,11 @@ export function validationEmail (email: string): boolean {
     /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
   return regex.test(email);
 };
+export function jsonToQueryString (searchParam: any) {
+  return Object.keys(searchParam).map((key) => {
+    if (Array.isArray(searchParam[key])) {
+      return searchParam[key].map((v: any) => `${key}=${v}`).join('&');
+    }
+    return `${key}=${searchParam[key]}`;
+  }).join('&');
+}
