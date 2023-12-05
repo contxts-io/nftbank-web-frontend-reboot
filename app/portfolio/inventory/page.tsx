@@ -44,22 +44,22 @@ const getCollectionCount = async <T = { count: number },>(
 };
 
 const InventoryPage = async (context: any) => {
-  const queryClient = ReactQueryClient;
-  const me = (await queryClient.getQueryData(['me'])) as {
-    walletAddress: string;
-  };
-  const walletAddress =
-    context.searchParams?.walletAddress || me?.walletAddress || undefined;
+  // const queryClient = ReactQueryClient;
+  // const me = (await queryClient.getQueryData(['me'])) as {
+  //   walletAddress: string;
+  // };
+  // const walletAddress =
+  //   context.searchParams?.walletAddress || me?.walletAddress || undefined;
 
-  walletAddress &&
-    queryClient.prefetchQuery(['inventoryValue', walletAddress], () =>
-      getInventoryValue(walletAddress)
-    );
-  walletAddress &&
-    queryClient.prefetchQuery(['collectionCount', walletAddress], () =>
-      getCollectionCount(walletAddress)
-    );
-  const dehydratedState = dehydrate(queryClient);
+  // walletAddress &&
+  //   queryClient.prefetchQuery(['inventoryValue', walletAddress], () =>
+  //     getInventoryValue(walletAddress)
+  //   );
+  // walletAddress &&
+  //   queryClient.prefetchQuery(['collectionCount', walletAddress], () =>
+  //     getCollectionCount(walletAddress)
+  //   );
+  // const dehydratedState = dehydrate(queryClient);
   return (
     <section className={styles.container}>
       <InventoryValue />

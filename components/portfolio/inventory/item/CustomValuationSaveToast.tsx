@@ -3,8 +3,8 @@ import FloppyDisk from '@/public/icon/FloppyDisk';
 import styles from './CustomValuationSaveToast.module.css';
 import Button from '@/components/buttons/Button';
 import React, { useEffect } from 'react';
-import { useAtom } from 'jotai';
-import { customValuationAtom } from '@/store/portfolio';
+import { useAtom, useAtomValue } from 'jotai';
+import { customValuationAtom, portfolioUserAtom } from '@/store/portfolio';
 import { useMutationCustomValuations } from '@/utils/hooks/mutations/valuation';
 import { showToastMessage } from '@/utils/toastify';
 import { inventoryItemListAtom } from '@/store/requestParam';
@@ -13,11 +13,10 @@ import {
   useInventoryValue,
 } from '@/utils/hooks/queries/inventory';
 import ReactQueryClient from '@/utils/ReactQueryClient';
-import { useMe } from '@/utils/hooks/queries/auth';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+
 type Props = {};
 const CustomValuationSaveToast = (props: Props) => {
-  const { data: walletList } = useMyWalletList();
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   const [customValuations, setCustomValuations] = useAtom(customValuationAtom);
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
   const { mutate, status } = useMutationCustomValuations();
@@ -25,9 +24,7 @@ const CustomValuationSaveToast = (props: Props) => {
     ...requestParam,
     page: 0,
   });
-  const { refetch: refetchInventoryValue } = useInventoryValue(
-    walletList?.[0].walletAddress
-  );
+  const { refetch: refetchInventoryValue } = useInventoryValue(portfolioUser);
   const handleClickCancel = () => {
     setCustomValuations([]);
   };
