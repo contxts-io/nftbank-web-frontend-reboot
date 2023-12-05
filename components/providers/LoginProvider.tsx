@@ -8,8 +8,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/utils/firebase/config';
 import { useAtom, useSetAtom } from 'jotai';
 import { userStatusAtom } from '@/store/account';
-import { cookies } from 'next/headers';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { useCookies } from 'react-cookie';
 
 const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: me, status, isError } = useMe();
@@ -18,21 +18,21 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const path = usePathname();
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUserStatus('SIGN_IN');
-        console.log('로그인 상태', user);
-      } else {
-        //세션이 끊긴경우. 로그아웃상태.
-        console.log('로그아웃 상태');
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-  useEffect(() => {
-    document.cookie = `sign_in=${userStatus}`;
-  }, [userStatus]);
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, async (user) => {
+  //     if (user) {
+  //       setUserStatus('SIGN_IN');
+  //       console.log('로그인 상태', user);
+  //     } else {
+  //       //세션이 끊긴경우. 로그아웃상태.
+  //       console.log('로그아웃 상태');
+  //     }
+  //   });
+  //   return () => unsubscribe();
+  // }, []);
+  // useEffect(() => {
+  //   document.cookie = `sign_in=${userStatus}`;
+  // }, [userStatus]);
   useEffect(() => {
     if (!me) {
       !path.includes('/auth') && router.push('/auth/signin');

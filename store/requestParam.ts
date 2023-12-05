@@ -1,4 +1,5 @@
 import { TCurrency } from "@/interfaces/constants";
+import { BasicParam } from "@/interfaces/request";
 import { atom } from "jotai";
 export type TSortOrder = 'asc' | 'desc'
 export type TSort = 'amount' | 'nav' | 'spam'
@@ -13,11 +14,7 @@ export type TCollectionParam = {
   limit: number,
   order :TSortOrder,
 }
-export type ItemParam = {
-  networkId: string,
-  userId?: string,
-  walletAddress?: string,
-  walletGroupId?: string,
+export type ItemParam = BasicParam & {
   assetContract: string[],
   currency: TCurrency,
   includeGasUsed: string,
@@ -30,25 +27,12 @@ export type TPeriod = {
   year: number,
   quarter: 'q1'|'q2'|'q3'|'q4'|'all',
 }
-export type TAnalysisGainAndLossParam = TPeriod &{
+export type TAnalysisGainAndLossParam = TPeriod & BasicParam & {
   limit: number,
   nextCursor: string | null,
-  userId: string,
-  walletAddress: string,
-  walletGroupId: string,
-  networkId: 'ethereum',
 }
-export type TAcquisitionParam = TPeriod & {
-  userId: string,
-  walletAddress: string,
-  walletGroupId: string,
-  networkId: 'ethereum',
-}
-export type TOverviewHistoricalValueParam = {
-  networkId: 'ethereum',
-  userId: string,
-  walletAddress: string,
-  walletGroupId: string,
+export type TAcquisitionParam =BasicParam &  TPeriod
+export type TOverviewHistoricalValueParam = BasicParam & {
   // interval: 'hourly' | 'daily' | 'weekly' | 'monthly' | 'quarterly',
   window: '1d'| '3d'| '7d'| '30d'| '90d'| 'ytd'| '365d'| 'all',
 
@@ -108,24 +92,14 @@ export const analysisGainAndLossParamAtom = atom<TAnalysisGainAndLossParam>({
   nextCursor: null,
   year: 2023,
   quarter: 'all',
-  userId: '',
-  walletAddress: '',
-  walletGroupId: '',
   networkId: 'ethereum',
 })
 export const overviewHistoricalValueParamAtom = atom<TOverviewHistoricalValueParam>({
-  userId: '',
-  walletAddress: '',
-  walletGroupId: '',
   networkId: 'ethereum',
-  // interval: 'daily',
   window: '7d',
 })
 export const analysisAcquisitionParamAtom = atom<TAcquisitionParam>({
   year: 2023,
   quarter: 'all',
-  userId: '',
-  walletAddress: '',
-  walletGroupId: '',
   networkId: 'ethereum',
 })

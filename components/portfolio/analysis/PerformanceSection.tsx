@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { portfolioUserAtom } from '@/store/portfolio';
 const THEAD = [
   'Jan',
   'Feb',
@@ -35,7 +36,7 @@ const GNL_CHART_TYPE: ('Overall' | 'Realized' | 'Unrealized')[] = [
 ];
 const PerformanceSection = () => {
   const currency = useAtomValue(currencyAtom);
-  const { data: walletList } = useMyWalletList();
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   const [requestParam, setRequestParam] = useState<{
     year: number;
     gnlChartType: 'Overall' | 'Realized' | 'Unrealized';
@@ -45,7 +46,7 @@ const PerformanceSection = () => {
   });
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart({
-      walletAddress: walletList?.[0].walletAddress || '',
+      ...portfolioUser,
       ...requestParam,
       gnlChartType: requestParam.gnlChartType.toLowerCase() as
         | 'overall'
@@ -54,7 +55,7 @@ const PerformanceSection = () => {
     });
   const { data: performanceAnnual, status: statusPerformanceAnnual } =
     usePerformanceChartAnnual({
-      walletAddress: walletList?.[0].walletAddress || '',
+      ...portfolioUser,
       ...requestParam,
       gnlChartType: requestParam.gnlChartType.toLowerCase() as
         | 'overall'
@@ -114,7 +115,7 @@ const PerformanceSection = () => {
       <section className={styles.dataWrapper}>
         <PerformanceChart
           requestParam={{
-            walletAddress: walletList?.[0].walletAddress || '',
+            ...portfolioUser,
             ...requestParam,
           }}
         />

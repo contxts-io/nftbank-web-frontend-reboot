@@ -23,6 +23,8 @@ import {
   metamaskWallet,
   rainbowWallet,
 } from '@thirdweb-dev/react';
+import { CookiesProvider } from 'react-cookie';
+
 const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '';
 const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID || '';
 const { chains, publicClient, webSocketPublicClient } = configureChains(
@@ -104,21 +106,27 @@ function Providers({ children }: React.PropsWithChildren) {
   console.log('Providers theme', theme);
   return (
     <QueryClientProvider client={client}>
-      <JotaiProvider>
-        <WagmiConfig config={config}>
-          <ThirdwebProvider
-            supportedWallets={[metamaskWallet(), rainbowWallet()]}
-            clientId={THIRD_WEB_API_KEY}
-            autoConnect={false}
-          >
-            <ThemeProvider attribute='class' defaultTheme='system' enableSystem>
-              <ToastContainer />
-              {children}
-              <ReactQueryDevtools initialIsOpen={false} />
-            </ThemeProvider>
-          </ThirdwebProvider>
-        </WagmiConfig>
-      </JotaiProvider>
+      <CookiesProvider defaultSetOptions={{ path: '/' }}>
+        <JotaiProvider>
+          <WagmiConfig config={config}>
+            <ThirdwebProvider
+              supportedWallets={[metamaskWallet(), rainbowWallet()]}
+              clientId={THIRD_WEB_API_KEY}
+              autoConnect={false}
+            >
+              <ThemeProvider
+                attribute='class'
+                defaultTheme='system'
+                enableSystem
+              >
+                <ToastContainer />
+                {children}
+                <ReactQueryDevtools initialIsOpen={false} />
+              </ThemeProvider>
+            </ThirdwebProvider>
+          </WagmiConfig>
+        </JotaiProvider>
+      </CookiesProvider>
     </QueryClientProvider>
   );
 }

@@ -8,21 +8,21 @@ import {
 import { inventoryTypeAtom } from '@/store/settings';
 import { useAtom, useAtomValue } from 'jotai';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import InventoryCollectionSettings from './collection/InventoryCollectionSettings';
 import InventoryCollectionTable from './collection/InventoryCollectionTable';
 import InventoryItemSection from './item/InventoryItemSection';
-import ReactModal from 'react-modal';
-import SpamModal from './collection/SpamModal';
-import { useMe } from '@/utils/hooks/queries/auth';
 import SpamSaveToast from './collection/SpamSaveToast';
-import { addedSpamListAtom, customValuationAtom } from '@/store/portfolio';
+import {
+  addedSpamListAtom,
+  customValuationAtom,
+  portfolioUserAtom,
+} from '@/store/portfolio';
 import CustomValuationSaveToast from './item/CustomValuationSaveToast';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 
 const InventoryContainer = () => {
   const searchParams = useSearchParams();
-  const { data: walletList } = useMyWalletList();
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   const walletAddress = searchParams.get('walletAddress');
   const inventoryType = useAtomValue(inventoryTypeAtom);
   const [inventoryCollection, setInventoryCollection] = useAtom(
@@ -40,24 +40,23 @@ const InventoryContainer = () => {
   }, []);
   const spamList = useAtomValue(addedSpamListAtom);
   useEffect(() => {
-    const wallet = walletList?.[0].walletAddress;
     setInventoryCollection({
       ...inventoryCollection,
-      walletAddress: walletAddress || wallet || '',
+      ...portfolioUser,
     });
     setInventoryCollectionFilter({
       ...inventoryCollectionFilter,
-      walletAddress: walletAddress || wallet || '',
+      ...portfolioUser,
     });
     setInventoryItem({
       ...inventoryItem,
-      walletAddress: walletAddress || wallet || '',
+      ...portfolioUser,
     });
     setInventoryCollectionRequestParam({
       ...inventoryCollectionRequestParam,
-      walletAddress: walletAddress || wallet || '',
+      ...portfolioUser,
     });
-  }, [walletAddress, walletList]);
+  }, [walletAddress, portfolioUser]);
 
   return (
     <section className='w-full'>

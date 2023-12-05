@@ -8,7 +8,6 @@ import {
   useSummaryTotalSpend,
   useSummaryUnrealized,
 } from '@/utils/hooks/queries/summary';
-import { useMe } from '@/utils/hooks/queries/auth';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import SkeletonLoader from '@/components/SkeletonLoader';
@@ -18,28 +17,23 @@ import {
   formatPercent,
   isPlus,
 } from '@/utils/common';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { portfolioUserAtom } from '@/store/portfolio';
 const SummaryValueContainer = () => {
-  const { data: walletList } = useMyWalletList();
   const currency = useAtomValue(currencyAtom);
-  const { data: totalSpend, status: statusTotalSpend } = useSummaryTotalSpend(
-    walletList?.[0].walletAddress || ''
-  );
-  const { data: gasSpend, status: statusGasSpend } = useSummaryGasSpend(
-    walletList?.[0].walletAddress || ''
-  );
-  const { data: totalSale, status: statusTotalSale } = useSummaryTotalSale(
-    walletList?.[0].walletAddress || ''
-  );
-  const { data: unrealized, status: statusUnrealized } = useSummaryUnrealized(
-    walletList?.[0].walletAddress || ''
-  );
-  const { data: realized, status: statusRealized } = useSummaryRealized(
-    walletList?.[0].walletAddress || ''
-  );
+  const portfolioUser = useAtomValue(portfolioUserAtom);
+  const { data: totalSpend, status: statusTotalSpend } =
+    useSummaryTotalSpend(portfolioUser);
+  const { data: gasSpend, status: statusGasSpend } =
+    useSummaryGasSpend(portfolioUser);
+  const { data: totalSale, status: statusTotalSale } =
+    useSummaryTotalSale(portfolioUser);
+  const { data: unrealized, status: statusUnrealized } =
+    useSummaryUnrealized(portfolioUser);
+  const { data: realized, status: statusRealized } =
+    useSummaryRealized(portfolioUser);
   useEffect(() => {
-    totalSpend && console.log(totalSpend);
-  }, [totalSpend]);
+    console.log('portfolioUser', portfolioUser);
+  }, [portfolioUser]);
   return (
     <section className={`font-caption-medium ${styles.container}`}>
       <article className={styles.valueRect}>
