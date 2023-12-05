@@ -8,7 +8,7 @@ import {
 } from '@/utils/hooks/queries/inventory';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useEffect, useState } from 'react';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import {
   formatCurrency,
@@ -17,6 +17,7 @@ import {
   shortenAddress,
 } from '@/utils/common';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { portfolioUserAtom } from '@/store/portfolio';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const COLORS = [
   'var(--color-chart-information)',
@@ -100,12 +101,12 @@ const TotalInventoryChart = (props: {
   totalAmount: number;
 }) => {
   const { selected, totalAmount } = props;
-  const { data: walletList } = useMyWalletList();
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   const currency = useAtomValue(currencyAtom);
   const { data: totalInventoryPositionValue, status } =
-    useInventoryCollectionPositionValue(walletList?.[0].walletAddress || '');
+    useInventoryCollectionPositionValue(portfolioUser);
   const { data: totalInventoryPositionAmount, status: statusAmount } =
-    useInventoryCollectionPositionAmount(walletList?.[0].walletAddress || '');
+    useInventoryCollectionPositionAmount(portfolioUser);
   const [labels, setLabels] = useState<string[]>([]);
   const [series, setSeries] = useState<number[]>([]);
   useEffect(() => {

@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import ConnectWallet from './ConnectWallet';
 import { useRouter } from 'next/navigation';
 import { getIdTokenByGoogle } from '@/apis/firebase';
-import { getMe, sign } from '@/apis/auth';
+import { sign } from '@/apis/auth';
 import { useMe, useMeManual } from '@/utils/hooks/queries/auth';
 import { useDisconnect as useDisconnectThirdWeb } from '@thirdweb-dev/react';
 import { useDisconnect as useDisconnectWagmi } from 'wagmi';

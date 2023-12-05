@@ -61,12 +61,10 @@ const InventoryPage = async (context: any) => {
     );
   const dehydratedState = dehydrate(queryClient);
   return (
-    <Hydrate state={dehydratedState}>
-      <section className={styles.container}>
-        <InventoryValue />
-        <InventoryContainer />
-      </section>
-    </Hydrate>
+    <section className={styles.container}>
+      <InventoryValue />
+      <InventoryContainer />
+    </section>
   );
 };
 export default InventoryPage;

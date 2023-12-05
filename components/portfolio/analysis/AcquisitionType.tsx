@@ -17,6 +17,7 @@ import { currencyAtom } from '@/store/currency';
 import { AcquisitionType } from '@/interfaces/activity';
 import { analysisAcquisitionParamAtom } from '@/store/requestParam';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { portfolioUserAtom } from '@/store/portfolio';
 const LIST = [
   {
     type: 'BUY' as const,
@@ -53,7 +54,7 @@ export type _List = (typeof LIST)[number] & Partial<AcquisitionType>;
 type _Period = TPeriod & { selected: boolean };
 type _Year = TYear & { selected: boolean };
 const AcquisitionType = () => {
-  const { data: walletList } = useMyWalletList();
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   const currency = useAtomValue(currencyAtom);
   const [requestParams, setRequestParams] = useAtom(
     analysisAcquisitionParamAtom
@@ -61,7 +62,7 @@ const AcquisitionType = () => {
   const { data: acquisitionTypes, status: acquisitionTypesStatus } =
     useInventoryAcquisitionTypes({
       ...requestParams,
-      walletAddress: walletList?.[0].walletAddress || '',
+      ...portfolioUser,
     });
   const [list, setList] = useState<_List[]>(LIST);
   const [selectedPeriod, setSelectedPeriod] = useState<_Period[]>(
