@@ -5,15 +5,27 @@ import SubmitButton from '@/components/buttons/SubmitButton';
 import GroupListTable from './GroupListTable';
 import ReactModal from 'react-modal';
 import { useEffect, useState } from 'react';
-import GroupSetting from '@/components/GroupSetting';
 import GroupDetail from './GroupDetail';
 import { TWalletGroup } from '@/interfaces/inventory';
-import AddGroup from '@/components/AddGroup';
+import ManageGroup from '@/components/wallet/ManageGroup';
+import {
+  useMyWalletGroup,
+  useMyWalletGroupList,
+} from '@/utils/hooks/queries/walletGroup';
+import { group } from 'console';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const MyGroups = () => {
   const [showModal, setShowModal] = useState(false);
   const [showGroupDetailModal, setShowGroupDetailModal] = useState(false);
+  const [searchInput, setSearchInput] = useState<string>('');
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { data: searchWalletList, status: searchStatus } =
+    useMyWalletList(searchInput);
+
   const [selectedGroup, setSelectedGroup] = useState<TWalletGroup | null>(null);
+  const { data: walletGroup, status } = useMyWalletGroup(
+    selectedGroup?.id || ''
+  );
   const handleClickGroup = (group: TWalletGroup) => {
     setSelectedGroup(group);
     // setShowGroupDetailModal(true);
@@ -21,11 +33,21 @@ const MyGroups = () => {
   useEffect(() => {
     selectedGroup && setShowGroupDetailModal(true);
   }, [selectedGroup]);
+  const handleOpenManageGroup = () => {
+    setShowModal(true);
+  };
+  const handleInputText = (text: string) => {
+    setSearchInput(text);
+  };
   return (
     <section className={styles.container}>
       <div className='w-full flex justify-between mt-26 px-24'>
         <div className='w-[320px]'>
-          <SearchInput placeholder='Wallet Address, Wallet & Group Name' />
+          <SearchInput
+            placeholder='Wallet Address, Wallet & Group Name'
+            value={searchInput}
+            onChange={handleInputText}
+          />
         </div>
         <SubmitButton id='' onClick={() => setShowModal(true)}>
           Add Group
@@ -51,7 +73,12 @@ const MyGroups = () => {
         }}
       >
         <div className={`${styles.sidebar} ${drawerOpen ? styles.open : ''}`}>
-          {selectedGroup && <GroupDetail group={selectedGroup} />}
+          {selectedGroup && (
+            <GroupDetail
+              group={selectedGroup}
+              openManageGroup={() => handleOpenManageGroup()}
+            />
+          )}
         </div>
       </ReactModal>
       <ReactModal
@@ -65,8 +92,10 @@ const MyGroups = () => {
         shouldCloseOnOverlayClick={true}
         overlayClassName={'overlayBackground'}
       >
-        <AddGroup onClose={() => setShowModal(false)} />
-        <GroupSetting />
+        <ManageGroup
+          onClose={() => setShowModal(false)}
+          group={walletGroup || null}
+        />
       </ReactModal>
     </section>
   );

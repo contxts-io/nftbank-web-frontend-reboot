@@ -1,16 +1,13 @@
-import Check from '@/public/icon/Check';
 import styles from './GroupListTable.module.css';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { formatCurrency, formatPercent } from '@/utils/common';
 import Image from 'next/image';
-import FolderFilled from '@/public/icon/FolderFilled';
 import DotsThree from '@/public/icon/DotsThree';
 import { useMyWalletGroupList } from '@/utils/hooks/queries/walletGroup';
 import { TWalletGroup } from '@/interfaces/inventory';
-import { Dispatch, SetStateAction } from 'react';
 import CheckCircle from '@/public/icon/CheckCircle';
+import Folder from '@/public/icon/Folder';
 type Props = {
   handleClickGroup: (group: TWalletGroup) => void;
 };
@@ -37,7 +34,8 @@ const GroupListTable = (props: Props) => {
           >
             <td className='text-left px-24'>
               <div className='flex items-center mr-111'>
-                <p>{group.name}</p>
+                <Folder />
+                <p className='ml-8'>{group.name}</p>
                 <div className='ml-4 text-[var(--color-border-brand)]'>
                   <CheckCircle />
                 </div>

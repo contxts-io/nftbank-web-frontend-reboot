@@ -23,3 +23,6 @@
 .buttonBox button {
   @apply px-12 h-32 flex justify-center items-center text-icon-subtle hover:text-icon-main;
 }
+.blockIcon {
+  @apply w-16 h-16;
+}

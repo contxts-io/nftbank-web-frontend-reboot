@@ -1,0 +1,28 @@
+.container {
+  @apply w-[405px] h-[509px] border-1 border-[var(--color-border-main)] p-16 bg-[var(--color-elevation-surface)] flex flex-col;
+}
+.title {
+  @apply flex justify-between items-center;
+}
+.backButton {
+  @apply border-transparent p-0 rotate-90 !important;
+}
+.cancelButton {
+  @apply border-transparent p-0 w-16 h-16 !important;
+}
+.body {
+  @apply flex flex-1 flex-col items-center mt-20 gap-y-12 overflow-scroll pb-12;
+}
+.textInput {
+  @apply w-full h-40;
+}
+.invalid {
+  @apply border-[var(--color-border-danger)] !important;
+}
+.addRowButton {
+  @apply w-full h-40 border-dashed flex items-center justify-center;
+}
+
+.registerButton {
+  @apply w-full h-38 flex items-center justify-center mt-auto;
+}

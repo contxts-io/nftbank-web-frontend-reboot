@@ -1,12 +1,27 @@
-import { updateMyWalletBulk } from "@/apis/wallet";
-import { insertMyWalletGroup } from "@/apis/walletGroup";
-import { TWallet } from "@/interfaces/inventory";
+import { deleteMyWallet, insertMyWalletBulk, updateMyWallet } from "@/apis/wallet";
+import { BasicWallet, TWallet } from "@/interfaces/inventory";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export function useMutationWalletBulk() {
-  return useMutation<any,AxiosError,TWallet[]>(
-    (wallets) => updateMyWalletBulk(wallets),
+export function useMutationInsertWalletBulk() {
+  return useMutation<any,AxiosError,BasicWallet[]>(
+    (wallets) => insertMyWalletBulk(wallets),
+    {
+      useErrorBoundary: false,
+    },
+  );
+}
+export function useMutationUpdateWallet() {
+  return useMutation<{ data: TWallet },AxiosError,{walletId:string,name:string}>(
+    (wallet) => updateMyWallet(wallet),
+    {
+      useErrorBoundary: false,
+    },
+  );
+}
+export function useMutationDeleteWallet() {
+  return useMutation<{ data: TWallet },AxiosError,{walletId:string}>(
+    (wallet) => deleteMyWallet(wallet),
     {
       useErrorBoundary: false,
     },

@@ -11,6 +11,7 @@ type Props = {
   onClick: (value: string) => void;
   className?: string;
   listStyle?: string;
+  children?: React.ReactNode;
 };
 const Dropdown = (props: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
@@ -20,10 +21,14 @@ const Dropdown = (props: Props) => {
       id={props.id}
       onClick={(e) => (e.stopPropagation(), setIsPopoverOpen((prev) => !prev))}
     >
-      <p>{props?.selected}</p>
-      <div className={`${isPopoverOpen ? 'rotate-180' : 'rotate-0'} ml-4`}>
-        <CaretDown />
-      </div>
+      {props.children || (
+        <>
+          <p>{props?.selected}</p>
+          <div className={`${isPopoverOpen ? 'rotate-180' : 'rotate-0'} ml-4`}>
+            <CaretDown />
+          </div>
+        </>
+      )}
       {isPopoverOpen && (
         <ul
           className={twMerge(

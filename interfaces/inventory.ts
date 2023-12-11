@@ -57,15 +57,17 @@ export type PerformanceCollection = {
   roi: Value | null,
   processedAt: string
 }
+export type BasicWallet = {
+    name?: string,
+    networkName: 'evm',
+    walletAddress: string,
+    provider: string,
+}
 export type TWallet = {
-  walletAddress: string,
-  name: string,
-  networkName: string,
-  provider: string,
-  groups: TGroups[],
+  id: string,
   value: Value,
   position: PositionCollection[],
-}
+} & BasicWallet
 export type TGroups = {
   id: string,
   name: string,
@@ -76,4 +78,9 @@ export type TWalletGroup = {
   walletsCount: number,
   value: Value,
   position: PositionCollection[],
+  walletIds: string[],
+  wallets: {
+    data: TWallet[],
+    paging: Paging,
+  } | null,
 }

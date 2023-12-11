@@ -8,7 +8,7 @@ export function useMyWalletGroupList() {
     ['groupList'],
     async () => {
       const result = await getMyWalletGroupList();
-  return result.data;
+      return result.data;
     },
     {
       staleTime: Infinity,
@@ -18,11 +18,11 @@ export function useMyWalletGroupList() {
   );
 }
 export function useMyWalletGroup(id:string) {
-  return useQuery<{data:TWalletGroup},AxiosError>(
+  return useQuery<TWalletGroup,AxiosError>(
     ['group',id],
     async () => {
-      const result = await getMyWalletGroup(id);
-  return result.data;
+      const { data } = await getMyWalletGroup(id);
+      return data.data;
     },
     {
       staleTime: Infinity,
