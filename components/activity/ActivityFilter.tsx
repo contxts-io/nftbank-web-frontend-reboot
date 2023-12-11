@@ -175,6 +175,10 @@ const ActivityFilter = () => {
       <SearchInput
         className={styles.searchInput}
         placeholder='Search by Address, Item'
+        value={''}
+        onChange={function (value: string): void {
+          throw new Error('Function not implemented.');
+        }}
       />
       <ActivityTree />
       <ActivityMarketPlaceFilter />

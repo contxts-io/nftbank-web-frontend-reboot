@@ -24,7 +24,8 @@ const ManageGroup = (props: {
   const { theme } = useTheme();
   const [inputText, setInputText] = useState<string>(props.group?.name || '');
   const [invalidInput, setInvalidInput] = useState<boolean>(false);
-  const { data: walletList, isLoading } = useMyWalletList();
+  const [inputSearch, setInputSearch] = useState<string>('');
+  const { data: walletList, isLoading } = useMyWalletList(inputSearch);
   const { data: walletGroupList, refetch } = useMyWalletGroupList();
   const { data: walletGroup, refetch: refetchWalletGroup } = useMyWalletGroup(
     props.group?.id || ''
@@ -134,7 +135,11 @@ const ManageGroup = (props: {
         )}
       </div>
       <div className='w-full p-16'>
-        <SearchInput placeholder='Wallet Address, Wallet Name' />
+        <SearchInput
+          placeholder='Wallet Address, Wallet Name'
+          value={inputSearch}
+          onChange={(text) => setInputSearch(text)}
+        />
         <table className={`font-caption-regular ${styles.table}`}>
           <thead>
             <tr className='pb-12'>
