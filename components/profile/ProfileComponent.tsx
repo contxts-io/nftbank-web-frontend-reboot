@@ -1,14 +1,13 @@
 'use client';
 import Image from 'next/image';
-import WalletFilled from '@/public/icon/WalletFilled';
-import FolderFilled from '@/public/icon/FolderFilled';
 import ShareNetwork from '@/public/icon/ShareNetwork';
 import Eye from '@/public/icon/Eye';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useEffect, useState } from 'react';
+import styles from './ProfileComponent.module.css';
+import PortfolioSelector from '../PortfolioSelector';
 const ProfileComponent = () => {
   const [isClient, setIsClient] = useState(false);
-
   const { data: me, status } = useMe();
   useEffect(() => {
     setIsClient(true);
@@ -37,14 +36,14 @@ const ProfileComponent = () => {
                 <ShareNetwork className='mr-12 fill-[var(--color-icon-subtle)]' />
                 <Eye className=' fill-[var(--color-icon-subtle)]' />
               </div>
-              <div className='font-caption-regular flex items-center text-[var(--color-text-subtle)]'>
+              {/* <div className='font-caption-regular flex items-center text-[var(--color-text-subtle)]'>
                 <span className='flex items-center mr-16'>
                   <WalletFilled
                     className='mr-4 fill-[var(--color-icon-disabled)]'
                     width={14}
                     height={14}
                   />
-                  Wallet 12
+                  {`Wallet ${walletList?.data.length}`}
                 </span>
                 <span className='flex items-center'>
                   <FolderFilled
@@ -52,8 +51,14 @@ const ProfileComponent = () => {
                     width={14}
                     height={14}
                   />
-                  group 2
+                  {`group ${walletGroupList?.data.length}`}
                 </span>
+              </div> */}
+              <div className='mt-8'>
+                <PortfolioSelector
+                  className={styles.selectorButton}
+                  position='left-0 top-36'
+                />
               </div>
             </div>
           </div>

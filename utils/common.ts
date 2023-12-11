@@ -193,6 +193,13 @@ export function passwordValidation(password: string) {
   const regExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*#?&]{6,}$/;
   return regExp.test(password);
 }
+export function validationWalletAddress(walletAddress: string): boolean {
+  //walletAddress is valid
+  const regex =
+    // eslint-disable-next-line no-control-regex
+    /^0x[a-fA-F0-9]{40}$/i;
+  return regex.test(walletAddress);
+}
 export function validationEmail (email: string): boolean {
   //email is valid
   const regex =

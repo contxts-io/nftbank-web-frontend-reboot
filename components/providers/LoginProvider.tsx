@@ -4,12 +4,9 @@ import { useRouter, usePathname } from 'next/navigation';
 import { ReactNode, useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import NicknameSetting from '../NicknameSetting';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@/utils/firebase/config';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { userStatusAtom } from '@/store/account';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
-import { useCookies } from 'react-cookie';
 
 const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: me, status, isError } = useMe();

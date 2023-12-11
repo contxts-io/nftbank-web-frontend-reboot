@@ -3,6 +3,7 @@ import styles from './Dropdown.module.css';
 import Button from '@/components/buttons/Button';
 import CaretDown from '@/public/icon/CaretDown';
 import { useState } from 'react';
+import { twMerge } from 'tailwind-merge';
 type Props = {
   id: string;
   list: string[];
@@ -10,6 +11,7 @@ type Props = {
   onClick: (value: string) => void;
   className?: string;
   listStyle?: string;
+  children?: React.ReactNode;
 };
 const Dropdown = (props: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
@@ -19,15 +21,21 @@ const Dropdown = (props: Props) => {
       id={props.id}
       onClick={(e) => (e.stopPropagation(), setIsPopoverOpen((prev) => !prev))}
     >
-      <p>{props?.selected}</p>
-      <div className={`${isPopoverOpen ? 'rotate-180' : 'rotate-0'} ml-4`}>
-        <CaretDown />
-      </div>
+      {props.children || (
+        <>
+          <p>{props?.selected}</p>
+          <div className={`${isPopoverOpen ? 'rotate-180' : 'rotate-0'} ml-4`}>
+            <CaretDown />
+          </div>
+        </>
+      )}
       {isPopoverOpen && (
         <ul
-          className={`${styles.dropdown} ${
-            props.listStyle ? props.listStyle : ''
-          } z-50`}
+          className={twMerge(
+            `${styles.dropdown} top-45 ${
+              props.listStyle ? props.listStyle : ''
+            } z-50`
+          )}
         >
           {props.list.map((item, index) => {
             return (

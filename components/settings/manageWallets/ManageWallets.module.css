@@ -1,0 +1,12 @@
+.container {
+  @apply h-full flex-1 w-full;
+}
+.tabWrapper {
+  @apply h-56 w-full flex;
+}
+.tab {
+  @apply px-24 cursor-pointer border-b-4 border-[var(--color-border-main)] flex items-center justify-center;
+}
+.active {
+  @apply border-[var(--color-border-brand)] text-[var(--color-text-main)];
+}

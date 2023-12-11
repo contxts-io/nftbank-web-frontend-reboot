@@ -6,12 +6,14 @@ import { twMerge } from 'tailwind-merge';
 type Props = {
   className?: string;
   placeholder?: string;
+  value: string;
+  onChange: (value: string) => void;
 };
 const SearchInput = (props: Props) => {
-  const [searchText, setSearchText] = useState<string>('');
+  // const [searchText, setSearchText] = useState<string>('');
   const handleInputText = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setSearchText(value);
+    props.onChange(value);
   };
   return (
     <div
@@ -27,7 +29,7 @@ const SearchInput = (props: Props) => {
         placeholder={props.placeholder || 'Search by text'}
         className={`${styles.textInput} font-caption-regular`}
         onChange={handleInputText}
-        value={searchText}
+        value={props.value}
       />
     </div>
   );

@@ -8,7 +8,7 @@ import { useAtom } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import Wallet from '@/public/icon/Wallet';
 import Ghost from '@/public/icon/Ghost';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import GhostOn from '@/public/icon/GhostOn';
 import EthereumIcon from '@/public/icon/EthereumIcon';
 import Usd from '@/public/icon/Usd';
@@ -16,11 +16,48 @@ import Button from './buttons/Button';
 import { useRouter } from 'next/navigation';
 import { useMeManual } from '@/utils/hooks/queries/auth';
 import { useMutationSignOut } from '@/utils/hooks/mutations/auth';
+import { useDisconnect as useDisconnectWagmi } from 'wagmi';
+import { useDisconnect as useDisconnectThirdWeb } from '@thirdweb-dev/react';
+import { connectedWalletAddressAtom } from '@/store/account';
+import WalletAndGroupManage from './wallet/WalletAndGroupManage';
+import { portfolioUserAtom } from '@/store/portfolio';
+import BlockiesIcon from './BlockiesIcon';
+import { myDefaultPortfolioAtom } from '@/store/settings';
+import Folder from '@/public/icon/Folder';
+import PortfolioSelector from './PortfolioSelector';
 
 const GlobalNavigation = () => {
   const { mutate: signOut } = useMutationSignOut();
+  const { disconnect: disconnectWagmi } = useDisconnectWagmi();
+  const disconnectThirdWeb = useDisconnectThirdWeb();
+  const [connectedWalletAddress, setConnectedWalletAddress] = useAtom(
+    connectedWalletAddressAtom
+  );
+  const [mySelectedInformation, setMySelectedInformation] = useAtom(
+    myDefaultPortfolioAtom
+  );
   const [currency, setCurrency] = useAtom(currencyAtom);
   const [isGhost, setIsGhost] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const listRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+  useEffect(() => {
+    console.log('mySelectedInformation', mySelectedInformation);
+  }, [mySelectedInformation]);
+  const handleClickOutside = (event: MouseEvent) => {
+    if (listRef.current && !listRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+  const toggleOpen = () => {
+    setIsOpen(!isOpen);
+  };
   const changeCurrency = () => {
     setCurrency((prev) => {
       return prev === 'eth' ? 'usd' : 'eth';
@@ -29,10 +66,14 @@ const GlobalNavigation = () => {
   const handleGhostMode = () => {
     setIsGhost((prev) => !prev);
   };
-  const handleClickLogout = () => {
+  const handleClickLogout = async () => {
+    await disconnectWagmi();
+    await disconnectThirdWeb().then(() => {
+      console.log('disconnected disconnectThirdWeb');
+    });
+    setConnectedWalletAddress(null);
     signOut();
   };
-
   return (
     <nav className={`${styles.navigation}`}>
       <div className='flex items-center'>
@@ -81,6 +122,7 @@ const GlobalNavigation = () => {
         <Button id='logout' onClick={() => handleClickLogout()}>
           <p>Logout</p>
         </Button>
+        <PortfolioSelector />
       </div>
     </nav>
   );

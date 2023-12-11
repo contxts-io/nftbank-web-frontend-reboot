@@ -1,0 +1,13 @@
+.button {
+  @apply border-0 p-0 w-16 h-16;
+}
+.floatingList {
+  @apply w-153 h-68 z-20;
+  @apply top-20 right-0 bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-main)] shadow-md p-2 transition-opacity transition-transform duration-300 transform translate-y-0;
+}
+.floatingList li {
+  @apply h-34 flex items-center px-12 cursor-pointer;
+}
+.floatingList li:first-child {
+  @apply border-b-1 border-[var(--color-border-main)];
+}

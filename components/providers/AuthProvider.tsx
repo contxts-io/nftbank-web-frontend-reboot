@@ -57,18 +57,22 @@ export const AuthProvider = async ({ children }: any) => {
   const reactQueryClient = ReactQueryClient;
   // if (SIGN_IN === 'SIGN_IN' && TOKEN && TOKEN?.value !== '') {
   if (TOKEN && TOKEN?.value !== '') {
-    console.log('여기로 온것인가');
-    try {
-      const user = await checkMe(TOKEN);
-      if (user) {
-        reactQueryClient.setQueryData(['me', TOKEN.value], user);
-        const wallet = await checkWallet(TOKEN);
-        reactQueryClient.setQueryData([{ userId: user.id }, 'walletList'], {
-          ...wallet,
-        });
+    const me = await reactQueryClient.getQueryData(['me', TOKEN.value]);
+    console.log('me', me);
+    if (!me) {
+      console.log('try to sign-in');
+      try {
+        const user = await checkMe(TOKEN);
+        if (user) {
+          reactQueryClient.setQueryData(['me', TOKEN.value], user);
+          const wallet = await checkWallet(TOKEN);
+          reactQueryClient.setQueryData([{ userId: user.id }, 'walletList'], {
+            ...wallet,
+          });
+        }
+      } catch (err) {
+        console.log('ssr sign-in err', err);
       }
-    } catch (err) {
-      console.log('ssr sign-in err', err);
     }
   }
   const dehydratedState = dehydrate(reactQueryClient);

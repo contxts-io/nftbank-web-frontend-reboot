@@ -15,7 +15,7 @@ export function useMutationSignInUp() {
         // queryClient.clear();
         setUserStatus('SIGN_IN');
         console.log('sign in success ');
-        document.cookie = `sign_in=SIGN_IN`;
+        // document.cookie = `sign_in=SIGN_IN`;
       },
     },
   );

@@ -1,0 +1,42 @@
+.container {
+  @apply w-[600px] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)];
+}
+.box {
+  @apply w-full p-16 border-b-1 border-[var(--color-border-main)];
+}
+.cancelButton {
+  @apply p-0 border-transparent w-16 h-16 !important;
+}
+.inputText {
+  @apply w-full mt-4;
+}
+.invalid {
+  @apply border-[var(--color-border-danger)];
+}
+.table {
+  @apply w-full table-auto mt-16;
+}
+
+.table thead tr > th {
+  @apply text-[var(--color-text-subtle)] pb-12;
+}
+
+.table thead > tr {
+  @apply border-b-1 border-[var(--color-border-main)];
+}
+
+.table tbody > tr {
+  @apply h-40 border-b-1 border-[var(--color-border-disabled)];
+}
+.table tbody tr > td {
+  @apply text-[var(--color-text-main)];
+}
+.scroll {
+  @apply w-full overflow-scroll flex items-center gap-x-8 mt-4;
+}
+.checkbox {
+  @apply w-16 h-16;
+}
+.checked {
+  @apply bg-[var(--color-background-brand-bold)];
+}

@@ -12,7 +12,7 @@
   @apply text-[var(--color-text-main)];
 }
 .body {
-  @apply my-20;
+  @apply my-20 flex flex-col items-center;
 }
 .button {
   @apply mb-8 w-full h-40 flex items-center px-12;

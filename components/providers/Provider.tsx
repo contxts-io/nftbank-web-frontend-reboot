@@ -24,6 +24,7 @@ import {
   rainbowWallet,
 } from '@thirdweb-dev/react';
 import { CookiesProvider } from 'react-cookie';
+import ModalProvider from './ModalProvider';
 
 const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '';
 const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID || '';
@@ -119,8 +120,10 @@ function Providers({ children }: React.PropsWithChildren) {
                 defaultTheme='system'
                 enableSystem
               >
-                <ToastContainer />
-                {children}
+                <ModalProvider>
+                  <ToastContainer />
+                  {children}
+                </ModalProvider>
                 <ReactQueryDevtools initialIsOpen={false} />
               </ThemeProvider>
             </ThirdwebProvider>
