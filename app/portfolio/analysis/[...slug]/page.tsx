@@ -2,20 +2,25 @@
 import AcquisitionType from '@/components/portfolio/analysis/AcquisitionType';
 import PerformanceSection from '@/components/portfolio/analysis/PerformanceSection';
 import RealizedGainAndLoss from '@/components/portfolio/analysis/RealizedGainAndLoss';
+import { BasicParam } from '@/interfaces/request';
 import { portfolioUserAtom } from '@/store/portfolio';
-import { myDefaultPortfolioAtom } from '@/store/settings';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 
-const AnalysisPage = () => {
-  const myPortfolio = useAtomValue(myDefaultPortfolioAtom);
+const AnalysisPage = ({ params }: { params: { slug: string[] } }) => {
+  const { slug } = params;
   const setPortfolioUser = useSetAtom(portfolioUserAtom);
   useEffect(() => {
-    setPortfolioUser({
-      networkId: 'ethereum',
-      ...myPortfolio,
-    });
-  }, [myPortfolio]);
+    if (slug && Array.isArray(slug) && slug.length === 2) {
+      const queryParam: BasicParam = {
+        [slug[0]]: slug[1],
+        networkId: 'ethereum',
+      };
+      setPortfolioUser(queryParam);
+    } else {
+      console.log('else');
+    }
+  }, [slug]);
   return (
     <section className='pt-20 px-24 pb-40'>
       <PerformanceSection />

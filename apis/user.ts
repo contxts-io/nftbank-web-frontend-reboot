@@ -1,0 +1,6 @@
+import { TUser } from "@/interfaces/user";
+import instance from "@/utils/axiosInterceptor"
+export const getUser = async<T = TUser>(nickname:string) => {
+  const {data} = await instance.get<{data:T}>(`/user?u=${nickname}`);
+  return data.data;
+}

@@ -1,3 +1,4 @@
+'use client';
 import InventoryValue from '@/components/portfolio/InventoryValue';
 import styles from './page.module.css';
 import { Hydrate, dehydrate } from '@tanstack/react-query';
@@ -5,6 +6,10 @@ import ReactQueryClient from '@/utils/ReactQueryClient';
 import instance from '@/utils/axiosInterceptor';
 import { InventoryValueNested } from '@/interfaces/inventory';
 import InventoryContainer from '@/components/portfolio/inventory/InventoryContainer';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { myDefaultPortfolioAtom } from '@/store/settings';
+import { portfolioUserAtom } from '@/store/portfolio';
+import { useEffect } from 'react';
 
 const getInventoryValue = async <T = InventoryValueNested,>(
   walletAddress?: string
@@ -60,6 +65,14 @@ const InventoryPage = async (context: any) => {
   //     getCollectionCount(walletAddress)
   //   );
   // const dehydratedState = dehydrate(queryClient);
+  const myPortfolio = useAtomValue(myDefaultPortfolioAtom);
+  const setPortfolioUser = useSetAtom(portfolioUserAtom);
+  useEffect(() => {
+    setPortfolioUser({
+      networkId: 'ethereum',
+      ...myPortfolio,
+    });
+  }, [myPortfolio]);
   return (
     <section className={styles.container}>
       <InventoryValue />

@@ -8,10 +8,7 @@ import { useEffect, useState } from 'react';
 import GroupDetail from './GroupDetail';
 import { TWalletGroup } from '@/interfaces/inventory';
 import ManageGroup from '@/components/wallet/ManageGroup';
-import {
-  useMyWalletGroup,
-  useMyWalletGroupList,
-} from '@/utils/hooks/queries/walletGroup';
+import { useMyWalletGroup } from '@/utils/hooks/queries/walletGroup';
 import { group } from 'console';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const MyGroups = () => {

@@ -16,6 +16,9 @@ const PortfolioLayout = ({ children }: { children: React.ReactNode }) => {
   const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
   const searchParam = useSearchParams();
   const { data: me } = useMe();
+  useEffect(() => {
+    me && setPortfolioUser({ nickname: me.nickname, networkId: 'ethereum' });
+  }, [me]);
   function createJSONFromQueryString(queryString: URLSearchParams): BasicParam {
     const params = new URLSearchParams(queryString);
     let jsonResult = {} as BasicParam;
@@ -30,31 +33,25 @@ const PortfolioLayout = ({ children }: { children: React.ReactNode }) => {
 
     return jsonResult;
   }
-  useEffect(() => {
-    console.log('portfolio layout', me);
-    console.log(
-      'walletList?.data[0].walletAddress',
-      walletList?.data[0].walletAddress
-    );
-    console.log('searchParam', searchParam);
-    searchParam?.size > 0
-      ? setPortfolioUser({
-          ...createJSONFromQueryString(searchParam),
-          networkId: 'ethereum',
-        })
-      : walletList?.data &&
-        walletList.data.length > 0 &&
-        setPortfolioUser({
-          networkId: 'ethereum',
-          walletAddress: walletList?.data[0].walletAddress,
-        });
-    // if (me) {
-    //   setPortfolioUser({
-    //     userId: me.id,
-    //     networkId: 'ethereum',
-    //   });
-    // }
-  }, [me, walletList?.data, searchParam]);
+  // useEffect(() => {
+  //   console.log('portfolio layout', me);
+  //   console.log(
+  //     'walletList?.data[0].walletAddress',
+  //     walletList?.data[0].walletAddress
+  //   );
+  //   console.log('searchParam', searchParam);
+  //   searchParam?.size > 0
+  //     ? setPortfolioUser({
+  //         ...createJSONFromQueryString(searchParam),
+  //         networkId: 'ethereum',
+  //       })
+  //     : walletList?.data &&
+  //       walletList.data.length > 0 &&
+  //       setPortfolioUser({
+  //         networkId: 'ethereum',
+  //         walletAddress: walletList?.data[0].walletAddress,
+  //       });
+  // }, [me, walletList?.data, searchParam]);
   return (
     <section className='w-full h-full'>
       <ProfileComponent />

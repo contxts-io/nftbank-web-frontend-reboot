@@ -4,15 +4,17 @@ import { currencyAtom } from '@/store/currency';
 import { formatCurrency, formatPercent } from '@/utils/common';
 import Image from 'next/image';
 import DotsThree from '@/public/icon/DotsThree';
-import { useMyWalletGroupList } from '@/utils/hooks/queries/walletGroup';
+import { useWalletGroupList } from '@/utils/hooks/queries/walletGroup';
 import { TWalletGroup } from '@/interfaces/inventory';
 import CheckCircle from '@/public/icon/CheckCircle';
 import Folder from '@/public/icon/Folder';
+import { useMe } from '@/utils/hooks/queries/auth';
 type Props = {
   handleClickGroup: (group: TWalletGroup) => void;
 };
 const GroupListTable = (props: Props) => {
-  const { data: groupList } = useMyWalletGroupList();
+  const { data: me } = useMe();
+  const { data: groupList } = useWalletGroupList(me?.id || '');
   const currency = useAtomValue(currencyAtom);
   return (
     <table className={`font-caption-regular ${styles.table}`}>

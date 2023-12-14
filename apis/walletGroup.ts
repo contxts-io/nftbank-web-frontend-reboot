@@ -1,12 +1,12 @@
 import { TWalletGroup } from "@/interfaces/inventory";
 import instance from "@/utils/axiosInterceptor";
 
-export const getMyWalletGroup = async<T = TWalletGroup>(id:string) => {
+export const getWalletGroup = async<T = TWalletGroup>(id:string) => {
   const result = await instance.get<{data: T}>(`/wallet-group/${id}`);
   return result;
 }
-export const getMyWalletGroupList = async<T = { data: TWalletGroup[] }>() => {
-  const result = await instance.get<{data: T}>('/wallet-group');
+export const getWalletGroupList = async<T = { data: TWalletGroup[] }>(q:string) => {
+  const result = await instance.get<{data: T}>(`/wallet-group?q=${q}`);
   return result.data;
 }
 export type UpsertWalletGroup = {name:string, walletIds:string[]}

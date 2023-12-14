@@ -6,32 +6,68 @@ import { useMe } from '@/utils/hooks/queries/auth';
 import { useEffect, useState } from 'react';
 import styles from './ProfileComponent.module.css';
 import PortfolioSelector from '../PortfolioSelector';
+import { useAtom, useAtomValue } from 'jotai';
+import { portfolioUserAtom } from '@/store/portfolio';
+import { useUser } from '@/utils/hooks/queries/user';
+import BlockiesIcon from '../BlockiesIcon';
+import { myDefaultPortfolioAtom } from '@/store/settings';
+import Wallet from '@/public/icon/Wallet';
+import { BasicParam } from '@/interfaces/request';
 const ProfileComponent = () => {
   const [isClient, setIsClient] = useState(false);
-  const { data: me, status } = useMe();
+  const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
+  // const { data: me, status } = useMe();
+  const { data: user, status: userStatus } = useUser(
+    portfolioUser?.nickname || ''
+  );
+
+  const [mySelectedInformation, setMySelectedInformation] = useAtom(
+    myDefaultPortfolioAtom
+  );
+
   useEffect(() => {
     setIsClient(true);
   }, []);
+  useEffect(() => {
+    console.log('portfolioUser.walletAddress', portfolioUser.walletAddress);
+    mySelectedInformation &&
+      console.log('user user user', mySelectedInformation.walletAddress);
+  }, [mySelectedInformation, portfolioUser.walletAddress]);
   // if (status === 'loading') return <div>loading</div>;
-  if (isClient && !me) return <section>loading</section>;
+  // if (isClient && !user) return <section>loading</section>;
   return (
     <>
       {isClient ? (
         <section className='w-full px-24 py-24 flex items-center justify-between'>
           <div className='flex items-center'>
-            <Image
-              src={'/icon/nftbank_icon.svg'}
-              width={56}
-              height={56}
-              alt='nftbank logo'
-              className={`w-56 h-56 mr-20 rounded-full border-1 border-border-main dark:border-border-main-dark overflow-hidden`}
-            />
+            {user?.image ? (
+              <Image
+                src={`${user.image || '/icon/nftbank_icon.svg'}`}
+                width={56}
+                height={56}
+                alt='nftbank logo'
+                className={`w-56 h-56 mr-20 rounded-full border-1 border-border-main dark:border-border-main-dark overflow-hidden`}
+              />
+            ) : (
+              <div className='flex mr-20  items-center text-[var(--color-text-subtle)] rounded-full border-1 border-border-main dark:border-border-main-dark overflow-hidden'>
+                {portfolioUser && (
+                  <BlockiesIcon
+                    walletAddress={`${
+                      portfolioUser.walletAddress || portfolioUser.walletGroupId
+                    }`}
+                    size={56}
+                  />
+                )}
+              </div>
+            )}
             <div className='my-1 flex flex-col justify-between h-56'>
               <div className='flex items-center'>
                 <h2
                   className={`font-subtitle01-bold mr-16 text-text-main dark:text-text-main-dark`}
                 >
-                  {me?.nickname || 'Welcome'}
+                  {user
+                    ? user.nickname || 'Welcome'
+                    : portfolioUser.walletAddress?.substring(0, 8)}
                 </h2>
                 <ShareNetwork className='mr-12 fill-[var(--color-icon-subtle)]' />
                 <Eye className=' fill-[var(--color-icon-subtle)]' />
@@ -55,10 +91,21 @@ const ProfileComponent = () => {
                 </span>
               </div> */}
               <div className='mt-8'>
-                <PortfolioSelector
-                  className={styles.selectorButton}
-                  position='left-0 top-36'
-                />
+                {/* 누군가의 계정 */}
+                {user ? (
+                  <PortfolioSelector
+                    className={styles.selectorButton}
+                    position='left-0 top-36'
+                    user={user}
+                    portfolioParam={portfolioUser}
+                    setPortfolioParam={setPortfolioUser}
+                  />
+                ) : (
+                  <div className='font-caption-regular text-[var(--color-text-subtle)] bg-[var(--color-elevation-sunken)] w-fit px-8 h-24 flex items-center justify-center gap-x-8'>
+                    <Wallet />
+                    <p>All Wallet</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

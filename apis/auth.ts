@@ -1,7 +1,6 @@
 import { AuthProvider, TCurrency } from "@/interfaces/constants";
 import { TMe } from "@/interfaces/user";
 import instance from "@/utils/axiosInterceptor"
-import { cookies } from "next/headers";
 
 // export const postUser = async <T = User, R = UserPostType>(body: R): Promise<T> => {
 // 	const { data } = await axios.post<T, AxiosResponse<T>, R>(url, body, header);

@@ -4,14 +4,16 @@ import { useRouter, usePathname } from 'next/navigation';
 import { ReactNode, useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import NicknameSetting from '../NicknameSetting';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { userStatusAtom } from '@/store/account';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { myDefaultPortfolioAtom } from '@/store/settings';
 
 const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: me, status, isError } = useMe();
   const { data: walletList } = useMyWalletList();
   const [userStatus, setUserStatus] = useAtom(userStatusAtom);
+  const setMyPortfolio = useSetAtom(myDefaultPortfolioAtom);
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const path = usePathname();
@@ -37,6 +39,10 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
       setShowModal(true);
     }
     me?.nickname && setShowModal(false);
+    me &&
+      setMyPortfolio({
+        userId: me.id,
+      });
   }, [me, path]);
   //
   return (

@@ -14,7 +14,7 @@ import EthereumIcon from '@/public/icon/EthereumIcon';
 import Usd from '@/public/icon/Usd';
 import Button from './buttons/Button';
 import { useRouter } from 'next/navigation';
-import { useMeManual } from '@/utils/hooks/queries/auth';
+import { useMe, useMeManual } from '@/utils/hooks/queries/auth';
 import { useMutationSignOut } from '@/utils/hooks/mutations/auth';
 import { useDisconnect as useDisconnectWagmi } from 'wagmi';
 import { useDisconnect as useDisconnectThirdWeb } from '@thirdweb-dev/react';
@@ -25,8 +25,10 @@ import BlockiesIcon from './BlockiesIcon';
 import { myDefaultPortfolioAtom } from '@/store/settings';
 import Folder from '@/public/icon/Folder';
 import PortfolioSelector from './PortfolioSelector';
+import { BasicParam } from '@/interfaces/request';
 
 const GlobalNavigation = () => {
+  const { data: me } = useMe();
   const { mutate: signOut } = useMutationSignOut();
   const { disconnect: disconnectWagmi } = useDisconnectWagmi();
   const disconnectThirdWeb = useDisconnectThirdWeb();
@@ -122,7 +124,14 @@ const GlobalNavigation = () => {
         <Button id='logout' onClick={() => handleClickLogout()}>
           <p>Logout</p>
         </Button>
-        <PortfolioSelector />
+        {/* 내계정 */}
+        {me && (
+          <PortfolioSelector
+            user={me}
+            portfolioParam={mySelectedInformation}
+            setPortfolioParam={setMySelectedInformation}
+          />
+        )}
       </div>
     </nav>
   );

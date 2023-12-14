@@ -3,35 +3,32 @@ import { useState } from 'react';
 import Button from '../buttons/Button';
 import styles from './WalletAndGroupManage.module.css';
 import Wallet from '@/public/icon/Wallet';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { useMyWalletList, useWalletList } from '@/utils/hooks/queries/wallet';
 import { shortenAddress } from '@/utils/common';
 import Copy from '@/public/icon/Copy';
 import Plus from '@/public/icon/Plus';
 import Folder from '@/public/icon/Folder';
 import { useAtom } from 'jotai';
 import { myDefaultPortfolioAtom, openModalAtom } from '@/store/settings';
-import { useMyWalletGroupList } from '@/utils/hooks/queries/walletGroup';
+import { useWalletGroupList } from '@/utils/hooks/queries/walletGroup';
 import { portfolioUserAtom } from '@/store/portfolio';
 import { BasicParam } from '@/interfaces/request';
 import { useMe } from '@/utils/hooks/queries/auth';
+import { TUser } from '@/interfaces/user';
 type Props = {
   onClose: () => void;
+  setPortfolioWallet: (param: BasicParam) => void;
+  user: TUser;
 };
 const WalletAndGroupManage = (props: Props) => {
   const [selected, setSelected] = useState<'wallet' | 'group'>('wallet');
   const [showModal, setShowModal] = useAtom(openModalAtom);
-  const [mySelectedInformation, setMySelectedInformation] = useAtom(
-    myDefaultPortfolioAtom
-  );
-  const { data: walletList } = useMyWalletList();
-  const { data: me } = useMe();
-  const { data: walletGroupList } = useMyWalletGroupList();
-  const handleClickList = (param: {
-    walletAddress?: string;
-    walletGroup?: string;
-    userId?: string;
-  }) => {
-    setMySelectedInformation(param);
+
+  const { data: walletList } = useWalletList(props.user.nickname);
+  const { data: walletGroupList } = useWalletGroupList(props.user.nickname);
+  const handleClickList = (param: BasicParam) => {
+    // setMySelectedInformation(param);
+    props.setPortfolioWallet(param);
     props.onClose();
   };
   const copyAddress = (walletAddress: string) => {
@@ -66,7 +63,8 @@ const WalletAndGroupManage = (props: Props) => {
               className='h-40 flex items-center px-10 w-full gap-x-8 bg-[var(--color-elevation-sunken)] text-[var(--color-text-main)] cursor-pointer'
               onClick={() =>
                 handleClickList({
-                  userId: me?.id,
+                  nickname: props.user?.nickname,
+                  networkId: 'ethereum',
                 })
               }
             >
@@ -82,6 +80,7 @@ const WalletAndGroupManage = (props: Props) => {
                     onClick={() =>
                       handleClickList({
                         walletAddress: wallet.walletAddress,
+                        networkId: 'ethereum',
                       })
                     }
                   >
@@ -114,7 +113,8 @@ const WalletAndGroupManage = (props: Props) => {
                     className={`${styles.list} text-[var(--color-text-main)]`}
                     onClick={() =>
                       handleClickList({
-                        walletGroup: walletGroup.name,
+                        walletGroupId: walletGroup.id,
+                        networkId: 'ethereum',
                       })
                     }
                   >
