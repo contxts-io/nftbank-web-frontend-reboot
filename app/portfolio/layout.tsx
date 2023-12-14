@@ -1,5 +1,6 @@
 'use client';
 import { getMyWalletList } from '@/apis/wallet';
+import ChainList from '@/components/portfolio/ChainList';
 import NoWallet from '@/components/portfolio/NoWallet';
 import PortfolioTabNavigation from '@/components/portfolio/PortfolioTabNavigation';
 import ProfileComponent from '@/components/profile/ProfileComponent';
