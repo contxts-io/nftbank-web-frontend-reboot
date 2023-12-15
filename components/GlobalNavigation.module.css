@@ -5,7 +5,7 @@
 }
 .navigation svg path mask {
   @apply w-73 h-12;
-  @apply fill-icon-brand;
+  @apply fill-[var(--color-icon-brand)];
 }
 .navigation img {
   @apply mr-5;
@@ -21,7 +21,7 @@
 }
 
 .buttonBox button {
-  @apply px-12 h-32 flex justify-center items-center text-icon-subtle hover:text-icon-main;
+  @apply px-12 h-32 flex justify-center items-center text-[var(--color-icon-subtle)] hover:text-[var(--color-icon-main)];
 }
 .blockIcon {
   @apply w-16 h-16;

@@ -25,6 +25,7 @@ import BlockiesIcon from './BlockiesIcon';
 import { myDefaultPortfolioAtom } from '@/store/settings';
 import Folder from '@/public/icon/Folder';
 import PortfolioSelector from './PortfolioSelector';
+import SearchBar from './SearchBar';
 
 const GlobalNavigation = () => {
   const { mutate: signOut } = useMutationSignOut();
@@ -105,6 +106,7 @@ const GlobalNavigation = () => {
           Settings
         </Link>
       </div>
+      <SearchBar />
       <div className={`${styles.buttonBox}`}>
         <Button id={'/global/wallet'}>
           <Wallet />
