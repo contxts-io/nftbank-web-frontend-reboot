@@ -125,7 +125,7 @@ const GlobalNavigation = () => {
           <p>Logout</p>
         </Button>
         {/* 내계정 */}
-        {me && (
+        {me && mySelectedInformation && (
           <PortfolioSelector
             user={me}
             portfolioParam={mySelectedInformation}

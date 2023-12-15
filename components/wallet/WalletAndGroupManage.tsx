@@ -24,7 +24,7 @@ const WalletAndGroupManage = (props: Props) => {
   const [selected, setSelected] = useState<'wallet' | 'group'>('wallet');
   const [showModal, setShowModal] = useAtom(openModalAtom);
 
-  const { data: walletList } = useWalletList(props.user.nickname);
+  const { data: walletList } = useWalletList({ nickname: props.user.nickname });
   const { data: walletGroupList } = useWalletGroupList(props.user.nickname);
   const handleClickList = (param: BasicParam) => {
     // setMySelectedInformation(param);

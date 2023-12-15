@@ -1,4 +1,4 @@
-import { TWalletList, getMyWalletList } from "@/apis/wallet";
+import { TWalletList, getMyWalletList, getWalletList } from "@/apis/wallet";
 import { validationWalletAddress } from "@/utils/common";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -18,11 +18,11 @@ export function useMyWalletList(q?: string) {
     },
   );
 }
-export function useWalletList(q?: string) {
+export function useWalletList(param:{nickname:string}) {
   return useQuery<TWalletList,AxiosError>(
-    ['walletList',q],
+    ['walletList',param],
     async () => {
-      const result = await getMyWalletList(q || '');
+      const result = await getWalletList(param);
   return result;
     },
     {

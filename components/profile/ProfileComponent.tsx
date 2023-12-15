@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import styles from './ProfileComponent.module.css';
 import PortfolioSelector from '../PortfolioSelector';
 import { useAtom, useAtomValue } from 'jotai';
-import { portfolioUserAtom } from '@/store/portfolio';
+import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
 import { useUser } from '@/utils/hooks/queries/user';
 import BlockiesIcon from '../BlockiesIcon';
 import { myDefaultPortfolioAtom } from '@/store/settings';
@@ -15,26 +15,18 @@ import Wallet from '@/public/icon/Wallet';
 import { BasicParam } from '@/interfaces/request';
 const ProfileComponent = () => {
   const [isClient, setIsClient] = useState(false);
+  const [portfolioUserNickname, setPortfolioUserNickname] = useAtom(
+    portfolioNicknameAtom
+  );
   const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
   // const { data: me, status } = useMe();
   const { data: user, status: userStatus } = useUser(
-    portfolioUser?.nickname || ''
-  );
-
-  const [mySelectedInformation, setMySelectedInformation] = useAtom(
-    myDefaultPortfolioAtom
+    portfolioUserNickname || ''
   );
 
   useEffect(() => {
     setIsClient(true);
   }, []);
-  useEffect(() => {
-    console.log('portfolioUser.walletAddress', portfolioUser.walletAddress);
-    mySelectedInformation &&
-      console.log('user user user', mySelectedInformation.walletAddress);
-  }, [mySelectedInformation, portfolioUser.walletAddress]);
-  // if (status === 'loading') return <div>loading</div>;
-  // if (isClient && !user) return <section>loading</section>;
   return (
     <>
       {isClient ? (
@@ -50,14 +42,12 @@ const ProfileComponent = () => {
               />
             ) : (
               <div className='flex mr-20  items-center text-[var(--color-text-subtle)] rounded-full border-1 border-border-main dark:border-border-main-dark overflow-hidden'>
-                {portfolioUser && (
-                  <BlockiesIcon
-                    walletAddress={`${
-                      portfolioUser.walletAddress || portfolioUser.walletGroupId
-                    }`}
-                    size={56}
-                  />
-                )}
+                <BlockiesIcon
+                  walletAddress={`${
+                    user?.nickname || portfolioUser.walletAddress
+                  }`}
+                  size={56}
+                />
               </div>
             )}
             <div className='my-1 flex flex-col justify-between h-56'>
@@ -65,9 +55,10 @@ const ProfileComponent = () => {
                 <h2
                   className={`font-subtitle01-bold mr-16 text-text-main dark:text-text-main-dark`}
                 >
-                  {user
-                    ? user.nickname || 'Welcome'
-                    : portfolioUser.walletAddress?.substring(0, 8)}
+                  {portfolioUserNickname ||
+                    portfolioUser?.walletAddress?.substring(0, 8) ||
+                    user?.nickname ||
+                    'Welcome'}
                 </h2>
                 <ShareNetwork className='mr-12 fill-[var(--color-icon-subtle)]' />
                 <Eye className=' fill-[var(--color-icon-subtle)]' />
@@ -98,7 +89,7 @@ const ProfileComponent = () => {
                     position='left-0 top-36'
                     user={user}
                     portfolioParam={portfolioUser}
-                    setPortfolioParam={setPortfolioUser}
+                    setPortfolioParam={(param) => setPortfolioUser(param)}
                   />
                 ) : (
                   <div className='font-caption-regular text-[var(--color-text-subtle)] bg-[var(--color-elevation-sunken)] w-fit px-8 h-24 flex items-center justify-center gap-x-8'>

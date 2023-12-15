@@ -65,6 +65,7 @@ export const AuthProvider = async ({ children }: any) => {
         const user = await checkMe(TOKEN);
         if (user) {
           reactQueryClient.setQueryData(['me', TOKEN.value], user);
+          reactQueryClient.setQueryData(['user', user.nickname], user);
           const wallet = await checkWallet(TOKEN);
           reactQueryClient.setQueryData([{ userId: user.id }, 'walletList'], {
             ...wallet,

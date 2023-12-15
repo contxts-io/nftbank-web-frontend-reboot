@@ -5,7 +5,7 @@ import { validationWalletAddress } from "@/utils/common";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export function useUser(nickname:string) {
+export function useUser(nickname?:string) {
   return useQuery<TUser,AxiosError>(
     ['user',nickname],
     async () => {
@@ -16,7 +16,6 @@ export function useUser(nickname:string) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      enabled: nickname != '',
     },
   );
 }

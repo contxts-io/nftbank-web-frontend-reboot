@@ -7,17 +7,17 @@ import TotalInventoryValue from '@/components/portfolio/overview/TotalInventoryV
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { myDefaultPortfolioAtom } from '@/store/settings';
 import { useEffect } from 'react';
-import { portfolioUserAtom } from '@/store/portfolio';
+import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
+import { useMe } from '@/utils/hooks/queries/auth';
 
 const OverviewPage = () => {
   // const myPortfolio = useAtomValue(myDefaultPortfolioAtom);
-  // const setPortfolioUser = useSetAtom(portfolioUserAtom);
-  // useEffect(() => {
-  //   setPortfolioUser({
-  //     networkId: 'ethereum',
-  //     ...myPortfolio,
-  //   });
-  // }, [myPortfolio]);
+  const { data: me } = useMe();
+  const setPortfolioNicknameAtom = useSetAtom(portfolioNicknameAtom);
+
+  useEffect(() => {
+    me?.nickname && setPortfolioNicknameAtom(me.nickname);
+  }, [me]);
   return (
     <section className='pt-20 px-24 pb-40'>
       <SummaryValueContainer />

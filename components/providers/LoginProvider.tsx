@@ -8,12 +8,17 @@ import { useAtom, useSetAtom } from 'jotai';
 import { userStatusAtom } from '@/store/account';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { myDefaultPortfolioAtom } from '@/store/settings';
+import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
+import { useUser } from '@/utils/hooks/queries/user';
 
 const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: me, status, isError } = useMe();
+  const { data: user } = useUser(me?.nickname);
   const { data: walletList } = useMyWalletList();
   const [userStatus, setUserStatus] = useAtom(userStatusAtom);
   const setMyPortfolio = useSetAtom(myDefaultPortfolioAtom);
+  const setPortfolioUser = useSetAtom(portfolioUserAtom);
+  const setPortfolioNicknameAtom = useSetAtom(portfolioNicknameAtom);
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const path = usePathname();
@@ -39,10 +44,12 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
       setShowModal(true);
     }
     me?.nickname && setShowModal(false);
-    me &&
-      setMyPortfolio({
-        userId: me.id,
-      });
+    me && setPortfolioUser({ nickname: me.nickname, networkId: 'ethereum' });
+    me && setPortfolioNicknameAtom(me.nickname);
+    // me &&
+    //   setMyPortfolio({
+    //     userId: me.id,
+    //   });
   }, [me, path]);
   //
   return (

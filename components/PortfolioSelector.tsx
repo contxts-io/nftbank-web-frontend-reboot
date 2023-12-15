@@ -42,6 +42,10 @@ const PortfolioSelector = (props: Props) => {
   const toggleOpen = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    console.log('props.portfolioParam @@@@@ : ', props.portfolioParam);
+  }, [props.portfolioParam]);
   const listRef = useRef<HTMLDivElement>(null);
   return (
     <div className='relative' ref={listRef}>
@@ -56,7 +60,7 @@ const PortfolioSelector = (props: Props) => {
             <p>All Wallets</p>
           </div>
         )}
-        {props.portfolioParam?.userId && (
+        {props.portfolioParam?.nickname && (
           <div className='flex items-center text-[var(--color-text-main)]'>
             <Folder className={`mr-4`} />
             <p>All Wallets</p>
@@ -86,7 +90,7 @@ const PortfolioSelector = (props: Props) => {
           <WalletAndGroupManage
             user={props.user}
             onClose={() => setIsOpen(false)}
-            setPortfolioWallet={props.setPortfolioParam}
+            setPortfolioWallet={(param) => props.setPortfolioParam(param)}
           />
         </div>
       )}
