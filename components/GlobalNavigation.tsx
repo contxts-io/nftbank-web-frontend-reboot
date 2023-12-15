@@ -13,19 +13,13 @@ import GhostOn from '@/public/icon/GhostOn';
 import EthereumIcon from '@/public/icon/EthereumIcon';
 import Usd from '@/public/icon/Usd';
 import Button from './buttons/Button';
-import { useRouter } from 'next/navigation';
-import { useMe, useMeManual } from '@/utils/hooks/queries/auth';
+import { useMe } from '@/utils/hooks/queries/auth';
 import { useMutationSignOut } from '@/utils/hooks/mutations/auth';
 import { useDisconnect as useDisconnectWagmi } from 'wagmi';
 import { useDisconnect as useDisconnectThirdWeb } from '@thirdweb-dev/react';
 import { connectedWalletAddressAtom } from '@/store/account';
-import WalletAndGroupManage from './wallet/WalletAndGroupManage';
-import { portfolioUserAtom } from '@/store/portfolio';
-import BlockiesIcon from './BlockiesIcon';
 import { myDefaultPortfolioAtom } from '@/store/settings';
-import Folder from '@/public/icon/Folder';
 import PortfolioSelector from './PortfolioSelector';
-import { BasicParam } from '@/interfaces/request';
 
 const GlobalNavigation = () => {
   const { data: me } = useMe();

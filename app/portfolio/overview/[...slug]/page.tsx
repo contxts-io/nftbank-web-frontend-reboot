@@ -19,7 +19,7 @@ const OverviewPage = ({ params }: { params: { slug: string[] } }) => {
         [slug[0]]: slug[1],
         networkId: 'ethereum',
       };
-      slug[0] === 'walletAddress' && setPortfolioUser(queryParam);
+      setPortfolioUser(queryParam);
       slug[0] === 'nickname' && setPortfolioNicknameAtom(slug[1]);
     } else {
       console.log('else');

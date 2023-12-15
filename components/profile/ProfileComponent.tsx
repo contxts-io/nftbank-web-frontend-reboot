@@ -13,20 +13,28 @@ import BlockiesIcon from '../BlockiesIcon';
 import { myDefaultPortfolioAtom } from '@/store/settings';
 import Wallet from '@/public/icon/Wallet';
 import { BasicParam } from '@/interfaces/request';
-const ProfileComponent = () => {
+import { TUser } from '@/interfaces/user';
+const ProfileComponent = (props: { nickname: string }) => {
+  const { data: me } = useMe();
   const [isClient, setIsClient] = useState(false);
   const [portfolioUserNickname, setPortfolioUserNickname] = useAtom(
     portfolioNicknameAtom
   );
+  const [user, setUser] = useState<TUser | null>();
   const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
   // const { data: me, status } = useMe();
-  const { data: user, status: userStatus } = useUser(
+  const { data: _user, status: userStatus } = useUser(
     portfolioUserNickname || ''
   );
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+  useEffect(() => {
+    console.log('portfolioUserNickname', portfolioUserNickname);
+    console.log('me.nickname', me?.nickname);
+    portfolioUserNickname === me?.nickname ? setUser(me) : setUser(_user);
+  }, [portfolioUserNickname]);
   return (
     <>
       {isClient ? (

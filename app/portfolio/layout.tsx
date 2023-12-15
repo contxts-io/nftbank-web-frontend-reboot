@@ -8,15 +8,19 @@ import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useUser } from '@/utils/hooks/queries/user';
 import { useMyWalletList, useWalletList } from '@/utils/hooks/queries/wallet';
+import { set } from 'cypress/types/lodash';
 import { useAtom } from 'jotai';
-import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const PortfolioLayout = ({ children }: { children: React.ReactNode }) => {
+  const path = usePathname();
   const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
+  const [nickname, setNickname] = useState('');
   const [portfolioUserNickname, setPortfolioUserNickname] = useAtom(
     portfolioNicknameAtom
   );
+  const { data: me } = useMe();
   const { data: user } = useUser(portfolioUserNickname || '');
   const {
     data: walletList,
@@ -30,13 +34,19 @@ const PortfolioLayout = ({ children }: { children: React.ReactNode }) => {
   //   me && setPortfolioUser({ nickname: me.nickname, networkId: 'ethereum' });
   // }, [me]);
 
+  // useEffect(() => {
+  //   user &&
+  //     setPortfolioUser({ nickname: user.nickname, networkId: 'ethereum' });
+  // }, [user]);
   useEffect(() => {
-    user &&
-      setPortfolioUser({ nickname: user.nickname, networkId: 'ethereum' });
-  }, [user]);
+    me &&
+      (path.split('/nickname/')[1]
+        ? setNickname(path.split('/nickname/')[1])
+        : setNickname(me.nickname));
+  }, [path, me]);
   return (
     <section className='w-full h-full'>
-      <ProfileComponent />
+      <ProfileComponent nickname={nickname} />
       {status === 'success' && (
         <>
           {walletList?.data.length > 0 ? (

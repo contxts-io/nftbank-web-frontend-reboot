@@ -1,6 +1,4 @@
 'use client';
-import { myDefaultPortfolioAtom } from '@/store/settings';
-import { useAtom } from 'jotai';
 import { useEffect, useRef, useState } from 'react';
 import Button from './buttons/Button';
 import Folder from '@/public/icon/Folder';
@@ -35,9 +33,6 @@ const PortfolioSelector = (props: Props) => {
       setIsOpen(false);
     }
   };
-  const [mySelectedInformation, setMySelectedInformation] = useAtom(
-    myDefaultPortfolioAtom
-  );
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpen = () => {
     setIsOpen(!isOpen);

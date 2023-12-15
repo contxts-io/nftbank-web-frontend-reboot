@@ -20,6 +20,10 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   const setPortfolioUser = useSetAtom(portfolioUserAtom);
   const setPortfolioNicknameAtom = useSetAtom(portfolioNicknameAtom);
   const [showModal, setShowModal] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  const [mySelectedInformation, setMySelectedInformation] = useAtom(
+    myDefaultPortfolioAtom
+  );
   const router = useRouter();
   const path = usePathname();
   // useEffect(() => {
@@ -38,19 +42,27 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   //   document.cookie = `sign_in=${userStatus}`;
   // }, [userStatus]);
   useEffect(() => {
-    if (!me) {
-      !path.includes('/auth') && router.push('/auth/signin');
-    } else if (me.nickname === null) {
-      setShowModal(true);
+    setIsClient(true);
+  }, []);
+  useEffect(() => {
+    if (isClient) {
+      if (!me) {
+        console.log('ㅇ어ㅂㅅ', !path.includes('/auth'));
+        if (!path.includes('/auth')) {
+          router.push('/auth/signin');
+        }
+      } else if (me.nickname === null) {
+        setShowModal(true);
+      }
+      console.log('~~~~ ME ~~~~~ nickname : ', me?.nickname);
+      me?.nickname && setShowModal(false);
+      me?.nickname &&
+        setMySelectedInformation({
+          nickname: me.nickname,
+          networkId: 'ethereum',
+        });
     }
-    me?.nickname && setShowModal(false);
-    me && setPortfolioUser({ nickname: me.nickname, networkId: 'ethereum' });
-    me && setPortfolioNicknameAtom(me.nickname);
-    // me &&
-    //   setMyPortfolio({
-    //     userId: me.id,
-    //   });
-  }, [me, path]);
+  }, [me, path, isClient]);
   //
   return (
     <>
