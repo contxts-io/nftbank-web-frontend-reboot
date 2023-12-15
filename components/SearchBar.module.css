@@ -1,0 +1,22 @@
+.container {
+  @apply border-1 border-[var(--color-border-main)] h-36 w-[360px] flex items-center;
+}
+.textInput {
+  @apply border-transparent !important;
+  @apply text-[var(--color-text-main)] placeholder:text-[var(--color-text-subtle)] flex-1 h-full;
+}
+.textInput:hover:focus {
+  @apply border-transparent !important;
+}
+.box {
+  @apply ml-auto flex items-center justify-center w-24 h-24 border-1 border-[var(--color-border-main)] text-[var(--color-text-subtle)] mr-10;
+}
+.searchResult {
+  @apply w-[360px] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-main)];
+}
+.resultHeader {
+  @apply bg-[var(--color-elevation-sunken)] w-full h-32 flex items-center px-10;
+}
+.resultBody {
+  @apply px-10 h-38 flex items-center gap-x-8 border-t-1 border-[var(--color-border-main)];
+}
