@@ -7,7 +7,6 @@ import GlobalNavigation from '@/components/GlobalNavigation';
 import localFont from 'next/font/local';
 import Footer from '@/components/Footer';
 import 'react-toastify/dist/ReactToastify.css';
-import ProfileComponent from '@/components/profile/ProfileComponent';
 import LoginProvider from '@/components/providers/LoginProvider';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -125,6 +124,7 @@ export default async function RootLayout({
     if (currentColorMode === 'dark')
       document.body.setAttribute('data-theme', 'dark');
   }
+
   return (
     <html lang='en' className={`${iosevkaCustom.className}`}>
       <body className='relative bg-[var(--color-elevation-surface)]'>

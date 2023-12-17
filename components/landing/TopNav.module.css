@@ -1,0 +1,6 @@
+.container {
+  @apply flex items-center justify-between h-62 w-full;
+}
+.startButton {
+  @apply ml-40 bg-[var(--color-background-brand-bold)] text-[var(--color-text-main)] h-36 flex items-center justify-center px-16 !important;
+}

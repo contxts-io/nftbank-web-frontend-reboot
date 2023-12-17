@@ -13,7 +13,7 @@ import GhostOn from '@/public/icon/GhostOn';
 import EthereumIcon from '@/public/icon/EthereumIcon';
 import Usd from '@/public/icon/Usd';
 import Button from './buttons/Button';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useMeManual } from '@/utils/hooks/queries/auth';
 import { useMutationSignOut } from '@/utils/hooks/mutations/auth';
 import { useDisconnect as useDisconnectWagmi } from 'wagmi';
@@ -28,6 +28,7 @@ import PortfolioSelector from './PortfolioSelector';
 import SearchBar from './SearchBar';
 
 const GlobalNavigation = () => {
+  const path = usePathname();
   const { mutate: signOut } = useMutationSignOut();
   const { disconnect: disconnectWagmi } = useDisconnectWagmi();
   const disconnectThirdWeb = useDisconnectThirdWeb();
@@ -75,6 +76,7 @@ const GlobalNavigation = () => {
     setConnectedWalletAddress(null);
     signOut();
   };
+  if (path === '/landing') return null;
   return (
     <nav className={`${styles.navigation}`}>
       <div className='flex items-center'>
