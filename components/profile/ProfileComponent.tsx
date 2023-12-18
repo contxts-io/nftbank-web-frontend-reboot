@@ -14,22 +14,28 @@ import { myDefaultPortfolioAtom } from '@/store/settings';
 import Wallet from '@/public/icon/Wallet';
 import { BasicParam } from '@/interfaces/request';
 import { TUser } from '@/interfaces/user';
+import { usePathname } from 'next/navigation';
 const ProfileComponent = (props: { nickname: string }) => {
   const { data: me } = useMe();
+  const path = usePathname();
   const [isClient, setIsClient] = useState(false);
   const [portfolioUserNickname, setPortfolioUserNickname] = useAtom(
     portfolioNicknameAtom
   );
+  const [nickname, setNickname] = useState<string | null>(null);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [user, setUser] = useState<TUser | null>();
   const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
   // const { data: me, status } = useMe();
-  const { data: _user, status: userStatus } = useUser(
-    portfolioUserNickname || ''
-  );
+  const { data: _user, status: userStatus } = useUser(nickname || '');
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+  useEffect(() => {
+    path && setNickname(path.split('nickname/')[1] || me?.nickname || '');
+    path && setWalletAddress(path.split('walletAddress/')[1] || '');
+  }, [path, me?.nickname]);
   useEffect(() => {
     console.log('portfolioUserNickname', portfolioUserNickname);
     console.log('me.nickname', me?.nickname);
@@ -51,9 +57,7 @@ const ProfileComponent = (props: { nickname: string }) => {
             ) : (
               <div className='flex mr-20  items-center text-[var(--color-text-subtle)] rounded-full border-1 border-border-main dark:border-border-main-dark overflow-hidden'>
                 <BlockiesIcon
-                  walletAddress={`${
-                    user?.nickname || portfolioUser.walletAddress
-                  }`}
+                  walletAddress={`${nickname || walletAddress}`}
                   size={56}
                 />
               </div>
@@ -63,10 +67,7 @@ const ProfileComponent = (props: { nickname: string }) => {
                 <h2
                   className={`font-subtitle01-bold mr-16 text-text-main dark:text-text-main-dark`}
                 >
-                  {portfolioUserNickname ||
-                    portfolioUser?.walletAddress?.substring(0, 8) ||
-                    user?.nickname ||
-                    'Welcome'}
+                  {walletAddress?.substring(0, 8) || nickname || 'Welcome'}
                 </h2>
                 <ShareNetwork className='mr-12 fill-[var(--color-icon-subtle)]' />
                 <Eye className=' fill-[var(--color-icon-subtle)]' />
