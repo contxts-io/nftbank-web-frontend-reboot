@@ -10,17 +10,17 @@ import instance from "@/utils/axiosInterceptor";
 import { jsonToQueryString } from "@/utils/common";
 
 export const getInventoryValue = async<T = InventoryValueNested>(searchParam: BasicParam | null): Promise<T> => {
-  const query = jsonToQueryString(searchParam);
+  const query = jsonToQueryString(searchParam).toLowerCase();
   const { data } = await instance.get<{data:T}>(`/inventory/value?${query}`);
   return data.data;
 }
 export const getCollectionValuableCount = async<T = IStat>(searchParam: BasicParam | null): Promise<T> => {
-  const query = jsonToQueryString(searchParam);
+  const query = jsonToQueryString(searchParam).toLowerCase();
   const { data } = await instance.get<{data:T}>(`/inventory/collection/stat?${query}`);
   return data.data;
 }
 export const getItemValuableCount = async<T = IStat>(searchParam: BasicParam | null): Promise<T> => {
-  const query = jsonToQueryString(searchParam);
+  const query = jsonToQueryString(searchParam).toLowerCase();
   const { data } = await instance.get<{data:T}>(`/inventory/token/stat?${query}`);
   return data.data;
 }

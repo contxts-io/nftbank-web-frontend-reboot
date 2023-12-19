@@ -2,7 +2,10 @@
   @apply w-full table-auto overflow-y-scroll border-[var(--color-border-main)];
 }
 .tableHead {
-  @apply sticky top-[-1px] bg-[var(--color-elevation-surface)] z-20;
+  @apply bg-[var(--color-elevation-surface)];
+}
+.stickyBar {
+  @apply sticky top-[-1px] z-20;
 }
 .tableHeadRow {
   @apply h-40 py-12 text-[var(--color-text-subtle)];

@@ -60,12 +60,10 @@ const HEADER = [
   },
 ];
 type Props = {
-  onClick: (valuationType: TValuationType) => void;
-  valuations: TValuation[];
-  selectedValuation: TValuation | undefined;
+  sticky?: boolean;
 };
 
-const InventoryItemTable = () => {
+const InventoryItemTable = (props: Props) => {
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
   const [openedItem, setOpenedItem] = useState<string[]>([]);
   const currency = useAtomValue(currencyAtom);
@@ -86,6 +84,7 @@ const InventoryItemTable = () => {
       inventoryItemList?.pages?.[inventoryItemList?.pages.length - 1].isLast;
     !isLast &&
       inView &&
+      requestParam.paging &&
       status !== 'loading' &&
       (fetchNextPage(),
       setRequestParam((prev) => ({ ...prev, page: prev.page + 1 })));
@@ -117,7 +116,11 @@ const InventoryItemTable = () => {
   return (
     <React.Fragment>
       <table className={`${styles.table}`}>
-        <thead className={styles.tableHead}>
+        <thead
+          className={`${styles.tableHead} ${
+            props.sticky ? styles.stickyBar : ''
+          }`}
+        >
           <tr className={`${styles.tableHeadRow}`}>
             <th />
             {HEADER.map((item, index) => (
@@ -261,8 +264,8 @@ const InventoryItemTable = () => {
               });
             })}
         </tbody>
-        <div ref={ref} className='h-43' />
       </table>
+      <div ref={ref} className='h-43' />
     </React.Fragment>
   );
 };

@@ -33,10 +33,6 @@ const PortfolioLayout = ({ children }: { children: React.ReactNode }) => {
   }
   useEffect(() => {
     console.log('portfolio layout', me);
-    console.log(
-      'walletList?.data[0].walletAddress',
-      walletList?.data[0].walletAddress
-    );
     console.log('searchParam', searchParam);
     searchParam?.size > 0
       ? setPortfolioUser({

@@ -1,0 +1,26 @@
+.container {
+  @apply w-full flex flex-col border-1 border-[var(--color-border-main)];
+}
+.tabWrapper {
+  @apply w-full h-44 flex;
+}
+.tab {
+  @apply w-1/2 h-full flex items-center justify-center cursor-pointer;
+}
+.active {
+  @apply bg-[var(--color-background-brand-bold)];
+}
+.active p {
+  @apply text-[var(--color-text-inverse)];
+}
+.codeBody {
+  word-break: break-all;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: pre-wrap;
+  @apply px-30 py-34 font-normal text-[var(--color-text-main)] text-14 leading-24;
+}
+.copyButton {
+  @apply w-36 h-36 flex p-0 items-center justify-center;
+}

@@ -1,0 +1,7 @@
+.container {
+  @apply w-full flex flex-col items-center mt-80;
+}
+.container p {
+  white-space: pre-wrap;
+  @apply text-center;
+}

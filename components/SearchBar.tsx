@@ -13,6 +13,7 @@ const RESULT = {
 };
 const SearchBar = () => {
   const [searchText, setSearchText] = useState<string>('');
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const { data: searchResult, status: searchStatus } =
     useSearchUserList(searchText);
   return (
@@ -35,57 +36,59 @@ const SearchBar = () => {
         )}
         {searchStatus === 'success' && <div className={styles.box}>ESC</div>}
       </div>
-      <div className={`${styles.searchResult} absolute top-40 left-0`}>
-        {RESULT.user.length > 0 && (
-          <div>
-            <div className={styles.resultHeader}>
-              <p className='font-caption-medium text-[var(--color-text-subtlest)]'>
-                User
-              </p>
+      {isOpen && (
+        <div className={`${styles.searchResult} absolute top-40 left-0`}>
+          {RESULT.user.length > 0 && (
+            <div>
+              <div className={styles.resultHeader}>
+                <p className='font-caption-medium text-[var(--color-text-subtlest)]'>
+                  User
+                </p>
+              </div>
+              {RESULT.user.map((user, index) => {
+                return (
+                  <div key={index} className={styles.resultBody}>
+                    {user.image ? (
+                      <Image
+                        width={20}
+                        height={20}
+                        src={user.image}
+                        alt=''
+                        className='rounded-full border-1 border-[var(--color-border-main)]'
+                      />
+                    ) : (
+                      <BlockiesIcon walletAddress={user.nickname} size={16} />
+                    )}
+                    <p className='font-caption-regular'>{user.nickname}</p>
+                  </div>
+                );
+              })}
             </div>
-            {RESULT.user.map((user, index) => {
-              return (
-                <div key={index} className={styles.resultBody}>
-                  {user.image ? (
-                    <Image
-                      width={20}
-                      height={20}
-                      src={user.image}
-                      alt=''
-                      className='rounded-full border-1 border-[var(--color-border-main)]'
+          )}
+          {RESULT.walletAddress.length > 0 && (
+            <div>
+              <div className={styles.resultHeader}>
+                <p className='font-caption-medium text-[var(--color-text-subtlest)]'>
+                  Wallet
+                </p>
+              </div>
+              {RESULT.walletAddress.map((walletAddress, index) => {
+                return (
+                  <div key={index} className={styles.resultBody}>
+                    <BlockiesIcon
+                      walletAddress={walletAddress.walletAddress}
+                      size={16}
                     />
-                  ) : (
-                    <BlockiesIcon walletAddress={user.nickname} size={16} />
-                  )}
-                  <p className='font-caption-regular'>{user.nickname}</p>
-                </div>
-              );
-            })}
-          </div>
-        )}
-        {RESULT.walletAddress.length > 0 && (
-          <div>
-            <div className={styles.resultHeader}>
-              <p className='font-caption-medium text-[var(--color-text-subtlest)]'>
-                Wallet
-              </p>
+                    <p className='font-caption-regular'>
+                      {walletAddress.walletAddress}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
-            {RESULT.walletAddress.map((walletAddress, index) => {
-              return (
-                <div key={index} className={styles.resultBody}>
-                  <BlockiesIcon
-                    walletAddress={walletAddress.walletAddress}
-                    size={16}
-                  />
-                  <p className='font-caption-regular'>
-                    {walletAddress.walletAddress}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
