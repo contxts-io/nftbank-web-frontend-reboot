@@ -1,5 +1,8 @@
+.searchWrapper {
+  @apply w-full;
+}
 .container {
-  @apply border-1 border-[var(--color-border-main)] h-36 w-[360px] flex items-center;
+  @apply border-1 border-[var(--color-border-main)] h-36 w-full flex items-center;
 }
 .textInput {
   @apply border-transparent !important;
@@ -12,7 +15,7 @@
   @apply ml-auto flex items-center justify-center w-24 h-24 border-1 border-[var(--color-border-main)] text-[var(--color-text-subtle)] mr-10;
 }
 .searchResult {
-  @apply w-[360px] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-main)];
+  @apply w-full bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-main)];
 }
 .resultHeader {
   @apply bg-[var(--color-elevation-sunken)] w-full h-32 flex items-center px-10;

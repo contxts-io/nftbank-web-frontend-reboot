@@ -2,6 +2,7 @@ import Image from 'next/image';
 import LandingButton from './LandingButton';
 import ChartBar from '@/public/icon/ChartBar';
 import BracketsAngle from '@/public/icon/BracketsAngle';
+import Marquee from 'react-fast-marquee';
 import PushPin from '@/public/icon/PushPin';
 
 const Taxfiling = () => {
@@ -17,11 +18,23 @@ const Taxfiling = () => {
           Easy and convenient{' '}
           <span className='text-[var(--color-text-brand)]'>Tax filing</span>
         </p>
-        <p className='font-subtitle02-regular text-[var(--color-text-subtle)]'>
-          NFTBank is the easiest way to build and manage your entire NFT
-          portfolio from one place. Discover the world of decentralized finance
-          today.
+        <div className='w-[500px]'>
+          <p className='font-subtitle02-regular text-[var(--color-text-subtle)]'>
+            {`NFTBank is the easiest way to build and manage your 
+          entire NFT portfolio from one place.
+          Discover the world of decentralized finance today.`}
+          </p>
+        </div>
+        <p className='mt-30 font-button03-medium text-[var(--color-text-main)]'>
+          Our partners
         </p>
+        <Image
+          className='mt-20'
+          src='/partners/PartnersGroup.svg'
+          width={480}
+          height={40}
+          alt=''
+        />
         <LandingButton className='mt-60'>Explore the NFTBank API</LandingButton>
       </div>
       <div className='w-[480px]'>

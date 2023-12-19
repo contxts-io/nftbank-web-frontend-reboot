@@ -1,15 +1,12 @@
 import Providers from '@/components/providers/Provider';
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import GlobalNavigation from '@/components/GlobalNavigation';
 import localFont from 'next/font/local';
 import Footer from '@/components/Footer';
 import 'react-toastify/dist/ReactToastify.css';
 import LoginProvider from '@/components/providers/LoginProvider';
-
-const inter = Inter({ subsets: ['latin'] });
 
 const iosevkaCustom = localFont({
   src: [

@@ -1,7 +1,11 @@
+'use client';
 import DiscordLogo from '@/public/logo/DiscordLogo';
 import styles from './Footer.module.css';
 import TwitterLogo from '@/public/logo/TwitterLogo';
+import { usePathname } from 'next/navigation';
 const Footer = () => {
+  const path = usePathname();
+  if (path === '/landing') return null;
   return (
     <footer className={`font-button03-regular ${styles.footerWrapper}`}>
       <ul className='flex'>

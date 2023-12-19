@@ -76,7 +76,7 @@ export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
   includeNonSpam: true,
 })
 // export const inventoryItemCollectionAtom = atom<TCollectionParam>({})
-export const inventoryItemListAtom = atom<ItemParam>({
+export const inventoryItemListAtom = atom<ItemParam & {paging : boolean}>({
   walletAddress: '',
   networkId: 'ethereum',
   includeGasUsed: 'false',
@@ -86,6 +86,7 @@ export const inventoryItemListAtom = atom<ItemParam>({
   currency: 'eth',
   sort: 'nav',
   order: 'desc',
+  paging: true,
 })
 export const analysisGainAndLossParamAtom = atom<TAnalysisGainAndLossParam>({
   limit: 5,

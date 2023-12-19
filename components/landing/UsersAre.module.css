@@ -1,0 +1,12 @@
+.reviewArticle {
+  @apply w-[503px] h-[228px] p-24 border-1 border-[var(--color-border-main)] mr-12;
+}
+.marqueeWrapper {
+  @apply mt-80 w-full max-w-[1500px] overflow-hidden;
+}
+.reviewMessage {
+  @apply mt-20;
+}
+.reviewMessage span {
+  @apply text-[var(--color-text-brand)];
+}

@@ -108,7 +108,9 @@ const GlobalNavigation = () => {
           Settings
         </Link>
       </div>
-      <SearchBar />
+      <div className='w-[360px]'>
+        <SearchBar />
+      </div>
       <div className={`${styles.buttonBox}`}>
         <Button id={'/global/wallet'}>
           <Wallet />

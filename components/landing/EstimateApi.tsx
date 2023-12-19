@@ -2,6 +2,7 @@ import Image from 'next/image';
 import LandingButton from './LandingButton';
 import ChartBar from '@/public/icon/ChartBar';
 import BracketsAngle from '@/public/icon/BracketsAngle';
+import CodeBlock from './CodeBlock';
 
 const EstimateApi = () => {
   return (
@@ -24,12 +25,7 @@ const EstimateApi = () => {
         <LandingButton className='mt-60'>Explore the NFTBank API</LandingButton>
       </div>
       <div className='w-[590px]'>
-        <Image
-          alt='metaverse'
-          width={590}
-          height={373}
-          src={'/image/metaverse.svg'}
-        />
+        <CodeBlock />
       </div>
     </article>
   );
