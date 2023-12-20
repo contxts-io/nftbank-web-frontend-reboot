@@ -3,9 +3,10 @@ import DiscordLogo from '@/public/logo/DiscordLogo';
 import styles from './Footer.module.css';
 import TwitterLogo from '@/public/logo/TwitterLogo';
 import { usePathname } from 'next/navigation';
-const Footer = () => {
+import Footer from './landing/Footer';
+const GlobalFooter = () => {
   const path = usePathname();
-  if (path === '/landing') return null;
+  if (path.includes('/landing') || path.includes('/blog')) return <Footer />;
   return (
     <footer className={`font-button03-regular ${styles.footerWrapper}`}>
       <ul className='flex'>
@@ -23,4 +24,4 @@ const Footer = () => {
     </footer>
   );
 };
-export default Footer;
+export default GlobalFooter;
