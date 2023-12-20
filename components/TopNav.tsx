@@ -3,7 +3,7 @@ import Image from 'next/image';
 import styles from './TopNav.module.css';
 import NFTBankLogo from '@/public/logo/NFTBankLogo';
 import Link from 'next/link';
-import Button from '../buttons/Button';
+import Button from './buttons/Button';
 import { useEffect, useRef, useState } from 'react';
 const TopNav = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,7 +37,7 @@ const TopNav = () => {
             <Link href={'/portfolio/overview'}>Reports</Link>
             <Link href={'/portfolio/overview'}>Chrome Extension</Link>
             <Link href={'/portfolio/overview'}>Developers</Link>
-            <Link href={'/portfolio/overview'}>Blog</Link>
+            <Link href={'/blog'}>Blog</Link>
             <div
               className='cursor-pointer relative'
               ref={listRef}

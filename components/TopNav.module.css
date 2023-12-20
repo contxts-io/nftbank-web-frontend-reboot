@@ -1,7 +1,7 @@
 .container {
   background: rgba(1, 1, 1, 0.2);
   @apply backdrop-blur-[20px];
-  @apply sticky top-0 z-10 w-full h-62 flex justify-center;
+  @apply w-full h-62 flex justify-center;
 }
 .startButton {
   @apply ml-auto bg-[var(--color-background-brand-bold)] text-[var(--color-text-main)] h-36 flex items-center justify-center px-16 !important;

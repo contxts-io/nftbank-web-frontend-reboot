@@ -199,3 +199,127 @@
 .minus p {
   @apply text-[var(--color-text-danger)];
 }
+.articleContents {
+  max-width: 816px;
+  img {
+    width: 100%;
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+  img[width='1'] {
+    display: none;
+  }
+  h3 {
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 32px;
+    color: #dedfe4;
+    a {
+      color: #dedfe4 !important;
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 32px;
+      text-decoration: underline;
+    }
+  }
+  h3 > strong {
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 32px;
+    margin-bottom: 40px;
+  }
+  h4 {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 32px;
+    color: #dedfe4;
+  }
+  p {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 32px;
+    margin-bottom: 40px;
+    color: #dedfe4;
+    a,
+    em,
+    strong {
+      color: #dedfe4 !important;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 32px;
+    }
+    a {
+      text-decoration: underline;
+    }
+    strong {
+      font-weight: 700;
+    }
+  }
+  blockquote {
+    margin-bottom: 40px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 32px;
+    color: #dedfe4;
+    a,
+    em {
+      margin-bottom: 40px;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 32px;
+      color: #dedfe4;
+    }
+    a {
+      text-decoration: underline;
+    }
+  }
+  ul {
+    margin-bottom: 40px;
+    li {
+      list-style: disc inside !important;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 32px;
+      color: #dedfe4;
+      a,
+      em,
+      strong {
+        color: #dedfe4 !important;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 32px;
+      }
+      a {
+        text-decoration: underline;
+      }
+      strong {
+        font-weight: 700;
+      }
+    }
+  }
+  ol {
+    margin-bottom: 40px;
+    text-indent: -18px;
+    margin-left: 18px;
+    li {
+      list-style: decimal inside !important;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 32px;
+      color: #dedfe4;
+      strong {
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 32px;
+        color: #dedfe4;
+      }
+      a {
+        color: #dedfe4 !important;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 32px;
+        text-decoration: underline;
+      }
+    }
+  }
+}

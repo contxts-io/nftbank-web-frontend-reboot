@@ -106,7 +106,6 @@ type Key = 'success' | 'error' | 'info' | 'warning' | 'default' | 'dark';
 function Providers({ children }: React.PropsWithChildren) {
   const [client] = React.useState(ReactQueryClient);
   const { theme } = useTheme();
-  console.log('Providers theme', theme);
   return (
     <QueryClientProvider client={client}>
       <CookiesProvider defaultSetOptions={{ path: '/' }}>

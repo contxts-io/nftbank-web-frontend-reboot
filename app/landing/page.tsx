@@ -1,4 +1,5 @@
 'use client';
+import TopNav from '@/components/TopNav';
 import BackedBy from '@/components/landing/BackedBy';
 import ChromeExtension from '@/components/landing/ChromeExtension';
 import EstimateApi from '@/components/landing/EstimateApi';
@@ -7,7 +8,6 @@ import ManageMetaverse from '@/components/landing/ManageMetaverse';
 import Partners from '@/components/landing/Partners';
 import Started from '@/components/landing/Started';
 import Taxfiling from '@/components/landing/Taxfiling';
-import TopNav from '@/components/landing/TopNav';
 import UpgradeNFTFinance from '@/components/landing/UpgradeNFTFinance';
 import UsersAre from '@/components/landing/UsersAre';
 import { useTheme } from 'next-themes';
@@ -20,7 +20,9 @@ const LandingPage = () => {
   }, []);
   return (
     <div className='w-full flex flex-col items-center'>
-      <TopNav />
+      <div className='w-full sticky z-10 top-0'>
+        <TopNav />
+      </div>
       <div className='w-[1170px] flex flex-col items-center gap-y-180'>
         <UpgradeNFTFinance />
         <ManageMetaverse />
