@@ -1,4 +1,5 @@
 'use client';
+import FloatingDiscordButton from '@/components/FloatingDiscordButton';
 import TopNav from '@/components/TopNav';
 import BackedBy from '@/components/landing/BackedBy';
 import Blog from '@/components/landing/Blog';
@@ -36,7 +37,8 @@ const LandingPage = () => {
       <Partners />
       <BackedBy />
       <Started />
-      <Footer />
+      {/* <Footer /> */}
+      <FloatingDiscordButton />
     </div>
   );
 };

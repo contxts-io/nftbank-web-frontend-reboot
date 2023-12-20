@@ -1,3 +1,4 @@
+import FloatingDiscordButton from '@/components/FloatingDiscordButton';
 import TopNav from '@/components/TopNav';
 import BlogContainer from '@/components/blog/BlogContainer';
 import Image from 'next/image';
@@ -22,6 +23,7 @@ const BlogPage = () => {
         </div>
         <BlogContainer />
       </div>
+      <FloatingDiscordButton />
     </section>
   );
 };

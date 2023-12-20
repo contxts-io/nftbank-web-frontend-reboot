@@ -1,0 +1,3 @@
+.floatingButton {
+  @apply fixed right-[60px] bottom-[80px] p-14 z-[20] rounded-full bg-[var(--color-background-brand-bold)] h-56 flex items-center justify-center transition duration-1000 ease-in-out;
+}
