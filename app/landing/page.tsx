@@ -1,6 +1,7 @@
 'use client';
 import TopNav from '@/components/TopNav';
 import BackedBy from '@/components/landing/BackedBy';
+import Blog from '@/components/landing/Blog';
 import ChromeExtension from '@/components/landing/ChromeExtension';
 import EstimateApi from '@/components/landing/EstimateApi';
 import Footer from '@/components/landing/Footer';
@@ -31,6 +32,7 @@ const LandingPage = () => {
         <Taxfiling />
       </div>
       <UsersAre />
+      <Blog />
       <Partners />
       <BackedBy />
       <Started />
