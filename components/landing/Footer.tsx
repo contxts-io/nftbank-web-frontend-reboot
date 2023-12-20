@@ -1,8 +1,8 @@
 import styles from './Footer.module.css';
-import DiscordLogo from '@/public/logo/DiscordLogo';
-import TwitterLogo from '@/public/logo/TwitterLogo';
 import Image from 'next/image';
 import Button from '../buttons/Button';
+import DiscordLogo from '@/public/logo/DiscordLogo';
+import TwitterLogo from '@/public/logo/TwitterLogo';
 
 const Footer = () => {
   return (
