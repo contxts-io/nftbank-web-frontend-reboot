@@ -58,17 +58,24 @@ export const AuthProvider = async ({ children }: any) => {
   // if (SIGN_IN === 'SIGN_IN' && TOKEN && TOKEN?.value !== '') {
   if (TOKEN && TOKEN?.value !== '') {
     const me = await reactQueryClient.getQueryData(['me', TOKEN.value]);
-    console.log('me', me);
+    console.log('me ??? ', me);
     if (!me) {
       console.log('try to sign-in');
       try {
         const user = await checkMe(TOKEN);
         if (user) {
           reactQueryClient.setQueryData(['me', TOKEN.value], user);
+          reactQueryClient.setQueryData(['user', user.nickname], user);
           const wallet = await checkWallet(TOKEN);
-          reactQueryClient.setQueryData([{ userId: user.id }, 'walletList'], {
-            ...wallet,
-          });
+          // reactQueryClient.setQueryData([{ userId: user.id }, 'walletList'], {
+          //   ...wallet,
+          // });
+          reactQueryClient.setQueryData(
+            ['walletList', { nickname: user.nickname }],
+            {
+              ...wallet,
+            }
+          );
         }
       } catch (err) {
         console.log('ssr sign-in err', err);

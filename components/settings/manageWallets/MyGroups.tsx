@@ -8,19 +8,12 @@ import { useEffect, useState } from 'react';
 import GroupDetail from './GroupDetail';
 import { TWalletGroup } from '@/interfaces/inventory';
 import ManageGroup from '@/components/wallet/ManageGroup';
-import {
-  useMyWalletGroup,
-  useMyWalletGroupList,
-} from '@/utils/hooks/queries/walletGroup';
-import { group } from 'console';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { useMyWalletGroup } from '@/utils/hooks/queries/walletGroup';
 const MyGroups = () => {
   const [showModal, setShowModal] = useState(false);
   const [showGroupDetailModal, setShowGroupDetailModal] = useState(false);
   const [searchInput, setSearchInput] = useState<string>('');
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { data: searchWalletList, status: searchStatus } =
-    useMyWalletList(searchInput);
 
   const [selectedGroup, setSelectedGroup] = useState<TWalletGroup | null>(null);
   const { data: walletGroup, status } = useMyWalletGroup(

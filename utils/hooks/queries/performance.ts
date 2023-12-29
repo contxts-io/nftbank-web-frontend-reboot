@@ -5,17 +5,18 @@ import { ItemParam, TCollectionParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-export function useInventoryUnrealizedPerformance(searchParam: BasicParam) {
+export function useInventoryUnrealizedPerformance(searchParam: BasicParam | null) {
   return useQuery<UnrealizedValue,AxiosError>(
     ['inventoryUnrealizedValuePerformance',searchParam],
     async () => {
-      const unrealizedValue = await getInventoryUnrealizedPerformance(searchParam);
+      const unrealizedValue = await getInventoryUnrealizedPerformance(searchParam as BasicParam);
       return unrealizedValue;
     },
     {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      enabled: searchParam !== null,
     },
   );
 }

@@ -17,7 +17,11 @@ export const getMyWalletList = async<T = TWalletList>(q:string) => {
   const {data} = await instance.get<{data: T}>(`/wallet?q=${q}`);
   return data.data;
 }
-
+export const getWalletList = async<T = TWalletList>(searchParam: { nickname: string }) => {
+  const query = jsonToQueryString(searchParam);
+  const {data} = await instance.get<{data: T}>(`/wallet?${query}`);
+  return data.data;
+}
 export const updateMyWallet = async<T = { data: TWallet }>(data: {walletId:string,name:string}) => {
   const result = await instance.put<{ data: T }>(`/wallet/${data.walletId}`, {name:data.name});
   return result.data;

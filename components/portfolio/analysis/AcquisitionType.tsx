@@ -16,7 +16,6 @@ import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { AcquisitionType } from '@/interfaces/activity';
 import { analysisAcquisitionParamAtom } from '@/store/requestParam';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { portfolioUserAtom } from '@/store/portfolio';
 const LIST = [
   {

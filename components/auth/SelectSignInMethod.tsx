@@ -16,7 +16,8 @@ import { useDisconnect as useDisconnectWagmi } from 'wagmi';
 
 const SelectSignInMethod = () => {
   const router = useRouter();
-  const { data: me, refetch, status } = useMeManual();
+  // const { data: me, refetch, status } = useMeManual();
+  const { data: me, refetch } = useMe();
   const [showModal, setShowModal] = useState(false);
   const disconnectThirdWeb = useDisconnectThirdWeb();
   const { disconnect: disconnectWagmi } = useDisconnectWagmi();
@@ -24,7 +25,8 @@ const SelectSignInMethod = () => {
     disconnectWallet();
   }, []);
   useEffect(() => {
-    me && router.push('/portfolio');
+    me && console.log('SelectSignInMethod me : ', me ? me : 'null');
+    me && router.push('/portfolio/overview');
   }, [me]);
   const handleClickEmail = () => {
     router.push('/auth/email');

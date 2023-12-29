@@ -15,18 +15,22 @@ import Button from '../buttons/Button';
 import Cancel from '@/public/icon/Cancel';
 import {
   useMyWalletGroup,
-  useMyWalletGroupList,
+  useWalletGroupList,
 } from '@/utils/hooks/queries/walletGroup';
+import { useMe } from '@/utils/hooks/queries/auth';
 const ManageGroup = (props: {
   group: TWalletGroup | null;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const { data: me } = useMe();
   const { theme } = useTheme();
   const [inputText, setInputText] = useState<string>(props.group?.name || '');
   const [invalidInput, setInvalidInput] = useState<boolean>(false);
   const [inputSearch, setInputSearch] = useState<string>('');
   const { data: walletList, isLoading } = useMyWalletList(inputSearch);
-  const { data: walletGroupList, refetch } = useMyWalletGroupList();
+  const { data: walletGroupList, refetch } = useWalletGroupList(
+    me?.nickname || ''
+  );
   const { data: walletGroup, refetch: refetchWalletGroup } = useMyWalletGroup(
     props.group?.id || ''
   );

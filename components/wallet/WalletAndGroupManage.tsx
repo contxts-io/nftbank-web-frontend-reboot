@@ -3,35 +3,35 @@ import { useState } from 'react';
 import Button from '../buttons/Button';
 import styles from './WalletAndGroupManage.module.css';
 import Wallet from '@/public/icon/Wallet';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { useWalletList } from '@/utils/hooks/queries/wallet';
 import { shortenAddress } from '@/utils/common';
 import Copy from '@/public/icon/Copy';
 import Plus from '@/public/icon/Plus';
 import Folder from '@/public/icon/Folder';
-import { useAtom } from 'jotai';
-import { myDefaultPortfolioAtom, openModalAtom } from '@/store/settings';
-import { useMyWalletGroupList } from '@/utils/hooks/queries/walletGroup';
-import { portfolioUserAtom } from '@/store/portfolio';
+import { useAtom, useAtomValue } from 'jotai';
+import { openModalAtom } from '@/store/settings';
+import { useWalletGroupList } from '@/utils/hooks/queries/walletGroup';
+import { networkIdAtom } from '@/store/portfolio';
 import { BasicParam } from '@/interfaces/request';
 import { useMe } from '@/utils/hooks/queries/auth';
+import { TUser } from '@/interfaces/user';
+import { useRouter } from 'next/navigation';
 type Props = {
   onClose: () => void;
+  setPortfolioWallet: (param: BasicParam) => void;
+  user: TUser;
 };
 const WalletAndGroupManage = (props: Props) => {
+  const { data: me } = useMe();
+  const networkId = useAtomValue(networkIdAtom);
   const [selected, setSelected] = useState<'wallet' | 'group'>('wallet');
   const [showModal, setShowModal] = useAtom(openModalAtom);
-  const [mySelectedInformation, setMySelectedInformation] = useAtom(
-    myDefaultPortfolioAtom
-  );
-  const { data: walletList } = useMyWalletList();
-  const { data: me } = useMe();
-  const { data: walletGroupList } = useMyWalletGroupList();
-  const handleClickList = (param: {
-    walletAddress?: string;
-    walletGroup?: string;
-    userId?: string;
-  }) => {
-    setMySelectedInformation(param);
+  const router = useRouter();
+  const { data: walletList } = useWalletList({ nickname: props.user.nickname });
+  const { data: walletGroupList } = useWalletGroupList(props.user.nickname);
+  const handleClickList = (param: BasicParam) => {
+    // setMySelectedInformation(param);
+    props.setPortfolioWallet(param);
     props.onClose();
   };
   const copyAddress = (walletAddress: string) => {
@@ -66,7 +66,8 @@ const WalletAndGroupManage = (props: Props) => {
               className='h-40 flex items-center px-10 w-full gap-x-8 bg-[var(--color-elevation-sunken)] text-[var(--color-text-main)] cursor-pointer'
               onClick={() =>
                 handleClickList({
-                  userId: me?.id,
+                  nickname: props.user?.nickname,
+                  networkId: networkId,
                 })
               }
             >
@@ -82,6 +83,7 @@ const WalletAndGroupManage = (props: Props) => {
                     onClick={() =>
                       handleClickList({
                         walletAddress: wallet.walletAddress,
+                        networkId: networkId,
                       })
                     }
                   >
@@ -114,7 +116,8 @@ const WalletAndGroupManage = (props: Props) => {
                     className={`${styles.list} text-[var(--color-text-main)]`}
                     onClick={() =>
                       handleClickList({
-                        walletGroup: walletGroup.name,
+                        walletGroupId: walletGroup.id,
+                        networkId: networkId,
                       })
                     }
                   >
@@ -127,23 +130,31 @@ const WalletAndGroupManage = (props: Props) => {
           </div>
         )}
       </div>
-      <div className={styles.footer}>
-        <div
-          className={styles.row}
-          onClick={() => setShowModal('walletConnect')}
-        >
-          <Plus className='w-16 h-16' />
-          <p>Add Wallet</p>
+      {me?.id === props.user.id && (
+        <div className={styles.footer}>
+          <div
+            className={styles.row}
+            onClick={() => setShowModal('walletConnect')}
+          >
+            <Plus className='w-16 h-16' />
+            <p>Add Wallet</p>
+          </div>
+          <div
+            className={styles.row}
+            onClick={() => setShowModal('walletGroup')}
+          >
+            <Folder className='w-16 h-16' />
+            <p>Add Group</p>
+          </div>
+          <div
+            className={styles.row}
+            onClick={() => router.push('/settings/manageWallets')}
+          >
+            <Wallet className='w-16 h-16' />
+            <p>Manage Wallets</p>
+          </div>
         </div>
-        <div className={styles.row} onClick={() => setShowModal('walletGroup')}>
-          <Folder className='w-16 h-16' />
-          <p>Add Group</p>
-        </div>
-        <div className={styles.row}>
-          <Wallet className='w-16 h-16' />
-          <p>Manage Wallets</p>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

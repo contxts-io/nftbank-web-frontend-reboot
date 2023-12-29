@@ -4,7 +4,7 @@ import React from 'react';
 const SkeletonLoader = (props: { className?: string }) => {
   return (
     <div
-      className={`bg-gray-300 animate-pulse rounded ${props.className}`}
+      className={`bg-[var(--color-etc-skeleton)] animate-pulse rounded-none ${props.className}`}
     ></div>
   );
 };

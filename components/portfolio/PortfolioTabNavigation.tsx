@@ -3,10 +3,11 @@ import Link from 'next/link';
 import styles from './PortfolioTabNavigation.module.css';
 import { twMerge } from 'tailwind-merge';
 import { usePathname } from 'next/navigation';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { inventoryTypeAtom } from '@/store/settings';
 import Cube from '@/public/icon/Cube';
 import ImageSquare from '@/public/icon/ImageSquare';
+import { portfolioUserAtom } from '@/store/portfolio';
 import CaretDown from '@/public/icon/CaretDown';
 import { useEffect, useRef, useState } from 'react';
 import { CHAIN_LIST } from '@/utils/supportedChains';
@@ -47,7 +48,9 @@ const PortfolioTabNavigation = () => {
           className={`w-24 h-full border-b-4 border-[var(--color-border-main)]`}
         />
         {navLinks.map((link, index) => {
-          const isActive = pathname === link.href;
+          const isActive = pathname.includes(link.href);
+          const paramType = pathname.split('/')[3] || '';
+          const paramValue = pathname.split('/')[4] || '';
           return (
             <div
               key={index}
@@ -61,14 +64,15 @@ const PortfolioTabNavigation = () => {
                 className={`font-body01-medium ${styles.link} ${
                   isActive && 'text-[var(--color-text-main)]'
                 }`}
-                href={link.href}
+                href={`${link.href}/[...slug]`}
+                as={`${link.href}/${paramType}/${paramValue}`}
               >
                 {link.name}
               </Link>
             </div>
           );
         })}
-        {pathname === '/portfolio/inventory' ? (
+        {pathname.includes('/portfolio/inventory') ? (
           <div className={`font-body01-medium  ${styles.subButtons}`}>
             <button
               className={`${styles.button}  ${

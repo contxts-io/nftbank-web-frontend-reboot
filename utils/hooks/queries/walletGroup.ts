@@ -1,13 +1,13 @@
-import { getMyWalletGroup, getMyWalletGroupList } from "@/apis/walletGroup";
+import { getWalletGroup, getWalletGroupList } from "@/apis/walletGroup";
 import { TWalletGroup } from "@/interfaces/inventory";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export function useMyWalletGroupList() {
+export function useWalletGroupList(nickname:string) {
   return useQuery<{data:TWalletGroup[]},AxiosError>(
-    ['groupList'],
+    ['groupList',nickname],
     async () => {
-      const result = await getMyWalletGroupList();
+      const result = await getWalletGroupList(nickname);
       return result.data;
     },
     {
@@ -21,7 +21,7 @@ export function useMyWalletGroup(id:string) {
   return useQuery<TWalletGroup,AxiosError>(
     ['group',id],
     async () => {
-      const { data } = await getMyWalletGroup(id);
+      const { data } = await getWalletGroup(id);
       return data.data;
     },
     {

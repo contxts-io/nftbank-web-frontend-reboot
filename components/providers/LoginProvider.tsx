@@ -4,44 +4,44 @@ import { useRouter, usePathname } from 'next/navigation';
 import { ReactNode, useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import NicknameSetting from '../NicknameSetting';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { userStatusAtom } from '@/store/account';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { myDefaultPortfolioAtom } from '@/store/settings';
+import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
+import { useUser } from '@/utils/hooks/queries/user';
 
 const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: me, status, isError } = useMe();
-  const { data: walletList } = useMyWalletList();
-  const [userStatus, setUserStatus] = useAtom(userStatusAtom);
+  const { data: user } = useUser(me?.nickname || null);
   const [showModal, setShowModal] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  const [mySelectedInformation, setMySelectedInformation] = useAtom(
+    myDefaultPortfolioAtom
+  );
   const router = useRouter();
   const path = usePathname();
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, async (user) => {
-  //     if (user) {
-  //       setUserStatus('SIGN_IN');
-  //       console.log('로그인 상태', user);
-  //     } else {
-  //       //세션이 끊긴경우. 로그아웃상태.
-  //       console.log('로그아웃 상태');
-  //     }
-  //   });
-  //   return () => unsubscribe();
-  // }, []);
-  // useEffect(() => {
-  //   document.cookie = `sign_in=${userStatus}`;
-  // }, [userStatus]);
   useEffect(() => {
-    if (!me) {
-      !(
-        path.includes('/auth') ||
-        path.includes('/landing') ||
-        path.includes('/blog')
-      ) && router.push('/auth/signin');
-    } else if (me.nickname === null) {
-      setShowModal(true);
+    setIsClient(true);
+  }, []);
+  useEffect(() => {
+    if (isClient) {
+      if (!me) {
+        !(
+          path.includes('/auth') ||
+          path.includes('/landing') ||
+          path.includes('/blog')
+        ) && router.push('/auth/signin');
+      } else if (me.nickname === null) {
+        setShowModal(true);
+      }
+      me?.nickname && setShowModal(false);
+      me?.nickname &&
+        setMySelectedInformation({
+          nickname: me.nickname,
+          networkId: 'ethereum',
+        });
     }
-    me?.nickname && setShowModal(false);
-  }, [me, path]);
+  }, [me, path, isClient]);
   //
   return (
     <>

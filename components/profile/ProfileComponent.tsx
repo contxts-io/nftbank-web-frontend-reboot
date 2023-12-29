@@ -6,59 +6,98 @@ import { useMe } from '@/utils/hooks/queries/auth';
 import { useEffect, useState } from 'react';
 import styles from './ProfileComponent.module.css';
 import PortfolioSelector from '../PortfolioSelector';
+import { useAtom, useAtomValue } from 'jotai';
+import {
+  networkIdAtom,
+  portfolioNicknameAtom,
+  portfolioUserAtom,
+} from '@/store/portfolio';
+import { useUser } from '@/utils/hooks/queries/user';
+import BlockiesIcon from '../BlockiesIcon';
+import { myDefaultPortfolioAtom } from '@/store/settings';
+import Wallet from '@/public/icon/Wallet';
+import { BasicParam } from '@/interfaces/request';
+import { TUser } from '@/interfaces/user';
+import { usePathname } from 'next/navigation';
 const ProfileComponent = () => {
+  const { data: me } = useMe();
+  const path = usePathname();
   const [isClient, setIsClient] = useState(false);
-  const { data: me, status } = useMe();
+  const networkId = useAtomValue(networkIdAtom);
+
+  const [nickname, setNickname] = useState<string | null>(null);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  // const [user, setUser] = useState<TUser | null>(null);
+  const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
+  // const { data: me, status } = useMe();
+  const { data: user, status: userStatus } = useUser(nickname);
+
   useEffect(() => {
     setIsClient(true);
   }, []);
-  // if (status === 'loading') return <div>loading</div>;
-  if (isClient && !me) return <section>loading</section>;
+  useEffect(() => {
+    path && setNickname(path.split('nickname/')[1] || null);
+    path && setWalletAddress(path.split('walletAddress/')[1] || null);
+    path &&
+      !path.split('nickname/')[1] &&
+      !path.split('walletAddress/')[1] &&
+      me?.nickname &&
+      setNickname(me.nickname);
+  }, [path, me?.nickname]);
+  useEffect(() => {
+    nickname
+      ? setPortfolioUser({ nickname: nickname, networkId: networkId })
+      : walletAddress
+      ? setPortfolioUser({ walletAddress: walletAddress, networkId: networkId })
+      : null;
+  }, [nickname, walletAddress]);
   return (
     <>
       {isClient ? (
         <section className='w-full px-24 py-24 flex items-center justify-between'>
           <div className='flex items-center'>
-            <Image
-              src={'/icon/nftbank_icon.svg'}
-              width={56}
-              height={56}
-              alt='nftbank logo'
-              className={`w-56 h-56 mr-20 rounded-full border-1 border-border-main dark:border-border-main-dark overflow-hidden`}
-            />
+            {user?.image ? (
+              <Image
+                src={`${user.image || '/icon/nftbank_icon.svg'}`}
+                width={56}
+                height={56}
+                alt='nftbank logo'
+                className={`w-56 h-56 mr-20 rounded-full border-1 border-border-main dark:border-border-main-dark overflow-hidden`}
+              />
+            ) : (
+              <div className='flex mr-20  items-center text-[var(--color-text-subtle)] rounded-full border-1 border-border-main dark:border-border-main-dark overflow-hidden'>
+                <BlockiesIcon
+                  walletAddress={`${nickname || walletAddress}`}
+                  size={56}
+                />
+              </div>
+            )}
             <div className='my-1 flex flex-col justify-between h-56'>
               <div className='flex items-center'>
                 <h2
                   className={`font-subtitle01-bold mr-16 text-text-main dark:text-text-main-dark`}
                 >
-                  {me?.nickname || 'Welcome'}
+                  {walletAddress?.substring(0, 8) || nickname || 'Welcome'}
                 </h2>
                 <ShareNetwork className='mr-12 fill-[var(--color-icon-subtle)]' />
                 <Eye className=' fill-[var(--color-icon-subtle)]' />
               </div>
-              {/* <div className='font-caption-regular flex items-center text-[var(--color-text-subtle)]'>
-                <span className='flex items-center mr-16'>
-                  <WalletFilled
-                    className='mr-4 fill-[var(--color-icon-disabled)]'
-                    width={14}
-                    height={14}
-                  />
-                  {`Wallet ${walletList?.data.length}`}
-                </span>
-                <span className='flex items-center'>
-                  <FolderFilled
-                    className='mr-4 fill-[var(--color-icon-disabled)] '
-                    width={14}
-                    height={14}
-                  />
-                  {`group ${walletGroupList?.data.length}`}
-                </span>
-              </div> */}
               <div className='mt-8'>
-                <PortfolioSelector
-                  className={styles.selectorButton}
-                  position='left-0 top-36'
-                />
+                {/* 누군가의 계정 */}
+                {user && portfolioUser ? (
+                  <PortfolioSelector
+                    className={styles.selectorButton}
+                    position='left-0 top-36'
+                    user={user}
+                    portfolioParam={portfolioUser}
+                    setPortfolioParam={(param) => setPortfolioUser(param)}
+                  />
+                ) : (
+                  <div className='font-caption-regular text-[var(--color-text-subtle)] bg-[var(--color-elevation-sunken)] w-fit px-8 h-24 flex items-center justify-center gap-x-8'>
+                    <Wallet />
+                    <p>All Wallet</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

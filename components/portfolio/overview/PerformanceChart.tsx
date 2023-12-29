@@ -143,12 +143,6 @@ const PerformanceChart = (props: Props) => {
     },
   };
   let seriesData = useMemo(() => {
-    console.log(
-      'performanceChart 1112222 : ',
-      performanceChart?.data.map(
-        (item, i) => item.roi?.[currency] && parseFloat(item.roi[currency])
-      )
-    );
     if (!performanceChart || performanceChart.data.length == 0) return [];
     return [
       {
@@ -201,29 +195,17 @@ const PerformanceChart = (props: Props) => {
             },
             yaxis: {
               ...options.yaxis,
-              min: mathSqrt(-maxAbs),
-              max: mathSqrt(maxAbs),
+              min: maxAbs === 0 ? -1 : mathSqrt(-maxAbs),
+              max: maxAbs === 0 ? 1 : mathSqrt(maxAbs),
             },
           }}
           type='bar'
-          // series={series}
-          // series={[
-          //   ...series.map((series) => {
-          //     return {
-          //       name: series.name,
-          //       data: series.data.map((item) => {
-          //         return item && mathSqrt(item);
-          //       }),
-          //     };
-          //   }),
-          // ]}
           series={[
             ...seriesData.map((series) => {
               return {
                 name: series.name,
                 data: series.data.map((item) => {
-                  console.log('item mathSqrt : ', item, mathSqrt(2));
-                  return item && mathSqrt(item);
+                  return item ? mathSqrt(item) : 0;
                 }),
               };
             }),

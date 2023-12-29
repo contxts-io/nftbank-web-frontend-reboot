@@ -8,7 +8,6 @@ import {
   useInventoryValueHistorical,
   useInventoryValuePolling,
 } from '@/utils/hooks/queries/inventory';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { useAtom, useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';

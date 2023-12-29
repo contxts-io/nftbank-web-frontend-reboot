@@ -1,10 +1,14 @@
 import Blockies from 'react-blockies';
 
-const BlockiesIcon = ({ walletAddress, size, ...props }: any) => {
+const BlockiesIcon = ({
+  walletAddress,
+  size,
+  ...props
+}: { walletAddress: string; size: number } & any) => {
   const _size = parseFloat((size / 4).toString());
   return (
     <Blockies
-      seed={walletAddress} //{/* the only required prop; determines how the image is generated */}
+      seed={walletAddress.toLowerCase()} //{/* the only required prop; determines how the image is generated */}
       size={4} //{/* number of squares wide/tall the image will be; default = 15 */}
       scale={_size} //{/* width/height of each square in pixels; default = 4 */}
       // color='bg-[var(--color-icon-brand)]' //{/* normal color; random by default */}
