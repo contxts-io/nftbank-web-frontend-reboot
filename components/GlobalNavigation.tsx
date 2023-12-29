@@ -21,6 +21,7 @@ import { connectedWalletAddressAtom } from '@/store/account';
 import { myDefaultPortfolioAtom } from '@/store/settings';
 import PortfolioSelector from './PortfolioSelector';
 import { usePathname } from 'next/navigation';
+import SearchBar from './SearchBar';
 
 const GlobalNavigation = () => {
   const path = usePathname();
@@ -72,6 +73,13 @@ const GlobalNavigation = () => {
     setConnectedWalletAddress(null);
     signOut();
   };
+  if (path.includes('/landing') || path.includes('/blog'))
+    return (
+      // <div className='w-full h-62 sticky top-0 z-10 '>
+      //   <TopNav />
+      // </div>
+      null
+    );
   return (
     <nav className={`${styles.navigation}`}>
       <div className='flex items-center'>
@@ -124,6 +132,9 @@ const GlobalNavigation = () => {
         >
           Settings
         </Link>
+      </div>
+      <div className='w-[360px]'>
+        <SearchBar />
       </div>
       <div className={`${styles.buttonBox}`}>
         <Button id={'/global/wallet'}>

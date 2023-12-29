@@ -1,0 +1,14 @@
+.container {
+  background: rgba(1, 1, 1, 0.2);
+  @apply backdrop-blur-[20px];
+  @apply w-full h-62 flex justify-center;
+}
+.startButton {
+  @apply ml-auto bg-[var(--color-background-brand-bold)] text-[var(--color-text-main)] h-36 flex items-center justify-center px-16 !important;
+}
+.dropdown {
+  @apply w-200 border-1 border-[var(--color-border-main)] bg-[var(--color-elevation-surface)];
+}
+.dropdown div {
+  @apply border-b-1 border-[var(--color-border-main)] h-36 flex items-center pl-12 py-8 text-[var(--color-text-subtle)] hover:text-[var(--color-text-main)];
+}

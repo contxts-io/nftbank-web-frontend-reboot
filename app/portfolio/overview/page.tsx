@@ -9,6 +9,7 @@ import { myDefaultPortfolioAtom } from '@/store/settings';
 import { useEffect } from 'react';
 import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
 import { useMe } from '@/utils/hooks/queries/auth';
+import ChainList from '@/components/portfolio/ChainList';
 
 const OverviewPage = () => {
   // const myPortfolio = useAtomValue(myDefaultPortfolioAtom);
@@ -28,9 +29,9 @@ const OverviewPage = () => {
   //     });
   // }, [myPortfolio]);
   return (
-    <section className='pt-20 px-24 pb-40'>
+    <section className='pt-24 px-24 pb-40'>
+      <ChainList />
       <SummaryValueContainer />
-
       <div className='w-full grid grid-cols-2 gap-x-[20px]'>
         <HistoricalTrendContainer />
         <PerformanceContainer />

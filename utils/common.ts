@@ -1,6 +1,7 @@
 import { TValuation } from "@/interfaces/collection";
 import { TCurrency } from "@/interfaces/constants";
 import jwt from 'jsonwebtoken';
+import { ARTICLE_CATEGORY } from "./articlesCategory";
 
 export function formatDate(date:  Date): string  {
   const year = date.getFullYear();
@@ -214,4 +215,41 @@ export function jsonToQueryString (searchParam: any) {
     }
     return `${key}=${searchParam[key]}`;
   }).join('&');
+}
+export const CATEGORY = [
+  {
+    key: 'nftvaluation',
+    value: 'NFT Valuation',
+  },
+  {
+    key: 'productupdate',
+    value: 'Product Update',
+  },
+  {
+    key: 'usecases',
+    value: 'Use Cases',
+  },
+];
+
+export const normalizeCategoryName = (name: string) => {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, ''); // 소문자로 변환하고 특수 문자 및 띄어쓰기 제거
+};
+export function findCategoryListById(categoryObj: typeof ARTICLE_CATEGORY , targetId: string) {
+  const matchingCategories = [];
+  // 주어진 categoryObj 객체에서 targetId가 포함된 category 리스트 찾기
+  for (const categoryKey in categoryObj) {
+    if (categoryObj.hasOwnProperty(categoryKey)) {
+      const categoryList = categoryObj[categoryKey as keyof typeof ARTICLE_CATEGORY];
+      if (categoryList.includes(targetId)) {
+        let key = categoryKey;
+        CATEGORY.forEach((item) => {
+          if (item.key === categoryKey) {
+            key = item.value;
+          }
+        });
+        matchingCategories.push(key);
+      }
+    }
+  }
+  return matchingCategories;
 }

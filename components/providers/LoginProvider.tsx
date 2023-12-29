@@ -26,9 +26,11 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (isClient) {
       if (!me) {
-        if (!path.includes('/auth')) {
-          router.push('/auth/signin');
-        }
+        !(
+          path.includes('/auth') ||
+          path.includes('/landing') ||
+          path.includes('/blog')
+        ) && router.push('/auth/signin');
       } else if (me.nickname === null) {
         setShowModal(true);
       }

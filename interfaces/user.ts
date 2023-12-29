@@ -13,3 +13,5 @@ export type TMe = TUser & {
   email: string;
   config: string;
 }
+export type SearchUserResponse = {
+}

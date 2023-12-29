@@ -125,7 +125,7 @@ const InventoryItemList = (props: Props) => {
         </div>
       </div>
       <div className='min-h-[300px]'>
-        {itemViewType === 'listView' && <InventoryItemTable />}
+        {itemViewType === 'listView' && <InventoryItemTable sticky={true} />}
         {itemViewType === 'cardView' && <InventoryItemCardGrid />}
       </div>
       <ReactModal

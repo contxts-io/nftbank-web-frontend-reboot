@@ -16,6 +16,8 @@ import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { mainnet, optimism } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { LedgerConnector } from '@wagmi/connectors/ledger';
+import { NextUIProvider } from '@nextui-org/react';
+
 import {
   ThirdwebProvider,
   // import the wallets you want
@@ -103,7 +105,6 @@ type Key = 'success' | 'error' | 'info' | 'warning' | 'default' | 'dark';
 function Providers({ children }: React.PropsWithChildren) {
   const [client] = React.useState(ReactQueryClient);
   const { theme } = useTheme();
-  console.log('Providers theme', theme);
   return (
     <QueryClientProvider client={client}>
       <CookiesProvider defaultSetOptions={{ path: '/' }}>
@@ -119,11 +120,13 @@ function Providers({ children }: React.PropsWithChildren) {
                 defaultTheme='system'
                 enableSystem
               >
-                <ModalProvider>
-                  <ToastContainer />
-                  {children}
-                </ModalProvider>
-                <ReactQueryDevtools initialIsOpen={false} />
+                <NextUIProvider>
+                  <ModalProvider>
+                    <ToastContainer />
+                    {children}
+                  </ModalProvider>
+                  <ReactQueryDevtools initialIsOpen={false} />
+                </NextUIProvider>
               </ThemeProvider>
             </ThirdwebProvider>
           </WagmiConfig>
