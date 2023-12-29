@@ -13,13 +13,11 @@ import { formatCurrency, formatPercent } from '@/utils/common';
 import { useInventoryUnrealizedPerformance } from '@/utils/hooks/queries/performance';
 import SkeletonLoader from '../SkeletonLoader';
 import { useEffect, useState } from 'react';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { portfolioUserAtom } from '@/store/portfolio';
 
 const InventoryValue = () => {
   const portfolioUser = useAtomValue(portfolioUserAtom);
   const searchParams = useSearchParams();
-  const { data: walletList } = useMyWalletList();
   const [values, setValues] = useState<any[]>([]);
   const { data: inventoryValue, status: statusInventoryValue } =
     useInventoryValue(portfolioUser);

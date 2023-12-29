@@ -28,7 +28,9 @@ const ManageGroup = (props: {
   const [invalidInput, setInvalidInput] = useState<boolean>(false);
   const [inputSearch, setInputSearch] = useState<string>('');
   const { data: walletList, isLoading } = useMyWalletList(inputSearch);
-  const { data: walletGroupList, refetch } = useWalletGroupList(me?.id || '');
+  const { data: walletGroupList, refetch } = useWalletGroupList(
+    me?.nickname || ''
+  );
   const { data: walletGroup, refetch: refetchWalletGroup } = useMyWalletGroup(
     props.group?.id || ''
   );

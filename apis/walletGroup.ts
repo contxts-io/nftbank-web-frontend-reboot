@@ -5,8 +5,9 @@ export const getWalletGroup = async<T = TWalletGroup>(id:string) => {
   const result = await instance.get<{data: T}>(`/wallet-group/${id}`);
   return result;
 }
-export const getWalletGroupList = async<T = { data: TWalletGroup[] }>(q:string) => {
-  const result = await instance.get<{data: T}>(`/wallet-group?q=${q}`);
+export const getWalletGroupList = async<T = { data: TWalletGroup[] }>(nickname: string) => {
+  const query = nickname ? `?nickname=${nickname}` : '';
+  const result = await instance.get<{data: T}>(`/wallet-group${query}`);
   return result.data;
 }
 export type UpsertWalletGroup = {name:string, walletIds:string[]}

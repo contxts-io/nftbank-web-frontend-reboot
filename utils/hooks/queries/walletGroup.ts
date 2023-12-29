@@ -3,11 +3,11 @@ import { TWalletGroup } from "@/interfaces/inventory";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export function useWalletGroupList(id?:string) {
+export function useWalletGroupList(nickname:string) {
   return useQuery<{data:TWalletGroup[]},AxiosError>(
-    ['groupList'],
+    ['groupList',nickname],
     async () => {
-      const result = await getWalletGroupList(id || '');
+      const result = await getWalletGroupList(nickname);
       return result.data;
     },
     {

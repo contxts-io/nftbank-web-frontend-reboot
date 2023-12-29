@@ -20,13 +20,13 @@ const OverviewPage = () => {
   useEffect(() => {
     me?.nickname && setPortfolioNicknameAtom(me.nickname);
   }, [me]);
-  useEffect(() => {
-    console.log('~~~~ myPortfolio ~~~~~', myPortfolio);
-    myPortfolio &&
-      setPortfolioUserAtom({
-        ...myPortfolio,
-      });
-  }, [myPortfolio]);
+  // useEffect(() => {
+  //   console.log('~~~~ myPortfolio ~~~~~', myPortfolio);
+  //   myPortfolio &&
+  //     setPortfolioUserAtom({
+  //       ...myPortfolio,
+  //     });
+  // }, [myPortfolio]);
   return (
     <section className='pt-20 px-24 pb-40'>
       <SummaryValueContainer />

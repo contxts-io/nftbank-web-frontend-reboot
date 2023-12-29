@@ -18,17 +18,17 @@ import {
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
-import { portfolioUserAtom } from '@/store/portfolio';
+import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
 
 const TotalInventoryValue = () => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
+  const networkId = useAtomValue(networkIdAtom);
   const [selected, setSelected] = useState<'value' | 'amount'>('value');
   const { data: totalInventoryPositionValue, status: statusValue } =
-    useInventoryCollectionPositionValue(portfolioUser);
+    useInventoryCollectionPositionValue({ ...portfolioUser, networkId });
   const { data: totalInventoryPositionAmount, status: statusAmount } =
-    useInventoryCollectionPositionAmount(portfolioUser);
+    useInventoryCollectionPositionAmount({ ...portfolioUser, networkId });
   const [percent, setPercent] = useState<number[]>([100]);
   useEffect(() => {
     if (totalInventoryPositionValue) {

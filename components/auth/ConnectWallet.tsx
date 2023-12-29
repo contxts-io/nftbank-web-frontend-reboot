@@ -117,6 +117,10 @@ const ConnectWallet = (props: Props) => {
       setConnectedWalletAddress(null);
     };
   }, []);
+  useEffect(() => {
+    console.log('me', me);
+    me && router.push('/portfolio');
+  }, [me]);
 
   useEffect(() => {
     console.log('address ::::: ', address);
@@ -177,7 +181,8 @@ const ConnectWallet = (props: Props) => {
             {
               onSuccess: async (data) => {
                 // const me = await checkMe();
-                // refetch();
+                refetch();
+                console.log('sign success & refetch');
                 router.push('/portfolio');
               },
             }

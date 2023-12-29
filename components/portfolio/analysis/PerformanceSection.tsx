@@ -12,8 +12,7 @@ import { formatCurrency, formatPercent, isPlus } from '@/utils/common';
 import { useEffect, useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 import SkeletonLoader from '@/components/SkeletonLoader';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
-import { portfolioUserAtom } from '@/store/portfolio';
+import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
 const THEAD = [
   'Jan',
   'Feb',
@@ -36,7 +35,8 @@ const GNL_CHART_TYPE: ('Overall' | 'Realized' | 'Unrealized')[] = [
 ];
 const PerformanceSection = () => {
   const currency = useAtomValue(currencyAtom);
-  const portfolioUser = useAtomValue(portfolioUserAtom);
+  const networkId = useAtomValue(networkIdAtom);
+  const portfolioUser = { ...useAtomValue(portfolioUserAtom), networkId };
   const [requestParam, setRequestParam] = useState<{
     year: number;
     gnlChartType: 'Overall' | 'Realized' | 'Unrealized';

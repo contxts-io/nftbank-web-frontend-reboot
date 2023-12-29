@@ -14,7 +14,7 @@ type Props = {
 };
 const GroupListTable = (props: Props) => {
   const { data: me } = useMe();
-  const { data: groupList } = useWalletGroupList(me?.id || '');
+  const { data: groupList } = useWalletGroupList(me?.nickname || '');
   const currency = useAtomValue(currencyAtom);
   return (
     <table className={`font-caption-regular ${styles.table}`}>

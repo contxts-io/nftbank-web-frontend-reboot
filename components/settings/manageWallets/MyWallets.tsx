@@ -9,17 +9,22 @@ import { formatCurrency } from '@/utils/common';
 import WalletListTable from './WalletListTable';
 import { useState } from 'react';
 import ReactModal from 'react-modal';
-import { portfolioUserAtom } from '@/store/portfolio';
+import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
 import EditWallet from '@/components/wallet/EditWallet';
 import { TWallet } from '@/interfaces/inventory';
 import DeleteWallet from '@/components/wallet/DeleteWallet';
 import { openModalAtom } from '@/store/settings';
+import { useMe } from '@/utils/hooks/queries/auth';
 const MyWallets = () => {
-  const portfolioUser = useAtomValue(portfolioUserAtom);
+  const { data: me } = useMe();
   const currency = useAtomValue(currencyAtom);
+  const networkId = useAtomValue(networkIdAtom);
   const [showGlobalModal, setShowGlobalModal] = useAtom(openModalAtom);
   const [showModal, setShowModal] = useState<'edit' | 'delete' | null>(null);
-  const { data: inventoryValue } = useInventoryValue(portfolioUser);
+  const { data: inventoryValue } = useInventoryValue({
+    nickname: me?.nickname || '',
+    networkId: networkId,
+  });
   const [selectedWallet, setSelectedWallet] = useState<TWallet | null>(null);
   const [searchAddress, setSearchAddress] = useState<string>('');
 

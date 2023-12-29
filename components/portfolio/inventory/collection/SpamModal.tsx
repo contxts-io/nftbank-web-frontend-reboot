@@ -23,7 +23,6 @@ import ReactQueryClient from '@/utils/ReactQueryClient';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useSearchParams } from 'next/navigation';
 import StatusDropdown from './StatusDropdown';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const SpamModal = () => {
   const portfolioUser = useAtomValue(portfolioUserAtom);
 

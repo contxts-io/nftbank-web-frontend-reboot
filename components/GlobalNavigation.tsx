@@ -20,8 +20,10 @@ import { useDisconnect as useDisconnectThirdWeb } from '@thirdweb-dev/react';
 import { connectedWalletAddressAtom } from '@/store/account';
 import { myDefaultPortfolioAtom } from '@/store/settings';
 import PortfolioSelector from './PortfolioSelector';
+import { usePathname } from 'next/navigation';
 
 const GlobalNavigation = () => {
+  const path = usePathname();
   const { data: me } = useMe();
   const { mutate: signOut } = useMutationSignOut();
   const { disconnect: disconnectWagmi } = useDisconnectWagmi();
@@ -84,20 +86,42 @@ const GlobalNavigation = () => {
         </div>
         <Link
           href={'/portfolio'}
-          className={` ${styles.link} text-[var(--color-text-main)]`}
+          className={` ${styles.link} ${
+            path.includes('/portfolio') ? 'text-[var(--color-text-main)]' : ''
+          }`}
         >
           Portfolio
         </Link>
-        <Link href={'/watch'} className={`${styles.link}`}>
+        <Link
+          href={'/watch'}
+          className={`${styles.link} ${
+            path.includes('/watch') ? 'text-[var(--color-text-main)]' : ''
+          }`}
+        >
           Watchlist
         </Link>
-        <Link href={'/activity'} className={` ${styles.link}`}>
+        <Link
+          href={'/activity'}
+          className={` ${styles.link} ${
+            path.includes('/activity') ? 'text-[var(--color-text-main)]' : ''
+          }`}
+        >
           Activities
         </Link>
-        <Link href={'/report'} className={` ${styles.link}`}>
+        <Link
+          href={'/report'}
+          className={` ${styles.link} ${
+            path.includes('/report') ? 'text-[var(--color-text-main)]' : ''
+          }`}
+        >
           Report
         </Link>
-        <Link href={'/settings'} className={` ${styles.link}`}>
+        <Link
+          href={'/settings'}
+          className={` ${styles.link} ${
+            path.includes('/settings') ? 'text-[var(--color-text-main)]' : ''
+          }`}
+        >
           Settings
         </Link>
       </div>

@@ -1,6 +1,6 @@
 .container {
   @apply flex flex-col items-center;
-  @apply border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)] w-[262px] h-[518px];
+  @apply border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)] w-[262px];
 }
 .buttonWrapper {
   @apply w-full flex justify-between border-1 border-[var(--color-border-main)] p-8 gap-x-8;
@@ -16,7 +16,7 @@
   @apply w-full flex flex-col items-center mt-12;
 }
 .listWrapper {
-  @apply w-full max-h-[252px] overflow-y-scroll;
+  @apply w-full max-h-[252px] min-h-[252px]  overflow-y-scroll;
 }
 .list {
   @apply flex items-center h-36 w-full pl-8 gap-x-8 cursor-pointer;

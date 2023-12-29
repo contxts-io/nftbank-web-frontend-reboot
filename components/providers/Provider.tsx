@@ -10,7 +10,6 @@ import { WagmiConfig, configureChains, createConfig } from 'wagmi';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
 import { publicProvider } from 'wagmi/providers/public';
 import { useTheme } from 'next-themes';
-import { AuthProvider } from './AuthProvider';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
@@ -25,7 +24,6 @@ import {
 } from '@thirdweb-dev/react';
 import { CookiesProvider } from 'react-cookie';
 import ModalProvider from './ModalProvider';
-import ProfileProvider from './ProfileProvider';
 
 const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '';
 const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID || '';
@@ -121,13 +119,11 @@ function Providers({ children }: React.PropsWithChildren) {
                 defaultTheme='system'
                 enableSystem
               >
-                <ProfileProvider>
-                  <ModalProvider>
-                    <ToastContainer />
-                    {children}
-                  </ModalProvider>
-                  <ReactQueryDevtools initialIsOpen={false} />
-                </ProfileProvider>
+                <ModalProvider>
+                  <ToastContainer />
+                  {children}
+                </ModalProvider>
+                <ReactQueryDevtools initialIsOpen={false} />
               </ThemeProvider>
             </ThirdwebProvider>
           </WagmiConfig>

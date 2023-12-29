@@ -7,7 +7,11 @@ import { useEffect, useState } from 'react';
 import styles from './ProfileComponent.module.css';
 import PortfolioSelector from '../PortfolioSelector';
 import { useAtom, useAtomValue } from 'jotai';
-import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
+import {
+  networkIdAtom,
+  portfolioNicknameAtom,
+  portfolioUserAtom,
+} from '@/store/portfolio';
 import { useUser } from '@/utils/hooks/queries/user';
 import BlockiesIcon from '../BlockiesIcon';
 import { myDefaultPortfolioAtom } from '@/store/settings';
@@ -15,32 +19,38 @@ import Wallet from '@/public/icon/Wallet';
 import { BasicParam } from '@/interfaces/request';
 import { TUser } from '@/interfaces/user';
 import { usePathname } from 'next/navigation';
-const ProfileComponent = (props: { nickname: string }) => {
+const ProfileComponent = () => {
   const { data: me } = useMe();
   const path = usePathname();
   const [isClient, setIsClient] = useState(false);
-  const [portfolioUserNickname, setPortfolioUserNickname] = useAtom(
-    portfolioNicknameAtom
-  );
+  const networkId = useAtomValue(networkIdAtom);
+
   const [nickname, setNickname] = useState<string | null>(null);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
-  const [user, setUser] = useState<TUser | null>();
+  // const [user, setUser] = useState<TUser | null>(null);
   const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
   // const { data: me, status } = useMe();
-  const { data: _user, status: userStatus } = useUser(nickname || '');
+  const { data: user, status: userStatus } = useUser(nickname);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
   useEffect(() => {
-    path && setNickname(path.split('nickname/')[1] || me?.nickname || '');
-    path && setWalletAddress(path.split('walletAddress/')[1] || '');
+    path && setNickname(path.split('nickname/')[1] || null);
+    path && setWalletAddress(path.split('walletAddress/')[1] || null);
+    path &&
+      !path.split('nickname/')[1] &&
+      !path.split('walletAddress/')[1] &&
+      me?.nickname &&
+      setNickname(me.nickname);
   }, [path, me?.nickname]);
   useEffect(() => {
-    console.log('portfolioUserNickname', portfolioUserNickname);
-    console.log('me.nickname', me?.nickname);
-    portfolioUserNickname === me?.nickname ? setUser(me) : setUser(_user);
-  }, [portfolioUserNickname]);
+    nickname
+      ? setPortfolioUser({ nickname: nickname, networkId: networkId })
+      : walletAddress
+      ? setPortfolioUser({ walletAddress: walletAddress, networkId: networkId })
+      : null;
+  }, [nickname, walletAddress]);
   return (
     <>
       {isClient ? (
@@ -72,27 +82,9 @@ const ProfileComponent = (props: { nickname: string }) => {
                 <ShareNetwork className='mr-12 fill-[var(--color-icon-subtle)]' />
                 <Eye className=' fill-[var(--color-icon-subtle)]' />
               </div>
-              {/* <div className='font-caption-regular flex items-center text-[var(--color-text-subtle)]'>
-                <span className='flex items-center mr-16'>
-                  <WalletFilled
-                    className='mr-4 fill-[var(--color-icon-disabled)]'
-                    width={14}
-                    height={14}
-                  />
-                  {`Wallet ${walletList?.data.length}`}
-                </span>
-                <span className='flex items-center'>
-                  <FolderFilled
-                    className='mr-4 fill-[var(--color-icon-disabled)] '
-                    width={14}
-                    height={14}
-                  />
-                  {`group ${walletGroupList?.data.length}`}
-                </span>
-              </div> */}
               <div className='mt-8'>
                 {/* 누군가의 계정 */}
-                {user ? (
+                {user && portfolioUser ? (
                   <PortfolioSelector
                     className={styles.selectorButton}
                     position='left-0 top-36'

@@ -7,7 +7,7 @@ export function useMyWalletList(q?: string) {
   return useQuery<TWalletList,AxiosError>(
     ['myWalletList',q],
     async () => {
-      const result = await getMyWalletList(q || '');
+      const result = await getMyWalletList(q as string);
   return result;
     },
     {
