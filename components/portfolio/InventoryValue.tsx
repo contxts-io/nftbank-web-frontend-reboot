@@ -104,7 +104,7 @@ const InventoryValue = () => {
                       className={`font-subtitle02-bold ${
                         item.type == `inventoryValue`
                           ? styles.pMain
-                          : item.plus
+                          : item.isPlus
                           ? 'text-[var(--color-text-success)]'
                           : 'text-[var(--color-text-danger)]'
                       }`}
