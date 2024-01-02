@@ -15,7 +15,7 @@ export type TCollectionParam = {
 export type ItemParam = BasicParam & {
   assetContract: string[],
   currency: TCurrency,
-  includeGasUsed: string,
+  includeGasUsed: 'true' | 'false',
   sort: TSort,
   order: TSortOrder,
   limit: number,

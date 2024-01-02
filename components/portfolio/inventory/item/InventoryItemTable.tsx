@@ -89,6 +89,13 @@ const InventoryItemTable = (props: Props) => {
       (fetchNextPage(),
       setRequestParam((prev) => ({ ...prev, page: prev.page + 1 })));
   }, [fetchNextPage, inView]);
+  useEffect(() => {
+    console.log('priceType', priceType);
+    setRequestParam((prev) => ({
+      ...prev,
+      includeGasUsed: priceType === 'costBasis' ? 'true' : 'false',
+    }));
+  }, [priceType]);
   const mergePosts = useMemo(
     () => inventoryItemList?.pages,
     [inventoryItemList?.pages, requestParam]
@@ -192,17 +199,22 @@ const InventoryItemTable = (props: Props) => {
                       </td>
                       <td className='text-right'>
                         <p>
-                          {priceType === 'acquisitionPrice'
-                            ? formatCurrency(
-                                data.acquisitionPrice?.[currency] || null,
-                                currency
-                              )
-                            : data.costBasis?.[currency] &&
-                              formatCurrency(
-                                data.costBasis[currency],
-                                currency
-                              )}
+                          {formatCurrency(
+                            data.acquisitionPrice?.[currency] || null,
+                            currency
+                          )}
                         </p>
+                        {priceType === 'costBasis' && (
+                          <p
+                            className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                          >
+                            {data.gasFee?.[currency]
+                              ? `GAS +${parseFloat(
+                                  data.gasFee[currency] || ''
+                                ).toFixed(3)} `
+                              : ''}
+                          </p>
+                        )}
                       </td>
                       <td className='text-right'>
                         <p>
