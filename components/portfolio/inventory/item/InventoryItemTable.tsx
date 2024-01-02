@@ -90,9 +90,9 @@ const InventoryItemTable = (props: Props) => {
       setRequestParam((prev) => ({ ...prev, page: prev.page + 1 })));
   }, [fetchNextPage, inView]);
   useEffect(() => {
-    console.log('priceType', priceType);
     setRequestParam((prev) => ({
       ...prev,
+      page: 0,
       includeGasUsed: priceType === 'costBasis' ? 'true' : 'false',
     }));
   }, [priceType]);

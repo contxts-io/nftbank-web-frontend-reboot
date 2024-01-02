@@ -84,7 +84,13 @@ const InventoryCollectionTable = () => {
         page: prev.page + 1,
       })));
   }, [fetchNextPage, inView]);
-
+  useEffect(() => {
+    setInventoryCollectionRequestParam((prev) => ({
+      ...prev,
+      page: 0,
+      includeGasUsed: priceType === 'costBasis' ? 'true' : 'false',
+    }));
+  }, [priceType]);
   const handleClickSortButton = (sort: TSort) => {
     const order =
       inventoryCollectionRequestParam.sort !== sort
