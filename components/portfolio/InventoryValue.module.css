@@ -16,14 +16,8 @@
 .plus {
   @apply text-[var(--color-text-success)] bg-[var(--color-background-success)];
 }
-.plus p {
-  @apply text-[var(--color-text-success)];
-}
 .minus {
-  @apply bg-[var(--color-background-danger)];
-}
-.minus p {
-  @apply text-[var(--color-text-danger)];
+  @apply text-[var(--color-text-danger)] bg-[var(--color-background-danger)];
 }
 .valueRow {
   @apply flex items-end mt-16 h-24;
