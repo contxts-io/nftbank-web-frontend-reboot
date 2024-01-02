@@ -40,8 +40,6 @@ const InventoryContainer = () => {
   }, []);
   const spamList = useAtomValue(addedSpamListAtom);
   useEffect(() => {
-    console.log('InventoryContainer portfolioUser', portfolioUser);
-    console.log('InventoryContainer inventoryCollection', inventoryCollection);
     setInventoryCollection({
       ...inventoryCollection,
       ...portfolioUser,
@@ -59,9 +57,7 @@ const InventoryContainer = () => {
       ...portfolioUser,
     });
   }, [walletAddress, portfolioUser]);
-  useEffect(() => {
-    console.log('inventoryCollection', inventoryCollection);
-  }, [inventoryCollection]);
+
   return (
     <section className='w-full'>
       {inventoryType === 'collection' && (
