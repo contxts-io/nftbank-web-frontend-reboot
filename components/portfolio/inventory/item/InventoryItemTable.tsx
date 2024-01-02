@@ -138,8 +138,8 @@ const InventoryItemTable = (props: Props) => {
                 } ${item.sort ? 'cursor-pointer' : ''}`}
                 onClick={() => item.sort && handleSort(item.type)}
               >
-                {index === HEADER.length - 1 ? (
-                  <span>{item.name}</span>
+                {index === HEADER.length - 1 || index === 1 ? (
+                  <span className='mr-30'>{item.name}</span>
                 ) : (
                   <p>{item.name}</p>
                 )}
@@ -184,10 +184,10 @@ const InventoryItemTable = (props: Props) => {
                             />
                           </div>
                           <div className='font-caption-medium max-w-[230px]  white-space-nowrap overflow-hidden text-ellipsis'>
-                            <p className={`${styles.pMain}`}>
+                            <p className={`${styles.pMain} mr-0`}>
                               {data.token.tokenId}
                             </p>
-                            <p className={`${styles.pSub}`}>
+                            <p className={`${styles.pSub} truncate mr-0`}>
                               {data.token.name ||
                                 shortenAddress(data.collection.assetContract)}
                             </p>
