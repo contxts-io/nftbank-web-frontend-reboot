@@ -210,12 +210,12 @@ const PerformanceChart = (props: Props) => {
 
   return (
     <section className={styles.container}>
-      <div className={styles.chartLabel}>
+      <div className={`font-caption-regular ${styles.chartLabel}`}>
         <p>{formatPercent(maxAbs.toString())}</p>
         <p>0.00%</p>
         <p>{formatPercent((-maxAbs).toString())}</p>
       </div>
-      <div className='w-full ml-20 h-200'>
+      <div className={styles.chart}>
         {statusPerformanceChart === 'success' && (
           <ApexCharts
             options={{
