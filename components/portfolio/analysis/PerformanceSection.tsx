@@ -175,7 +175,18 @@ const PerformanceSection = () => {
                       );
                     })}
                   <td>
-                    <p className='text-[var(--color-text-main)]'>
+                    <p
+                      className={
+                        isPlus(performanceAnnual?.roi?.[currency] || '0') ===
+                        '-'
+                          ? 'text-[var(--color-text-main)]'
+                          : isPlus(
+                              performanceAnnual?.roi?.[currency] || '0'
+                            ) === true
+                          ? 'text-[var(--color-text-success)]'
+                          : 'text-[var(--color-text-danger)]'
+                      }
+                    >
                       {formatPercent(performanceAnnual?.roi?.[currency] || '0')}
                     </p>
                   </td>
@@ -214,7 +225,15 @@ const PerformanceSection = () => {
                       );
                     })}
                   <td>
-                    <p className='text-[var(--color-text-main)] text-ellipsis'>
+                    <p
+                      className={`text-ellipsis ${
+                        isPlus(total || '0') === '-'
+                          ? 'text-[var(--color-text-main)]'
+                          : isPlus(total || '0') === true
+                          ? 'text-[var(--color-text-success)]'
+                          : 'text-[var(--color-text-danger)]'
+                      }`}
+                    >
                       {formatCurrency(total.toString(), currency)}
                     </p>
                   </td>
