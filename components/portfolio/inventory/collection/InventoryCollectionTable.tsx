@@ -14,6 +14,7 @@ import Ethereum from '@/public/icon/Ethereum';
 import {
   difference,
   formatCurrency,
+  formatPercent,
   isPlus,
   shortenAddress,
 } from '@/utils/common';
@@ -257,9 +258,8 @@ const InventoryCollectionTable = () => {
                           : 'text-[var(--color-text-danger)]'
                       }`}
                     >
-                      {`${difference(
-                        row.nav[currency].difference?.percentage || '0',
-                        'percent'
+                      {`${formatPercent(
+                        row.nav[currency].difference?.percentage || '0'
                       )}`}
                     </p>
                   </td>
