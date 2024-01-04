@@ -40,12 +40,12 @@ const tooltip = ({
   const positionCollection = totalInventoryPositionValue?.[seriesIndex];
 
   const amount = formatCurrency(
-    totalInventoryPositionValue?.[seriesIndex].value[currency].amount,
+    totalInventoryPositionValue?.[seriesIndex]?.value[currency].amount || '0',
     currency
   );
   return (
     <div className='relative bg-[var(--color-elevation-surface)]'>
-      <div className='font-caption-regular py-8 px-16 flex flex-col items-start border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
+      <div className='font-caption-regular py-8 px-16 flex flex-col items-start border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)] gap-y-8'>
         <div className='w-full flex items-center'>
           <div
             className={`${
