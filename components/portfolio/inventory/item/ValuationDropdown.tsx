@@ -2,9 +2,8 @@
 import Check from '@/public/icon/Check';
 import styles from './ValuationDropdown.module.css';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Collection, TValuation } from '@/interfaces/collection';
-import { Token } from '@/interfaces/token';
 import { customValuationAtom } from '@/store/portfolio';
 import { useAtom } from 'jotai';
 import { formatPercent, mappingConstants } from '@/utils/common';
@@ -25,6 +24,7 @@ const ValuationDropdown = ({ collection, valuations, card }: Props) => {
   );
 
   const [customValuations, setCustomValuations] = useAtom(customValuationAtom);
+  const listRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const _valuation = customValuations.find(
       (item) =>
@@ -46,6 +46,24 @@ const ValuationDropdown = ({ collection, valuations, card }: Props) => {
   //       .concat(obj)
   //   );
   // };
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsPopoverOpen(false);
+    }
+  };
+  const handleClickOutside = (event: MouseEvent) => {
+    if (listRef.current && !listRef.current.contains(event.target as Node)) {
+      setIsPopoverOpen(false);
+    }
+  };
   const handleClickList = (valuationType: TValuation) => {
     setSelectedValuation(valuationType);
     setCustomValuations((prev) =>
@@ -70,6 +88,7 @@ const ValuationDropdown = ({ collection, valuations, card }: Props) => {
     <div
       className={`${styles.container} ${card && styles.full}`}
       onClick={(e) => (e.stopPropagation(), setIsPopoverOpen((prev) => !prev))}
+      ref={listRef}
     >
       {selectedValuation && (
         <div

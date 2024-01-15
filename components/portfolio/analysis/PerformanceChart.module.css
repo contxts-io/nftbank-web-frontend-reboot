@@ -1,9 +1,12 @@
 .container {
-  @apply w-full flex;
+  @apply w-full flex relative;
 }
 .chartLabel {
-  @apply flex flex-col w-20 h-200 ml-8 pt-30 pb-15 justify-between overflow-x-visible z-10;
+  @apply absolute left-0 top-0 flex flex-col w-fit h-200 ml-8 pt-30 pb-15 justify-between overflow-x-visible z-10;
 }
 .chartLabel p {
-  @apply text-[var(--color-text-subtle)];
+  @apply text-[var(--color-text-subtle)] text-right;
+}
+.chart {
+  @apply w-full ml-40 h-200;
 }

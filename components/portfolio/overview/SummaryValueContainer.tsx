@@ -84,7 +84,15 @@ const SummaryValueContainer = () => {
             <SkeletonLoader className='w-80 h-20' />
           )}
           {statusUnrealized === 'success' && (
-            <p className={`font-subtitle02-bold ${styles.title}`}>
+            <p
+              className={`font-subtitle02-bold ${
+                isPlus(unrealized.gainLoss[currency].amount || '0') === '-'
+                  ? 'text-[var(--color-text-main)]'
+                  : isPlus(unrealized.gainLoss[currency].amount || '0')
+                  ? 'text-[var(--color-text-success)]'
+                  : 'text-[var(--color-text-danger)]'
+              }`}
+            >
               {formatCurrency(
                 unrealized.gainLoss[currency].amount || '0',
                 currency
@@ -128,7 +136,15 @@ const SummaryValueContainer = () => {
           <SkeletonLoader className='w-80 h-20' />
         )}
         {statusRealized === 'success' && (
-          <p className={`font-subtitle02-bold ${styles.title}`}>
+          <p
+            className={`font-subtitle02-bold ${
+              isPlus(realized.gainLoss[currency] || '0') === '-'
+                ? 'text-[var(--color-text-main)]'
+                : isPlus(realized.gainLoss[currency] || '0')
+                ? 'text-[var(--color-text-success)]'
+                : 'text-[var(--color-text-danger)]'
+            }`}
+          >
             {formatCurrency(realized.gainLoss[currency], currency)}
           </p>
         )}

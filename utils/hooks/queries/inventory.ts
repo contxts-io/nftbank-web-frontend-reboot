@@ -56,7 +56,6 @@ export function useInventoryCollectionList(requestParam: TCollectionParam) {
       return inventoryCollectionList;
     },
     {
-      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -72,7 +71,6 @@ export function useInventoryItemFilter(requestParam: TCollectionParam) {
       return inventoryItemFilterCollections;
     },
     {
-      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -142,7 +140,6 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
-    enabled: requestParam.walletAddress !== '',
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,

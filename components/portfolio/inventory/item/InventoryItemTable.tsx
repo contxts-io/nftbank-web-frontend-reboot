@@ -89,6 +89,13 @@ const InventoryItemTable = (props: Props) => {
       (fetchNextPage(),
       setRequestParam((prev) => ({ ...prev, page: prev.page + 1 })));
   }, [fetchNextPage, inView]);
+  useEffect(() => {
+    setRequestParam((prev) => ({
+      ...prev,
+      page: 0,
+      includeGasUsed: priceType === 'costBasis' ? 'true' : 'false',
+    }));
+  }, [priceType]);
   const mergePosts = useMemo(
     () => inventoryItemList?.pages,
     [inventoryItemList?.pages, requestParam]
@@ -131,8 +138,8 @@ const InventoryItemTable = (props: Props) => {
                 } ${item.sort ? 'cursor-pointer' : ''}`}
                 onClick={() => item.sort && handleSort(item.type)}
               >
-                {index === HEADER.length - 1 ? (
-                  <span>{item.name}</span>
+                {index === HEADER.length - 1 || index === 1 ? (
+                  <span className='mr-30'>{item.name}</span>
                 ) : (
                   <p>{item.name}</p>
                 )}
@@ -177,10 +184,10 @@ const InventoryItemTable = (props: Props) => {
                             />
                           </div>
                           <div className='font-caption-medium max-w-[230px]  white-space-nowrap overflow-hidden text-ellipsis'>
-                            <p className={`${styles.pMain}`}>
+                            <p className={`${styles.pMain} mr-0`}>
                               {data.token.tokenId}
                             </p>
-                            <p className={`${styles.pSub}`}>
+                            <p className={`${styles.pSub} truncate mr-0`}>
                               {data.token.name ||
                                 shortenAddress(data.collection.assetContract)}
                             </p>
@@ -192,17 +199,22 @@ const InventoryItemTable = (props: Props) => {
                       </td>
                       <td className='text-right'>
                         <p>
-                          {priceType === 'acquisitionPrice'
-                            ? formatCurrency(
-                                data.acquisitionPrice?.[currency] || null,
-                                currency
-                              )
-                            : data.costBasis?.[currency] &&
-                              formatCurrency(
-                                data.costBasis[currency],
-                                currency
-                              )}
+                          {formatCurrency(
+                            data.acquisitionPrice?.[currency] || null,
+                            currency
+                          )}
                         </p>
+                        {priceType === 'costBasis' && (
+                          <p
+                            className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                          >
+                            {data.gasFee?.[currency]
+                              ? `GAS +${parseFloat(
+                                  data.gasFee[currency] || ''
+                                ).toFixed(3)} `
+                              : ''}
+                          </p>
+                        )}
                       </td>
                       <td className='text-right'>
                         <p>

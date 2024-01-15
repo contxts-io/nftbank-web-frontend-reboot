@@ -2,13 +2,13 @@
   @apply w-full mb-20 h-[340px] p-20 border-1 border-[var(--color-border-main)];
 }
 .row {
-  @apply flex w-full justify-between items-center mb-20;
+  @apply flex w-full justify-between items-center;
 }
 .title {
   @apply text-[var(--color-text-main)];
 }
 .bottom {
-  @apply w-full flex justify-between items-center;
+  @apply w-full flex justify-between items-center border-t-1 border-[var(--color-border-main)] pt-20;
 }
 .bottom div:first-child {
   @apply border-r-1 border-[var(--color-border-bold)];

@@ -23,6 +23,9 @@
 .buttonBox button {
   @apply px-12 h-32 flex justify-center items-center text-[var(--color-icon-subtle)] hover:text-[var(--color-icon-main)];
 }
+.buttonBox button:hover div {
+  @apply border-[var(--color-border-selected)];
+}
 .blockIcon {
   @apply w-16 h-16;
 }

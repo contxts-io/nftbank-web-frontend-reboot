@@ -1,12 +1,12 @@
 .container {
-  @apply relative cursor-pointer;
+  @apply relative cursor-pointer w-full h-full flex items-center;
 }
 .full {
   @apply w-full;
 }
 .dropdown {
   filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.1));
-  @apply absolute right-0 min-w-200 w-fit border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface-overlay)] z-50 !important;
+  @apply absolute left-0 top-35 min-w-200 w-fit border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface-overlay)] z-50 !important;
 }
 .dropdown li {
   @apply flex w-full justify-between items-center whitespace-nowrap;

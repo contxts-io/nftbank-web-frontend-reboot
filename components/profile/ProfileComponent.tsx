@@ -46,11 +46,22 @@ const ProfileComponent = () => {
   }, [path, me?.nickname]);
   useEffect(() => {
     nickname
-      ? setPortfolioUser({ nickname: nickname, networkId: networkId })
+      ? setPortfolioUser({
+          nickname: nickname,
+          walletAddress: '',
+          networkId: networkId,
+        })
       : walletAddress
-      ? setPortfolioUser({ walletAddress: walletAddress, networkId: networkId })
+      ? setPortfolioUser({
+          nickname: '',
+          walletAddress: walletAddress,
+          networkId: networkId,
+        })
       : null;
   }, [nickname, walletAddress]);
+  useEffect(() => {
+    console.log('ProfileComponent portfolioUser', portfolioUser);
+  }, [portfolioUser]);
   return (
     <>
       {isClient ? (

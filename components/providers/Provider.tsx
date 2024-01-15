@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import ReactQueryClient from '@/utils/ReactQueryClient';
@@ -104,7 +104,11 @@ const THIRD_WEB_API_KEY = process.env.NEXT_PUBLIC_THIRD_WEB_API_KEY || '';
 type Key = 'success' | 'error' | 'info' | 'warning' | 'default' | 'dark';
 function Providers({ children }: React.PropsWithChildren) {
   const [client] = React.useState(ReactQueryClient);
-  const { theme } = useTheme();
+  const { setTheme, theme } = useTheme();
+  useEffect(() => {
+    setTheme('dark');
+  }, []);
+
   return (
     <QueryClientProvider client={client}>
       <CookiesProvider defaultSetOptions={{ path: '/' }}>

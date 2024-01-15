@@ -10,6 +10,9 @@
 .tableHeadRow {
   @apply h-40 py-12 text-[var(--color-text-subtle)];
 }
+.tableHeadRow p {
+  @apply min-w-[90px];
+}
 .tokenImage {
   @apply w-32 h-32 !important;
   @apply border-1 border-[var(--color-border-main)] flex items-center overflow-hidden justify-center mr-8 relative;

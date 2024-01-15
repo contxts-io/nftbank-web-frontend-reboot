@@ -6,8 +6,6 @@ export type TSort = 'amount' | 'nav' | 'spam'
 
 export type TCollectionParam = {
   searchCollection: string,
-  networkId: string,
-  walletAddress: string,
   sort: TSort,
   includeGasUsed: string,
   page: number,
@@ -17,7 +15,7 @@ export type TCollectionParam = {
 export type ItemParam = BasicParam & {
   assetContract: string[],
   currency: TCurrency,
-  includeGasUsed: string,
+  includeGasUsed: 'true' | 'false',
   sort: TSort,
   order: TSortOrder,
   limit: number,
@@ -44,8 +42,6 @@ type SpamParam = {
 }
 export const inventoryCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
-  networkId: 'ethereum',
-  walletAddress: '',
   includeGasUsed: 'false',
   page: 1,
   limit: 30,
@@ -54,8 +50,6 @@ export const inventoryCollectionAtom = atom<TCollectionParam>({
 })
 export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
-  networkId: 'ethereum',
-  walletAddress: '',
   includeGasUsed: 'false',
   page: 1,
   limit: 30,
@@ -64,8 +58,6 @@ export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
 })
 export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
   searchCollection: '',
-  networkId: 'ethereum',
-  walletAddress: '',
   includeGasUsed: 'false',
   page: 1,
   limit: 30,

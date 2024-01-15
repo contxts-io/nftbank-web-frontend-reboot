@@ -18,8 +18,6 @@ const ActivityCollection = () => {
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useState<TCollectionParam>({
       searchCollection: '',
-      networkId: 'ethereum',
-      walletAddress: walletList?.data[0].walletAddress || '',
       includeGasUsed: 'false',
       page: 0,
       limit: 3,
