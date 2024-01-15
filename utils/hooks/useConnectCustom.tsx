@@ -7,6 +7,14 @@ import {
   ledgerConnector,
 } from '@/components/providers/Provider';
 import { connectedWalletAddressAtom } from '@/store/account';
+import {
+  useConnect as useConnectThirdWeb,
+  // wallet list
+  rainbowWallet,
+  metamaskWallet,
+  walletConnect,
+} from '@thirdweb-dev/react';
+
 import { useAtom, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 import { useAccount, useConnect } from 'wagmi';
@@ -51,6 +59,7 @@ export const useConnectCustom = ({
   } = useConnect({
     connector: metamaskConnector,
   });
+  const connectThirdWeb = useConnectThirdWeb();
 
   const { connect: connectWalletConnect, isLoading: isWalletConnectLoading } =
     useConnect({
@@ -75,10 +84,11 @@ export const useConnectCustom = ({
     connector: ledgerConnector,
   });
 
-  const connect = (connectorName: ConnectorName) => {
+  const connect = async (connectorName: ConnectorName) => {
     switch (connectorName) {
       case 'metamask':
-        connectMetamask();
+        const metamaskConfig = metamaskWallet();
+        await connectThirdWeb(metamaskConfig);
         break;
       case 'coinbase':
         connectCoinbaseConnect();
@@ -100,6 +110,10 @@ export const useConnectCustom = ({
         onConnect();
         connectZerion();
         console.log('connect Zerion');
+        break;
+      case 'rainbow':
+        const rainbowWalletConfig = rainbowWallet();
+        await connectThirdWeb(rainbowWalletConfig);
         break;
     }
   };

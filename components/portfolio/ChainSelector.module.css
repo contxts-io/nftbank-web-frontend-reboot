@@ -1,0 +1,18 @@
+.container {
+  @apply w-188 h-[388px] bg-[var(--color-elevation-surface)] flex flex-col border-1 border-[var(--color-border-main)];
+}
+.listWrapper {
+  @apply w-full h-[348px] overflow-scroll;
+}
+.listWrapper li {
+  @apply border-b-1 border-[var(--color-border-main)] p-10 flex items-center gap-x-8 cursor-pointer;
+}
+.listWrapper li:hover {
+  @apply bg-[var(--color-elevation-sunken)];
+}
+.logo {
+  @apply border-1 border-[var(--color-border-bold)] rounded-full flex items-center justify-center h-24 w-24;
+}
+.moreButton {
+  @apply border-transparent bg-[var(--color-elevation-sunken)] flex items-center justify-center text-[var(--color-text-subtle)];
+}

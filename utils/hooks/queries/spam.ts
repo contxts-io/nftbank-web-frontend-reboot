@@ -12,7 +12,6 @@ export function useInventorySpamList(requestParam: TCollectionParam) {
       return inventoryCollectionList;
     },
     {
-      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -37,7 +36,6 @@ export const useInventorySpamListInfinite = (requestParam: TCollectionParam) => 
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
-    enabled: requestParam.walletAddress !== '',
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,

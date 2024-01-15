@@ -1,26 +1,21 @@
 import { TCurrency } from "@/interfaces/constants";
+import { BasicParam } from "@/interfaces/request";
 import { atom } from "jotai";
 export type TSortOrder = 'asc' | 'desc'
 export type TSort = 'amount' | 'nav' | 'spam'
 
 export type TCollectionParam = {
   searchCollection: string,
-  networkId: string,
-  walletAddress: string,
   sort: TSort,
   includeGasUsed: string,
   page: number,
   limit: number,
   order :TSortOrder,
 }
-export type ItemParam = {
-  networkId: string,
-  userId?: string,
-  walletAddress?: string,
-  walletGroupId?: string,
+export type ItemParam = BasicParam & {
   assetContract: string[],
   currency: TCurrency,
-  includeGasUsed: string,
+  includeGasUsed: 'true' | 'false',
   sort: TSort,
   order: TSortOrder,
   limit: number,
@@ -30,25 +25,12 @@ export type TPeriod = {
   year: number,
   quarter: 'q1'|'q2'|'q3'|'q4'|'all',
 }
-export type TAnalysisGainAndLossParam = TPeriod &{
+export type TAnalysisGainAndLossParam = TPeriod & BasicParam & {
   limit: number,
   nextCursor: string | null,
-  userId: string,
-  walletAddress: string,
-  walletGroupId: string,
-  networkId: 'ethereum',
 }
-export type TAcquisitionParam = TPeriod & {
-  userId: string,
-  walletAddress: string,
-  walletGroupId: string,
-  networkId: 'ethereum',
-}
-export type TOverviewHistoricalValueParam = {
-  networkId: 'ethereum',
-  userId: string,
-  walletAddress: string,
-  walletGroupId: string,
+export type TAcquisitionParam =BasicParam &  TPeriod
+export type TOverviewHistoricalValueParam = BasicParam & {
   // interval: 'hourly' | 'daily' | 'weekly' | 'monthly' | 'quarterly',
   window: '1d'| '3d'| '7d'| '30d'| '90d'| 'ytd'| '365d'| 'all',
 
@@ -60,8 +42,6 @@ type SpamParam = {
 }
 export const inventoryCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
-  networkId: 'ethereum',
-  walletAddress: '',
   includeGasUsed: 'false',
   page: 1,
   limit: 30,
@@ -70,8 +50,6 @@ export const inventoryCollectionAtom = atom<TCollectionParam>({
 })
 export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
-  networkId: 'ethereum',
-  walletAddress: '',
   includeGasUsed: 'false',
   page: 1,
   limit: 30,
@@ -80,8 +58,6 @@ export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
 })
 export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
   searchCollection: '',
-  networkId: 'ethereum',
-  walletAddress: '',
   includeGasUsed: 'false',
   page: 1,
   limit: 30,
@@ -92,7 +68,7 @@ export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
   includeNonSpam: true,
 })
 // export const inventoryItemCollectionAtom = atom<TCollectionParam>({})
-export const inventoryItemListAtom = atom<ItemParam>({
+export const inventoryItemListAtom = atom<ItemParam & {paging : boolean}>({
   walletAddress: '',
   networkId: 'ethereum',
   includeGasUsed: 'false',
@@ -102,30 +78,21 @@ export const inventoryItemListAtom = atom<ItemParam>({
   currency: 'eth',
   sort: 'nav',
   order: 'desc',
+  paging: true,
 })
 export const analysisGainAndLossParamAtom = atom<TAnalysisGainAndLossParam>({
   limit: 5,
   nextCursor: null,
   year: 2023,
   quarter: 'all',
-  userId: '',
-  walletAddress: '',
-  walletGroupId: '',
   networkId: 'ethereum',
 })
 export const overviewHistoricalValueParamAtom = atom<TOverviewHistoricalValueParam>({
-  userId: '',
-  walletAddress: '',
-  walletGroupId: '',
   networkId: 'ethereum',
-  // interval: 'daily',
   window: '7d',
 })
 export const analysisAcquisitionParamAtom = atom<TAcquisitionParam>({
   year: 2023,
   quarter: 'all',
-  userId: '',
-  walletAddress: '',
-  walletGroupId: '',
   networkId: 'ethereum',
 })

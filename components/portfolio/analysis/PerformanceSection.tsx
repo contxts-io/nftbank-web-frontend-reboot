@@ -12,7 +12,7 @@ import { formatCurrency, formatPercent, isPlus } from '@/utils/common';
 import { useEffect, useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 import SkeletonLoader from '@/components/SkeletonLoader';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
 const THEAD = [
   'Jan',
   'Feb',
@@ -35,7 +35,8 @@ const GNL_CHART_TYPE: ('Overall' | 'Realized' | 'Unrealized')[] = [
 ];
 const PerformanceSection = () => {
   const currency = useAtomValue(currencyAtom);
-  const { data: walletList } = useMyWalletList();
+  const networkId = useAtomValue(networkIdAtom);
+  const portfolioUser = { ...useAtomValue(portfolioUserAtom), networkId };
   const [requestParam, setRequestParam] = useState<{
     year: number;
     gnlChartType: 'Overall' | 'Realized' | 'Unrealized';
@@ -45,7 +46,7 @@ const PerformanceSection = () => {
   });
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart({
-      walletAddress: walletList?.[0].walletAddress || '',
+      ...portfolioUser,
       ...requestParam,
       gnlChartType: requestParam.gnlChartType.toLowerCase() as
         | 'overall'
@@ -54,7 +55,7 @@ const PerformanceSection = () => {
     });
   const { data: performanceAnnual, status: statusPerformanceAnnual } =
     usePerformanceChartAnnual({
-      walletAddress: walletList?.[0].walletAddress || '',
+      ...portfolioUser,
       ...requestParam,
       gnlChartType: requestParam.gnlChartType.toLowerCase() as
         | 'overall'
@@ -114,7 +115,7 @@ const PerformanceSection = () => {
       <section className={styles.dataWrapper}>
         <PerformanceChart
           requestParam={{
-            walletAddress: walletList?.[0].walletAddress || '',
+            ...portfolioUser,
             ...requestParam,
           }}
         />
@@ -174,7 +175,18 @@ const PerformanceSection = () => {
                       );
                     })}
                   <td>
-                    <p className='text-[var(--color-text-main)]'>
+                    <p
+                      className={
+                        isPlus(performanceAnnual?.roi?.[currency] || '0') ===
+                        '-'
+                          ? 'text-[var(--color-text-main)]'
+                          : isPlus(
+                              performanceAnnual?.roi?.[currency] || '0'
+                            ) === true
+                          ? 'text-[var(--color-text-success)]'
+                          : 'text-[var(--color-text-danger)]'
+                      }
+                    >
                       {formatPercent(performanceAnnual?.roi?.[currency] || '0')}
                     </p>
                   </td>
@@ -213,7 +225,15 @@ const PerformanceSection = () => {
                       );
                     })}
                   <td>
-                    <p className='text-[var(--color-text-main)] text-ellipsis'>
+                    <p
+                      className={`text-ellipsis ${
+                        isPlus(total || '0') === '-'
+                          ? 'text-[var(--color-text-main)]'
+                          : isPlus(total || '0') === true
+                          ? 'text-[var(--color-text-success)]'
+                          : 'text-[var(--color-text-danger)]'
+                      }`}
+                    >
                       {formatCurrency(total.toString(), currency)}
                     </p>
                   </td>

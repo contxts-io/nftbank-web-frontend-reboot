@@ -9,7 +9,7 @@ import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { formatPercent, mathSqrt } from '@/utils/common';
 import SkeletonLoader from '@/components/SkeletonLoader';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { BasicParam } from '@/interfaces/request';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w, year }: any) => {
   // const roi = series[seriesIndex][dataPointIndex];
@@ -32,8 +32,7 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w, year }: any) => {
   );
 };
 type Props = {
-  requestParam: {
-    walletAddress: string;
+  requestParam: BasicParam & {
     year: number;
     gnlChartType: 'Overall' | 'Realized' | 'Unrealized';
   };
@@ -211,12 +210,12 @@ const PerformanceChart = (props: Props) => {
 
   return (
     <section className={styles.container}>
-      <div className={styles.chartLabel}>
+      <div className={`font-caption-regular ${styles.chartLabel}`}>
         <p>{formatPercent(maxAbs.toString())}</p>
         <p>0.00%</p>
         <p>{formatPercent((-maxAbs).toString())}</p>
       </div>
-      <div className='w-full ml-20 h-200'>
+      <div className={styles.chart}>
         {statusPerformanceChart === 'success' && (
           <ApexCharts
             options={{

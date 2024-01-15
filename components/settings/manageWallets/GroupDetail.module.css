@@ -1,0 +1,21 @@
+.container {
+  @apply w-[1036px] h-[100vh] flex flex-col bg-[var(--color-elevation-surface)] border-l-1 border-[var(--color-border-main)];
+}
+.header {
+  @apply p-24 w-full;
+}
+.deleteButton {
+  @apply border-[var(--color-border-danger)] text-[var(--color-text-danger)];
+}
+.body {
+  @apply w-full;
+}
+.walletListTable {
+  @apply table-auto w-full;
+}
+.walletListTable thead {
+  @apply border-b-1 border-[var(--color-border-main)];
+}
+.walletListTable tr {
+  @apply h-48;
+}

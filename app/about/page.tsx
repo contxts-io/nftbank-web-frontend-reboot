@@ -79,7 +79,6 @@ const Page = () => {
         <Button id='' onClick={() => checkMe()}>
           get Me
         </Button>
-
         <ThemeSwitcher />
         <button onClick={openDrawer}>Open Drawer</button>
       </div>

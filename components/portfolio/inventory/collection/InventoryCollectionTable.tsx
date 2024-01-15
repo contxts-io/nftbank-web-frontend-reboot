@@ -14,6 +14,7 @@ import Ethereum from '@/public/icon/Ethereum';
 import {
   difference,
   formatCurrency,
+  formatPercent,
   isPlus,
   shortenAddress,
 } from '@/utils/common';
@@ -83,7 +84,13 @@ const InventoryCollectionTable = () => {
         page: prev.page + 1,
       })));
   }, [fetchNextPage, inView]);
-
+  useEffect(() => {
+    setInventoryCollectionRequestParam((prev) => ({
+      ...prev,
+      page: 0,
+      includeGasUsed: priceType === 'costBasis' ? 'true' : 'false',
+    }));
+  }, [priceType]);
   const handleClickSortButton = (sort: TSort) => {
     const order =
       inventoryCollectionRequestParam.sort !== sort
@@ -257,9 +264,8 @@ const InventoryCollectionTable = () => {
                           : 'text-[var(--color-text-danger)]'
                       }`}
                     >
-                      {`${difference(
-                        row.nav[currency].difference?.percentage || '0',
-                        'percent'
+                      {`${formatPercent(
+                        row.nav[currency].difference?.percentage || '0'
                       )}`}
                     </p>
                   </td>

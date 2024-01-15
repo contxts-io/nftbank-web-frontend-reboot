@@ -1,0 +1,21 @@
+.container {
+  @apply w-full;
+}
+.listWrapper {
+  @apply grid grid-cols-7 gap-8;
+}
+.listWrapper li {
+  @apply border-1 border-[var(--color-border-main)] p-10 flex items-center gap-x-8 cursor-pointer;
+}
+.listWrapper li:hover {
+  @apply bg-[var(--color-elevation-sunken)];
+}
+.isActive {
+  @apply bg-[var(--color-elevation-sunken)];
+}
+.logo {
+  @apply border-1 border-[var(--color-border-bold)] rounded-full flex items-center justify-center h-24 w-24;
+}
+.moreButton {
+  @apply border-transparent bg-[var(--color-elevation-sunken)] flex items-center justify-center text-[var(--color-text-subtle)];
+}

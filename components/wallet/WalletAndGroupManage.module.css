@@ -1,0 +1,38 @@
+.container {
+  @apply flex flex-col items-center;
+  @apply border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)] w-[262px];
+}
+.buttonWrapper {
+  @apply w-full flex justify-between border-1 border-[var(--color-border-main)] p-8 gap-x-8;
+}
+.button {
+  @apply border-transparent !important;
+  @apply bg-transparent w-107 h-28 flex items-center justify-center;
+}
+.selected {
+  @apply bg-[var(--color-background-brand-bold)] text-[var(--color-text-main)] !important;
+}
+.body {
+  @apply w-full flex flex-col items-center mt-12;
+}
+.listWrapper {
+  @apply w-full max-h-[252px] min-h-[252px]  overflow-y-scroll;
+}
+.list {
+  @apply flex items-center h-36 w-full pl-8 gap-x-8 cursor-pointer;
+}
+.list:hover {
+  @apply bg-[var(--color-elevation-sunken)];
+}
+.copyButton {
+  @apply border-transparent p-0 w-36 h-36 flex items-center justify-center !important;
+}
+.footer {
+  @apply border-t-1 border-[var(--color-border-main)] w-full px-16 py-12 mt-auto;
+}
+.row {
+  @apply flex items-center h-36 px-8 w-full text-[var(--color-text-main)] gap-x-8 cursor-pointer;
+}
+.row:hover {
+  @apply bg-[var(--color-elevation-sunken)];
+}

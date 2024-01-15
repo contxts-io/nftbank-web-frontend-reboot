@@ -1,0 +1,6 @@
+.container {
+  @apply w-full;
+}
+.summary {
+  @apply px-24 pt-30 pb-20;
+}

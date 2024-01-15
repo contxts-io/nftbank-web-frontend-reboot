@@ -55,7 +55,6 @@
 }
 
 .Toastify__progress-bar {
-  @apply bg-border-success !important;
 }
 .Toastify__progress-bar--rtl {
 }
@@ -66,16 +65,21 @@
 .Toastify__progress-bar--info {
 }
 .Toastify__progress-bar--success {
+  @apply bg-[var(--color-border-success)] !important;
 }
 .Toastify__progress-bar--warning {
 }
 .Toastify__progress-bar--error {
+  @apply bg-[var(--color-border-danger)] !important;
 }
 /** colored notifications share the same progress bar color **/
 .Toastify__progress-bar-theme--colored.Toastify__progress-bar--info,
-.Toastify__progress-bar-theme--colored.Toastify__progress-bar--success,
+.Toastify__progress-bar-theme--colored.Toastify__progress-bar--success {
+  @apply bg-[var(--color-border-success)];
+}
 .Toastify__progress-bar-theme--colored.Toastify__progress-bar--warning,
 .Toastify__progress-bar-theme--colored.Toastify__progress-bar--error {
+  @apply bg-[var(--color-border-danger)];
 }
 
 /** Classes for the close button. Better use your own closeButton **/

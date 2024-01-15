@@ -1,6 +1,7 @@
 import { TValuation } from "@/interfaces/collection";
 import { TCurrency } from "@/interfaces/constants";
 import jwt from 'jsonwebtoken';
+import { ARTICLE_CATEGORY } from "./articlesCategory";
 
 export function formatDate(date:  Date): string  {
   const year = date.getFullYear();
@@ -168,10 +169,7 @@ export function mathSqrt(value: string | number) {
     _value = value;
   }
   // return _value && _value >= 0 ? Math.sqrt(_value) : -(Math.sqrt(Math.abs(_value)));
-  return _value && _value >= 0 ? Math.log(_value) : -(Math.log(Math.abs(_value)));
-}
-function minMaxNormalization(value:number, min:number, max:number) {
-  return (value - min) / (max - min);
+  return _value && _value >= 0 ? Math.log((_value + 1)*10 ) : -(Math.log(Math.abs((_value - 1)*10)));
 }
 type WalletData = {walletAddress: `0x${string}`, provider:string, type : 'evm'}
 export function formatToken (data: WalletData) {
@@ -191,4 +189,67 @@ export function formatToken (data: WalletData) {
     console.log('err', e);
   }
   return walletJwt;
+}
+export function passwordValidation(password: string) {
+  const regExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*#?&]{6,}$/;
+  return regExp.test(password);
+}
+export function validationWalletAddress(walletAddress: string): boolean {
+  //walletAddress is valid
+  const regex =
+    // eslint-disable-next-line no-control-regex
+    /^0x[a-fA-F0-9]{40}$/i;
+  return regex.test(walletAddress);
+}
+export function validationEmail (email: string): boolean {
+  //email is valid
+  const regex =
+    // eslint-disable-next-line no-control-regex
+    /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+  return regex.test(email);
+};
+export function jsonToQueryString (searchParam: any) {
+  return Object.keys(searchParam).map((key) => {
+    if (Array.isArray(searchParam[key])) {
+      return searchParam[key].map((v: any) => `${key}=${v}`).join('&');
+    }
+    return `${key}=${searchParam[key]}`;
+  }).join('&');
+}
+export const CATEGORY = [
+  {
+    key: 'nftvaluation',
+    value: 'NFT Valuation',
+  },
+  {
+    key: 'productupdate',
+    value: 'Product Update',
+  },
+  {
+    key: 'usecases',
+    value: 'Use Cases',
+  },
+];
+
+export const normalizeCategoryName = (name: string) => {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, ''); // 소문자로 변환하고 특수 문자 및 띄어쓰기 제거
+};
+export function findCategoryListById(categoryObj: typeof ARTICLE_CATEGORY , targetId: string) {
+  const matchingCategories = [];
+  // 주어진 categoryObj 객체에서 targetId가 포함된 category 리스트 찾기
+  for (const categoryKey in categoryObj) {
+    if (categoryObj.hasOwnProperty(categoryKey)) {
+      const categoryList = categoryObj[categoryKey as keyof typeof ARTICLE_CATEGORY];
+      if (categoryList.includes(targetId)) {
+        let key = categoryKey;
+        CATEGORY.forEach((item) => {
+          if (item.key === categoryKey) {
+            key = item.value;
+          }
+        });
+        matchingCategories.push(key);
+      }
+    }
+  }
+  return matchingCategories;
 }

@@ -13,27 +13,22 @@ import { formatCurrency, formatPercent } from '@/utils/common';
 import { useInventoryUnrealizedPerformance } from '@/utils/hooks/queries/performance';
 import SkeletonLoader from '../SkeletonLoader';
 import { useEffect, useState } from 'react';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { portfolioUserAtom } from '@/store/portfolio';
 
 const InventoryValue = () => {
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   const searchParams = useSearchParams();
-  const { data: walletList } = useMyWalletList();
   const [values, setValues] = useState<any[]>([]);
-  const walletAddress =
-    searchParams.get('walletAddress') ||
-    walletList?.[0].walletAddress ||
-    undefined;
-
   const { data: inventoryValue, status: statusInventoryValue } =
-    useInventoryValue(walletAddress);
+    useInventoryValue(portfolioUser);
   // const { data: inventoryValuePerformance, status: statusPerformance } =
   //   useInventoryValuePerformance(walletAddress);
   const { data: inventoryUnrealized, status: statusInventoryUnrealized } =
-    useInventoryUnrealizedPerformance(walletAddress);
+    useInventoryUnrealizedPerformance(portfolioUser);
   const { data: collectionCount, isLoading: isLoadingCollectionCount } =
-    useCollectionCount(walletAddress);
+    useCollectionCount(portfolioUser);
   const { data: itemCount, isLoading: isLoadingItemCount } =
-    useItemCount(walletAddress);
+    useItemCount(portfolioUser);
   const currency = useAtomValue(currencyAtom);
 
   const inventoryType = useAtomValue(inventoryTypeAtom);
@@ -109,7 +104,7 @@ const InventoryValue = () => {
                       className={`font-subtitle02-bold ${
                         item.type == `inventoryValue`
                           ? styles.pMain
-                          : item.plus
+                          : item.isPlus
                           ? 'text-[var(--color-text-success)]'
                           : 'text-[var(--color-text-danger)]'
                       }`}

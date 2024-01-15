@@ -1,0 +1,6 @@
+.container {
+  @apply w-[420px] h-[180px] flex flex-col border-1 border-[var(--color-border-bold)] p-16 bg-[var(--color-elevation-surface)];
+}
+.button {
+  @apply p-0 border-0 w-16 h-16;
+}

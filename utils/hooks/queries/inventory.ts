@@ -1,48 +1,46 @@
 import { ResponseAcquisitionTypesData, TResponseInventoryValueHistory, getCollectionList, getCollectionValuableCount, getInventoryAcquisitionType, getInventoryCollectionPositionAmount, getInventoryCollectionPositionValue, getInventoryRealizedTokens, getInventoryValue, getInventoryValueHistory, getItemList, getItemValuableCount } from '@/apis/inventory';
 import { IInventoryCollectionList, IInventoryItemList, InventoryValue, InventoryValueNested, IStat, PositionCollection, PositionCollectionAmount } from '@/interfaces/inventory';
+import { BasicParam } from '@/interfaces/request';
 import { ItemParam, TAcquisitionParam, TAnalysisGainAndLossParam, TCollectionParam, TOverviewHistoricalValueParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-export function useInventoryValue(walletAddress?: string) {
+export function useInventoryValue(searchParam: BasicParam | null) {
   return useQuery<InventoryValueNested,AxiosError>(
-    ['inventoryValue',walletAddress],
+    ['inventoryValue',searchParam],
     async () => {
-      const inventoryValue = await getInventoryValue(walletAddress);
+      const inventoryValue = await getInventoryValue(searchParam);
       return inventoryValue;
     },
     {
-      enabled: walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
     },
   );
 }
-export function useCollectionCount(walletAddress?: string) {
+export function useCollectionCount(searchParam: BasicParam | null) {
   return useQuery<IStat,AxiosError>(
-    ['collectionCount',walletAddress],
+    ['collectionCount',searchParam],
     async () => {
-      const count = await getCollectionValuableCount(walletAddress);
+      const count = await getCollectionValuableCount(searchParam);
       return count;
     },
     {
-      enabled: walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
     },
   );
 }
-export function useItemCount(walletAddress?: string) {
+export function useItemCount(searchParam: BasicParam | null) {
   return useQuery<IStat,AxiosError>(
-    ['itemCount',walletAddress],
+    ['itemCount',searchParam],
     async () => {
-      const count = await getItemValuableCount(walletAddress);
+      const count = await getItemValuableCount(searchParam);
       return count;
     },
     {
-      enabled: walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -58,7 +56,6 @@ export function useInventoryCollectionList(requestParam: TCollectionParam) {
       return inventoryCollectionList;
     },
     {
-      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -74,7 +71,6 @@ export function useInventoryItemFilter(requestParam: TCollectionParam) {
       return inventoryItemFilterCollections;
     },
     {
-      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -144,7 +140,6 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
-    enabled: requestParam.walletAddress !== '',
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,
@@ -170,30 +165,28 @@ export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalVal
     },
   );
 }
-export const useInventoryCollectionPositionValue = (walletAddress?: string) => {
+export const useInventoryCollectionPositionValue = (requestParam: BasicParam) => {
   return useQuery<PositionCollection[],AxiosError>(
-    ['inventoryCollectionPositionValue',walletAddress],
+    ['inventoryCollectionPositionValue',requestParam],
     async () => {
-      const value = await getInventoryCollectionPositionValue(walletAddress);
+      const value = await getInventoryCollectionPositionValue(requestParam);
       return value.data;
     },
     {
-      enabled: walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
     },
   );
 }
-export const useInventoryCollectionPositionAmount = (walletAddress?: string) => {
+export const useInventoryCollectionPositionAmount = (requestParam: BasicParam) => {
   return useQuery<PositionCollectionAmount[],AxiosError>(
-    ['inventoryCollectionPositionAmount',walletAddress],
+    ['inventoryCollectionPositionAmount',requestParam],
     async () => {
-      const value = await getInventoryCollectionPositionAmount(walletAddress);
+      const value = await getInventoryCollectionPositionAmount(requestParam);
       return value.data;
     },
     {
-      enabled: walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -231,15 +224,14 @@ export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAn
   });
   return query;
 };
-export const useInventoryValuePolling = (walletAddress: string) => {
+export const useInventoryValuePolling = (searchParam:BasicParam | null) => {
   return useQuery<InventoryValueNested,AxiosError>(
-    ['inventoryValuePolling',walletAddress],
+    ['inventoryValuePolling',searchParam],
     async () => {
-      const inventoryValue = await getInventoryValue(walletAddress);
+      const inventoryValue = await getInventoryValue(searchParam);
       return inventoryValue;
     },
     {
-      enabled: walletAddress !== '',
       refetchInterval: 10000,
       staleTime: 0,
       cacheTime: 0,
@@ -255,7 +247,6 @@ export const useInventoryAcquisitionTypes = (requestParam: TAcquisitionParam) =>
       return value;
     },
     {
-      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,

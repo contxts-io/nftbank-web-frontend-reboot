@@ -60,12 +60,10 @@ const HEADER = [
   },
 ];
 type Props = {
-  onClick: (valuationType: TValuationType) => void;
-  valuations: TValuation[];
-  selectedValuation: TValuation | undefined;
+  sticky?: boolean;
 };
 
-const InventoryItemTable = () => {
+const InventoryItemTable = (props: Props) => {
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
   const [openedItem, setOpenedItem] = useState<string[]>([]);
   const currency = useAtomValue(currencyAtom);
@@ -86,10 +84,18 @@ const InventoryItemTable = () => {
       inventoryItemList?.pages?.[inventoryItemList?.pages.length - 1].isLast;
     !isLast &&
       inView &&
+      requestParam.paging &&
       status !== 'loading' &&
       (fetchNextPage(),
       setRequestParam((prev) => ({ ...prev, page: prev.page + 1 })));
   }, [fetchNextPage, inView]);
+  useEffect(() => {
+    setRequestParam((prev) => ({
+      ...prev,
+      page: 0,
+      includeGasUsed: priceType === 'costBasis' ? 'true' : 'false',
+    }));
+  }, [priceType]);
   const mergePosts = useMemo(
     () => inventoryItemList?.pages,
     [inventoryItemList?.pages, requestParam]
@@ -117,7 +123,11 @@ const InventoryItemTable = () => {
   return (
     <React.Fragment>
       <table className={`${styles.table}`}>
-        <thead className={styles.tableHead}>
+        <thead
+          className={`${styles.tableHead} ${
+            props.sticky ? styles.stickyBar : ''
+          }`}
+        >
           <tr className={`${styles.tableHeadRow}`}>
             <th />
             {HEADER.map((item, index) => (
@@ -128,8 +138,8 @@ const InventoryItemTable = () => {
                 } ${item.sort ? 'cursor-pointer' : ''}`}
                 onClick={() => item.sort && handleSort(item.type)}
               >
-                {index === HEADER.length - 1 ? (
-                  <span>{item.name}</span>
+                {index === HEADER.length - 1 || index === 1 ? (
+                  <span className='mr-30'>{item.name}</span>
                 ) : (
                   <p>{item.name}</p>
                 )}
@@ -174,10 +184,10 @@ const InventoryItemTable = () => {
                             />
                           </div>
                           <div className='font-caption-medium max-w-[230px]  white-space-nowrap overflow-hidden text-ellipsis'>
-                            <p className={`${styles.pMain}`}>
+                            <p className={`${styles.pMain} mr-0`}>
                               {data.token.tokenId}
                             </p>
-                            <p className={`${styles.pSub}`}>
+                            <p className={`${styles.pSub} truncate mr-0`}>
                               {data.token.name ||
                                 shortenAddress(data.collection.assetContract)}
                             </p>
@@ -189,17 +199,22 @@ const InventoryItemTable = () => {
                       </td>
                       <td className='text-right'>
                         <p>
-                          {priceType === 'acquisitionPrice'
-                            ? formatCurrency(
-                                data.acquisitionPrice?.[currency] || null,
-                                currency
-                              )
-                            : data.costBasis?.[currency] &&
-                              formatCurrency(
-                                data.costBasis[currency],
-                                currency
-                              )}
+                          {formatCurrency(
+                            data.acquisitionPrice?.[currency] || null,
+                            currency
+                          )}
                         </p>
+                        {priceType === 'costBasis' && (
+                          <p
+                            className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                          >
+                            {data.gasFee?.[currency]
+                              ? `GAS +${parseFloat(
+                                  data.gasFee[currency] || ''
+                                ).toFixed(3)} `
+                              : ''}
+                          </p>
+                        )}
                       </td>
                       <td className='text-right'>
                         <p>
@@ -261,8 +276,8 @@ const InventoryItemTable = () => {
               });
             })}
         </tbody>
-        <div ref={ref} className='h-43' />
       </table>
+      <div ref={ref} className='h-43' />
     </React.Fragment>
   );
 };

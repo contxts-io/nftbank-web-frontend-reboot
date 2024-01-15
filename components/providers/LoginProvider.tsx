@@ -4,33 +4,45 @@ import { useRouter, usePathname } from 'next/navigation';
 import { ReactNode, useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import NicknameSetting from '../NicknameSetting';
+import { useAtom, useSetAtom } from 'jotai';
+import { userStatusAtom } from '@/store/account';
+import { myDefaultPortfolioAtom } from '@/store/settings';
+import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
+import { useUser } from '@/utils/hooks/queries/user';
 
 const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: me, status, isError } = useMe();
+  const { data: user } = useUser(me?.nickname || null);
   const [showModal, setShowModal] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  const [mySelectedInformation, setMySelectedInformation] = useAtom(
+    myDefaultPortfolioAtom
+  );
   const router = useRouter();
   const path = usePathname();
   useEffect(() => {
-    console.log('status', status);
-  }, [status]);
+    setIsClient(true);
+  }, []);
   useEffect(() => {
-    status === 'success' && me && !me.nickname && setShowModal(true);
-    status === 'success' && me && me.nickname && setShowModal(false);
-  }, [me, status]);
-  if (path.includes('/auth')) {
-    me && me.nickname && router.push('/portfolio');
-  }
-  if (!path.includes('/auth')) {
-    // if (status === 'loading') {
-    //   // 데이터 로딩 중에는 로딩 스피너 또는 다른 로딩 상태를 표시할 수 있습니다.
-    //   return <div>Loading...</div>;
-    // }
-    if (isError || !me) {
-      // 에러 또는 데이터가 없는 경우 로그인 페이지로 리다이렉트
-      router.push('/auth/signin');
-      return null; // 리다이렉트를 시작하면 렌더링 중단
+    if (isClient) {
+      if (!me) {
+        !(
+          path.includes('/auth') ||
+          path.includes('/landing') ||
+          path.includes('/blog')
+        ) && router.push('/auth/signin');
+      } else if (me.nickname === null) {
+        setShowModal(true);
+      }
+      me?.nickname && setShowModal(false);
+      me?.nickname &&
+        setMySelectedInformation({
+          nickname: me.nickname,
+          networkId: 'ethereum',
+        });
     }
-  }
+  }, [me, path, isClient]);
+  //
   return (
     <>
       {children}

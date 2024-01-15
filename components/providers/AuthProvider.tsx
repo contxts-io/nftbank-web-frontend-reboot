@@ -1,3 +1,5 @@
+import { TWalletList } from '@/apis/wallet';
+import { TMe } from '@/interfaces/user';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import instance from '@/utils/axiosInterceptor';
 import { Hydrate, dehydrate } from '@tanstack/react-query';
@@ -19,11 +21,14 @@ const checkMe = async (token: RequestCookie) => {
       headers: { Cookie: cookie },
     };
     const URL = process.env.API_URL_SSR;
-    const { data } = await instance.get(`${URL}/v1/auth/me`, options);
+    const { data } = await instance.get<{ data: TMe }>(
+      `${URL}/v1/auth/me`,
+      options
+    );
     return data.data;
   } catch (error) {
     // throw new Error('Failed to fetch data');
-    return { name: 'fail' };
+    return null;
   }
 };
 const checkWallet = async (token: RequestCookie) => {
@@ -34,11 +39,14 @@ const checkWallet = async (token: RequestCookie) => {
       headers: { Cookie: cookie },
     };
     const URL = process.env.API_URL_SSR;
-    const { data } = await instance.get(`${URL}/v1/wallet`, options);
+    const { data } = await instance.get<{ data: TWalletList }>(
+      `${URL}/v1/wallet`,
+      options
+    );
     return data.data;
   } catch (error) {
     // throw new Error('Failed to fetch data');
-    return { name: 'fail' };
+    return null;
   }
 };
 
@@ -47,10 +55,32 @@ export const AuthProvider = async ({ children }: any) => {
   const cookieStore = cookies();
   const TOKEN = cookieStore.get('nb_session');
   const reactQueryClient = ReactQueryClient;
-  console.log('TOKEN ? ', TOKEN);
+  // if (SIGN_IN === 'SIGN_IN' && TOKEN && TOKEN?.value !== '') {
   if (TOKEN && TOKEN?.value !== '') {
-    await (reactQueryClient.prefetchQuery(['me'], () => checkMe(TOKEN)),
-    reactQueryClient.prefetchQuery(['walletList'], () => checkWallet(TOKEN)));
+    const me = await reactQueryClient.getQueryData(['me', TOKEN.value]);
+    console.log('me ??? ', me);
+    if (!me) {
+      console.log('try to sign-in');
+      try {
+        const user = await checkMe(TOKEN);
+        if (user) {
+          reactQueryClient.setQueryData(['me', TOKEN.value], user);
+          reactQueryClient.setQueryData(['user', user.nickname], user);
+          const wallet = await checkWallet(TOKEN);
+          // reactQueryClient.setQueryData([{ userId: user.id }, 'walletList'], {
+          //   ...wallet,
+          // });
+          reactQueryClient.setQueryData(
+            ['walletList', { nickname: user.nickname }],
+            {
+              ...wallet,
+            }
+          );
+        }
+      } catch (err) {
+        console.log('ssr sign-in err', err);
+      }
+    }
   }
   const dehydratedState = dehydrate(reactQueryClient);
   return <Hydrate state={dehydratedState}>{children}</Hydrate>;

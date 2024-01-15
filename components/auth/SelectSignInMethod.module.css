@@ -10,7 +10,7 @@
   @apply mt-40 w-full;
 }
 .button {
-  @apply w-full py-11 flex items-center justify-center mb-16;
+  @apply w-full py-11 flex items-center justify-center mb-16 h-40;
 }
 .icon {
   @apply mr-8 fill-[var(--color-icon-main)];

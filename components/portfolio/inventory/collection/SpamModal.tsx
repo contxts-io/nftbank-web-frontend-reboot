@@ -16,27 +16,21 @@ import Button from '@/components/buttons/Button';
 import ClockClockwise from '@/public/icon/ClockClockwise';
 import SpamCollectionTable from './SpamCollectionTable';
 import SpamSaveToast from './SpamSaveToast';
-import { addedSpamListAtom } from '@/store/portfolio';
+import { addedSpamListAtom, portfolioUserAtom } from '@/store/portfolio';
 import { useInventorySpamListInfinite } from '@/utils/hooks/queries/spam';
 import { resetSpamList } from '@/apis/spam';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useSearchParams } from 'next/navigation';
 import StatusDropdown from './StatusDropdown';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const SpamModal = () => {
-  const { data: walletList } = useMyWalletList();
-  const searchParams = useSearchParams();
-  const walletAddress =
-    searchParams.get('walletAddress') ||
-    walletList?.[0].walletAddress ||
-    undefined;
+  const portfolioUser = useAtomValue(portfolioUserAtom);
 
   const [inventorySpamCollectionParam, setInventorySpamCollectionParam] =
     useAtom(inventorySpamCollectionAtom);
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useAtom(inventoryCollectionAtom);
-  const { data: inventoryCount } = useCollectionCount(walletAddress);
+  const { data: inventoryCount } = useCollectionCount(portfolioUser);
   const [isEditOnly, setIsEditOnly] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
   const spamList = useAtomValue(addedSpamListAtom);
@@ -48,7 +42,7 @@ const SpamModal = () => {
   //   ...inventoryCollectionRequestParam,
   //   page: 0,
   // });
-  const { refetch: refetchInventoryValue } = useInventoryValue(walletAddress);
+  const { refetch: refetchInventoryValue } = useInventoryValue(portfolioUser);
   // const { refetch: refetchInventoryCollection } = useInventoryCollectionList(
   //   inventoryCollectionRequestParam
   // );

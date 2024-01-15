@@ -1,0 +1,7 @@
+.container {
+  @apply flex flex-col px-24 w-[448px] h-[488px];
+  @apply bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-main)];
+}
+.cancelButton {
+  @apply border-transparent p-0 border-0;
+}

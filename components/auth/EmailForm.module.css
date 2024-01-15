@@ -1,5 +1,5 @@
 .container {
-  @apply border-1 border-[var(--color-border-main)] w-[448px] min-h-[320px] h-fit pt-40 px-24 pb-24 mb-16 flex flex-col items-center;
+  @apply border-1 border-[var(--color-border-main)] w-[448px] min-h-[320px] h-fit pt-40 px-24 pb-24 flex flex-col items-center;
 }
 .header {
   @apply w-full flex items-center justify-between;

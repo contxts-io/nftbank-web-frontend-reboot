@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import styles from './Button.module.css';
 import { twMerge } from 'tailwind-merge';
+import Spinner from '@/public/icon/Spinner';
 // import * as gtag from '@/lib/gtag';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
@@ -9,8 +10,9 @@ const Button = ({
   id,
   children,
   className,
+  isLoading,
   ...props
-}: { id: string } & ButtonProps) => {
+}: { id: string; isLoading?: boolean } & ButtonProps) => {
   const handleClick = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
@@ -33,7 +35,7 @@ const Button = ({
       id={id}
       onClick={handleClick}
     >
-      {children}
+      {isLoading ? <Spinner /> : children}
     </button>
   );
 };

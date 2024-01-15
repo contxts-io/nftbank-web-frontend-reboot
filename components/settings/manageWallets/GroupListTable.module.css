@@ -1,0 +1,15 @@
+.table {
+  @apply table-auto w-full;
+}
+.table thead {
+  @apply border-b-1 border-[var(--color-border-main)];
+}
+.table thead > tr {
+  @apply text-[var(--color-text-subtle)];
+}
+.table tbody > tr {
+  @apply border-b-1 border-[var(--color-border-disabled)] text-[var(--color-text-main)];
+}
+.table tr {
+  @apply h-48;
+}

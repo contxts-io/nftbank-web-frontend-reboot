@@ -18,16 +18,17 @@ import {
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
 
 const TotalInventoryValue = () => {
-  const { data: walletList } = useMyWalletList();
   const currency = useAtomValue(currencyAtom);
+  const portfolioUser = useAtomValue(portfolioUserAtom);
+  const networkId = useAtomValue(networkIdAtom);
   const [selected, setSelected] = useState<'value' | 'amount'>('value');
   const { data: totalInventoryPositionValue, status: statusValue } =
-    useInventoryCollectionPositionValue(walletList?.[0].walletAddress || '');
+    useInventoryCollectionPositionValue({ ...portfolioUser, networkId });
   const { data: totalInventoryPositionAmount, status: statusAmount } =
-    useInventoryCollectionPositionAmount(walletList?.[0].walletAddress || '');
+    useInventoryCollectionPositionAmount({ ...portfolioUser, networkId });
   const [percent, setPercent] = useState<number[]>([100]);
   useEffect(() => {
     if (totalInventoryPositionValue) {
@@ -131,17 +132,6 @@ const TotalInventoryValue = () => {
             {statusValue === 'success' &&
               selected === 'value' &&
               totalInventoryPositionValue.map((item, index) => {
-                // const plus = parseFloat(item.change) > 0;
-                // const plus =
-                //   parseFloat(
-                //     item.value[currency].difference.percentage || '0'
-                //   ) > 0
-                //     ? true
-                //     : parseFloat(
-                //         item.value[currency].difference.percentage || '0'
-                //       ) < 0
-                //     ? false
-                //     : undefined;
                 const plus = isPlus(
                   item.value[currency].difference.percentage || '0'
                 );
@@ -161,21 +151,10 @@ const TotalInventoryValue = () => {
                     </td>
                     <td>
                       <p className='font-caption-medium text-[var(--color-text-main)] w-[208px] mr-20'>
-                        {item.collection.name}
+                        {item.collection.name ||
+                          shortenAddress(item.collection.assetContract)}
                       </p>
                     </td>
-                    {/* <td>
-                      <p className='font-caption-regular mr-10'>
-                        <span className='text-[var(--color-text-main)]'>
-                          {amount.split('.')[0]}
-                        </span>
-                        {item.value[currency].amount && (
-                          <span className='!important:text-[var(--color-subtlest)]'>
-                            {`.${amount?.split('.')[1]}`}
-                          </span>
-                        )}
-                      </p>
-                    </td> */}
                     <td className='text-right'>
                       <p
                         className={`font-caption-medium text-[var(--color-text-subtle)] text-right`}

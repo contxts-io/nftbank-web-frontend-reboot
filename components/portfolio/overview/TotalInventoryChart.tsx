@@ -8,7 +8,7 @@ import {
 } from '@/utils/hooks/queries/inventory';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useEffect, useState } from 'react';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import {
   formatCurrency,
@@ -16,7 +16,7 @@ import {
   mappingConstants,
   shortenAddress,
 } from '@/utils/common';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const COLORS = [
   'var(--color-chart-information)',
@@ -40,12 +40,12 @@ const tooltip = ({
   const positionCollection = totalInventoryPositionValue?.[seriesIndex];
 
   const amount = formatCurrency(
-    totalInventoryPositionValue?.[seriesIndex].value[currency].amount,
+    totalInventoryPositionValue?.[seriesIndex]?.value[currency].amount || '0',
     currency
   );
   return (
     <div className='relative bg-[var(--color-elevation-surface)]'>
-      <div className='font-caption-regular py-8 px-16 flex flex-col items-start border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
+      <div className='font-caption-regular py-8 px-16 flex flex-col items-start border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)] gap-y-8'>
         <div className='w-full flex items-center'>
           <div
             className={`${
@@ -100,12 +100,13 @@ const TotalInventoryChart = (props: {
   totalAmount: number;
 }) => {
   const { selected, totalAmount } = props;
-  const { data: walletList } = useMyWalletList();
+  const networkId = useAtomValue(networkIdAtom);
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   const currency = useAtomValue(currencyAtom);
   const { data: totalInventoryPositionValue, status } =
-    useInventoryCollectionPositionValue(walletList?.[0].walletAddress || '');
+    useInventoryCollectionPositionValue({ ...portfolioUser, networkId });
   const { data: totalInventoryPositionAmount, status: statusAmount } =
-    useInventoryCollectionPositionAmount(walletList?.[0].walletAddress || '');
+    useInventoryCollectionPositionAmount({ ...portfolioUser, networkId });
   const [labels, setLabels] = useState<string[]>([]);
   const [series, setSeries] = useState<number[]>([]);
   useEffect(() => {

@@ -1,0 +1,15 @@
+.container {
+  @apply w-[240px] h-full border-r-1 border-[var(--color-border-main)];
+}
+.menuWrapper {
+  @apply w-full flex flex-col items-center mt-12;
+}
+.li {
+  @apply w-full h-42 px-24 flex items-center text-[var(--color-text-subtle)];
+}
+.li:hover {
+  @apply bg-[var(--color-elevation-sunken)] text-[var(--color-text-main)];
+}
+.active {
+  @apply bg-[var(--color-elevation-sunken)] text-[var(--color-text-main)] !important;
+}

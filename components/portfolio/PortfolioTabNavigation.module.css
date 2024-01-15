@@ -8,11 +8,11 @@
   @apply px-24 py-18 hover:text-[var(--color-text-main)];
 }
 .button {
-  @apply border-0 bg-transparent flex items-center fill-icon-subtlest px-24 py-14;
+  @apply border-0 bg-transparent flex items-center fill-[var(--color-icon-subtlest)] px-24 py-14;
 }
 .svg {
-  @apply fill-icon-subtlest hover:fill-icon-main;
+  @apply fill-[var(--color-icon-subtlest)] hover:fill-[var(--color-icon-main)];
 }
 .subButtons {
-  @apply border-b-4 flex h-full text-[var(--color-text-subtlest)] fill-[var(--color-icon-subtlest)];
+  @apply border-b-4 border-[var(--color-border-main)] flex h-full text-[var(--color-text-subtlest)] fill-[var(--color-icon-subtlest)];
 }

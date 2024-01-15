@@ -1,5 +1,6 @@
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { currencyAtom } from '@/store/currency';
+import { portfolioUserAtom } from '@/store/portfolio';
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { formatCurrency, formatDate, mathSqrt } from '@/utils/common';
 import { useMe } from '@/utils/hooks/queries/auth';
@@ -7,7 +8,6 @@ import {
   useInventoryValueHistorical,
   useInventoryValuePolling,
 } from '@/utils/hooks/queries/inventory';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { useAtom, useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';
@@ -43,19 +43,19 @@ type Props = {
   setDiffValue: (value: number | null) => void;
 };
 const HistoricalTrendChart = (props: Props) => {
-  const { data: walletList } = useMyWalletList();
   const currency = useAtomValue(currencyAtom);
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   const [historicalValueParam, setHistoricalValueParam] = useAtom(
     overviewHistoricalValueParamAtom
   );
   const { data: inventoryValue, status: statusInventoryValue } =
-    useInventoryValuePolling(walletList?.[0].walletAddress || '');
+    useInventoryValuePolling(portfolioUser);
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
   } = useInventoryValueHistorical({
     ...historicalValueParam,
-    walletAddress: walletList?.[0].walletAddress || '',
+    ...portfolioUser,
   });
   const [isPlus, setIsPlus] = useState(false);
   let category: string[] = [];

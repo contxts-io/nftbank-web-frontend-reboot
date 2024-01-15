@@ -24,7 +24,7 @@ const ActivityIcon = ({ type, chain }: { type: TActivity; chain: TChain }) => {
             width={16}
             height={16}
             alt={'nftbank'}
-            className='absolute top-[50%] right-[-30%]'
+            className='absolute top-[50%] right-[-30%] rounded-full'
           />
         </div>
       )}
@@ -42,7 +42,7 @@ const ActivityIcon = ({ type, chain }: { type: TActivity; chain: TChain }) => {
             width={16}
             height={16}
             alt={'nftbank'}
-            className='absolute top-[50%] right-[-30%]'
+            className='absolute top-[50%] right-[-30%] rounded-full'
           />
         </div>
       )}
@@ -60,7 +60,7 @@ const ActivityIcon = ({ type, chain }: { type: TActivity; chain: TChain }) => {
             width={16}
             height={16}
             alt={'nftbank'}
-            className='absolute top-[50%] right-[-30%]'
+            className='absolute top-[50%] right-[-30%] rounded-full'
           />
         </div>
       )}
@@ -78,7 +78,7 @@ const ActivityIcon = ({ type, chain }: { type: TActivity; chain: TChain }) => {
             width={16}
             height={16}
             alt={'nftbank'}
-            className='absolute top-[50%] right-[-30%]'
+            className='absolute top-[50%] right-[-30%] rounded-full'
           />
         </div>
       )}

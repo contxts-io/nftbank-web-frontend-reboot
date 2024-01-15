@@ -6,13 +6,13 @@
   @apply w-full flex items-center;
 }
 .closeButton {
-  @apply border-0 ml-auto p-0;
+  @apply border-0 ml-auto p-0 !important;
 }
 .title {
   @apply text-[var(--color-text-main)];
 }
 .body {
-  @apply my-20;
+  @apply my-20 flex flex-col items-center;
 }
 .button {
   @apply mb-8 w-full h-40 flex items-center px-12;
