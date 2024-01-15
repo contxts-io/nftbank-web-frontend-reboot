@@ -64,14 +64,13 @@ const RecentActivityContainer = () => {
                 </div>
               </div>
               <div className={`col-span-2 flex`}>
-                <div className={styles.tokenImageWrapper}>
-                  <Image
-                    src={'/icon/nftbank_icon.svg'}
-                    width={32}
-                    height={32}
-                    alt={'nftbank'}
-                  />
-                </div>
+                <Image
+                  src={'/icon/nftbank_icon.svg'}
+                  width={32}
+                  height={32}
+                  alt={'nftbank'}
+                  className='w-32 h-32 mr-8 '
+                />
                 <div className='w-full flex flex-col justify-center'>
                   <p className='font-caption-medium text-[var(--color-text-success)]'>
                     +1 Murakami.Flower #2480
@@ -88,7 +87,7 @@ const RecentActivityContainer = () => {
                     width={32}
                     height={32}
                     alt={'nftbank'}
-                    className='w-32 h-32 mr-8'
+                    className='w-32 h-32 mr-8 rounded-full'
                   />
                   <div className='w-full flex flex-col justify-center'>
                     <p className='font-caption-medium text-[var(--color-text-main)]'>

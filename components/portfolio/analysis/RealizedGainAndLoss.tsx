@@ -20,7 +20,6 @@ import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { analysisGainAndLossParamAtom } from '@/store/requestParam';
 import { formatCurrency, formatDate, formatPercent } from '@/utils/common';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { portfolioUserAtom } from '@/store/portfolio';
 const THEAD = [
   { key: 'item', value: 'Item' },

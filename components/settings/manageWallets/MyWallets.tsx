@@ -2,7 +2,6 @@ import SearchInput from '@/components/searchInput/SearchInput';
 import styles from './MyWallets.module.css';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import { useInventoryValue } from '@/utils/hooks/queries/inventory';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { formatCurrency } from '@/utils/common';

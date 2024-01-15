@@ -61,6 +61,9 @@
   button.reset {
     @apply w-fit p-0 bg-transparent border-none hover:opacity-80;
   }
+  img {
+    @apply border-1 border-[var(--color-border-main)];
+  }
   [type='text'],
   [type='email'],
   [type='url'],

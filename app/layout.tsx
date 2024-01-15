@@ -117,9 +117,8 @@ export default async function RootLayout({
     const element = document.body;
     element.style.setProperty('--initial-color-mode', currentColorMode);
 
-    // 현재 다크모드라면 다크모드를 바로 적용 시켜줌
-    if (currentColorMode === 'dark')
-      document.body.setAttribute('data-theme', 'dark');
+    // 시작시 다크모드를 바로 적용 시켜줌
+    document.body.setAttribute('data-theme', 'dark');
   }
 
   return (
