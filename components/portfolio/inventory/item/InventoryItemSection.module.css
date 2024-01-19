@@ -4,7 +4,6 @@
 .show {
   opacity: 1;
   transition: opacity 0.2s ease, max-height 0.3s ease; /* 트랜지션 효과 추가 */
-  @apply max-h-52;
 }
 
 .hide {

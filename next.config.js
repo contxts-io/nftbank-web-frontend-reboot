@@ -6,12 +6,13 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
+    unoptimaised: true,
+    // remotePatterns: [
+    //   {
+    //     protocol: 'https',
+    //     hostname: '**',
+    //   },
+    // ],
     // domains: [
     //   // 'i.seadn.io',
     //   // 'upload.wikimedia.org',

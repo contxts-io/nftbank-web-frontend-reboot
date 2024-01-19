@@ -196,7 +196,7 @@ const InventoryItemTable = (props: Props) => {
                               {data.token.tokenId}
                             </p>
                             <p className={`${styles.pSub} truncate mr-0`}>
-                              {data.token.name ||
+                              {data.collection.name ||
                                 shortenAddress(data.collection.assetContract)}
                             </p>
                           </div>
