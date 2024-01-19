@@ -145,10 +145,10 @@ const TotalInventoryChart = (props: {
   }, [selected, totalInventoryPositionValue, totalInventoryPositionAmount]);
   const options: ApexOptions = {
     chart: {
-      type: "donut",
+      type: 'donut',
       animations: {
         enabled: true,
-        easing: "easeout",
+        easing: 'easeout',
         speed: 500,
         animateGradually: {
           enabled: true,
