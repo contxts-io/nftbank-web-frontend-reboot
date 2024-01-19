@@ -139,6 +139,19 @@ const TotalInventoryChart = (props: {
   const options = {
     chart: {
       type: 'donut',
+      animations: {
+        enabled: true,
+        easing: "easeout",
+        speed: 500,
+        animateGradually: {
+          enabled: true,
+          delay: 300,
+        },
+        dynamicAnimation: {
+          enabled: true,
+          speed: 300,
+        },
+      },
     },
     legend: {
       show: false,
