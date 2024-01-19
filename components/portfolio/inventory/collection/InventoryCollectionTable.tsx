@@ -173,7 +173,7 @@ const InventoryCollectionTable = () => {
                           width={24}
                           height={24}
                           src={row.collection.imageUrl}
-                          className='rounded-full mr-12 border-1 border-[var(--color-border-main)]'
+                          className='rounded-full mr-12 w-24 h-24 border-1 border-[var(--color-border-main)]'
                           alt={
                             row.collection.name || row.collection.assetContract
                           }

@@ -17,6 +17,7 @@ import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory
 import { useTheme } from 'next-themes';
 import Button from '@/components/buttons/Button';
 import CheckBox from '@/components/checkBox/CheckBox';
+import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
 type Props = {
   handleFilterOpen: (state: boolean) => void;
 };
@@ -144,15 +145,21 @@ const InventoryItemFilter = (props: Props) => {
                       isSelected && 'bg-[var(--color-background-brand-bold)]'
                     }`}
                   />
-                  <Image
-                    src={item.collection.imageUrl || '/icon/ethereum.svg'}
-                    width={20}
-                    height={20}
-                    className='rounded-full mr-8 border-1 border-[var(--color-border-main)]'
-                    alt={`${
-                      item.collection.name || item.collection.assetContract
-                    } image`}
-                  />
+                  {item.collection.imageUrl ? (
+                    <Image
+                      src={item.collection.imageUrl}
+                      width={20}
+                      height={20}
+                      className='rounded-full mr-8 border-1 border-[var(--color-border-main)]'
+                      alt={`${
+                        item.collection.name || item.collection.assetContract
+                      } image`}
+                    />
+                  ) : (
+                    <div className='rounded-full w-20 h-20 flex items-center justify-center border-1 border-[var(--color-border-main)] mr-8'>
+                      <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)]' />
+                    </div>
+                  )}
                   <p
                     className={`font-caption-medium ${styles.pCollectionName}`}
                   >

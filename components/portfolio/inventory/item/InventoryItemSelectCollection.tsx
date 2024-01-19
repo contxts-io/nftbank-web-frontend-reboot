@@ -21,10 +21,8 @@ const InventoryItemSelectCollection = () => {
     setCollections([]);
   };
   return (
-    <div className='font-caption-medium flex items-center h-full'>
-      <p className='text-text-subtle dark:text-text-subtle-dark mr-12'>
-        Filter
-      </p>
+    <div className='font-caption-medium flex items-center flex-wrap gap-y-8 h-fit'>
+      <p className='text-[var(--color-text-subtle)] mr-12'>Filter</p>
       {collections?.map((collection, index) => (
         <button
           key={index}

@@ -16,6 +16,7 @@ export function useInventoryValue(searchParam: BasicParam | null) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      enabled: searchParam?.walletAddress !== undefined,
     },
   );
 }
