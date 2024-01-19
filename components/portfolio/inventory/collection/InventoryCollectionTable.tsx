@@ -121,7 +121,7 @@ const InventoryCollectionTable = () => {
   return (
     <section className={styles.container}>
       <table className={`${styles.table} relative`}>
-        <thead className='sticky top-124 bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
+        <thead className='sticky top-119 bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
           <tr className='h-fit'>
             {T_HEADER.map((item, index) => (
               <th
@@ -169,7 +169,7 @@ const InventoryCollectionTable = () => {
                   <td>
                     <article className='flex items-center'>
                       {row.collection.imageUrl ? (
-                        <Image
+                        <img
                           width={24}
                           height={24}
                           src={row.collection.imageUrl}

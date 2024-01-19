@@ -146,11 +146,11 @@ const InventoryItemFilter = (props: Props) => {
                     }`}
                   />
                   {item.collection.imageUrl ? (
-                    <Image
+                    <img
                       src={item.collection.imageUrl}
                       width={20}
                       height={20}
-                      className='rounded-full mr-8 border-1 border-[var(--color-border-main)]'
+                      className='rounded-full mr-8 border-1 border-[var(--color-border-main)] w-20 h-20'
                       alt={`${
                         item.collection.name || item.collection.assetContract
                       } image`}

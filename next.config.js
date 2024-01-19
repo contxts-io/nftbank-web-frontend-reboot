@@ -7,12 +7,12 @@ const nextConfig = {
   },
   images: {
     unoptimaised: true,
-    // remotePatterns: [
-    //   {
-    //     protocol: 'https',
-    //     hostname: '**',
-    //   },
-    // ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
     // domains: [
     //   // 'i.seadn.io',
     //   // 'upload.wikimedia.org',

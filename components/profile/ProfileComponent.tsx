@@ -88,7 +88,7 @@ const ProfileComponent = () => {
                 />
               </div>
             )}
-            <div className='my-1 flex flex-col justify-between items-center h-56'>
+            <div className='my-1 flex flex-col justify-between items-center h-full'>
               <div className='flex items-center'>
                 <h2
                   className={`font-subtitle01-bold mr-16 text-text-main dark:text-text-main-dark`}
