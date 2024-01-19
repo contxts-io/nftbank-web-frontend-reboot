@@ -145,11 +145,11 @@ const TotalInventoryChart = (props: {
         speed: 500,
         animateGradually: {
           enabled: true,
-          delay: 300,
+          delay: 250,
         },
         dynamicAnimation: {
           enabled: true,
-          speed: 300,
+          speed: 250,
         },
       },
     },
