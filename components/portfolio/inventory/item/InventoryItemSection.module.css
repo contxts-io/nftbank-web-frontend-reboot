@@ -1,5 +1,5 @@
 .container {
-  @apply flex flex-1 border-t-1 border-[var(--color-border-main)]  max-h-[600px] h-[600px];
+  @apply flex flex-1 border-t-1 border-[var(--color-border-main)] overflow-y-scroll;
 }
 .show {
   opacity: 1;

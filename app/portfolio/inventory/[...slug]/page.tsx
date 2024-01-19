@@ -24,7 +24,12 @@ const InventoryPage = ({ params }: { params: { slug: string[] } }) => {
   // }, [slug]);
   return (
     <section className='w-screen px-24'>
-      <InventoryValue />
+      {/**
+       *
+       * sprint 1
+       *
+       *
+       * <InventoryValue /> */}
       <InventoryContainer />
     </section>
   );

@@ -19,9 +19,13 @@ import Wallet from '@/public/icon/Wallet';
 import { BasicParam } from '@/interfaces/request';
 import { TUser } from '@/interfaces/user';
 import { usePathname } from 'next/navigation';
+import { useInventoryValue } from '@/utils/hooks/queries/inventory';
+import { currencyAtom } from '@/store/currency';
+import { difference, formatCurrency, isPlus } from '@/utils/common';
 const ProfileComponent = () => {
   const { data: me } = useMe();
   const path = usePathname();
+  const currency = useAtomValue(currencyAtom);
   const [isClient, setIsClient] = useState(false);
   const networkId = useAtomValue(networkIdAtom);
 
@@ -31,7 +35,8 @@ const ProfileComponent = () => {
   const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
   // const { data: me, status } = useMe();
   const { data: user, status: userStatus } = useUser(nickname);
-
+  const { data: inventoryValue, status: statusInventoryValue } =
+    useInventoryValue(portfolioUser);
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -83,19 +88,29 @@ const ProfileComponent = () => {
                 />
               </div>
             )}
-            <div className='my-1 flex flex-col justify-between h-56'>
+            <div className='my-1 flex flex-col justify-between items-center h-56'>
               <div className='flex items-center'>
                 <h2
                   className={`font-subtitle01-bold mr-16 text-text-main dark:text-text-main-dark`}
                 >
                   {walletAddress?.substring(0, 8) || nickname || 'Welcome'}
                 </h2>
-                <ShareNetwork className='mr-12 fill-[var(--color-icon-subtle)]' />
-                <Eye className=' fill-[var(--color-icon-subtle)]' />
+                {/**
+                 * 
+                 * 
+                 * sprint 1
+                 * 
+                 * <ShareNetwork className='mr-12 fill-[var(--color-icon-subtle)]' />
+                <Eye className=' fill-[var(--color-icon-subtle)]' /> */}
               </div>
-              <div className='mt-8'>
-                {/* 누군가의 계정 */}
+              {/**
+               * 
+               * 
+               * sprint
+               * 
+               * <div className='mt-8'>
                 {user && portfolioUser ? (
+                  //누군가의 계정
                   <PortfolioSelector
                     className={styles.selectorButton}
                     position='left-0 top-36'
@@ -109,7 +124,7 @@ const ProfileComponent = () => {
                     <p>All Wallet</p>
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
           <div className='flex flex-col items-end'>
@@ -117,11 +132,38 @@ const ProfileComponent = () => {
               Current Balance
             </p>
             <p className='font-header03-bold mb-4 text-[var(--color-text-main)]'>
-              $173,398
+              {formatCurrency(
+                inventoryValue?.value[currency]?.amount || '0',
+                currency
+              )}
             </p>
             <div className='font-caption-medium flex'>
-              <div className='px-8 py-4 bg-[var(--color-background-danger)]'>
-                <p className='text-[var(--color-text-danger)]'>-2,117(2.3%)</p>
+              <div
+                className={`px-8 py-4 bg-[var(--color-background-danger)] ${
+                  isPlus(inventoryValue?.value[currency].difference.amount || 0)
+                    ? 'bg-[var(--color-background-success)]'
+                    : 'bg-[var(--color-background-danger)]'
+                }`}
+              >
+                <p
+                  className={`${
+                    isPlus(
+                      inventoryValue?.value[currency].difference.amount || 0
+                    )
+                      ? 'text-[var(--color-text-success)]'
+                      : 'text-[var(--color-text-danger)]'
+                  }`}
+                >
+                  {`${difference(
+                    inventoryValue?.value[currency].difference.amount || '0',
+                    currency
+                  )}
+                  (${difference(
+                    inventoryValue?.value[currency].difference.percentage ||
+                      '0',
+                    'percent'
+                  )})`}
+                </p>
               </div>
               <div className='px-8 py-4 bg-[var(--color-elevation-surface-raised)]'>
                 <p className='text-[var(--color-text-main)]'>24h</p>
@@ -130,7 +172,7 @@ const ProfileComponent = () => {
           </div>
         </section>
       ) : (
-        <section>loading</section>
+        <section></section>
       )}
     </>
   );

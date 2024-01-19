@@ -44,9 +44,13 @@ const tooltip = ({
     currency
   );
   return (
-    <div className='relative bg-[var(--color-elevation-surface)]'>
-      <div className='font-caption-regular py-8 px-16 flex flex-col items-start border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)] gap-y-8'>
-        <div className='w-full flex items-center'>
+    <div
+      className={`relative bg-[var(--color-elevation-surface)] ${
+        selected === 'value' ? 'min-w-[240px]' : ''
+      }`}
+    >
+      <div className='w-full font-caption-regular py-8 px-16 flex flex-col items-start border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)] gap-y-8'>
+        <div className='flex items-center'>
           <div
             className={`${
               styles[`dot--${seriesIndex % series.length}`]
@@ -60,10 +64,12 @@ const tooltip = ({
           </p>
         )}
         {selected === 'value' && (
-          <div>
+          <div className='w-full'>
             <div className='flex justify-between items-center'>
               <span className='text-[var(--color-text-subtle)] mr-41'>
-                {positionCollection.valuation
+                {seriesIndex === totalInventoryPositionValue.length - 1
+                  ? 'Various Valuation Types'
+                  : positionCollection.valuation
                   ? mappingConstants(positionCollection.valuation.type)
                   : 'none'}
               </span>

@@ -56,7 +56,6 @@ const ManageGroup = (props: {
     });
   };
   const handleSubmit = () => {
-    console.log('selectedWallet.map((wallet) => wallet.id)', selectedWalletIds);
     upsertWalletGroup(
       {
         id: props.group?.id || undefined,
