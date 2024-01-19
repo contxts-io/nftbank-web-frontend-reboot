@@ -30,9 +30,6 @@ const OverviewPage = () => {
   //     });
   // }, [myPortfolio]);
 
-  if (true) {
-    router.push('/');
-  }
   return (
     <section className='pt-24 px-24 pb-40'>
       {/* <ChainList />

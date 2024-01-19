@@ -20,7 +20,7 @@ const InventoryItemSection = () => {
     setCustomValuations([]);
   }, []);
 
-  const targetRef = useRef(null);
+  const targetRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const handleScroll = () => {
       const targetElement = targetRef.current;

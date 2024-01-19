@@ -13,10 +13,6 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 const InventoryPage = () => {
-  const router = useRouter();
-  if (true) {
-    router.push('/');
-  }
   return (
     <section className={styles.container}>
       {/**
