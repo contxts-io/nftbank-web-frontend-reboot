@@ -119,7 +119,11 @@ const TotalInventoryChart = (props: {
     selected === 'value' &&
       totalInventoryPositionValue &&
       (setLabels(
-        totalInventoryPositionValue?.map((item) => item.collection.name || '')
+        totalInventoryPositionValue?.map(
+          (item) =>
+            item.collection.name ||
+            shortenAddress(item.collection.assetContract)
+        )
       ),
       setSeries(
         totalInventoryPositionValue.map((item) =>
