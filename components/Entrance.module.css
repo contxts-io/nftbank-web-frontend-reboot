@@ -1,0 +1,16 @@
+.container {
+  background: linear-gradient(0deg, #111924 0%, rgba(17, 25, 36, 0) 80.98%);
+  @apply flex flex-col w-[448px] h-[400px] p-24 border-1 border-[var(--color-border-input)] mt-80 backdrop-blur-[8px];
+}
+.enterButton {
+  @apply ml-auto mt-auto text-[var(--color-text-disabled)] w-120 flex justify-between;
+}
+.disabled {
+  @apply hover:border-[var(--color-border-main)] text-[var(--color-text-disabled)] !important;
+}
+.active {
+  @apply text-[var(--color-text-main)] !important;
+}
+.error {
+  @apply border-1 border-[var(--color-border-danger)] !important;
+}

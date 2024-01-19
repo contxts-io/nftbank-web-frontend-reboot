@@ -19,6 +19,7 @@ import {
 import { useInView } from 'react-intersection-observer';
 import { TValuationType } from '@/interfaces/constants';
 import { selectedTokenAtom } from '@/store/portfolio';
+import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
 const HEADER = [
   {
     type: 'Item',
@@ -29,31 +30,31 @@ const HEADER = [
     name: 'Amount',
     sort: true,
   },
-  {
-    type: 'costBasis',
-    name: 'Cost basis',
-  },
+  // {
+  //   type: 'costBasis',
+  //   name: 'Cost basis',
+  // },
   {
     type: 'nav',
     name: 'Realtime NAV',
     sort: true,
   },
-  {
-    type: 'unrealizedG&L',
-    name: 'Unrealized G&L',
-  },
-  {
-    type: 'unrealizedROI',
-    name: 'Unrealized ROI',
-  },
+  // {
+  //   type: 'unrealizedG&L',
+  //   name: 'Unrealized G&L',
+  // },
+  // {
+  //   type: 'unrealizedROI',
+  //   name: 'Unrealized ROI',
+  // },
   {
     type: 'valuationType',
     name: 'Valuation Type',
   },
-  {
-    type: 'accuracy',
-    name: 'Accuracy',
-  },
+  // {
+  //   type: 'accuracy',
+  //   name: 'Accuracy',
+  // },
   {
     type: 'acquisitionDate',
     name: 'Acq. date',
@@ -133,12 +134,15 @@ const InventoryItemTable = (props: Props) => {
             {HEADER.map((item, index) => (
               <th
                 key={index}
-                className={`font-caption-medium ${
-                  index == 0 ? 'text-left' : 'text-right'
-                } ${item.sort ? 'cursor-pointer' : ''}`}
+                className={`font-caption-medium 
+                ${
+                  // index == 0 ? 'text-left' : 'text-right'
+                  index == HEADER.length - 1 ? 'text-right' : 'text-left'
+                } 
+                ${item.sort ? 'cursor-pointer' : ''}`}
                 onClick={() => item.sort && handleSort(item.type)}
               >
-                {index === HEADER.length - 1 || index === 1 ? (
+                {index === 1 ? (
                   <span className='mr-30'>{item.name}</span>
                 ) : (
                   <p>{item.name}</p>
@@ -167,21 +171,25 @@ const InventoryItemTable = (props: Props) => {
                       className={`font-caption-regular ${styles.tableBodyRow} ${
                         isOpen && styles.isOpen
                       }`}
-                      onClick={() => handleOpenDetail(data)}
+                      // onClick={() => handleOpenDetail(data)}
                     >
                       <td className={styles.blanc} />
                       <td className='text-left p-0'>
                         <div className={`flex items-center my-8`}>
                           <div className={styles.tokenImage}>
-                            <Image
-                              src={
-                                data?.token.imageUrl || '/icon/nftbank_icon.svg'
-                              }
-                              width={32}
-                              height={32}
-                              placeholder='data:image/icon/nftbank_icon.svg'
-                              alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
-                            />
+                            {data?.token.imageUrl ? (
+                              <Image
+                                src={data?.token.imageUrl}
+                                width={32}
+                                height={32}
+                                placeholder='data:image/icon/nftbank_icon.svg'
+                                alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
+                              />
+                            ) : (
+                              <div className='w-32 h-32 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center border-1'>
+                                <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)] ' />
+                              </div>
+                            )}
                           </div>
                           <div className='font-caption-medium max-w-[230px]  white-space-nowrap overflow-hidden text-ellipsis'>
                             <p className={`${styles.pMain} mr-0`}>
@@ -194,10 +202,16 @@ const InventoryItemTable = (props: Props) => {
                           </div>
                         </div>
                       </td>
-                      <td className='text-right'>
+                      <td className='text-left'>
                         <p>{data.amount}</p>
                       </td>
-                      <td className='text-right'>
+                      {/**
+                       * 
+                       * 
+                       * sprint 1
+                       * 
+                       * 
+                       *  <td className='text-right'>
                         <p>
                           {formatCurrency(
                             data.acquisitionPrice?.[currency] || null,
@@ -215,13 +229,19 @@ const InventoryItemTable = (props: Props) => {
                               : ''}
                           </p>
                         )}
-                      </td>
-                      <td className='text-right'>
+                      </td> */}
+                      <td className='text-left'>
                         <p>
                           {formatCurrency(data.nav[currency].amount, currency)}
                         </p>
                       </td>
-                      <td className='text-right'>
+                      {/**
+                       * 
+                       * 
+                       * sprint 1
+                       * 
+                       * 
+                       * <td className='text-right'>
                         <p
                           className={`${
                             isPlus(data.nav[currency].difference?.amount || 0)
@@ -249,20 +269,20 @@ const InventoryItemTable = (props: Props) => {
                             data.nav[currency].difference?.percentage || null
                           )}
                         </p>
-                      </td>
-                      <td className='text-right'>
-                        <p>
+                      </td> */}
+                      <td className='text-left'>
+                        <span>
                           {/* {data.valuation.length > 0
                             ? mappingConstants(data.valuation[0].type)
                             : 'no valuation type'} */}
                           {valuationType
                             ? mappingConstants(valuationType.type)
                             : 'no valuation type'}
-                        </p>
+                        </span>
                       </td>
-                      <td className='text-right'>
+                      {/* <td className='text-left'>
                         <p>{formatPercent(valuationType?.accuracy || null)}</p>
-                      </td>
+                      </td> */}
                       <td className='text-right'>
                         <span>
                           {data.acquisitionDate &&

@@ -85,11 +85,11 @@ const HistoricalTrendContainer = () => {
       hoverValue == 0
         ? 0 -
           parseFloat(
-            inventoryValueHistorical?.data[0].value[currency] || '0.00'
+            inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
           )
         : _value -
           parseFloat(
-            inventoryValueHistorical?.data[0].value[currency] || '0.00'
+            inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
           );
     return diff;
   }, [hoverValue, currency, inventoryValue]);

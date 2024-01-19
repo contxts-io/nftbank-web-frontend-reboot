@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './SearchInput.module.css';
 import MagnifyingGlass from '@/public/icon/MagnifyingGlass';
 import { twMerge } from 'tailwind-merge';
@@ -8,6 +8,7 @@ type Props = {
   placeholder?: string;
   value: string;
   onChange: (value: string) => void;
+  isError?: boolean;
 };
 const SearchInput = (props: Props) => {
   // const [searchText, setSearchText] = useState<string>('');
@@ -17,11 +18,10 @@ const SearchInput = (props: Props) => {
   };
   return (
     <div
-      className={twMerge(
-        `font-body02-regular ${styles.inputContainer} ${
-          props.className ? props.className : ''
-        }`
-      )}
+      className={`font-body02-regular ${styles.inputContainer} 
+      ${props.className ? props.className : ''}
+      ${props.isError ? styles.error : ''}
+      `}
     >
       <MagnifyingGlass width={16} height={16} />
       <input

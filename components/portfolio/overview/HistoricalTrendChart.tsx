@@ -99,9 +99,11 @@ const HistoricalTrendChart = (props: Props) => {
           : _series[0].data.push(null);
       })) ||
       [];
-    historicalValueParam.window !== 'ytd' &&
-      todayValue &&
-      _series[0].data.push(todayValue); //마지막에 현재 값을 넣어준다. (마지막 값이 없을 경우 그전값을 넣어준다.)
+
+    //마지막에 현재 값을 넣어준다. (마지막 값이 없을 경우 그전값을 넣어준다.)
+    // historicalValueParam.window !== 'ytd' &&
+    //   todayValue &&
+    //   _series[0].data.push(todayValue);
 
     category.push(today);
     return _series;
@@ -111,11 +113,14 @@ const HistoricalTrendChart = (props: Props) => {
       ? parseFloat(inventoryValue.value[currency].amount || '0')
       : 0;
     const initValue = parseFloat(
-      inventoryValueHistorical?.data[0].value?.[currency] || '0'
+      inventoryValueHistorical?.data[0]?.value?.[currency] || '0'
     );
     initValue < currentValue ? setIsPlus(true) : setIsPlus(false);
   }, [inventoryValue?.value, inventoryValueHistorical?.data[0]]);
+
+  /* 최소값 */
   let minValue = useMemo(() => {
+    console.log('seriesData', seriesData);
     let _series = seriesData;
     let _minimumValue = _series[0]?.data[0] || 0;
     _series[0].data.map((item) => {
@@ -127,6 +132,8 @@ const HistoricalTrendChart = (props: Props) => {
     });
     return formatCurrency(_minimumValue.toString(), currency);
   }, [seriesData, currency, inventoryValue?.value]);
+
+  /* 최대값 */
   let maxValue = useMemo(() => {
     let _series = seriesData;
     let _maximumValue = 0;
@@ -137,6 +144,7 @@ const HistoricalTrendChart = (props: Props) => {
     });
     return formatCurrency(_maximumValue.toString(), currency);
   }, [seriesData, currency, inventoryValue?.value]);
+
   const lineColor = isPlus
     ? 'var(--color-chart-success)'
     : 'var(--color-chart-danger)';
@@ -144,144 +152,148 @@ const HistoricalTrendChart = (props: Props) => {
   const borderColor = 'var(--color-border-accent-gray)';
   const textSubtle = 'var(--color-text-subtle)';
   // const minValue = series[0].data[0];
-  const options = {
-    chart: {
-      toolbar: {
-        show: false,
-      },
-      events: {
-        // dataPointMouseEnter: function (
-        //   event: any,
-        //   chartContext: any,
-        //   config: any
-        // ) {
-        //   config.globals &&
-        //     (props.setHoverValue(
-        //       config.globals?.series?.[0][config.dataPointIndex] || null
-        //     ),
-        //     props.setDiffValue(
-        //       config.globals?.series?.[0][config.dataPointIndex] -
-        //         config.globals?.series?.[0][0]
-        //     ));
-        // },
-        mouseLeave: function (event: any, chartContext: any, config: any) {
-          // ...
-          props.setHoverValue(null);
-          props.setDiffValue(null);
-          handleHover(null);
+  const options = useMemo(() => {
+    console.log('series[0].data[0]', series[0].data[0]);
+    return {
+      chart: {
+        toolbar: {
+          show: false,
+        },
+        events: {
+          // dataPointMouseEnter: function (
+          //   event: any,
+          //   chartContext: any,
+          //   config: any
+          // ) {
+          //   config.globals &&
+          //     (props.setHoverValue(
+          //       config.globals?.series?.[0][config.dataPointIndex] || null
+          //     ),
+          //     props.setDiffValue(
+          //       config.globals?.series?.[0][config.dataPointIndex] -
+          //         config.globals?.series?.[0][0]
+          //     ));
+          // },
+          mouseLeave: function (event: any, chartContext: any, config: any) {
+            // ...
+            props.setHoverValue(null);
+            props.setDiffValue(null);
+            handleHover(null);
+          },
         },
       },
-    },
-    stroke: {
-      width: 1,
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    xaxis: {
-      type: 'category' as const,
-      categories: category,
-      labels: {
-        show: false,
+      stroke: {
+        width: 1,
       },
-      axisTicks: {
-        show: false,
-      },
-      axisBorder: {
-        show: false,
-      },
-      tooltip: {
+      dataLabels: {
         enabled: false,
       },
-    },
-    yaxis: {
-      tickAmount: 1,
-      opposite: true,
-      floating: true,
-      labels: {
-        show: true,
-        style: {
-          colors: textSubtle,
-          cssClass: 'font-caption-regular',
+      xaxis: {
+        type: 'category' as const,
+        categories: category,
+        labels: {
+          show: false,
         },
-        formatter: function (value: any) {
-          return value
-            ? formatCurrency(value, currency)
-            : formatCurrency('0', currency);
+        axisTicks: {
+          show: false,
+        },
+        axisBorder: {
+          show: false,
+        },
+        tooltip: {
+          enabled: false,
         },
       },
-    },
-    annotations: {
-      yaxis: [
-        {
-          y: series[0].data[0],
-          borderColor: borderColor,
-          borderStyle: 'dashed',
+      yaxis: {
+        tickAmount: 1,
+        opposite: true,
+        floating: true,
+        labels: {
+          show: true,
+          style: {
+            colors: textSubtle,
+            cssClass: 'font-caption-regular',
+          },
+          formatter: function (value: any) {
+            return value
+              ? formatCurrency(value, currency)
+              : formatCurrency('0', currency);
+          },
         },
-      ],
-    },
-    markers: {
-      size: 0,
-      colors: markerFill,
-      strokeColors: lineColor,
-      strokeWidth: 2,
-      radius: 5,
-      hover: {
-        size: 5,
-        sizeOffset: 1,
       },
-    },
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shade: 'dark',
-        type: 'vertical',
-        shadeIntensity: 0.5,
-        gradientToColors: undefined,
-        inverseColors: true,
-        opacityFrom: 1,
-        opacityTo: 1,
-        stops: [0, 10, 100],
-        colorStops: [
+      annotations: {
+        yaxis: [
           {
-            offset: 0,
-            color: lineColor,
-            opacity: 0.4,
-          },
-          {
-            offset: 50,
-            color: lineColor,
-            opacity: 0.4,
-          },
-          {
-            offset: 100,
-            color: lineColor,
-            opacity: 0,
+            y: mathSqrt(series[0].data[0] || 0),
+            borderColor: borderColor,
+            borderStyle: 'dashed',
           },
         ],
       },
-    },
-    colors: [lineColor],
-    grid: {
-      show: false,
-    },
-    tooltip: {
-      followCursor: false,
-      custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
-        return renderToString(
-          tooltip({
-            series: seriesData,
-            seriesIndex,
-            dataPointIndex,
-            w,
-            period: historicalValueParam.window,
-            setHoverValue: handleHover,
-            setDiffValue: props.setDiffValue,
-          })
-        );
+      markers: {
+        size: 0,
+        colors: markerFill,
+        strokeColors: lineColor,
+        strokeWidth: 2,
+        radius: 5,
+        hover: {
+          size: 5,
+          sizeOffset: 1,
+        },
       },
-    },
-  };
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'dark',
+          type: 'vertical',
+          shadeIntensity: 0.5,
+          gradientToColors: undefined,
+          inverseColors: true,
+          opacityFrom: 1,
+          opacityTo: 1,
+          stops: [0, 10, 100],
+          colorStops: [
+            {
+              offset: 0,
+              color: lineColor,
+              opacity: 0.4,
+            },
+            {
+              offset: 50,
+              color: lineColor,
+              opacity: 0.4,
+            },
+            {
+              offset: 100,
+              color: lineColor,
+              opacity: 0,
+            },
+          ],
+        },
+      },
+      colors: [lineColor],
+      grid: {
+        show: false,
+      },
+      tooltip: {
+        followCursor: false,
+        custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
+          return renderToString(
+            tooltip({
+              series: seriesData,
+              seriesIndex,
+              dataPointIndex,
+              w,
+              period: historicalValueParam.window,
+              setHoverValue: handleHover,
+              setDiffValue: props.setDiffValue,
+            })
+          );
+        },
+      },
+    };
+  }, [series[0].data[0]]);
+
   const handleHover = (value: any) => {
     const currentValue = inventoryValue?.value[currency]?.amount
       ? parseFloat(inventoryValue.value[currency].amount || '0')
@@ -297,35 +309,35 @@ const HistoricalTrendChart = (props: Props) => {
       {statusInventoryValueHistorical === 'loading' && (
         <SkeletonLoader className='w-full h-200' />
       )}
-      {statusInventoryValueHistorical === 'success' &&
-        statusInventoryValue === 'success' && (
-          <>
-            <div className='absolute right-0 top-0 h-200 flex flex-col justify-between items-end font-caption-regular text-[var(--color-text-subtle)]'>
-              <p className='w-fit'>{maxValue}</p>
-              <p className='w-fit'>{minValue}</p>
-            </div>
-            <ApexCharts
-              options={{
-                ...options,
-                stroke: { ...options.stroke, curve: 'straight' },
-              }}
-              type='area'
-              series={[
-                ...seriesData.map((series) => {
-                  return {
-                    name: series.name,
-                    data: series.data.map((item) => {
-                      return item && mathSqrt(item);
-                    }),
-                  };
-                }),
-              ]}
-              // series={seriesData}
-              height={200}
-              width='100%'
-            />
-          </>
-        )}
+      {statusInventoryValueHistorical === 'success' && (
+        // statusInventoryValue === 'success' &&
+        <>
+          <div className='absolute right-0 top-0 h-200 flex flex-col justify-between items-end font-caption-regular text-[var(--color-text-subtle)]'>
+            <p className='w-fit'>{maxValue}</p>
+            <p className='w-fit'>{minValue}</p>
+          </div>
+          <ApexCharts
+            options={{
+              ...options,
+              stroke: { ...options.stroke, curve: 'straight' },
+            }}
+            type='area'
+            series={[
+              ...seriesData.map((series) => {
+                return {
+                  name: series.name,
+                  data: series.data.map((item) => {
+                    return item && mathSqrt(item);
+                  }),
+                };
+              }),
+            ]}
+            // series={seriesData}
+            height={200}
+            width='100%'
+          />
+        </>
+      )}
     </section>
   );
 };

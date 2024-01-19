@@ -36,11 +36,10 @@ const T_HEADER = [
     key: 'amount',
     sort: 'amount',
   },
-  {
-    name: 'Cost basis',
-    key: 'costBasis',
-    // sort: 'acquisitionPrice',
-  },
+  // {
+  //   name: 'Cost basis',
+  //   key: 'costBasis',
+  // },
   {
     name: 'Valuation Type',
   },
@@ -48,12 +47,12 @@ const T_HEADER = [
     name: 'Realtime NAV',
     sort: 'nav',
   },
-  {
-    name: 'Unrealized G&L',
-  },
-  {
-    name: 'Unrealized ROI',
-  },
+  // {
+  //   name: 'Unrealized G&L',
+  // },
+  // {
+  //   name: 'Unrealized ROI',
+  // },
 ];
 const InventoryCollectionTable = () => {
   const currency = useAtomValue(currencyAtom);
@@ -121,32 +120,33 @@ const InventoryCollectionTable = () => {
     return <SkeletonLoader className='w-full h-[200px]' />;
   return (
     <section className={styles.container}>
-      <table className={`${styles.table} h-full relative`}>
-        <thead className='sticky top-110 bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
+      <table className={`${styles.table} relative`}>
+        <thead className='sticky top-124 bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
           <tr className='h-fit'>
             {T_HEADER.map((item, index) => (
               <th
                 key={index}
                 className={`font-caption-medium text-[var(--color-text-subtle)] py-12
                 ${
-                  index == 0
-                    ? 'text-center'
-                    : index > 1 && index !== 4
-                    ? 'text-right'
+                  index === T_HEADER.length - 1
+                    ? // : index > 1 && index !== 4
+                      'text-right'
                     : 'text-left'
                 }
                 ${item.sort && 'cursor-pointer'}
+                ${index === 0 && 'pl-16'}
+                ${index === T_HEADER.length - 1 && 'pr-16'}
                 `}
                 onClick={() =>
                   item.sort && handleClickSortButton(item.sort as TSort)
                 }
               >
-                <p className={index > 1 ? styles.pTd : 'mr-40'}>{item.name}</p>
+                <p className={index > 1 ? styles.pTd : ''}>{item.name}</p>
               </th>
             ))}
-            <th className='text-right'>
+            {/* <th className='text-right'>
               <p className='ml-40'> </p>
-            </th>
+            </th> */}
           </tr>
         </thead>
         <tbody className='h-full z-0'>
@@ -159,11 +159,11 @@ const InventoryCollectionTable = () => {
                   className={`font-caption-regular cursor-pointer ${styles.tableRow}`}
                   onClick={() => handleClickCollection(row)}
                 >
-                  <td className='flex justify-center items-center h-full mr-40'>
+                  <td className='flex items-center h-full'>
                     <Ethereum
                       width={24}
                       height={24}
-                      className='w-24 h-24 rounded-full flex items-center justify-center border-1 border-[var(--color-border-main)]'
+                      className='ml-16 w-24 h-24 rounded-full flex items-center justify-center border-1 border-[var(--color-border-main)]'
                     />
                   </td>
                   <td>
@@ -190,11 +190,16 @@ const InventoryCollectionTable = () => {
                       </p>
                     </article>
                   </td>
-                  <td className='text-right'>
+                  <td className='text-left'>
                     <p className={styles.pTd}>{row.amount}</p>
                   </td>
                   {/* coast basis */}
-                  {!row[priceType] ? (
+                  {/**
+                   * 
+                   * sprint 1
+                   * 
+                   * 
+                   *  {!row[priceType] ? (
                     <td className='text-right'>
                       <div className='flex justify-end items-center w-full h-full'>
                         <SkeletonLoader className='w-1/2 h-1/2' />
@@ -220,29 +225,40 @@ const InventoryCollectionTable = () => {
                         </p>
                       )}
                     </td>
-                  )}
+                  )} */}
                   {/* valuation type */}
                   <td className='text-left'>
-                    {/* <p>{ValuationTypes(row.valuation)}</p> */}
-                    {row.valuation.length > 1 ? (
+                    {/**
+                     * 
+                     * sprint 1
+                     * 
+                     * 
+                     *  {row.valuation.length > 1 ? (
                       <ValuationDropdown
                         collection={row}
                         valuations={row.valuation}
                       />
                     ) : (
                       <p>no available price</p>
-                    )}
+                    )} */}
+                    <p>{ValuationTypes(row.valuation)}</p>
                   </td>
+
                   {/* realtime nav */}
                   <td className='text-right'>
-                    <p className={styles.pTd}>
+                    <p className={`${styles.pTd} pr-16`}>
                       {formatCurrency(
                         row.nav[currency].amount || null,
                         currency
                       ) || '-'}
                     </p>
                   </td>
-                  <td className='text-right'>
+                  {/**
+                   * 
+                   * sprint 1
+                   * 
+                   * 
+                   <td className='text-right'>
                     {row.nav[currency].difference?.amount && (
                       <p
                         className={`${styles.pTd} ${
@@ -268,7 +284,7 @@ const InventoryCollectionTable = () => {
                         row.nav[currency].difference?.percentage || '0'
                       )}`}
                     </p>
-                  </td>
+                  </td> 
                   <td className='text-right'>
                     <div
                       className='w-full flex justify-end items-center'
@@ -277,6 +293,7 @@ const InventoryCollectionTable = () => {
                       <SpamInsertDropdown collection={row} icon={true} />
                     </div>
                   </td>
+                  */}
                 </tr>
               );
             });

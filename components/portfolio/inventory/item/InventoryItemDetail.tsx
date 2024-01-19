@@ -52,13 +52,17 @@ const InventoryItemDetail = ({ token }: Props) => {
             {token.token.name}
           </h2>
           <div className='flex items-center mt-8'>
-            <Image
-              src={token.collection.imageUrl || '/icon/nftbank_icon.svg'}
-              width={16}
-              height={16}
-              className='rounded-full mr-8'
-              alt={`${token.collection.name}-${token.collection.assetContract}`}
-            />
+            {token.collection.imageUrl ? (
+              <Image
+                src={token.collection.imageUrl}
+                width={16}
+                height={16}
+                className='rounded-full mr-8'
+                alt={`${token.collection.name}-${token.collection.assetContract}`}
+              />
+            ) : (
+              <div></div>
+            )}
             <p className='font-caption-medium text-[var(--color-text-main)]'>
               {token.collection.name ||
                 `${token.collection.assetContract.substring(
@@ -82,7 +86,13 @@ const InventoryItemDetail = ({ token }: Props) => {
           <p className={`${styles.pSub}`}>Rarity</p>
           <p className={`${styles.pMain}`}>{inventoryItem?.rarity || '-'}</p>
         </div>
-        <div className=' ml-auto flex items-center p-7 font-caption-medium border-1 border-[var(--color-border-main)]'>
+        {/**
+         * 
+         * 
+         * sprint 1
+         * 
+         * 
+         * <div className=' ml-auto flex items-center p-7 font-caption-medium border-1 border-[var(--color-border-main)]'>
           <button
             onClick={() => handleToggleViewType('overview')}
             className={`${styles.typeButton}
@@ -107,7 +117,7 @@ const InventoryItemDetail = ({ token }: Props) => {
           >
             Activity
           </button>
-        </div>
+        </div> */}
       </div>
 
       <div className='w-full flex flex-col'>

@@ -5,6 +5,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import {
   formatCurrency,
+  formatDate,
   formatPercent,
   mappingConstants,
 } from '@/utils/common';
@@ -26,9 +27,9 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
   return (
     <article
       className={`font-caption-medium ${styles.cardWrapper}`}
-      onClick={() => handleClickToken(token)}
+      // onClick={() => handleClickToken(token)}
     >
-      <div className='w-full pb-[100%] overflow-hidden relative'>
+      <div className='flex w-full pb-[100%] overflow-hidden relative'>
         <Image
           src={token.token.imageUrl || '/icon/nftbank_icon.svg'}
           fill={true}
@@ -36,11 +37,19 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
           // objectFit='contain' // 이미지를 가운데 기준으로 크롭
           // objectPosition='center center'
           style={{ objectFit: 'cover' }}
+          className='m-auto'
         />
       </div>
       <div className='w-full flex flex-col justify-start my-12 px-12'>
         <p className={`${styles.pTitle} mb-8`}>{token.token.name}</p>
-        <div className='flex justify-between items-center mb-8'>
+        {/**
+         * 
+         * 
+         * sprint 1
+         *
+         * 
+         * 
+         *  <div className='flex justify-between items-center mb-8'>
           <p className={styles.pName}>Cost basis</p>
           {token.costBasis ? (
             <p className={styles.pValue}>
@@ -55,14 +64,19 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
           ) : (
             <SkeletonLoader className='h-16 w-50' />
           )}
-        </div>
+        </div> */}
         <div className='flex justify-between items-center mb-8'>
           <p className={styles.pName}>Realtime NAV</p>
           <p className={styles.pValue}>
             {formatCurrency(token.nav[currency].amount, currency)}
           </p>
         </div>
-        <div className='flex justify-between items-center mb-8'>
+        {/**
+         * 
+         * 
+         * sprint 1
+         * 
+         <div className='flex justify-between items-center mb-8'>
           <p className={styles.pName}>Unrealized G&L</p>
           {token.nav[currency].difference?.amount ? (
             <p
@@ -97,9 +111,16 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
           ) : (
             <SkeletonLoader className='h-16 w-50' />
           )}
+        </div> */}
+        <div className='flex justify-between items-center mb-8'>
+          <p className={styles.pName}>Acq. date</p>
+          <p className={styles.pValue}>
+            {token.acquisitionDate &&
+              formatDate(new Date(token.acquisitionDate))}
+          </p>
         </div>
         <div className='flex items-center mb-8'>
-          <p className={styles.pTitle}>
+          <p className={styles.pValueType}>
             {token.valuation.length > 0
               ? mappingConstants(token.valuation[0].type)
               : 'no valuation type'}

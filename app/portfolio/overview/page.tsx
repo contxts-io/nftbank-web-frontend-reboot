@@ -10,6 +10,7 @@ import { useEffect } from 'react';
 import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
 import { useMe } from '@/utils/hooks/queries/auth';
 import ChainList from '@/components/portfolio/ChainList';
+import { useRouter } from 'next/navigation';
 
 const OverviewPage = () => {
   // const myPortfolio = useAtomValue(myDefaultPortfolioAtom);
@@ -17,7 +18,7 @@ const OverviewPage = () => {
   const myPortfolio = useAtomValue(myDefaultPortfolioAtom);
   const setPortfolioNicknameAtom = useSetAtom(portfolioNicknameAtom);
   const setPortfolioUserAtom = useSetAtom(portfolioUserAtom);
-
+  const router = useRouter();
   useEffect(() => {
     me?.nickname && setPortfolioNicknameAtom(me.nickname);
   }, [me]);
@@ -28,9 +29,10 @@ const OverviewPage = () => {
   //       ...myPortfolio,
   //     });
   // }, [myPortfolio]);
+
   return (
     <section className='pt-24 px-24 pb-40'>
-      <ChainList />
+      {/* <ChainList />
       <SummaryValueContainer />
       <div className='w-full grid grid-cols-2 gap-x-[20px]'>
         <HistoricalTrendContainer />
@@ -38,6 +40,12 @@ const OverviewPage = () => {
         <TotalInventoryValue />
         <RecentActivityContainer />
       </div>
+      <div className='w-full'>
+        <HistoricalTrendContainer />
+        <PerformanceContainer />
+        <TotalInventoryValue />
+        <RecentActivityContainer />
+      </div> */}
     </section>
   );
 };

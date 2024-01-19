@@ -130,13 +130,22 @@ export default async function RootLayout({
           }}
         ></script>
         <Providers>
+          {/**
+           * 
+           * sprint1
+           * 
           <AuthProvider>
             <div className='flex flex-col w-screen max-w-[1440] h-screen'>
               <GlobalNavigation />
               <LoginProvider>{children}</LoginProvider>
               <GlobalFooter />
             </div>
-          </AuthProvider>
+          </AuthProvider> */}
+          <div className='flex flex-col w-screen max-w-[1440] h-screen pt-60'>
+            <GlobalNavigation />
+            {children}
+            <GlobalFooter />
+          </div>
         </Providers>
       </body>
     </html>

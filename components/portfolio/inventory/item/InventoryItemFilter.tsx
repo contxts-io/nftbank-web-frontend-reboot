@@ -105,7 +105,12 @@ const InventoryItemFilter = (props: Props) => {
           <Filter />
         </Button>
       </div>
-      <div className={`${styles.inputContainer}`}>
+      {/**
+       * 
+       * 
+       * sprint 1
+       * 
+       *  <div className={`${styles.inputContainer}`}>
         <MagnifyingGlass className={`${styles.icon}`} width={16} height={16} />
         <input
           type='text'
@@ -114,7 +119,7 @@ const InventoryItemFilter = (props: Props) => {
           onChange={handleInputText}
           value={searchText}
         />
-      </div>
+      </div> */}
       <div className='h-full overflow-y-scroll'>
         <ul className='mt-12 w-full flex flex-col'>
           {mergePosts?.map((item, index) => {

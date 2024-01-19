@@ -11,17 +11,25 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const PortfolioLayout = ({ children }: { children: React.ReactNode }) => {
-  const { data: me } = useMe();
-  const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
-  const {
-    data: walletList,
-    status,
-    error,
-  } = useWalletList({ nickname: portfolioUser?.nickname || '' });
+  //** sprint 1 */
+  // const { data: me } = useMe();
+  // const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
+  // const {
+  //   data: walletList,
+  //   status,
+  //   error,
+  // } = useWalletList({ nickname: portfolioUser?.nickname || '' });
 
   return (
     <section className='w-full h-full'>
       <ProfileComponent />
+      <PortfolioTabNavigation />
+      {children}
+      {/**
+       * 
+       * 
+       * 
+       *  //sprint 1
       {status === 'success' && (
         <>
           {walletList?.data.length > 0 ? (
@@ -41,7 +49,7 @@ const PortfolioLayout = ({ children }: { children: React.ReactNode }) => {
             </div>
           )}
         </>
-      )}
+      )} */}
     </section>
   );
 };

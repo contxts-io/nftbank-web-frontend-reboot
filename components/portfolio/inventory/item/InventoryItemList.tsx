@@ -16,6 +16,7 @@ import ReactModal from 'react-modal';
 import InventoryItemDetail from './InventoryItemDetail';
 import { selectedTokenAtom } from '@/store/portfolio';
 import Button from '@/components/buttons/Button';
+import Image from 'next/image';
 type Props = {
   isFilterOpen: boolean;
   handleFilterOpen: (state: boolean) => void;
@@ -76,7 +77,11 @@ const InventoryItemList = (props: Props) => {
           )}
         </div>
         <div className='flex items-center'>
-          <div className='flex px-12 mr-8'>
+          {/**
+           * 
+           * sprint 1
+           * 
+           * <div className='flex px-12 mr-8'>
             <span className='font-button03-medium text-[var(--color-text-subtle)] mr-8'>
               Include Gas fee
             </span>
@@ -85,7 +90,7 @@ const InventoryItemList = (props: Props) => {
               checked={priceType === 'costBasis'}
               id={''}
             />
-          </div>
+          </div> */}
           <div className='flex justify-between p-3 items-center border-1 w-72 border-[var(--color-border-main)]'>
             <div
               className={`${styles.viewType} ${
@@ -97,10 +102,13 @@ const InventoryItemList = (props: Props) => {
                 onClick={() => setItemViewType('cardView')}
                 id=''
               >
-                <DotsNine
-                  width={16}
-                  height={16}
-                  className={`${styles.viewTypeButtonIcon}`}
+                {/* <DotsNine className={`${styles.viewTypeButtonIcon}`} /> */}
+                <Image
+                  src='/icon/DotsNine.svg'
+                  width={24}
+                  height={24}
+                  alt=''
+                  className='border-0'
                 />
               </Button>
             </div>
@@ -114,10 +122,13 @@ const InventoryItemList = (props: Props) => {
                 onClick={() => setItemViewType('listView')}
                 id=''
               >
-                <Hamburger
-                  width={16}
-                  height={16}
-                  className={`${styles.viewTypeButtonIcon}`}
+                {/* <Hamburger className={`${styles.viewTypeButtonIcon}`} /> */}
+                <Image
+                  src='/icon/Hamburger.svg'
+                  width={24}
+                  height={24}
+                  alt=''
+                  className='border-0'
                 />
               </Button>
             </div>

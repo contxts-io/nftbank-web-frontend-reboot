@@ -74,7 +74,7 @@ export const inventoryItemListAtom = atom<ItemParam & {paging : boolean}>({
   includeGasUsed: 'false',
   assetContract: [],
   page: 1,
-  limit: 10,
+  limit: 30,
   currency: 'eth',
   sort: 'nav',
   order: 'desc',

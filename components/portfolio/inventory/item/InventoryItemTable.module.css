@@ -20,9 +20,7 @@
 .tableHeadRow th {
   @apply border-t-1 border-b-1 border-[var(--color-border-main)];
 }
-.tableHeadRow p {
-  @apply mr-30;
-}
+
 .tableHeadRow :first-child {
   @apply border-0;
 }
@@ -33,7 +31,7 @@
   @apply w-12 border-0;
 }
 .tableBodyRow {
-  @apply h-50 cursor-pointer text-[var(--color-text-main)] border-[var(--color-border-disabled)] hover:bg-[var(--color-elevation-sunken)];
+  @apply h-50 text-[var(--color-text-main)] border-[var(--color-border-disabled)] hover:bg-[var(--color-elevation-sunken)];
 }
 .tableBodyRow p {
   @apply mr-30;
