@@ -81,16 +81,20 @@ const HistoricalTrendContainer = () => {
       hoverValue ||
       parseFloat(inventoryValue?.value[currency].amount || '0.00');
 
+    // const diff =
+    //   hoverValue == 0
+    //     ? 0 -
+    //       parseFloat(
+    //         inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+    //       )
+    //     : _value -
+    //       parseFloat(
+    //         inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+    //       );
+
     const diff =
-      hoverValue == 0
-        ? 0 -
-          parseFloat(
-            inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
-          )
-        : _value -
-          parseFloat(
-            inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
-          );
+      _value -
+      parseFloat(inventoryValueHistorical?.data[0]?.value[currency] || '0.00');
     return diff;
   }, [hoverValue, currency, inventoryValue]);
   useEffect(() => {
@@ -162,7 +166,7 @@ const HistoricalTrendContainer = () => {
               (
                 (differenceValue /
                   parseFloat(
-                    inventoryValueHistorical?.data[0].value[currency] || '1'
+                    inventoryValueHistorical?.data[0]?.value[currency] || '1'
                   )) *
                 100
               ).toString(),
