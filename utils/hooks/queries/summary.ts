@@ -15,6 +15,7 @@ export function useSummaryTotalSpend(searchParam:BasicParam | null) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      enabled: !!searchParam,
     },
   );
 }
@@ -30,6 +31,7 @@ export function useSummaryGasSpend(searchParam:BasicParam | null) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      enabled: !!searchParam,
     },
   );
 }
@@ -44,6 +46,7 @@ export function useSummaryTotalSale(searchParam:BasicParam | null) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      enabled: !!searchParam,
     },
   );
 }
@@ -59,6 +62,7 @@ export function useSummaryUnrealized(searchParam:BasicParam | null) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      enabled: !!searchParam,
     },
   );
 }
@@ -74,6 +78,7 @@ export function useSummaryRealized(searchParam:BasicParam | null) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      enabled: !!searchParam,
     },
   );
 }

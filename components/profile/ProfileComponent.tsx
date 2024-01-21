@@ -22,6 +22,7 @@ import { usePathname } from 'next/navigation';
 import { useInventoryValue } from '@/utils/hooks/queries/inventory';
 import { currencyAtom } from '@/store/currency';
 import { difference, formatCurrency, isPlus } from '@/utils/common';
+import CurrencyComponent from '../p/Currency';
 const ProfileComponent = () => {
   const { data: me } = useMe();
   const path = usePathname();
@@ -131,12 +132,13 @@ const ProfileComponent = () => {
             <p className='font-caption-medium mb-8 text-[var(--color-text-subtlest)]'>
               Current Balance
             </p>
-            <p className='font-header03-bold mb-4 text-[var(--color-text-main)]'>
-              {formatCurrency(
+            <CurrencyComponent
+              value={formatCurrency(
                 inventoryValue?.value[currency]?.amount || '0',
                 currency
               )}
-            </p>
+              className='font-header03-bold mb-4'
+            />
             <div className='font-caption-medium flex'>
               <div
                 className={`px-8 py-4 bg-[var(--color-background-danger)] ${

@@ -14,6 +14,7 @@ import { currencyAtom } from '@/store/currency';
 import { difference, formatCurrency, formatPercent } from '@/utils/common';
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { portfolioUserAtom } from '@/store/portfolio';
+import CurrencyComponent from '@/components/p/Currency';
 //'1d'| '3d'| '7d'| '30d'| '90d'| 'ytd'| '365d'| 'all'
 const PERIOD: { name: string; value: Period }[] = [
   {
@@ -140,17 +141,7 @@ const HistoricalTrendContainer = () => {
             }`}
           />
         </div>
-        <p className='font-header03-bold mr-12'>
-          <span className='text-[var(--color-text-subtlest)]'>
-            {total.substring(0, 1)}
-          </span>
-          <span className='text-[var(--color-text-main)]'>
-            {total.substring(1).split('.')[0]}
-          </span>
-          <span className='text-[var(--color-text-subtlest)]'>
-            {`.${total.split('.')[1] || '00'}`}
-          </span>
-        </p>
+        <CurrencyComponent value={total} className='font-header03-bold mr-12' />
         {differenceValue && (
           <p
             className={`font-body01-medium ${
