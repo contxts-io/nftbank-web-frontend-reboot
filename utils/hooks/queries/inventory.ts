@@ -6,6 +6,7 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 export function useInventoryValue(searchParam: BasicParam | null) {
+  console.log('useInventoryValue',searchParam , searchParam === null)
   return useQuery<InventoryValueNested,AxiosError>(
     ['inventoryValue',searchParam],
     async () => {
@@ -16,7 +17,7 @@ export function useInventoryValue(searchParam: BasicParam | null) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      enabled: searchParam?.walletAddress !== undefined,
+      enabled: searchParam !== null && searchParam.walletAddress !== undefined && searchParam?.walletAddress !== '' && searchParam?.walletAddress !== undefined,
     },
   );
 }
@@ -237,6 +238,7 @@ export const useInventoryValuePolling = (searchParam:BasicParam | null) => {
       staleTime: 0,
       cacheTime: 0,
       useErrorBoundary: false,
+      enabled: searchParam !== null,
     },
   );
 }

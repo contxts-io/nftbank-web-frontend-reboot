@@ -30,7 +30,7 @@
   @apply w-16 h-16;
 }
 .searchInput {
-  @apply w-[360px] !important;
+  @apply w-[360px] h-36 !important;
 }
 .searchInput input {
   @apply border-0;

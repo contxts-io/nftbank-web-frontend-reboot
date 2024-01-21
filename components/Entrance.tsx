@@ -56,7 +56,7 @@ const Entrance = () => {
 
   return (
     <div className={styles.container}>
-      <div className='font-body02-medium flex items-center mr-26'>
+      <div className='font-body02-medium flex h-56 items-center mr-26'>
         <Image
           src={'/icon/nftbank_icon.svg'}
           width={20}
@@ -66,7 +66,7 @@ const Entrance = () => {
         />
         <NFTBankLogo className={`fill-[var(--color-icon-main)]`} />
       </div>
-      <div className='mt-8 mb-50 gap-y-8'>
+      <div className='mt-8 mb-40 flex flex-col gap-y-8'>
         <p>Welcome to NFTBank V2!</p>
         <p>Search your wallet to get started</p>
       </div>

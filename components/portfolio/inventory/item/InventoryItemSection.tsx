@@ -21,30 +21,30 @@ const InventoryItemSection = () => {
   }, []);
 
   const targetRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const handleScroll = () => {
-      const targetElement = targetRef.current;
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const targetElement = targetRef.current;
 
-      if (targetElement) {
-        const targetRect = targetElement.getBoundingClientRect();
-        const isTargetVisible =
-          targetRect.top >= 0 && targetRect.bottom <= window.innerHeight;
+  //     if (targetElement) {
+  //       const targetRect = targetElement.getBoundingClientRect();
+  //       const isTargetVisible =
+  //         targetRect.top >= 0 && targetRect.bottom <= window.innerHeight;
 
-        if (isTargetVisible) {
-          // Do something when the target element is visible
-          console.log('Reached the target element');
-          // You can add logic to stop scrolling here
-          window.scrollTo(0, 235);
-        }
-      }
-    };
+  //       if (isTargetVisible) {
+  //         // Do something when the target element is visible
+  //         console.log('Reached the target element');
+  //         // You can add logic to stop scrolling here
+  //         window.scrollTo(0, 235);
+  //       }
+  //     }
+  //   };
 
-    window.addEventListener('scroll', handleScroll);
+  //   window.addEventListener('scroll', handleScroll);
 
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('scroll', handleScroll);
+  //   };
+  // }, []);
   return (
     <section className='transition-all duration-200'>
       <p className='font-subtitle01-medium text-[var(--color-text-main)]'>
@@ -57,7 +57,10 @@ const InventoryItemSection = () => {
       >
         <InventoryItemSelectCollection />
       </div>
-      <section className={`${styles.container}`} ref={targetRef}>
+      <section
+        className={`${styles.container} h-[calc(100vh-250px)]`}
+        ref={targetRef}
+      >
         <div className='w-fit h-full'>
           {isFilterOpen && (
             <InventoryItemFilter handleFilterOpen={setIsFilterOpen} />

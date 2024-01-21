@@ -137,14 +137,16 @@ const GlobalNavigation = () => {
           </div>
         </div>
         {path !== '/' && (
-          <Link
-            href={'/portfolio'}
-            className={` ${styles.link} ${
-              path.includes('/portfolio') ? 'text-[var(--color-text-main)]' : ''
-            }`}
-          >
-            Portfolio
-          </Link>
+          <></>
+
+          // <Link
+          //   href={'/portfolio'}
+          //   className={` ${styles.link} ${
+          //     path.includes('/portfolio') ? 'text-[var(--color-text-main)]' : ''
+          //   }`}
+          // >
+          //   Portfolio
+          // </Link>
         )}
         {/* <Link
           href={'/watch'}
@@ -211,7 +213,11 @@ const GlobalNavigation = () => {
         {path !== '/' && (
           <>
             <ThemeSwitcher />
-            <Button id={'/global/currency'} onClick={() => changeCurrency()}>
+            <Button
+              id={'/global/currency'}
+              onClick={() => changeCurrency()}
+              className='border-l-0'
+            >
               <div className='flex items-center justify-center border-1 border-[var(--color-border-bold)] rounded-full h-20 w-20 mr-8 '>
                 {currency === 'eth' ? <EthereumIcon /> : <Usd />}
               </div>

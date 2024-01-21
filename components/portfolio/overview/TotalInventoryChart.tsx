@@ -13,10 +13,12 @@ import { currencyAtom } from '@/store/currency';
 import {
   formatCurrency,
   formatPercent,
+  isPlus,
   mappingConstants,
   shortenAddress,
 } from '@/utils/common';
 import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
+import CurrencyComponent from '@/components/p/Currency';
 import { ApexOptions } from 'apexcharts';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const COLORS = [
@@ -34,16 +36,21 @@ const tooltip = ({
   w,
   selected,
   totalInventoryPositionValue,
+  totalInventoryPositionAmount,
   currency,
 }: any) => {
   const color = w.globals.colors[seriesIndex];
   const label = w.globals.labels[seriesIndex];
   const positionCollection = totalInventoryPositionValue?.[seriesIndex];
+  const positionCollectionAmount = parseInt(
+    totalInventoryPositionAmount?.[seriesIndex].amount
+  );
 
   const amount = formatCurrency(
     totalInventoryPositionValue?.[seriesIndex]?.value[currency].amount || '0',
     currency
   );
+  console.log('totalInventoryPositionAmount', totalInventoryPositionAmount);
   return (
     <div
       className={`relative bg-[var(--color-elevation-surface)] ${
@@ -60,9 +67,27 @@ const tooltip = ({
           <p className={`text-[var(--color-text-main)]`}>{label}</p>
         </div>
         {selected === 'amount' && (
-          <p className={`text-[var(--color-text-main)]`}>
-            {formatPercent(series[seriesIndex])}
-          </p>
+          // <p className={`text-[var(--color-text-main)]`}>
+          //   {formatPercent(series[seriesIndex])}
+          // </p>
+          <div className='w-full'>
+            <div className='flex justify-between items-center'>
+              <span className='text-[var(--color-text-subtle)] mr-41'>
+                Amount
+              </span>
+              <p>{positionCollectionAmount}</p>
+            </div>
+            {/* <div className='flex justify-between items-center'>
+              <span className='text-[var(--color-text-subtle)] mr-41'>
+                Amount Difference(24h)
+              </span>
+              <p className={`text-[var(--color-text-main)]`}>
+                {formatPercent(
+                  positionCollection.value[currency].difference?.percentage
+                )}
+              </p>
+            </div> */}
+          </div>
         )}
         {selected === 'value' && (
           <div className='w-full'>
@@ -74,23 +99,26 @@ const tooltip = ({
                   ? mappingConstants(positionCollection.valuation.type)
                   : 'none'}
               </span>
-              <p>
-                <span className='text-[var(--color-text-main)]'>
-                  {amount.split('.')[0]}
-                </span>
-                {totalInventoryPositionValue?.[seriesIndex].value[currency]
-                  .amount && (
-                  <span className={styles.textSubtlest}>
-                    {`.${amount?.split('.')[1]}`}
-                  </span>
-                )}
-              </p>
+              <CurrencyComponent value={amount} />
             </div>
             <div className='flex justify-between items-center'>
               <span className='text-[var(--color-text-subtle)] mr-41'>
                 Rate of Change(24h)
               </span>
-              <p className={`text-[var(--color-text-main)]`}>
+              <p
+                className={`${
+                  isPlus(
+                    positionCollection.value[currency].difference?.percentage
+                  ) === '-'
+                    ? 'text-[var(--color-text-main)]'
+                    : isPlus(
+                        positionCollection.value[currency].difference
+                          ?.percentage
+                      ) === true
+                    ? 'text-[var(--color-text-success)]'
+                    : 'text-[var(--color-text-danger)]'
+                }`}
+              >
                 {formatPercent(
                   positionCollection.value[currency].difference?.percentage
                 )}
@@ -120,7 +148,11 @@ const TotalInventoryChart = (props: {
     selected === 'value' &&
       totalInventoryPositionValue &&
       (setLabels(
-        totalInventoryPositionValue?.map((item) => item.collection.name || '')
+        totalInventoryPositionValue?.map(
+          (item) =>
+            item.collection.name ||
+            shortenAddress(item.collection.assetContract)
+        )
       ),
       setSeries(
         totalInventoryPositionValue.map((item) =>
@@ -186,6 +218,7 @@ const TotalInventoryChart = (props: {
             w,
             selected,
             totalInventoryPositionValue,
+            totalInventoryPositionAmount,
             currency,
           })
         );

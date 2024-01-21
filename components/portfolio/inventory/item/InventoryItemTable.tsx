@@ -178,7 +178,7 @@ const InventoryItemTable = (props: Props) => {
                         <div className={`flex items-center my-8`}>
                           <div className={styles.tokenImage}>
                             {data?.token.imageUrl ? (
-                              <Image
+                              <img
                                 src={data?.token.imageUrl}
                                 width={32}
                                 height={32}

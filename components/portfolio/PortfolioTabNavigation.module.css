@@ -1,5 +1,5 @@
 .navigation {
-  @apply w-full h-60 flex items-center justify-between sticky top-65 bg-[var(--color-elevation-surface)] z-40;
+  @apply w-full h-60 flex items-center justify-between sticky top-60 bg-[var(--color-elevation-surface)] z-40;
 }
 .links {
   @apply bottom-0 h-60 w-full flex items-center text-[var(--color-text-subtlest)];
