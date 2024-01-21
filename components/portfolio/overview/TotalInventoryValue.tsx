@@ -62,7 +62,11 @@ const TotalInventoryValue = () => {
     let total = 0;
     totalInventoryPositionAmount &&
       totalInventoryPositionAmount.map(
-        (item) => (total += parseInt(item.amount))
+        (item) =>
+          (total +=
+            typeof item.amount === 'string'
+              ? parseInt(item.amount)
+              : item.amount)
       );
     return total;
   }, [totalInventoryPositionAmount]);

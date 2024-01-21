@@ -19,6 +19,7 @@ import {
 } from '@/utils/common';
 import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
 import CurrencyComponent from '@/components/p/Currency';
+import { ApexOptions } from 'apexcharts';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const COLORS = [
   'var(--color-chart-information)',
@@ -174,9 +175,22 @@ const TotalInventoryChart = (props: {
         )
       ));
   }, [selected, totalInventoryPositionValue, totalInventoryPositionAmount]);
-  const options = {
+  const options: ApexOptions = {
     chart: {
       type: 'donut',
+      animations: {
+        enabled: true,
+        easing: 'easeout',
+        speed: 500,
+        animateGradually: {
+          enabled: true,
+          delay: 250,
+        },
+        dynamicAnimation: {
+          enabled: true,
+          speed: 250,
+        },
+      },
     },
     legend: {
       show: false,
@@ -212,9 +226,7 @@ const TotalInventoryChart = (props: {
     },
     labels: labels,
     plotOptions: {
-      customScale: 1,
       pie: {
-        size: 260,
         donut: {
           size: '70%',
         },
