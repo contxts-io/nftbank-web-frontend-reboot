@@ -68,12 +68,12 @@ const InventoryItemList = (props: Props) => {
       <div className='flex py-12 px-24 items-center justify-between'>
         <div>
           {!isFilterOpen && (
-            <button
+            <div
               className={`${styles.filterButton}`}
               onClick={() => handleFilterOpen(true)}
             >
-              <Filter className='fill-[var(--color-icon-subtle)]' />
-            </button>
+              <Filter />
+            </div>
           )}
         </div>
         <div className='flex items-center'>
@@ -97,40 +97,40 @@ const InventoryItemList = (props: Props) => {
                 itemViewType === 'cardView' && styles.checked
               }`}
             >
-              <Button
+              <div
                 className={`${styles.viewTypeButton}`}
                 onClick={() => setItemViewType('cardView')}
                 id=''
               >
-                {/* <DotsNine className={`${styles.viewTypeButtonIcon}`} /> */}
-                <img
+                <DotsNine className={`${styles.viewTypeButtonIcon}`} />
+                {/* <img
                   src='/icon/DotsNine.svg'
                   width={24}
                   height={24}
                   alt=''
                   className='border-0'
-                />
-              </Button>
+                /> */}
+              </div>
             </div>
             <div
               className={`${styles.viewType} ${
                 itemViewType === 'listView' && styles.checked
               }`}
             >
-              <Button
+              <div
                 className={`${styles.viewTypeButton}`}
                 onClick={() => setItemViewType('listView')}
                 id=''
               >
-                {/* <Hamburger className={`${styles.viewTypeButtonIcon}`} /> */}
-                <img
+                <Hamburger className={`${styles.viewTypeButtonIcon}`} />
+                {/* <img
                   src='/icon/Hamburger.svg'
                   width={24}
                   height={24}
                   alt=''
                   className='border-0'
-                />
-              </Button>
+                /> */}
+              </div>
             </div>
           </div>
         </div>
