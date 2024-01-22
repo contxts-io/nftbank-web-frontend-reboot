@@ -12,13 +12,16 @@ type Props = {
 };
 const SearchInput = (props: Props) => {
   // const [searchText, setSearchText] = useState<string>('');
+  const [isActive, setIsActive] = useState<boolean>(false);
   const handleInputText = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     props.onChange(value);
   };
+  const handleFocus = () => {};
   return (
     <div
-      className={`font-body02-regular ${styles.inputContainer} 
+      className={`font-body02-regular fadeIn ${styles.inputContainer} 
+      ${isActive ? styles.active : ''}
       ${props.className ? props.className : ''}
       ${props.isError ? styles.error : ''}
       `}
@@ -30,6 +33,8 @@ const SearchInput = (props: Props) => {
         className={`${styles.textInput} font-caption-regular`}
         onChange={handleInputText}
         value={props.value}
+        onFocus={() => setIsActive(true)}
+        onBlur={() => setIsActive(false)}
       />
     </div>
   );

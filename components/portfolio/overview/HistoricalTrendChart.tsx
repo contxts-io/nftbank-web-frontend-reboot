@@ -91,9 +91,10 @@ const HistoricalTrendChart = (props: Props) => {
         );
         const parts = date.replaceAll(',', '').split(' ');
         const yDate = `${parts[2]}, ${parts[0]} ${parts[1]}`;
-        historicalValueParam.window === 'all'
-          ? category.push(yDate)
-          : category.push(date);
+        // historicalValueParam.window === 'all'
+        //   ? category.push(yDate)
+        //   : category.push(date);
+        category.push(yDate);
         item.value?.[currency]
           ? _series[0].data.push(parseFloat(item.value?.[currency] || '0'))
           : _series[0].data.push(null);

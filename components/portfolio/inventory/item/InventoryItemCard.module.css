@@ -2,7 +2,7 @@
   @apply flex flex-col items-center border-1 border-[var(--color-border-main)];
 }
 .pTitle {
-  @apply text-[var(--color-text-brand)];
+  @apply text-[var(--color-text-brand)] truncate;
 }
 .pName {
   @apply text-[var(--color-text-subtle)];

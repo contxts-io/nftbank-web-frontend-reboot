@@ -103,7 +103,7 @@ const InventoryItemList = (props: Props) => {
                 id=''
               >
                 {/* <DotsNine className={`${styles.viewTypeButtonIcon}`} /> */}
-                <Image
+                <img
                   src='/icon/DotsNine.svg'
                   width={24}
                   height={24}
@@ -123,7 +123,7 @@ const InventoryItemList = (props: Props) => {
                 id=''
               >
                 {/* <Hamburger className={`${styles.viewTypeButtonIcon}`} /> */}
-                <Image
+                <img
                   src='/icon/Hamburger.svg'
                   width={24}
                   height={24}

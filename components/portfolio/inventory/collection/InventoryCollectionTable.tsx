@@ -185,7 +185,7 @@ const InventoryCollectionTable = () => {
                             <div className='w-24 h-24 rounded-full overflow-hidden border-1 border-[var(--color-border-main)] mr-12 '>
                               <img
                                 src={row.collection.imageUrl}
-                                className='rounded-full w-full object-cover object-center'
+                                className='rounded-full w-full object-center'
                                 alt={
                                   row.collection.name ||
                                   row.collection.assetContract

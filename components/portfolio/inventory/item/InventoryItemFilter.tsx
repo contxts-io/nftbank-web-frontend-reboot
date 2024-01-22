@@ -47,6 +47,17 @@ const InventoryItemFilter = (props: Props) => {
     [data?.pages]
   );
   useEffect(() => {
+    return () => {
+      //페이지 이동시 selectedCollection 초기화
+      setSelectedCollection([]);
+      setItemRequestParams((prev) => ({
+        ...prev,
+        page: 1,
+        assetContract: [],
+      }));
+    };
+  }, []);
+  useEffect(() => {
     inView && fetchNextPage();
   }, [fetchNextPage, inView]);
 
@@ -159,15 +170,16 @@ const InventoryItemFilter = (props: Props) => {
                       }`}
                     />
                     {item.collection.imageUrl ? (
-                      <img
-                        src={item.collection.imageUrl}
-                        width={20}
-                        height={20}
-                        className='rounded-full mr-8 border-1 border-[var(--color-border-main)] w-20 h-20'
-                        alt={`${
-                          item.collection.name || item.collection.assetContract
-                        } image`}
-                      />
+                      <div className='w-20 h-20 rounded-full overflow-hidden mr-8'>
+                        <img
+                          src={item.collection.imageUrl}
+                          className='rounded-full w-full object-center'
+                          alt={`${
+                            item.collection.name ||
+                            item.collection.assetContract
+                          } image`}
+                        />
+                      </div>
                     ) : (
                       <div className='rounded-full w-20 h-20 flex items-center justify-center border-1 border-[var(--color-border-main)] mr-8'>
                         <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)]' />

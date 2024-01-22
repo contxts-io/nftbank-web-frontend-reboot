@@ -71,7 +71,7 @@ const ProfileComponent = () => {
   return (
     <>
       {isClient ? (
-        <section className='w-full px-24 py-24 flex items-center justify-between'>
+        <section className='w-full px-24 pt-24 pb-8 flex items-center justify-between'>
           <div className='flex items-center'>
             {user?.image ? (
               <Image
