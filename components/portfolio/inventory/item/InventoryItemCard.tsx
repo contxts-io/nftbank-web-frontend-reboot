@@ -8,6 +8,7 @@ import {
   formatDate,
   formatPercent,
   mappingConstants,
+  shortenAddress,
 } from '@/utils/common';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { selectedTokenAtom } from '@/store/portfolio';
@@ -49,7 +50,9 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
       )}
 
       <div className='w-full flex flex-col justify-start my-12 px-12 gap-y-8'>
-        <p className={`${styles.pTitle}`}>{token.token.name}</p>
+        <p className={`${styles.pTitle}`}>
+          {token.token.name || shortenAddress(token.collection.assetContract)}
+        </p>
         {/**
          * 
          * 

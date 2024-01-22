@@ -199,13 +199,11 @@ const GlobalNavigation = () => {
       )}
 
       <div className={`${styles.buttonBox}`}>
-        <Button
-          onClick={() => window.open('https://nftbank.ai')}
-          id=''
-          className='mr-12'
-        >
-          Back to V1
-        </Button>
+        <div className='border-1 border-[var(--color-border-main)] mr-12'>
+          <Button onClick={() => window.open('https://nftbank.ai')} id=''>
+            Back to V1
+          </Button>
+        </div>
         {/* <Button id={'/global/wallet'}>
           <Wallet />
         </Button> 
@@ -215,17 +213,21 @@ const GlobalNavigation = () => {
 
         {path !== '/' && (
           <>
-            <ThemeSwitcher />
-            <Button
-              id={'/global/currency'}
-              onClick={() => changeCurrency()}
-              className='border-l-0'
-            >
-              <div className='flex items-center justify-center border-1 border-[var(--color-border-bold)] rounded-full h-20 w-20 mr-8 '>
-                {currency === 'eth' ? <EthereumIcon /> : <Usd />}
-              </div>
-              {currency.toUpperCase()}
-            </Button>
+            <div className='border-t-1 border-b-1 border-l-1 border-[var(--color-border-main)]'>
+              <ThemeSwitcher />
+            </div>
+            <div className='border-1 border-[var(--color-border-main)]'>
+              <Button
+                id={'/global/currency'}
+                onClick={() => changeCurrency()}
+                className='border-l-0'
+              >
+                <div className='flex items-center justify-center border-1 border-[var(--color-border-bold)] rounded-full h-20 w-20 mr-8 '>
+                  {currency === 'eth' ? <EthereumIcon /> : <Usd />}
+                </div>
+                {currency.toUpperCase()}
+              </Button>
+            </div>
           </>
         )}
         {/* 내계정 */}

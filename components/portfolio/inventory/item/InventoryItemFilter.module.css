@@ -22,5 +22,5 @@
   @apply bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-bold)];
 }
 .pCollectionName {
-  @apply text-[var(--color-text-main)];
+  @apply text-[var(--color-text-main)] flex-1 truncate;
 }
