@@ -102,14 +102,14 @@ const InventoryItemList = (props: Props) => {
                 onClick={() => setItemViewType('cardView')}
                 id=''
               >
-                {/* <DotsNine className={`${styles.viewTypeButtonIcon}`} /> */}
-                <img
+                <DotsNine className={`${styles.viewTypeButtonIcon}`} />
+                {/* <img
                   src='/icon/DotsNine.svg'
                   width={24}
                   height={24}
                   alt=''
                   className='border-0'
-                />
+                /> */}
               </Button>
             </div>
             <div
@@ -122,14 +122,14 @@ const InventoryItemList = (props: Props) => {
                 onClick={() => setItemViewType('listView')}
                 id=''
               >
-                {/* <Hamburger className={`${styles.viewTypeButtonIcon}`} /> */}
-                <img
+                <Hamburger className={`${styles.viewTypeButtonIcon}`} />
+                {/* <img
                   src='/icon/Hamburger.svg'
                   width={24}
                   height={24}
                   alt=''
                   className='border-0'
-                />
+                /> */}
               </Button>
             </div>
           </div>
