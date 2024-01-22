@@ -111,13 +111,13 @@ const InventoryItemFilter = (props: Props) => {
         <h2 className='font-subtitle02-bold text-[var(--color-text-main)]'>
           Collection
         </h2>
-        <Button
+        <div
           onClick={() => handleFilterOpen(false)}
           id={'filterButton'}
           className={styles.filterButton}
         >
           <Filter />
-        </Button>
+        </div>
       </div>
       {/**
        * 
