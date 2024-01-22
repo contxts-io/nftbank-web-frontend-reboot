@@ -71,6 +71,9 @@ const GlobalNavigation = () => {
     };
   }, [walletAddress, error]);
   useEffect(() => {
+    setWalletAddress('');
+  }, [path]);
+  useEffect(() => {
     try {
       walletAddress !== '' && getAddress(walletAddress);
       setError(null);

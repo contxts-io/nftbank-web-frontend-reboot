@@ -97,13 +97,13 @@ export function useInventoryItemList(requestParam: ItemParam) {
 export const useInventoryItemInfinite = (requestParam: ItemParam) => {
   const fetchData = async ({ pageParam = 1 }) => {
     const result = await getItemList({...requestParam, page: pageParam});
-    const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
+    const isLast = result.paging.total !== result.paging.limit ? true : false;
         
     return {
       ...result,
       page: pageParam,
       nextPage: pageParam + 1,
-      isLast,
+      isLast : isLast,
     };
   }
 
@@ -127,7 +127,8 @@ export const useInventoryItemInfinite = (requestParam: ItemParam) => {
 export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) => {
   const fetchData = async ({ pageParam = 1 }) => {
     const result = await getCollectionList({...requestParam, page: pageParam});
-    const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
+    // const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
+    const isLast = result.paging.total !== result.paging.limit ? true : false;
         
     return {
       ...result,
@@ -198,8 +199,10 @@ export const useInventoryCollectionPositionAmount = (requestParam: BasicParam) =
 export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAndLossParam) => {
   const fetchData = async ({ pageParam = null }) => {
     const result = await getInventoryRealizedTokens({ ...requestParam, nextCursor: pageParam});
+    // const isLast = result.paging.total === result.paging.limit ? true : false;
     const isLast = result.paging.hasNext ? false : true;
-        
+
+
     return {
       ...result,
       // page: pageParam,
