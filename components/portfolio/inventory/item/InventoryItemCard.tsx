@@ -48,8 +48,8 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
         </div>
       )}
 
-      <div className='w-full flex flex-col justify-start my-12 px-12'>
-        <p className={`${styles.pTitle} mb-8`}>{token.token.name}</p>
+      <div className='w-full flex flex-col justify-start my-12 px-12 gap-y-8'>
+        <p className={`${styles.pTitle}`}>{token.token.name}</p>
         {/**
          * 
          * 
@@ -57,7 +57,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
          *
          * 
          * 
-         *  <div className='flex justify-between items-center mb-8'>
+         *  <div className='flex justify-between items-center'>
           <p className={styles.pName}>Cost basis</p>
           {token.costBasis ? (
             <p className={styles.pValue}>
@@ -73,7 +73,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             <SkeletonLoader className='h-16 w-50' />
           )}
         </div> */}
-        <div className='flex justify-between items-center mb-8'>
+        <div className='flex justify-between items-center'>
           <p className={styles.pName}>Realtime NAV</p>
           <p className={styles.pValue}>
             {formatCurrency(token.nav[currency].amount, currency)}
@@ -84,7 +84,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
          * 
          * sprint 1
          * 
-         <div className='flex justify-between items-center mb-8'>
+         <div className='flex justify-between items-center'>
           <p className={styles.pName}>Unrealized G&L</p>
           {token.nav[currency].difference?.amount ? (
             <p
@@ -102,7 +102,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             <SkeletonLoader className='h-16 w-50' />
           )}
         </div>
-        <div className='flex justify-between items-center mb-8'>
+        <div className='flex justify-between items-center'>
           <p className={styles.pName}>Unrealized ROI</p>
           {token.nav[currency].difference?.amount ? (
             <p
@@ -120,14 +120,14 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             <SkeletonLoader className='h-16 w-50' />
           )}
         </div> */}
-        <div className='flex justify-between items-center mb-8'>
+        <div className='flex justify-between items-center'>
           <p className={styles.pName}>Acq. date</p>
           <p className={styles.pValue}>
             {token.acquisitionDate &&
               formatDate(new Date(token.acquisitionDate))}
           </p>
         </div>
-        <div className='flex items-center mb-8'>
+        <div className='flex items-center'>
           <p className={styles.pValueType}>
             {token.valuation.length > 0
               ? mappingConstants(token.valuation[0].type)

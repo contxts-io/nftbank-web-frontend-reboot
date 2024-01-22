@@ -45,6 +45,8 @@ const tooltip = ({
   const positionCollectionAmount = parseInt(
     totalInventoryPositionAmount?.[seriesIndex].amount
   );
+  const positionCollectionAmountDiff =
+    totalInventoryPositionAmount?.[seriesIndex]?.difference;
 
   const amount = formatCurrency(
     totalInventoryPositionValue?.[seriesIndex]?.value[currency].amount || '0',
@@ -70,23 +72,31 @@ const tooltip = ({
           // <p className={`text-[var(--color-text-main)]`}>
           //   {formatPercent(series[seriesIndex])}
           // </p>
-          <div className='w-full'>
+          <div className='w-full min-w-[200px]'>
             <div className='flex justify-between items-center'>
               <span className='text-[var(--color-text-subtle)] mr-41'>
                 Amount
               </span>
               <p>{positionCollectionAmount}</p>
             </div>
-            {/* <div className='flex justify-between items-center'>
-              <span className='text-[var(--color-text-subtle)] mr-41'>
-                Amount Difference(24h)
-              </span>
-              <p className={`text-[var(--color-text-main)]`}>
-                {formatPercent(
-                  positionCollection.value[currency].difference?.percentage
-                )}
-              </p>
-            </div> */}
+            {totalInventoryPositionAmount.length !== seriesIndex + 1 && (
+              <div className='flex justify-between items-center'>
+                <span className='text-[var(--color-text-subtle)] mr-41'>
+                  Amount Difference(24h)
+                </span>
+                <p
+                  className={`${
+                    isPlus(positionCollectionAmountDiff) === '-'
+                      ? 'text-[var(--color-text-main)]'
+                      : isPlus(positionCollectionAmountDiff) === true
+                      ? 'text-[var(--color-text-success)]'
+                      : 'text-[var(--color-text-danger)]'
+                  }`}
+                >
+                  {positionCollectionAmountDiff}
+                </p>
+              </div>
+            )}
           </div>
         )}
         {selected === 'value' && (

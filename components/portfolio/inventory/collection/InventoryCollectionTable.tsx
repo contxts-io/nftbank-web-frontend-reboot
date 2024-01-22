@@ -182,16 +182,16 @@ const InventoryCollectionTable = () => {
                       <td>
                         <article className='flex items-center'>
                           {row.collection.imageUrl ? (
-                            <img
-                              width={24}
-                              height={24}
-                              src={row.collection.imageUrl}
-                              className='rounded-full mr-12 w-24 h-24 border-1 border-[var(--color-border-main)]'
-                              alt={
-                                row.collection.name ||
-                                row.collection.assetContract
-                              }
-                            />
+                            <div className='w-24 h-24 rounded-full overflow-hidden border-1 border-[var(--color-border-main)] mr-12 '>
+                              <img
+                                src={row.collection.imageUrl}
+                                className='rounded-full w-full object-cover object-center'
+                                alt={
+                                  row.collection.name ||
+                                  row.collection.assetContract
+                                }
+                              />
+                            </div>
                           ) : (
                             <div className='w-24 h-24 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center rounded-full mr-12 border-1'>
                               <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)] ' />
