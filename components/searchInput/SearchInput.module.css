@@ -2,6 +2,9 @@
   @apply w-full h-44 flex items-center justify-items-start px-12;
   @apply border-1 border-[var(--color-border-main)] text-[var(--color-text-main)];
 }
+.active {
+  @apply border-[var(--color-border-selected)] text-[var(--color-icon-main)];
+}
 .textInput {
   @apply w-full border-0 p-0 ml-8;
   @apply bg-transparent  text-[var(--color-text-main)] placeholder:text-[var(--color-text-subtlest)];
