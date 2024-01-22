@@ -18,6 +18,8 @@ import { useTheme } from 'next-themes';
 import Button from '@/components/buttons/Button';
 import CheckBox from '@/components/checkBox/CheckBox';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
+import FailToLoad from '@/components/error/FailToLoad';
+import NoData from '@/components/error/NoData';
 type Props = {
   handleFilterOpen: (state: boolean) => void;
 };
@@ -91,7 +93,7 @@ const InventoryItemFilter = (props: Props) => {
         };
       });
   };
-  if (status === 'error') return <div>error</div>;
+
   return (
     <aside className={`${styles.container}`}>
       <div className='flex justify-between items-center my-12'>
@@ -121,62 +123,74 @@ const InventoryItemFilter = (props: Props) => {
           value={searchText}
         />
       </div> */}
-      <div className='h-full overflow-y-scroll'>
-        <ul className='mt-12 w-full flex flex-col'>
-          {mergePosts?.map((item, index) => {
-            const isSelected = selectedCollection?.find((collection) => {
+      {status === 'error' && (
+        <div className='mt-40'>
+          <FailToLoad />
+        </div>
+      )}
+      {status === 'success' && (!mergePosts || mergePosts.length === 0) && (
+        <div>
+          <NoData />
+        </div>
+      )}
+      {status === 'success' && mergePosts && mergePosts?.length > 0 && (
+        <div className='h-full overflow-y-scroll'>
+          <ul className='mt-12 w-full flex flex-col'>
+            {mergePosts?.map((item, index) => {
+              const isSelected = selectedCollection?.find((collection) => {
+                return (
+                  collection.collection.assetContract ===
+                  item.collection.assetContract
+                );
+              })
+                ? true
+                : false;
               return (
-                collection.collection.assetContract ===
-                item.collection.assetContract
-              );
-            })
-              ? true
-              : false;
-            return (
-              <Fragment key={`${item.collection.assetContract}-${index}`}>
-                <li
-                  className='flex mb-12 items-center cursor-pointer'
-                  onClick={() => handleClickCheckBox(item)}
-                >
-                  <CheckBox
-                    checked={isSelected}
+                <Fragment key={`${item.collection.assetContract}-${index}`}>
+                  <li
+                    className='flex mb-12 items-center cursor-pointer'
                     onClick={() => handleClickCheckBox(item)}
-                    className={`mr-8 ${
-                      isSelected && 'bg-[var(--color-background-brand-bold)]'
-                    }`}
-                  />
-                  {item.collection.imageUrl ? (
-                    <img
-                      src={item.collection.imageUrl}
-                      width={20}
-                      height={20}
-                      className='rounded-full mr-8 border-1 border-[var(--color-border-main)] w-20 h-20'
-                      alt={`${
-                        item.collection.name || item.collection.assetContract
-                      } image`}
-                    />
-                  ) : (
-                    <div className='rounded-full w-20 h-20 flex items-center justify-center border-1 border-[var(--color-border-main)] mr-8'>
-                      <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)]' />
-                    </div>
-                  )}
-                  <p
-                    className={`font-caption-medium ${styles.pCollectionName}`}
                   >
-                    {item.collection.name ||
-                      shortenAddress(item.collection.assetContract)}
-                  </p>
-                </li>
-              </Fragment>
-            );
-          })}
-          {!data?.pages?.[data?.pages.length - 1].isLast && (
-            <li ref={ref} className='h-43 '>
-              more
-            </li>
-          )}
-        </ul>
-      </div>
+                    <CheckBox
+                      checked={isSelected}
+                      onClick={() => handleClickCheckBox(item)}
+                      className={`mr-8 ${
+                        isSelected && 'bg-[var(--color-background-brand-bold)]'
+                      }`}
+                    />
+                    {item.collection.imageUrl ? (
+                      <img
+                        src={item.collection.imageUrl}
+                        width={20}
+                        height={20}
+                        className='rounded-full mr-8 border-1 border-[var(--color-border-main)] w-20 h-20'
+                        alt={`${
+                          item.collection.name || item.collection.assetContract
+                        } image`}
+                      />
+                    ) : (
+                      <div className='rounded-full w-20 h-20 flex items-center justify-center border-1 border-[var(--color-border-main)] mr-8'>
+                        <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)]' />
+                      </div>
+                    )}
+                    <p
+                      className={`font-caption-medium ${styles.pCollectionName}`}
+                    >
+                      {item.collection.name ||
+                        shortenAddress(item.collection.assetContract)}
+                    </p>
+                  </li>
+                </Fragment>
+              );
+            })}
+            {!data?.pages?.[data?.pages.length - 1].isLast && (
+              <li ref={ref} className='h-43 '>
+                more
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
       <div>
         {isFetching && !isFetchingNextPage ? 'Background Updating...' : null}
       </div>

@@ -20,6 +20,8 @@ import { useInView } from 'react-intersection-observer';
 import { TValuationType } from '@/interfaces/constants';
 import { selectedTokenAtom } from '@/store/portfolio';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
+import FailToLoad from '@/components/error/FailToLoad';
+import NoData from '@/components/error/NoData';
 const HEADER = [
   {
     type: 'Item',
@@ -123,38 +125,48 @@ const InventoryItemTable = (props: Props) => {
   };
   return (
     <React.Fragment>
-      <table className={`${styles.table}`}>
-        <thead
-          className={`${styles.tableHead} ${
-            props.sticky ? styles.stickyBar : ''
-          }`}
-        >
-          <tr className={`${styles.tableHeadRow}`}>
-            <th />
-            {HEADER.map((item, index) => (
-              <th
-                key={index}
-                className={`font-caption-medium 
+      {status === 'error' && (
+        <div>
+          <FailToLoad />
+        </div>
+      )}
+      {status === 'success' && (!mergePosts || mergePosts.length === 0) && (
+        <div>
+          <NoData />
+        </div>
+      )}
+      {status === 'success' && mergePosts && mergePosts?.length > 0 && (
+        <table className={`${styles.table}`}>
+          <thead
+            className={`${styles.tableHead} ${
+              props.sticky ? styles.stickyBar : ''
+            }`}
+          >
+            <tr className={`${styles.tableHeadRow}`}>
+              <th />
+              {HEADER.map((item, index) => (
+                <th
+                  key={index}
+                  className={`font-caption-medium 
                 ${
                   // index == 0 ? 'text-left' : 'text-right'
                   index == HEADER.length - 1 ? 'text-right' : 'text-left'
                 } 
                 ${item.sort ? 'cursor-pointer' : ''}`}
-                onClick={() => item.sort && handleSort(item.type)}
-              >
-                {index === 1 ? (
-                  <span className='mr-30'>{item.name}</span>
-                ) : (
-                  <p>{item.name}</p>
-                )}
-              </th>
-            ))}
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {status === 'success' &&
-            mergePosts?.map((page, pageIndex) => {
+                  onClick={() => item.sort && handleSort(item.type)}
+                >
+                  {index === 1 ? (
+                    <span className='mr-30'>{item.name}</span>
+                  ) : (
+                    <p>{item.name}</p>
+                  )}
+                </th>
+              ))}
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {mergePosts?.map((page, pageIndex) => {
               return page.data.map((data, index) => {
                 const valuationType = selectedValueType(data.valuation);
                 const itemKey = `${data.collection.assetContract}-${data.token.tokenId}-${index}`;
@@ -295,8 +307,9 @@ const InventoryItemTable = (props: Props) => {
                 );
               });
             })}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      )}
       <div ref={ref} className='h-43' />
     </React.Fragment>
   );
