@@ -101,7 +101,11 @@ const HistoricalTrendChart = (props: Props) => {
 
         category.push(yDate);
         item.value?.[currency]
-          ? _series[0].data.push(parseFloat(item.value?.[currency] || '0'))
+          ? _series[0].data.push(
+              item.value?.[currency] === 'nan'
+                ? _series[0].data[index - 1] || null
+                : parseFloat(item.value?.[currency] || '0')
+            )
           : _series[0].data.push(null);
       })) ||
       [];
