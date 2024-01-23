@@ -10,17 +10,17 @@ import instance from "@/utils/axiosInterceptor";
 import { jsonToQueryString } from "@/utils/common";
 
 export const getInventoryValue = async<T = InventoryValueNested>(searchParam: BasicParam | null): Promise<T> => {
-  const query = jsonToQueryString(searchParam).toLowerCase();
+  const query = jsonToQueryString(searchParam);
   const { data } = await instance.get<{data:T}>(`/inventory/value?${query}`);
   return data.data;
 }
 export const getCollectionValuableCount = async<T = IStat>(searchParam: BasicParam | null): Promise<T> => {
-  const query = jsonToQueryString(searchParam).toLowerCase();
+  const query = jsonToQueryString(searchParam);
   const { data } = await instance.get<{data:T}>(`/inventory/collection/stat?${query}`);
   return data.data;
 }
 export const getItemValuableCount = async<T = IStat>(searchParam: BasicParam | null): Promise<T> => {
-  const query = jsonToQueryString(searchParam).toLowerCase();
+  const query = jsonToQueryString(searchParam);
   const { data } = await instance.get<{data:T}>(`/inventory/token/stat?${query}`);
   return data.data;
 }
@@ -35,6 +35,7 @@ export const getCollectionList = async<T = IInventoryCollectionList>(requestPara
       return encodeURIComponent(key) + '=' + encodeURIComponent(requestParam[key as Key]);
   })
   .join('&');
+  // const query = jsonToQueryString(requestParam);
   const { data } = await instance.get<{data:T}>(`/inventory/collection?${query}`);
   return data.data;
 }
@@ -56,7 +57,8 @@ export const getItemList = async<T = IInventoryItemList>(requestParam: ItemParam
   })
     .join('&');
   console.log('getItemList query',query);
-  const { data } = await instance.get<{data:T}>(`/inventory/token?${query.replace('&&','&')}`);
+  // const { data } = await instance.get<{data:T}>(`/inventory/token?${query.replace('&&','&')}`);
+  const { data } = await instance.post<{data:T}>(`/inventory/token`,requestParam);
   return data.data;
 }
 export const getSummaryTotalSpend = async<T = TSummary>(searchParam:BasicParam | null): Promise<T> => {
@@ -101,7 +103,7 @@ export const getInventoryValueHistory = async<T = TResponseInventoryValueHistory
       }
   })
     .join('&');
-  const {data} = await instance.get<{data:T}>(`/inventory/value/history?${query.replace('&&','&')}`);
+  const {data} = await instance.get<{data:T}>(`/inventory/history?${query.replace('&&','&')}`);
   // const {data} = await instance.get<{data:T}>(`/inventory/value/history?walletAddress=0x7e0de483a33bd04d2efe38686be5cb25cfd3e533&networkId=ethereum&window=7d`);
   return data.data;
 }

@@ -1,17 +1,17 @@
 .container {
-  @apply w-full;
+  @apply w-full max-h-[calc(100vh-114px)];
 }
 .table {
   @apply w-full border-y-1 border-[var(--color-border-main)] table-auto;
 }
 
 .tableRow {
-  @apply py-8 border-b-1 border-[var(--color-border-disabled)];
+  @apply py-8 border-b-1 border-[var(--color-border-disabled)] h-52 !important;
   @apply text-[var(--color-text-main)] hover:bg-[var(--color-elevation-sunken)] transition-all duration-200;
 }
 .tableRow td {
   @apply py-8;
 }
 .pTd {
-  @apply mr-80 min-w-90;
+  @apply min-w-90;
 }

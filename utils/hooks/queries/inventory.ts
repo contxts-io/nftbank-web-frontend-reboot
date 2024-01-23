@@ -16,6 +16,7 @@ export function useInventoryValue(searchParam: BasicParam | null) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      enabled: searchParam !== null && searchParam.walletAddress !== undefined && searchParam?.walletAddress !== '' && searchParam?.walletAddress !== undefined,
     },
   );
 }
@@ -96,12 +97,13 @@ export const useInventoryItemInfinite = (requestParam: ItemParam) => {
   const fetchData = async ({ pageParam = 1 }) => {
     const result = await getItemList({...requestParam, page: pageParam});
     const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
+    // const isLast = result.paging.total !== result.paging.limit ? true : false;
         
     return {
       ...result,
       page: pageParam,
       nextPage: pageParam + 1,
-      isLast,
+      isLast : isLast,
     };
   }
 
@@ -126,9 +128,11 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
   const fetchData = async ({ pageParam = 1 }) => {
     const result = await getCollectionList({...requestParam, page: pageParam});
     const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
+    // const isLast = result.paging.total !== result.paging.limit ? true : false;
         
     return {
       ...result,
+      paging: result.paging,
       page: pageParam,
       nextPage: pageParam + 1,
       isLast,
@@ -176,6 +180,7 @@ export const useInventoryCollectionPositionValue = (requestParam: BasicParam) =>
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      enabled: !!requestParam.walletAddress,
     },
   );
 }
@@ -190,14 +195,17 @@ export const useInventoryCollectionPositionAmount = (requestParam: BasicParam) =
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      enabled: !!requestParam.walletAddress,
     },
   );
 }
 export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAndLossParam) => {
   const fetchData = async ({ pageParam = null }) => {
     const result = await getInventoryRealizedTokens({ ...requestParam, nextCursor: pageParam});
+    // const isLast = result.paging.total === result.paging.limit ? true : false;
     const isLast = result.paging.hasNext ? false : true;
-        
+
+
     return {
       ...result,
       // page: pageParam,
@@ -236,6 +244,7 @@ export const useInventoryValuePolling = (searchParam:BasicParam | null) => {
       staleTime: 0,
       cacheTime: 0,
       useErrorBoundary: false,
+      enabled: searchParam !== null,
     },
   );
 }

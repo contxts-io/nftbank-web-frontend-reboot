@@ -10,12 +10,17 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { myDefaultPortfolioAtom } from '@/store/settings';
 import { portfolioUserAtom } from '@/store/portfolio';
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 const InventoryPage = () => {
   return (
     <section className={styles.container}>
-      <InventoryValue />
-      <InventoryContainer />
+      {/**
+       *
+       * sprint 1
+       *
+       *  <InventoryValue /> */}
+      {/* <InventoryContainer /> */}
     </section>
   );
 };

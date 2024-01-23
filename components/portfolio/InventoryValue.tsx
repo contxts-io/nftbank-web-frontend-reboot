@@ -9,7 +9,7 @@ import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { useSearchParams } from 'next/navigation';
 import { inventoryTypeAtom } from '@/store/settings';
-import { formatCurrency, formatPercent } from '@/utils/common';
+import { formatCurrency, formatPercent, parseFloatPrice } from '@/utils/common';
 import { useInventoryUnrealizedPerformance } from '@/utils/hooks/queries/performance';
 import SkeletonLoader from '../SkeletonLoader';
 import { useEffect, useState } from 'react';
@@ -50,8 +50,9 @@ const InventoryValue = () => {
           inventoryValue?.value[currency].difference.percentage || '0'
         ),
         isPlus:
-          parseFloat(inventoryValue?.value[currency].difference.amount || '0') >
-          0,
+          parseFloatPrice(
+            inventoryValue?.value[currency].difference.amount || '0'
+          ) > 0,
       },
       {
         type: 'unrealizedValue',

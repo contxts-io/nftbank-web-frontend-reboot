@@ -12,7 +12,8 @@
   @apply bg-transparent placeholder:text-[var(--color-text-subtlest)] text-[var(--color-text-main)];
 }
 .filterButton {
-  @apply w-36 h-36 p-0 flex items-center justify-center;
+  @apply cursor-pointer w-36 h-36 border-1 border-[var(--color-border-main)] flex items-center justify-center text-[var(--color-icon-subtle)];
+  @apply hover:border-[var(--color-border-selected)] hover:text-[var(--color-icon-main)];
 }
 .icon {
   @apply fill-[var(--color-icon-main)];
@@ -22,5 +23,5 @@
   @apply bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-bold)];
 }
 .pCollectionName {
-  @apply text-[var(--color-text-main)];
+  @apply text-[var(--color-text-main)] flex-1 truncate;
 }

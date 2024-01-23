@@ -23,7 +23,6 @@ export function ThemeSwitcher() {
 
   useEffect(() => {
     setMounted(true);
-    theme === 'light';
   }, []);
   useEffect(() => {
     theme && document.body.setAttribute('data-theme', theme);

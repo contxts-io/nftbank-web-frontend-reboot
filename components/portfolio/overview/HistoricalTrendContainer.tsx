@@ -11,9 +11,15 @@ import {
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
-import { difference, formatCurrency, formatPercent } from '@/utils/common';
+import {
+  difference,
+  formatCurrency,
+  formatPercent,
+  parseFloatPrice,
+} from '@/utils/common';
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { portfolioUserAtom } from '@/store/portfolio';
+import CurrencyComponent from '@/components/p/Currency';
 //'1d'| '3d'| '7d'| '30d'| '90d'| 'ytd'| '365d'| 'all'
 const PERIOD: { name: string; value: Period }[] = [
   {
@@ -25,17 +31,21 @@ const PERIOD: { name: string; value: Period }[] = [
     value: '30d',
   },
   {
-    name: 'YTD',
-    value: 'ytd',
+    name: '3M',
+    value: '90d',
   },
-  {
-    name: '1Y',
-    value: '365d',
-  },
-  {
-    name: 'MAX',
-    value: 'all',
-  },
+  // {
+  //   name: 'YTD',
+  //   value: 'ytd',
+  // },
+  // {
+  //   name: '1Y',
+  //   value: '365d',
+  // },
+  // {
+  //   name: 'MAX',
+  //   value: 'all',
+  // },
 ];
 type Period = '1d' | '3d' | '7d' | '30d' | '90d' | 'ytd' | '365d' | 'all';
 const HistoricalTrendContainer = () => {
@@ -81,18 +91,40 @@ const HistoricalTrendContainer = () => {
       hoverValue ||
       parseFloat(inventoryValue?.value[currency].amount || '0.00');
 
+    // const diff =
+    //   hoverValue == 0
+    //     ? 0 -
+    //       parseFloat(
+    //         inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+    //       )
+    //     : _value -
+    //       parseFloat(
+    //         inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+    //       );
+
     const diff =
-      hoverValue == 0
-        ? 0 -
-          parseFloat(
-            inventoryValueHistorical?.data[0].value[currency] || '0.00'
-          )
-        : _value -
-          parseFloat(
-            inventoryValueHistorical?.data[0].value[currency] || '0.00'
-          );
+      _value -
+      parseFloatPrice(
+        inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+      );
+    console.log(
+      'inventoryValueHistorical?.data[0]?.value[currency]',
+      inventoryValueHistorical?.data[0]?.value[currency],
+      parseFloatPrice(
+        inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+      )
+    );
     return diff;
   }, [hoverValue, currency, inventoryValue]);
+  const initialValue = useMemo(() => {
+    // const value = parseFloatPrice(
+    //   inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+    // );
+    const value = parseFloatPrice(
+      inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+    );
+    return value;
+  }, [currency, inventoryValueHistorical]);
   useEffect(() => {
     setSelectedPeriod('1W');
     return () => {
@@ -136,17 +168,7 @@ const HistoricalTrendContainer = () => {
             }`}
           />
         </div>
-        <p className='font-header03-bold mr-12'>
-          <span className='text-[var(--color-text-subtlest)]'>
-            {total.substring(0, 1)}
-          </span>
-          <span className='text-[var(--color-text-main)]'>
-            {total.substring(1).split('.')[0]}
-          </span>
-          <span className='text-[var(--color-text-subtlest)]'>
-            {`.${total.split('.')[1] || '00'}`}
-          </span>
-        </p>
+        <CurrencyComponent value={total} className='font-header03-bold mr-12' />
         {differenceValue && (
           <p
             className={`font-body01-medium ${
@@ -155,19 +177,14 @@ const HistoricalTrendContainer = () => {
                 : styles.minus
             }`}
           >
-            {`${difference(
-              differenceValue.toString(),
-              currency
-            )}  (${difference(
-              (
-                (differenceValue /
-                  parseFloat(
-                    inventoryValueHistorical?.data[0].value[currency] || '1'
-                  )) *
-                100
-              ).toString(),
-              'percent'
-            )})`}
+            {`${difference(differenceValue.toString(), currency)} (${
+              initialValue && initialValue > 0
+                ? difference(
+                    ((differenceValue / initialValue) * 100).toString(),
+                    'percent'
+                  )
+                : '-'
+            })`}
           </p>
         )}
       </div>

@@ -1,8 +1,12 @@
 /** @type {import('next').NextConfig} */
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://web-api-reboot.dev.nftbank.tools';
+  process.env.NEXT_PUBLIC_API_URL || 'https://reboot-fast-api.onrender.com';
 const nextConfig = {
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
   images: {
+    unoptimaised: true,
     remotePatterns: [
       {
         protocol: 'https',

@@ -16,6 +16,7 @@ import ReactModal from 'react-modal';
 import InventoryItemDetail from './InventoryItemDetail';
 import { selectedTokenAtom } from '@/store/portfolio';
 import Button from '@/components/buttons/Button';
+import Image from 'next/image';
 type Props = {
   isFilterOpen: boolean;
   handleFilterOpen: (state: boolean) => void;
@@ -63,20 +64,24 @@ const InventoryItemList = (props: Props) => {
   };
 
   return (
-    <section className={styles.container}>
-      <div className='flex py-12 px-24 items-center justify-between'>
-        <div>
+    <section className={`${styles.container}  ${isFilterOpen ? 'pl-12' : ''}`}>
+      <div className='flex py-12 items-center justify-between'>
+        <div className='ml-12'>
           {!isFilterOpen && (
-            <button
+            <div
               className={`${styles.filterButton}`}
               onClick={() => handleFilterOpen(true)}
             >
-              <Filter className='fill-[var(--color-icon-subtle)]' />
-            </button>
+              <Filter />
+            </div>
           )}
         </div>
-        <div className='flex items-center'>
-          <div className='flex px-12 mr-8'>
+        <div className={`flex items-center mr-12`}>
+          {/**
+           * 
+           * sprint 1
+           * 
+           * <div className='flex px-12 mr-8'>
             <span className='font-button03-medium text-[var(--color-text-subtle)] mr-8'>
               Include Gas fee
             </span>
@@ -85,41 +90,47 @@ const InventoryItemList = (props: Props) => {
               checked={priceType === 'costBasis'}
               id={''}
             />
-          </div>
+          </div> */}
           <div className='flex justify-between p-3 items-center border-1 w-72 border-[var(--color-border-main)]'>
             <div
               className={`${styles.viewType} ${
                 itemViewType === 'cardView' && styles.checked
               }`}
             >
-              <Button
+              <div
                 className={`${styles.viewTypeButton}`}
                 onClick={() => setItemViewType('cardView')}
                 id=''
               >
-                <DotsNine
-                  width={16}
-                  height={16}
-                  className={`${styles.viewTypeButtonIcon}`}
-                />
-              </Button>
+                <DotsNine className={`${styles.viewTypeButtonIcon}`} />
+                {/* <img
+                  src='/icon/DotsNine.svg'
+                  width={24}
+                  height={24}
+                  alt=''
+                  className='border-0'
+                /> */}
+              </div>
             </div>
             <div
               className={`${styles.viewType} ${
                 itemViewType === 'listView' && styles.checked
               }`}
             >
-              <Button
+              <div
                 className={`${styles.viewTypeButton}`}
                 onClick={() => setItemViewType('listView')}
                 id=''
               >
-                <Hamburger
-                  width={16}
-                  height={16}
-                  className={`${styles.viewTypeButtonIcon}`}
-                />
-              </Button>
+                <Hamburger className={`${styles.viewTypeButtonIcon}`} />
+                {/* <img
+                  src='/icon/Hamburger.svg'
+                  width={24}
+                  height={24}
+                  alt=''
+                  className='border-0'
+                /> */}
+              </div>
             </div>
           </div>
         </div>

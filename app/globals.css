@@ -80,7 +80,7 @@
   textarea,
   select,
   input {
-    @apply block p-12 rounded-none placeholder:text-[var(--color-text-subtlest)] text-[var(--color-text-main)] outline-0 ring-0 focus:outline-0 focus:ring-0 bg-transparent border-1 border-[var(--color-border-main)] hover:border-[var(--color-border-selected)] focus:border-[var(--color-border-selected)];
+    @apply block rounded-none placeholder:text-[var(--color-text-subtlest)] text-[var(--color-text-main)] outline-0 ring-0 focus:outline-0 focus:ring-0 bg-transparent border-1 border-[var(--color-border-main)] hover:border-[var(--color-border-selected)] focus:border-[var(--color-border-selected)];
     @apply transition ease-in-out duration-150;
   }
   input::-webkit-outer-spin-button,

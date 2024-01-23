@@ -1,5 +1,5 @@
 .navigation {
-  @apply w-full h-60 flex items-center justify-between sticky top-55 bg-[var(--color-elevation-surface)] z-40;
+  @apply w-full h-60 flex items-center justify-between sticky top-60 bg-[var(--color-elevation-surface)] z-40;
 }
 .links {
   @apply bottom-0 h-60 w-full flex items-center text-[var(--color-text-subtlest)];
@@ -15,4 +15,18 @@
 }
 .subButtons {
   @apply border-b-4 border-[var(--color-border-main)] flex h-full text-[var(--color-text-subtlest)] fill-[var(--color-icon-subtlest)];
+}
+.dropdown {
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.1));
+  @apply absolute min-w-65 max-h-[206px] overflow-y-scroll border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface-overlay)] z-30;
+}
+.dropdown li {
+  @apply flex w-full justify-between items-center whitespace-nowrap;
+  @apply text-[var(--color-text-subtle)] p-8 cursor-pointer hover:text-[var(--color-text-main)] border-b-1 border-[var(--color-border-bold)];
+}
+.dropdown li p {
+  @apply text-right;
+}
+.dropdown li:last-child {
+  @apply border-0 !important;
 }

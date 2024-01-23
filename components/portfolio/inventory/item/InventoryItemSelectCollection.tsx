@@ -21,10 +21,8 @@ const InventoryItemSelectCollection = () => {
     setCollections([]);
   };
   return (
-    <div className='font-caption-medium flex items-center h-full'>
-      <p className='text-text-subtle dark:text-text-subtle-dark mr-12'>
-        Filter
-      </p>
+    <div className='font-caption-medium flex items-center flex-wrap gap-y-8 h-fit'>
+      <p className='text-[var(--color-text-subtle)] mr-12'>Filter</p>
       {collections?.map((collection, index) => (
         <button
           key={index}
@@ -32,13 +30,13 @@ const InventoryItemSelectCollection = () => {
           onClick={() => handleClickButton(collection.collection.assetContract)}
         >
           {collection.collection.imageUrl ? (
-            <Image
-              src={collection.collection.imageUrl}
-              width={20}
-              height={20}
-              alt={`${collection.collection.name}`}
-              className='w-20 h-20 rounded-full mr-8 border-1 border-[var(--color-border-main)]'
-            />
+            <div className='w-20 h-20 rounded-full overflow-hidden mr-8'>
+              <img
+                src={collection.collection.imageUrl}
+                alt={`${collection.collection.name}`}
+                className='rounded-full w-full object-center'
+              />
+            </div>
           ) : (
             <div className='rounded-full w-20 h-20 flex items-center justify-center border-1 border-[var(--color-border-main)] mr-8'>
               <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)]' />

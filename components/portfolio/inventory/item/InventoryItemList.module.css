@@ -5,10 +5,7 @@
   @apply flex items-center justify-center;
 }
 .viewTypeButton {
-  @apply border-0 h-28 w-28 p-0 flex items-center justify-center rounded-none bg-transparent;
-}
-.viewTypeButton svg {
-  @apply w-16 h-16;
+  @apply border-0 h-28 w-28 p-0 flex items-center justify-center rounded-none bg-transparent cursor-pointer;
 }
 .checked {
   @apply bg-background-brand-bold;
@@ -32,4 +29,8 @@
 }
 .sidebar.hide {
   @apply w-0;
+}
+.filterButton {
+  @apply cursor-pointer w-36 h-36 border-1 border-[var(--color-border-main)] flex items-center justify-center text-[var(--color-icon-subtle)];
+  @apply hover:border-[var(--color-border-selected)] hover:text-[var(--color-icon-main)];
 }

@@ -8,6 +8,8 @@ import { useEffect, useMemo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import { Token } from '@/interfaces/token';
+import NoData from '@/components/error/NoData';
+import FailToLoad from '@/components/error/FailToLoad';
 
 const InventoryItemCardGrid = () => {
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
@@ -33,13 +35,25 @@ const InventoryItemCardGrid = () => {
   );
   return (
     <section className='w-full h-full overflow-auto'>
-      <div className={styles.cardListSection}>
-        {mergePosts?.map((page, pageIndex) => {
-          return page.data.map((token, index) => {
-            return token && <InventoryItemCard token={token} key={index} />;
-          });
-        })}
-      </div>
+      {status === 'error' && (
+        <div>
+          <FailToLoad />
+        </div>
+      )}
+      {status === 'success' && (!mergePosts || mergePosts.length === 0) && (
+        <div>
+          <NoData />
+        </div>
+      )}
+      {status === 'success' && mergePosts && mergePosts?.length > 0 && (
+        <div className={styles.cardListSection}>
+          {mergePosts?.map((page, pageIndex) => {
+            return page.data.map((token, index) => {
+              return token && <InventoryItemCard token={token} key={index} />;
+            });
+          })}
+        </div>
+      )}
       <div className='w-full h-43 mt-40' ref={ref} />
     </section>
   );

@@ -1,17 +1,27 @@
-import Test from '@/components/Test';
-import Link from 'next/link';
+'use client';
+import Entrance from '@/components/Entrance';
+import { use } from 'chai';
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 
-export default async function Home() {
-  const apiKey = process.env.API_KEY || 'No API Key';
+const Home = () => {
+  const [mounted, setMounted] = useState(false);
+  const { setTheme, theme } = useTheme();
+  useEffect(() => {
+    setTheme('dark');
+    window.localStorage.setItem('theme', 'dark');
+    const element = document.body;
+    element.style.setProperty('--initial-color-mode', 'dark');
+    // 시작시 다크모드를 바로 적용 시켜줌
+    document.body.setAttribute('data-theme', 'dark');
+    setMounted(true);
+  }, []);
   return (
-    <main>
-      <div className='flex flex-col w-screen justify-center'>
-        <h1>Next.js + TypeScript</h1>
-        <p>줄리안</p>
-        <p>{apiKey}</p>
-        <Link href='/about'>about</Link>
+    <main className='w-full h-full'>
+      <div className='flex w-full justify-center h-full'>
+        {mounted && <Entrance />}
       </div>
-      <Test />
     </main>
   );
-}
+};
+export default Home;

@@ -1,0 +1,6 @@
+.contactButton {
+  @apply border-[var(--color-border-brand)] text-[var(--color-text-brand)] !important;
+}
+.contactButton:hover {
+  @apply border-[var(--color-border-selected)] text-[var(--color-text-main)] !important;
+}

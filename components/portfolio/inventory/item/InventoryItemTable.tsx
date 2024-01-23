@@ -19,6 +19,9 @@ import {
 import { useInView } from 'react-intersection-observer';
 import { TValuationType } from '@/interfaces/constants';
 import { selectedTokenAtom } from '@/store/portfolio';
+import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
+import FailToLoad from '@/components/error/FailToLoad';
+import NoData from '@/components/error/NoData';
 const HEADER = [
   {
     type: 'Item',
@@ -29,31 +32,31 @@ const HEADER = [
     name: 'Amount',
     sort: true,
   },
-  {
-    type: 'costBasis',
-    name: 'Cost basis',
-  },
+  // {
+  //   type: 'costBasis',
+  //   name: 'Cost basis',
+  // },
   {
     type: 'nav',
     name: 'Realtime NAV',
     sort: true,
   },
-  {
-    type: 'unrealizedG&L',
-    name: 'Unrealized G&L',
-  },
-  {
-    type: 'unrealizedROI',
-    name: 'Unrealized ROI',
-  },
+  // {
+  //   type: 'unrealizedG&L',
+  //   name: 'Unrealized G&L',
+  // },
+  // {
+  //   type: 'unrealizedROI',
+  //   name: 'Unrealized ROI',
+  // },
   {
     type: 'valuationType',
     name: 'Valuation Type',
   },
-  {
-    type: 'accuracy',
-    name: 'Accuracy',
-  },
+  // {
+  //   type: 'accuracy',
+  //   name: 'Accuracy',
+  // },
   {
     type: 'acquisitionDate',
     name: 'Acq. date',
@@ -122,82 +125,104 @@ const InventoryItemTable = (props: Props) => {
   };
   return (
     <React.Fragment>
-      <table className={`${styles.table}`}>
-        <thead
-          className={`${styles.tableHead} ${
-            props.sticky ? styles.stickyBar : ''
-          }`}
-        >
-          <tr className={`${styles.tableHeadRow}`}>
-            <th />
-            {HEADER.map((item, index) => (
-              <th
-                key={index}
-                className={`font-caption-medium ${
-                  index == 0 ? 'text-left' : 'text-right'
-                } ${item.sort ? 'cursor-pointer' : ''}`}
-                onClick={() => item.sort && handleSort(item.type)}
-              >
-                {index === HEADER.length - 1 || index === 1 ? (
-                  <span className='mr-30'>{item.name}</span>
-                ) : (
-                  <p>{item.name}</p>
-                )}
-              </th>
-            ))}
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {status === 'success' &&
-            mergePosts?.map((page, pageIndex) => {
-              return page.data.map((data, index) => {
-                const valuationType = selectedValueType(data.valuation);
-                const itemKey = `${data.collection.assetContract}-${data.token.tokenId}-${index}`;
-                const isOpen = openedItem.find((item) => item === itemKey)
-                  ? true
-                  : false;
-                const plus = isPlus(
-                  data.nav[currency].difference?.amount || '0'
-                );
-                return (
-                  <React.Fragment key={index}>
-                    <tr
-                      key={index}
-                      className={`font-caption-regular ${styles.tableBodyRow} ${
-                        isOpen && styles.isOpen
-                      }`}
-                      onClick={() => handleOpenDetail(data)}
-                    >
-                      <td className={styles.blanc} />
-                      <td className='text-left p-0'>
-                        <div className={`flex items-center my-8`}>
-                          <div className={styles.tokenImage}>
-                            <Image
-                              src={
-                                data?.token.imageUrl || '/icon/nftbank_icon.svg'
-                              }
-                              width={32}
-                              height={32}
-                              placeholder='data:image/icon/nftbank_icon.svg'
-                              alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
-                            />
+      {status === 'error' && (
+        <div>
+          <FailToLoad />
+        </div>
+      )}
+      {status === 'success' && mergePosts?.[0].data.length === 0 && (
+        <div>
+          <NoData />
+        </div>
+      )}
+      {status === 'success' &&
+        mergePosts?.[0].data &&
+        mergePosts?.[0].data.length > 0 && (
+          <table className={`${styles.table}`}>
+            <thead
+              className={`${styles.tableHead} ${
+                props.sticky ? styles.stickyBar : ''
+              }`}
+            >
+              <tr className={`${styles.tableHeadRow}`}>
+                {HEADER.map((item, index) => (
+                  <th
+                    key={index}
+                    className={`font-caption-medium 
+                ${
+                  // index == 0 ? 'text-left' : 'text-right'
+                  index == HEADER.length - 1 ? 'text-right' : 'text-left'
+                } 
+                ${item.sort ? 'cursor-pointer' : ''}`}
+                    onClick={() => item.sort && handleSort(item.type)}
+                  >
+                    {index === 1 ? (
+                      <span className='mr-30'>{item.name}</span>
+                    ) : (
+                      <p>{item.name}</p>
+                    )}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {mergePosts?.map((page, pageIndex) => {
+                return page.data.map((data, index) => {
+                  const valuationType = selectedValueType(data.valuation);
+                  const itemKey = `${data.collection.assetContract}-${data.token.tokenId}-${index}`;
+                  const isOpen = openedItem.find((item) => item === itemKey)
+                    ? true
+                    : false;
+                  const plus = isPlus(
+                    data.nav[currency].difference?.amount || '0'
+                  );
+                  return (
+                    <React.Fragment key={index}>
+                      <tr
+                        key={index}
+                        className={`font-caption-regular ${
+                          styles.tableBodyRow
+                        } ${isOpen && styles.isOpen}`}
+                        // onClick={() => handleOpenDetail(data)}
+                      >
+                        <td className='text-left p-0'>
+                          <div className={`flex items-center my-8`}>
+                            <div className={styles.tokenImage}>
+                              {data?.token.imageUrl ? (
+                                <img
+                                  src={data?.token.imageUrl}
+                                  width={32}
+                                  height={32}
+                                  placeholder='data:image/icon/nftbank_icon.svg'
+                                  alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
+                                />
+                              ) : (
+                                <div className='w-32 h-32 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center border-1'>
+                                  <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)] ' />
+                                </div>
+                              )}
+                            </div>
+                            <div className='font-caption-medium max-w-[230px]  white-space-nowrap overflow-hidden text-ellipsis'>
+                              <p className={`${styles.pMain} mr-0`}>
+                                {data.token.tokenId}
+                              </p>
+                              <p className={`${styles.pSub} truncate mr-0`}>
+                                {data.collection.name ||
+                                  shortenAddress(data.collection.assetContract)}
+                              </p>
+                            </div>
                           </div>
-                          <div className='font-caption-medium max-w-[230px]  white-space-nowrap overflow-hidden text-ellipsis'>
-                            <p className={`${styles.pMain} mr-0`}>
-                              {data.token.tokenId}
-                            </p>
-                            <p className={`${styles.pSub} truncate mr-0`}>
-                              {data.token.name ||
-                                shortenAddress(data.collection.assetContract)}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className='text-right'>
-                        <p>{data.amount}</p>
-                      </td>
-                      <td className='text-right'>
+                        </td>
+                        <td className='text-left'>
+                          <p>{data.amount}</p>
+                        </td>
+                        {/**
+                       * 
+                       * 
+                       * sprint 1
+                       * 
+                       * 
+                       *  <td className='text-right'>
                         <p>
                           {formatCurrency(
                             data.acquisitionPrice?.[currency] || null,
@@ -215,13 +240,22 @@ const InventoryItemTable = (props: Props) => {
                               : ''}
                           </p>
                         )}
-                      </td>
-                      <td className='text-right'>
-                        <p>
-                          {formatCurrency(data.nav[currency].amount, currency)}
-                        </p>
-                      </td>
-                      <td className='text-right'>
+                      </td> */}
+                        <td className='text-left'>
+                          <p>
+                            {formatCurrency(
+                              data.nav[currency].amount,
+                              currency
+                            )}
+                          </p>
+                        </td>
+                        {/**
+                       * 
+                       * 
+                       * sprint 1
+                       * 
+                       * 
+                       * <td className='text-right'>
                         <p
                           className={`${
                             isPlus(data.nav[currency].difference?.amount || 0)
@@ -249,34 +283,34 @@ const InventoryItemTable = (props: Props) => {
                             data.nav[currency].difference?.percentage || null
                           )}
                         </p>
-                      </td>
-                      <td className='text-right'>
-                        <p>
-                          {/* {data.valuation.length > 0
+                      </td> */}
+                        <td className='text-left'>
+                          <span>
+                            {/* {data.valuation.length > 0
                             ? mappingConstants(data.valuation[0].type)
                             : 'no valuation type'} */}
-                          {valuationType
-                            ? mappingConstants(valuationType.type)
-                            : 'no valuation type'}
-                        </p>
-                      </td>
-                      <td className='text-right'>
+                            {valuationType
+                              ? mappingConstants(valuationType.type)
+                              : 'no valuation type'}
+                          </span>
+                        </td>
+                        {/* <td className='text-left'>
                         <p>{formatPercent(valuationType?.accuracy || null)}</p>
-                      </td>
-                      <td className='text-right'>
-                        <span>
-                          {data.acquisitionDate &&
-                            formatDate(new Date(data.acquisitionDate))}
-                        </span>
-                      </td>
-                      <td className={styles.blanc} />
-                    </tr>
-                  </React.Fragment>
-                );
-              });
-            })}
-        </tbody>
-      </table>
+                      </td> */}
+                        <td className='text-right'>
+                          <span>
+                            {data.acquisitionDate &&
+                              formatDate(new Date(data.acquisitionDate))}
+                          </span>
+                        </td>
+                      </tr>
+                    </React.Fragment>
+                  );
+                });
+              })}
+            </tbody>
+          </table>
+        )}
       <div ref={ref} className='h-43' />
     </React.Fragment>
   );

@@ -13,33 +13,45 @@ import Taxfiling from '@/components/landing/Taxfiling';
 import UpgradeNFTFinance from '@/components/landing/UpgradeNFTFinance';
 import UsersAre from '@/components/landing/UsersAre';
 import { useTheme } from 'next-themes';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const LandingPage = () => {
+  const [mounted, setMounted] = useState(false);
   const { setTheme, theme } = useTheme();
   useEffect(() => {
     setTheme('dark');
+    window.localStorage.setItem('theme', 'dark');
+    const element = document.body;
+    element.style.setProperty('--initial-color-mode', 'dark');
+
+    // 시작시 다크모드를 바로 적용 시켜줌
+    document.body.setAttribute('data-theme', 'dark');
+    setMounted(true);
   }, []);
   return (
-    <div className='w-full flex flex-col items-center'>
-      <div className='w-full sticky z-10 top-0'>
-        <TopNav />
-      </div>
-      <div className='w-[1170px] flex flex-col items-center gap-y-180'>
-        <UpgradeNFTFinance />
-        <ManageMetaverse />
-        <EstimateApi />
-        <ChromeExtension />
-        <Taxfiling />
-      </div>
-      <UsersAre />
-      <Blog />
-      <Partners />
-      <BackedBy />
-      <Started />
-      {/* <Footer /> */}
-      <FloatingDiscordButton />
-    </div>
+    <>
+      {mounted && (
+        <div className='w-full flex flex-col items-center'>
+          <div className='w-full fixed z-10 top-0'>
+            <TopNav />
+          </div>
+          <div className='w-[1170px] flex flex-col items-center gap-y-180'>
+            <UpgradeNFTFinance />
+            <ManageMetaverse />
+            <EstimateApi />
+            <ChromeExtension />
+            <Taxfiling />
+          </div>
+          <UsersAre />
+          <Blog />
+          <Partners />
+          <BackedBy />
+          <Started />
+          {/* <Footer /> */}
+          <FloatingDiscordButton />
+        </div>
+      )}
+    </>
   );
 };
 export default LandingPage;

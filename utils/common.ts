@@ -74,8 +74,8 @@ export function isPlus (value: number | string): boolean | '-' {
   }
 };
 export function formatPercent(_percent: string |'infinity'| null): string {
-  if (_percent === null) return '-';
-  if (_percent === 'infinity') return '-';
+  if (_percent === null) return '-%';
+  if (_percent === 'infinity') return '-%';
   const percent = parseFloat(_percent);
   if (Math.abs(percent) <= 0.001) return '0%';
   if (Math.abs(percent) < 1 && Math.abs(percent) >= 0.001)
@@ -133,11 +133,11 @@ type MappingTable = {
 }
 export const mappingConstants = (value: string): string => {
   const mappingTable: MappingTable = {
-    'COLLECTION_FLOOR_PRICE' : 'Floor Price',
-    'ESTIMATED_PRICE' : 'Estimated',
-    'TRAIT_FLOOR_PRICE': 'Trait Floor',
-    'AVERAGE_PRICE_30D':'30d Avg.',
-    'AVERAGE_PRICE_90D': '90d Avg.',
+    'cfloor_price_eth' : 'Collection Floor Price',
+    'estimated_price_eth' : 'Estimated Price',
+    'TRAIT_FLOOR_PRICE': 'Trait Floor Price',
+    'avg30_price_eth':'30d Average Price',
+    'avg90_price_eth': '90d Average Price',
     // 'PREMIUM_ESTIMATED_PRICE': 'Premium Estimated',
   }
   return mappingTable[value] || value;
@@ -208,13 +208,16 @@ export function validationEmail (email: string): boolean {
     /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
   return regex.test(email);
 };
-export function jsonToQueryString (searchParam: any) {
+export function jsonToQueryString(searchParam: any) {
+  if(!searchParam) return;
   return Object.keys(searchParam).map((key) => {
     if (Array.isArray(searchParam[key])) {
-      return searchParam[key].map((v: any) => `${key}=${v}`).join('&');
+      if(searchParam[key] === null || searchParam[key] === undefined || searchParam[key] === '' ) return;
+      return searchParam[key].map((v: any) => `${key}=${v.toLowerCase()}`).join('&').replace(/^&/, '');
     }
-    return `${key}=${searchParam[key]}`;
-  }).join('&');
+    if(searchParam[key] === null || searchParam[key] === undefined || searchParam[key] === '' ) return;
+    return `${key}=${searchParam[key].toLowerCase()}`;
+  }).join('&').replace(/^&/, '');
 }
 export const CATEGORY = [
   {
@@ -252,4 +255,10 @@ export function findCategoryListById(categoryObj: typeof ARTICLE_CATEGORY , targ
     }
   }
   return matchingCategories;
+}
+export const parseFloatPrice = (price: string) => {
+  
+  if (price === 'infinity') return 0;
+  const value = parseFloat(price);
+  return typeof value === 'number' && !Number.isNaN(value) ? value : 0;
 }

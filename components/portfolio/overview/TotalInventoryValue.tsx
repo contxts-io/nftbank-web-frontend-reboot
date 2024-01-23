@@ -61,7 +61,13 @@ const TotalInventoryValue = () => {
   const totalAmount = useMemo(() => {
     let total = 0;
     totalInventoryPositionAmount &&
-      totalInventoryPositionAmount.map((item) => (total += item.amount));
+      totalInventoryPositionAmount.map(
+        (item) =>
+          (total +=
+            typeof item.amount === 'string'
+              ? parseInt(item.amount)
+              : item.amount)
+      );
     return total;
   }, [totalInventoryPositionAmount]);
   return (
@@ -150,7 +156,7 @@ const TotalInventoryValue = () => {
                       />
                     </td>
                     <td>
-                      <p className='font-caption-medium text-[var(--color-text-main)] w-[208px] mr-20'>
+                      <p className='font-caption-medium text-[var(--color-text-main)] w-[360px] mr-20 truncate'>
                         {item.collection.name ||
                           shortenAddress(item.collection.assetContract)}
                       </p>
@@ -184,6 +190,9 @@ const TotalInventoryValue = () => {
             {statusAmount === 'success' &&
               selected === 'amount' &&
               totalInventoryPositionAmount.map((item, index) => {
+                const total = totalInventoryPositionAmount.reduce((a, b) => {
+                  return a + b.amount;
+                }, 0);
                 return (
                   <tr key={index} className='h-16'>
                     <td>
@@ -199,17 +208,27 @@ const TotalInventoryValue = () => {
                       />
                     </td>
                     <td>
-                      <p className='font-caption-medium text-[var(--color-text-main)] w-[208px] mr-20'>
+                      <p className='font-caption-medium text-[var(--color-text-main)] w-[360px] mr-20 truncate'>
                         {item.collection.name ||
                           shortenAddress(item.collection.assetContract)}
                       </p>
                     </td>
-                    <td>
-                      <p className='font-caption-regular mr-10 text-[var(--color-text-main)]'>
-                        {item.amount}
+                    <td className='text-right'>
+                      <p
+                        className={`font-caption-medium text-[var(--color-text-subtle)] text-right`}
+                      >
+                        {totalAmount && totalAmount > 0
+                          ? formatPercent(
+                              (
+                                (parseFloat(item.amount.toString() || '0') /
+                                  totalAmount) *
+                                100
+                              ).toString()
+                            )
+                          : '-'}
                       </p>
                     </td>
-                    <td>
+                    {/* <td>
                       <p
                         className={`font-caption-medium mr-20 ' ${
                           item.collection.name === 'Others' ||
@@ -224,7 +243,7 @@ const TotalInventoryValue = () => {
                       >
                         {formatAmount(item.difference)}
                       </p>
-                    </td>
+                    </td> */}
                   </tr>
                 );
               })}

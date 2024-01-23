@@ -18,22 +18,14 @@
   @apply border-1 border-[var(--color-border-main)] flex items-center overflow-hidden justify-center mr-8 relative;
 }
 .tableHeadRow th {
-  @apply border-t-1 border-b-1 border-[var(--color-border-main)];
+  @apply border-t-1 border-b-1 border-[var(--color-border-main)] px-12;
 }
-.tableHeadRow p {
-  @apply mr-30;
-}
-.tableHeadRow :first-child {
-  @apply border-0;
-}
-.tableHeadRow :last-child {
-  @apply border-0;
-}
+
 .blanc {
   @apply w-12 border-0;
 }
 .tableBodyRow {
-  @apply h-50 cursor-pointer text-[var(--color-text-main)] border-[var(--color-border-disabled)] hover:bg-[var(--color-elevation-sunken)];
+  @apply h-50 text-[var(--color-text-main)] border-[var(--color-border-disabled)] hover:bg-[var(--color-elevation-sunken)];
 }
 .tableBodyRow p {
   @apply mr-30;
@@ -42,7 +34,7 @@
   @apply bg-[var(--color-elevation-sunken)];
 }
 .tableBodyRow td {
-  @apply border-b-1 border-[var(--color-border-disabled)];
+  @apply border-b-1 border-[var(--color-border-disabled)] px-12;
 }
 /* .tableBodyRow :first-child {
   @apply border-0;
