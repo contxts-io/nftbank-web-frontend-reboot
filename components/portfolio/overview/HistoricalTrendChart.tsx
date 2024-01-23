@@ -78,13 +78,17 @@ const HistoricalTrendChart = (props: Props) => {
     let _series = series;
     (inventoryValueHistorical &&
       inventoryValueHistorical.data?.map((item, index) => {
-        const option: Intl.DateTimeFormatOptions =
-          historicalValueParam.window === 'all'
-            ? { year: 'numeric', month: 'short', day: 'numeric' }
-            : {
-                month: 'short',
-                day: 'numeric',
-              };
+        const option: Intl.DateTimeFormatOptions = {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        };
+        // historicalValueParam.window === 'all'
+        //   ? { year: 'numeric', month: 'short', day: 'numeric' }
+        //   : {
+        //       month: 'short',
+        //       day: 'numeric',
+        //     };
         const date = new Date(item.processedAt).toLocaleDateString(
           'en-us',
           option
@@ -94,6 +98,7 @@ const HistoricalTrendChart = (props: Props) => {
         // historicalValueParam.window === 'all'
         //   ? category.push(yDate)
         //   : category.push(date);
+
         category.push(yDate);
         item.value?.[currency]
           ? _series[0].data.push(parseFloat(item.value?.[currency] || '0'))
@@ -154,7 +159,7 @@ const HistoricalTrendChart = (props: Props) => {
   const textSubtle = 'var(--color-text-subtle)';
   // const minValue = series[0].data[0];
   const options = useMemo(() => {
-    console.log('series[0].data[0]', series[0].data[0]);
+    console.log('series[0].data[0]', series[0]?.data[0] || 0);
     return {
       chart: {
         toolbar: {
@@ -225,7 +230,7 @@ const HistoricalTrendChart = (props: Props) => {
       annotations: {
         yaxis: [
           {
-            y: mathSqrt(series[0].data[0] || 0),
+            y: mathSqrt(series[0]?.data[0] || 0),
             borderColor: borderColor,
             borderStyle: 'dashed',
           },
@@ -293,7 +298,7 @@ const HistoricalTrendChart = (props: Props) => {
         },
       },
     };
-  }, [series[0].data[0]]);
+  }, [series[0]?.data[0]]);
 
   const handleHover = (value: any) => {
     const currentValue = inventoryValue?.value[currency]?.amount
