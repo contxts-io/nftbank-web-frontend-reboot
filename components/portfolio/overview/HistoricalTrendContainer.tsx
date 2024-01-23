@@ -80,6 +80,11 @@ const HistoricalTrendContainer = () => {
     setHoverValue(value);
   };
   const total = useMemo(() => {
+    console.log('hoverValue', hoverValue, hoverValue?.toString());
+    console.log(
+      'inventoryValue?.value[currency].amount',
+      inventoryValue?.value[currency].amount
+    );
     let value =
       hoverValue?.toString() ||
       inventoryValue?.value[currency].amount ||

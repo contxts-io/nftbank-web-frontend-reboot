@@ -22,18 +22,40 @@ const tooltip = ({
   period,
   setHoverValue,
   setDiffValue,
+  inventoryValue,
 }: any) => {
-  const value = series[0].data[dataPointIndex] || 0;
+  const value =
+    dataPointIndex <= series[0].data.length
+      ? series[0].data[dataPointIndex]
+      : inventoryValue;
   console.log(
     'value - w.globals?.series?.[0][0]',
     value - w.globals?.series?.[0][0]
   );
-  console.log('value', value);
+  console.log(
+    'dataPointIndex <= series[0].data.length',
+    dataPointIndex <= series[0].data.length
+  );
+  console.log('dataPointIndex', dataPointIndex);
+  console.log('series[0]', series[0]);
+  console.log('tooltip :: value :: ', value);
   console.log('w.globals?.series?.[0][0]', w.globals?.series?.[0][0]);
   w.globals &&
     (setHoverValue(value), setDiffValue(value - w.globals?.series?.[0][0]));
+  const handleHover = () => {
+    console.log('##handleHover');
+    console.log('##inventoryValue', inventoryValue);
+    const value =
+      dataPointIndex <= series[0].data.length
+        ? series[0].data[dataPointIndex]
+        : inventoryValue;
+    setHoverValue(value), setDiffValue(value - w.globals?.series?.[0][0]);
+  };
   return (
-    <div className='px-16 py-8 border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
+    <div
+      className='px-16 py-8 border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'
+      onMouseEnter={handleHover}
+    >
       <p className={`font-caption-regular text-[var(--color-text-main)]`}>
         {w.globals.categoryLabels[dataPointIndex]}
       </p>
@@ -192,6 +214,7 @@ const HistoricalTrendChart = (props: Props) => {
           // },
           mouseLeave: function (event: any, chartContext: any, config: any) {
             // ...
+            console.log('mouseLeave');
             props.setHoverValue(null);
             props.setDiffValue(null);
             handleHover(null);
@@ -303,6 +326,9 @@ const HistoricalTrendChart = (props: Props) => {
               period: historicalValueParam.window,
               setHoverValue: handleHover,
               setDiffValue: props.setDiffValue,
+              inventoryValue: parseFloat(
+                inventoryValue?.value[currency].amount || '0'
+              ),
             })
           );
         },
