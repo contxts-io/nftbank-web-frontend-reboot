@@ -45,7 +45,7 @@ const SummaryValueContainer = () => {
         )}
         {statusTotalSpend === 'success' && (
           <p className={`font-subtitle02-bold ${styles.title}`}>
-            {formatCurrency(totalSpend.totalSpend[currency], currency)}
+            {formatCurrency(totalSpend?.totalSpend[currency], currency)}
           </p>
         )}
       </article>
@@ -58,7 +58,7 @@ const SummaryValueContainer = () => {
         )}
         {statusGasSpend === 'success' && (
           <p className={`font-subtitle02-bold ${styles.title}`}>
-            {formatCurrency(gasSpend.gasSpend[currency], currency)}
+            {formatCurrency(gasSpend?.gasSpend[currency], currency)}
           </p>
         )}
       </article>
@@ -71,7 +71,7 @@ const SummaryValueContainer = () => {
         )}
         {statusTotalSale === 'success' && (
           <p className={`font-subtitle02-bold ${styles.title}`}>
-            {formatCurrency(totalSale.totalSale[currency], currency)}
+            {formatCurrency(totalSale?.totalSale[currency], currency)}
           </p>
         )}
       </article>
@@ -176,7 +176,7 @@ const SummaryValueContainer = () => {
                 : styles.minus
             }`}
           >
-            {formatCurrency(unrealized.gainLoss[currency].amount, currency)}
+            {formatCurrency(unrealized?.gainLoss[currency].amount, currency)}
           </p>
         )}
       </article>

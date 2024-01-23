@@ -180,6 +180,7 @@ export const useInventoryCollectionPositionValue = (requestParam: BasicParam) =>
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      enabled: !!requestParam.walletAddress,
     },
   );
 }
@@ -194,6 +195,7 @@ export const useInventoryCollectionPositionAmount = (requestParam: BasicParam) =
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      enabled: !!requestParam.walletAddress,
     },
   );
 }
