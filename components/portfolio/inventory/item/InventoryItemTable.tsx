@@ -130,94 +130,96 @@ const InventoryItemTable = (props: Props) => {
           <FailToLoad />
         </div>
       )}
-      {status === 'success' && (!mergePosts || mergePosts.length === 0) && (
+      {status === 'success' && mergePosts?.[0].data.length === 0 && (
         <div>
           <NoData />
         </div>
       )}
-      {status === 'success' && mergePosts && mergePosts?.length > 0 && (
-        <table className={`${styles.table}`}>
-          <thead
-            className={`${styles.tableHead} ${
-              props.sticky ? styles.stickyBar : ''
-            }`}
-          >
-            <tr className={`${styles.tableHeadRow}`}>
-              <th />
-              {HEADER.map((item, index) => (
-                <th
-                  key={index}
-                  className={`font-caption-medium 
+      {status === 'success' &&
+        mergePosts?.[0].data &&
+        mergePosts?.[0].data.length > 0 && (
+          <table className={`${styles.table}`}>
+            <thead
+              className={`${styles.tableHead} ${
+                props.sticky ? styles.stickyBar : ''
+              }`}
+            >
+              <tr className={`${styles.tableHeadRow}`}>
+                <th />
+                {HEADER.map((item, index) => (
+                  <th
+                    key={index}
+                    className={`font-caption-medium 
                 ${
                   // index == 0 ? 'text-left' : 'text-right'
                   index == HEADER.length - 1 ? 'text-right' : 'text-left'
                 } 
                 ${item.sort ? 'cursor-pointer' : ''}`}
-                  onClick={() => item.sort && handleSort(item.type)}
-                >
-                  {index === 1 ? (
-                    <span className='mr-30'>{item.name}</span>
-                  ) : (
-                    <p>{item.name}</p>
-                  )}
-                </th>
-              ))}
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {mergePosts?.map((page, pageIndex) => {
-              return page.data.map((data, index) => {
-                const valuationType = selectedValueType(data.valuation);
-                const itemKey = `${data.collection.assetContract}-${data.token.tokenId}-${index}`;
-                const isOpen = openedItem.find((item) => item === itemKey)
-                  ? true
-                  : false;
-                const plus = isPlus(
-                  data.nav[currency].difference?.amount || '0'
-                );
-                return (
-                  <React.Fragment key={index}>
-                    <tr
-                      key={index}
-                      className={`font-caption-regular ${styles.tableBodyRow} ${
-                        isOpen && styles.isOpen
-                      }`}
-                      // onClick={() => handleOpenDetail(data)}
-                    >
-                      <td className={styles.blanc} />
-                      <td className='text-left p-0'>
-                        <div className={`flex items-center my-8`}>
-                          <div className={styles.tokenImage}>
-                            {data?.token.imageUrl ? (
-                              <img
-                                src={data?.token.imageUrl}
-                                width={32}
-                                height={32}
-                                placeholder='data:image/icon/nftbank_icon.svg'
-                                alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
-                              />
-                            ) : (
-                              <div className='w-32 h-32 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center border-1'>
-                                <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)] ' />
-                              </div>
-                            )}
+                    onClick={() => item.sort && handleSort(item.type)}
+                  >
+                    {index === 1 ? (
+                      <span className='mr-30'>{item.name}</span>
+                    ) : (
+                      <p>{item.name}</p>
+                    )}
+                  </th>
+                ))}
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {mergePosts?.map((page, pageIndex) => {
+                return page.data.map((data, index) => {
+                  const valuationType = selectedValueType(data.valuation);
+                  const itemKey = `${data.collection.assetContract}-${data.token.tokenId}-${index}`;
+                  const isOpen = openedItem.find((item) => item === itemKey)
+                    ? true
+                    : false;
+                  const plus = isPlus(
+                    data.nav[currency].difference?.amount || '0'
+                  );
+                  return (
+                    <React.Fragment key={index}>
+                      <tr
+                        key={index}
+                        className={`font-caption-regular ${
+                          styles.tableBodyRow
+                        } ${isOpen && styles.isOpen}`}
+                        // onClick={() => handleOpenDetail(data)}
+                      >
+                        <td className={styles.blanc} />
+                        <td className='text-left p-0'>
+                          <div className={`flex items-center my-8`}>
+                            <div className={styles.tokenImage}>
+                              {data?.token.imageUrl ? (
+                                <img
+                                  src={data?.token.imageUrl}
+                                  width={32}
+                                  height={32}
+                                  placeholder='data:image/icon/nftbank_icon.svg'
+                                  alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
+                                />
+                              ) : (
+                                <div className='w-32 h-32 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center border-1'>
+                                  <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)] ' />
+                                </div>
+                              )}
+                            </div>
+                            <div className='font-caption-medium max-w-[230px]  white-space-nowrap overflow-hidden text-ellipsis'>
+                              <p className={`${styles.pMain} mr-0`}>
+                                {data.token.tokenId}
+                              </p>
+                              <p className={`${styles.pSub} truncate mr-0`}>
+                                {data.collection.name ||
+                                  shortenAddress(data.collection.assetContract)}
+                              </p>
+                            </div>
                           </div>
-                          <div className='font-caption-medium max-w-[230px]  white-space-nowrap overflow-hidden text-ellipsis'>
-                            <p className={`${styles.pMain} mr-0`}>
-                              {data.token.tokenId}
-                            </p>
-                            <p className={`${styles.pSub} truncate mr-0`}>
-                              {data.collection.name ||
-                                shortenAddress(data.collection.assetContract)}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className='text-left'>
-                        <p>{data.amount}</p>
-                      </td>
-                      {/**
+                        </td>
+                        <td className='text-left'>
+                          <p>{data.amount}</p>
+                        </td>
+                        {/**
                        * 
                        * 
                        * sprint 1
@@ -242,12 +244,15 @@ const InventoryItemTable = (props: Props) => {
                           </p>
                         )}
                       </td> */}
-                      <td className='text-left'>
-                        <p>
-                          {formatCurrency(data.nav[currency].amount, currency)}
-                        </p>
-                      </td>
-                      {/**
+                        <td className='text-left'>
+                          <p>
+                            {formatCurrency(
+                              data.nav[currency].amount,
+                              currency
+                            )}
+                          </p>
+                        </td>
+                        {/**
                        * 
                        * 
                        * sprint 1
@@ -282,34 +287,34 @@ const InventoryItemTable = (props: Props) => {
                           )}
                         </p>
                       </td> */}
-                      <td className='text-left'>
-                        <span>
-                          {/* {data.valuation.length > 0
+                        <td className='text-left'>
+                          <span>
+                            {/* {data.valuation.length > 0
                             ? mappingConstants(data.valuation[0].type)
                             : 'no valuation type'} */}
-                          {valuationType
-                            ? mappingConstants(valuationType.type)
-                            : 'no valuation type'}
-                        </span>
-                      </td>
-                      {/* <td className='text-left'>
+                            {valuationType
+                              ? mappingConstants(valuationType.type)
+                              : 'no valuation type'}
+                          </span>
+                        </td>
+                        {/* <td className='text-left'>
                         <p>{formatPercent(valuationType?.accuracy || null)}</p>
                       </td> */}
-                      <td className='text-right'>
-                        <span>
-                          {data.acquisitionDate &&
-                            formatDate(new Date(data.acquisitionDate))}
-                        </span>
-                      </td>
-                      <td className={styles.blanc} />
-                    </tr>
-                  </React.Fragment>
-                );
-              });
-            })}
-          </tbody>
-        </table>
-      )}
+                        <td className='text-right'>
+                          <span>
+                            {data.acquisitionDate &&
+                              formatDate(new Date(data.acquisitionDate))}
+                          </span>
+                        </td>
+                        <td className={styles.blanc} />
+                      </tr>
+                    </React.Fragment>
+                  );
+                });
+              })}
+            </tbody>
+          </table>
+        )}
       <div ref={ref} className='h-43' />
     </React.Fragment>
   );

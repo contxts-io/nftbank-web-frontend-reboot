@@ -156,7 +156,7 @@ const TotalInventoryValue = () => {
                       />
                     </td>
                     <td>
-                      <p className='font-caption-medium text-[var(--color-text-main)] w-[208px] mr-20'>
+                      <p className='font-caption-medium text-[var(--color-text-main)] w-[360px] mr-20 truncate'>
                         {item.collection.name ||
                           shortenAddress(item.collection.assetContract)}
                       </p>
@@ -208,7 +208,7 @@ const TotalInventoryValue = () => {
                       />
                     </td>
                     <td>
-                      <p className='font-caption-medium text-[var(--color-text-main)] w-[208px] mr-20'>
+                      <p className='font-caption-medium text-[var(--color-text-main)] w-[360px] mr-20 truncate'>
                         {item.collection.name ||
                           shortenAddress(item.collection.assetContract)}
                       </p>

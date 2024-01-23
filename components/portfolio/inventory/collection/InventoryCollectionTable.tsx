@@ -117,6 +117,9 @@ const InventoryCollectionTable = () => {
       valuations.find((val) => val.default);
     return result;
   };
+  useEffect(() => {
+    console.log('collections', collections);
+  }, [collections]);
   if (status === 'loading')
     return <SkeletonLoader className='w-full h-[200px]' />;
   return (
@@ -126,20 +129,22 @@ const InventoryCollectionTable = () => {
           <FailToLoad />
         </div>
       )}
-      {status === 'success' && (!collections || collections.length === 0) && (
+      {status === 'success' && collections?.[0].paging.total === 0 && (
         <div>
           <NoData />
         </div>
       )}
-      {status === 'success' && collections && collections?.length > 0 && (
-        <>
-          <table className={`${styles.table} relative`}>
-            <thead className='sticky top-119 bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
-              <tr className='h-fit'>
-                {T_HEADER.map((item, index) => (
-                  <th
-                    key={index}
-                    className={`font-caption-medium text-[var(--color-text-subtle)] py-12
+      {status === 'success' &&
+        collections &&
+        collections?.[0].paging.total > 0 && (
+          <>
+            <table className={`${styles.table} relative`}>
+              <thead className='sticky top-119 bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
+                <tr className='h-fit'>
+                  {T_HEADER.map((item, index) => (
+                    <th
+                      key={index}
+                      className={`font-caption-medium text-[var(--color-text-subtle)] py-12
                 ${
                   index === T_HEADER.length - 1
                     ? // : index > 1 && index !== 4
@@ -150,65 +155,65 @@ const InventoryCollectionTable = () => {
                 ${index === 0 && 'pl-16'}
                 ${index === T_HEADER.length - 1 && 'pr-16'}
                 `}
-                    onClick={() =>
-                      item.sort && handleClickSortButton(item.sort as TSort)
-                    }
-                  >
-                    <p className={index > 1 ? styles.pTd : ''}>{item.name}</p>
-                  </th>
-                ))}
-                {/* <th className='text-right'>
+                      onClick={() =>
+                        item.sort && handleClickSortButton(item.sort as TSort)
+                      }
+                    >
+                      <p className={index > 1 ? styles.pTd : ''}>{item.name}</p>
+                    </th>
+                  ))}
+                  {/* <th className='text-right'>
               <p className='ml-40'> </p>
             </th> */}
-              </tr>
-            </thead>
-            <tbody className='h-full z-0'>
-              {collections?.map((page, pageIndex) => {
-                return page.data?.map((row, index) => {
-                  const valuationType = selectedValueType(row.valuation);
-                  return (
-                    <tr
-                      key={`${pageIndex}-${index}}`}
-                      className={`font-caption-regular cursor-pointer ${styles.tableRow}`}
-                      onClick={() => handleClickCollection(row)}
-                    >
-                      <td className='flex items-center h-full'>
-                        <Ethereum
-                          width={24}
-                          height={24}
-                          className='ml-16 w-24 h-24 rounded-full flex items-center justify-center border-1 border-[var(--color-border-main)]'
-                        />
-                      </td>
-                      <td>
-                        <article className='flex items-center'>
-                          {row.collection.imageUrl ? (
-                            <div className='w-24 h-24 rounded-full overflow-hidden border-1 border-[var(--color-border-main)] mr-12 '>
-                              <img
-                                src={row.collection.imageUrl}
-                                className='rounded-full w-full object-center'
-                                alt={
-                                  row.collection.name ||
-                                  row.collection.assetContract
-                                }
-                              />
-                            </div>
-                          ) : (
-                            <div className='w-24 h-24 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center rounded-full mr-12 border-1'>
-                              <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)] ' />
-                            </div>
-                          )}
+                </tr>
+              </thead>
+              <tbody className='h-full z-0'>
+                {collections?.map((page, pageIndex) => {
+                  return page.data?.map((row, index) => {
+                    const valuationType = selectedValueType(row.valuation);
+                    return (
+                      <tr
+                        key={`${pageIndex}-${index}}`}
+                        className={`font-caption-regular cursor-pointer ${styles.tableRow}`}
+                        onClick={() => handleClickCollection(row)}
+                      >
+                        <td className='flex items-center h-full'>
+                          <Ethereum
+                            width={24}
+                            height={24}
+                            className='ml-16 w-24 h-24 rounded-full flex items-center justify-center border-1 border-[var(--color-border-main)]'
+                          />
+                        </td>
+                        <td>
+                          <article className='flex items-center'>
+                            {row.collection.imageUrl ? (
+                              <div className='w-24 h-24 rounded-full overflow-hidden border-1 border-[var(--color-border-main)] mr-12 '>
+                                <img
+                                  src={row.collection.imageUrl}
+                                  className='rounded-full w-full object-center'
+                                  alt={
+                                    row.collection.name ||
+                                    row.collection.assetContract
+                                  }
+                                />
+                              </div>
+                            ) : (
+                              <div className='w-24 h-24 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center rounded-full mr-12 border-1'>
+                                <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)] ' />
+                              </div>
+                            )}
 
-                          <p className='font-caption-medium'>
-                            {row.collection.name ||
-                              shortenAddress(row.collection.assetContract)}
-                          </p>
-                        </article>
-                      </td>
-                      <td className='text-left'>
-                        <p className={styles.pTd}>{row.amount}</p>
-                      </td>
-                      {/* coast basis */}
-                      {/**
+                            <p className='font-caption-medium'>
+                              {row.collection.name ||
+                                shortenAddress(row.collection.assetContract)}
+                            </p>
+                          </article>
+                        </td>
+                        <td className='text-left'>
+                          <p className={styles.pTd}>{row.amount}</p>
+                        </td>
+                        {/* coast basis */}
+                        {/**
                    * 
                    * sprint 1
                    * 
@@ -240,9 +245,9 @@ const InventoryCollectionTable = () => {
                       )}
                     </td>
                   )} */}
-                      {/* valuation type */}
-                      <td className='text-left'>
-                        {/**
+                        {/* valuation type */}
+                        <td className='text-left'>
+                          {/**
                      * 
                      * sprint 1
                      * 
@@ -255,19 +260,19 @@ const InventoryCollectionTable = () => {
                     ) : (
                       <p>no available price</p>
                     )} */}
-                        <p>{ValuationTypes(row.valuation)}</p>
-                      </td>
+                          <p>{ValuationTypes(row.valuation)}</p>
+                        </td>
 
-                      {/* realtime nav */}
-                      <td className='text-right'>
-                        <p className={`${styles.pTd} pr-16`}>
-                          {formatCurrency(
-                            row.nav[currency].amount || null,
-                            currency
-                          ) || '-'}
-                        </p>
-                      </td>
-                      {/**
+                        {/* realtime nav */}
+                        <td className='text-right'>
+                          <p className={`${styles.pTd} pr-16`}>
+                            {formatCurrency(
+                              row.nav[currency].amount || null,
+                              currency
+                            ) || '-'}
+                          </p>
+                        </td>
+                        {/**
                    * 
                    * sprint 1
                    * 
@@ -308,15 +313,15 @@ const InventoryCollectionTable = () => {
                     </div>
                   </td>
                   */}
-                    </tr>
-                  );
-                });
-              })}
-            </tbody>
-          </table>
-          <div ref={ref} className='h-43' />
-        </>
-      )}
+                      </tr>
+                    );
+                  });
+                })}
+              </tbody>
+            </table>
+            <div ref={ref} className='h-43' />
+          </>
+        )}
     </section>
   );
 };
