@@ -133,11 +133,11 @@ type MappingTable = {
 }
 export const mappingConstants = (value: string): string => {
   const mappingTable: MappingTable = {
-    'cfloor_price_eth' : 'Collection Floor Price',
-    'estimated_price_eth' : 'Estimated Price',
-    'TRAIT_FLOOR_PRICE': 'Trait Floor Price',
-    'avg30_price_eth':'30d Average Price',
-    'avg90_price_eth': '90d Average Price',
+    'cfloor_price_eth' : 'Floor',
+    'estimated_price_eth' : 'Estimated',
+    'TRAIT_FLOOR_PRICE': 'Trait Floor',
+    'avg30_price_eth':'30d Average',
+    'avg90_price_eth': '90d Average',
     // 'PREMIUM_ESTIMATED_PRICE': 'Premium Estimated',
   }
   return mappingTable[value] || value;
