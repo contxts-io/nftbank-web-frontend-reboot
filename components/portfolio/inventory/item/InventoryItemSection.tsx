@@ -67,7 +67,7 @@ const InventoryItemSection = () => {
           )}
         </div>
         <div className='w-full'>
-          <div className='px-12 overflow-hidden'>
+          <div className='overflow-hidden'>
             <InventoryItemList
               isFilterOpen={isFilterOpen}
               handleFilterOpen={setIsFilterOpen}

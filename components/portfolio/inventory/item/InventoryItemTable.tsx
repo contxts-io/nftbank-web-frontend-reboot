@@ -145,7 +145,6 @@ const InventoryItemTable = (props: Props) => {
               }`}
             >
               <tr className={`${styles.tableHeadRow}`}>
-                <th />
                 {HEADER.map((item, index) => (
                   <th
                     key={index}
@@ -164,7 +163,6 @@ const InventoryItemTable = (props: Props) => {
                     )}
                   </th>
                 ))}
-                <th />
               </tr>
             </thead>
             <tbody>
@@ -187,7 +185,6 @@ const InventoryItemTable = (props: Props) => {
                         } ${isOpen && styles.isOpen}`}
                         // onClick={() => handleOpenDetail(data)}
                       >
-                        <td className={styles.blanc} />
                         <td className='text-left p-0'>
                           <div className={`flex items-center my-8`}>
                             <div className={styles.tokenImage}>
@@ -306,7 +303,6 @@ const InventoryItemTable = (props: Props) => {
                               formatDate(new Date(data.acquisitionDate))}
                           </span>
                         </td>
-                        <td className={styles.blanc} />
                       </tr>
                     </React.Fragment>
                   );

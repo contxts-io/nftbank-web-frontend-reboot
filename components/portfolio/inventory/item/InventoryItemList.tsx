@@ -64,9 +64,9 @@ const InventoryItemList = (props: Props) => {
   };
 
   return (
-    <section className={styles.container}>
-      <div className='flex py-12 px-24 items-center justify-between'>
-        <div>
+    <section className={`${styles.container}  ${isFilterOpen ? 'pl-12' : ''}`}>
+      <div className='flex py-12 items-center justify-between'>
+        <div className='ml-12'>
           {!isFilterOpen && (
             <div
               className={`${styles.filterButton}`}
@@ -76,7 +76,7 @@ const InventoryItemList = (props: Props) => {
             </div>
           )}
         </div>
-        <div className='flex items-center'>
+        <div className={`flex items-center mr-12`}>
           {/**
            * 
            * sprint 1
