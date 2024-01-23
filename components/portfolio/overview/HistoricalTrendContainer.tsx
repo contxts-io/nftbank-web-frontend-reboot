@@ -11,7 +11,12 @@ import {
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
-import { difference, formatCurrency, formatPercent } from '@/utils/common';
+import {
+  difference,
+  formatCurrency,
+  formatPercent,
+  parseFloatPrice,
+} from '@/utils/common';
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { portfolioUserAtom } from '@/store/portfolio';
 import CurrencyComponent from '@/components/p/Currency';
@@ -26,17 +31,21 @@ const PERIOD: { name: string; value: Period }[] = [
     value: '30d',
   },
   {
-    name: 'YTD',
-    value: 'ytd',
+    name: '3M',
+    value: '90d',
   },
-  {
-    name: '1Y',
-    value: '365d',
-  },
-  {
-    name: 'MAX',
-    value: 'all',
-  },
+  // {
+  //   name: 'YTD',
+  //   value: 'ytd',
+  // },
+  // {
+  //   name: '1Y',
+  //   value: '365d',
+  // },
+  // {
+  //   name: 'MAX',
+  //   value: 'all',
+  // },
 ];
 type Period = '1d' | '3d' | '7d' | '30d' | '90d' | 'ytd' | '365d' | 'all';
 const HistoricalTrendContainer = () => {
@@ -95,9 +104,27 @@ const HistoricalTrendContainer = () => {
 
     const diff =
       _value -
-      parseFloat(inventoryValueHistorical?.data[0]?.value[currency] || '0.00');
+      parseFloatPrice(
+        inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+      );
+    console.log(
+      'inventoryValueHistorical?.data[0]?.value[currency]',
+      inventoryValueHistorical?.data[0]?.value[currency],
+      parseFloatPrice(
+        inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+      )
+    );
     return diff;
   }, [hoverValue, currency, inventoryValue]);
+  const initialValue = useMemo(() => {
+    // const value = parseFloatPrice(
+    //   inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+    // );
+    const value = parseFloatPrice(
+      inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+    );
+    return value;
+  }, [currency, inventoryValueHistorical]);
   useEffect(() => {
     setSelectedPeriod('1W');
     return () => {
@@ -150,19 +177,14 @@ const HistoricalTrendContainer = () => {
                 : styles.minus
             }`}
           >
-            {`${difference(
-              differenceValue.toString(),
-              currency
-            )}  (${difference(
-              (
-                (differenceValue /
-                  parseFloat(
-                    inventoryValueHistorical?.data[0]?.value[currency] || '1'
-                  )) *
-                100
-              ).toString(),
-              'percent'
-            )})`}
+            {`${difference(differenceValue.toString(), currency)} (${
+              initialValue && initialValue > 0
+                ? difference(
+                    ((differenceValue / initialValue) * 100).toString(),
+                    'percent'
+                  )
+                : '-'
+            })`}
           </p>
         )}
       </div>

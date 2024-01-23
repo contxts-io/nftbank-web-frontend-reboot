@@ -256,3 +256,9 @@ export function findCategoryListById(categoryObj: typeof ARTICLE_CATEGORY , targ
   }
   return matchingCategories;
 }
+export const parseFloatPrice = (price: string) => {
+  
+  if (price === 'infinity') return 0;
+  const value = parseFloat(price);
+  return typeof value === 'number' && !Number.isNaN(value) ? value : 0;
+}
