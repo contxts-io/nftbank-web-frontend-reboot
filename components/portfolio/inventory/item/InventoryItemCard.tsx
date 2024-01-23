@@ -77,7 +77,11 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
           )}
         </div> */}
         <div className='flex justify-between items-center'>
-          <p className={styles.pName}>Realtime NAV</p>
+          <p className={styles.pName}>
+            {token.valuation.length > 0
+              ? mappingConstants(token.valuation[0].type)
+              : 'no valuation type'}
+          </p>
           <p className={styles.pValue}>
             {formatCurrency(token.nav[currency].amount, currency)}
           </p>
@@ -130,13 +134,13 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
               formatDate(new Date(token.acquisitionDate))}
           </p>
         </div>
-        <div className='flex items-center'>
+        {/* <div className='flex items-center'>
           <p className={styles.pValueType}>
             {token.valuation.length > 0
               ? mappingConstants(token.valuation[0].type)
               : 'no valuation type'}
           </p>
-        </div>
+        </div> */}
       </div>
     </article>
   );
