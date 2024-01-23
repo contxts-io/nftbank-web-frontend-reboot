@@ -6,7 +6,6 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 export function useInventoryValue(searchParam: BasicParam | null) {
-  console.log('useInventoryValue',searchParam , searchParam === null)
   return useQuery<InventoryValueNested,AxiosError>(
     ['inventoryValue',searchParam],
     async () => {
@@ -133,6 +132,7 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
         
     return {
       ...result,
+      paging: result.paging,
       page: pageParam,
       nextPage: pageParam + 1,
       isLast,
