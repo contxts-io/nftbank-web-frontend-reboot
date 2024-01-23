@@ -28,6 +28,8 @@ const tooltip = ({
     'value - w.globals?.series?.[0][0]',
     value - w.globals?.series?.[0][0]
   );
+  console.log('value', value);
+  console.log('w.globals?.series?.[0][0]', w.globals?.series?.[0][0]);
   w.globals &&
     (setHoverValue(value), setDiffValue(value - w.globals?.series?.[0][0]));
   return (
@@ -119,6 +121,7 @@ const HistoricalTrendChart = (props: Props) => {
       _series[0].data.push(todayValue);
 
     category.push(todayDate);
+    console.log('series', _series);
     return _series;
   }, [inventoryValueHistorical, currency, category, inventoryValue?.value]);
   useEffect(() => {
@@ -305,7 +308,7 @@ const HistoricalTrendChart = (props: Props) => {
         },
       },
     };
-  }, [series[0]?.data[0]]);
+  }, [series[0]?.data[0], isPlus]);
 
   const handleHover = (value: any) => {
     const currentValue = inventoryValue?.value[currency]?.amount
