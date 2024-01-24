@@ -111,29 +111,31 @@ const tooltip = ({
               </span>
               <CurrencyComponent value={amount} />
             </div>
-            <div className='flex justify-between items-center'>
-              <span className='text-[var(--color-text-subtle)] mr-41'>
-                Rate of Change(24h)
-              </span>
-              <p
-                className={`${
-                  isPlus(
+            {totalInventoryPositionAmount.length !== seriesIndex + 1 && (
+              <div className='flex justify-between items-center'>
+                <span className='text-[var(--color-text-subtle)] mr-41'>
+                  Rate of Change(24h)
+                </span>
+                <p
+                  className={`${
+                    isPlus(
+                      positionCollection.value[currency].difference?.percentage
+                    ) === '-'
+                      ? 'text-[var(--color-text-main)]'
+                      : isPlus(
+                          positionCollection.value[currency].difference
+                            ?.percentage
+                        ) === true
+                      ? 'text-[var(--color-text-success)]'
+                      : 'text-[var(--color-text-danger)]'
+                  }`}
+                >
+                  {formatPercent(
                     positionCollection.value[currency].difference?.percentage
-                  ) === '-'
-                    ? 'text-[var(--color-text-main)]'
-                    : isPlus(
-                        positionCollection.value[currency].difference
-                          ?.percentage
-                      ) === true
-                    ? 'text-[var(--color-text-success)]'
-                    : 'text-[var(--color-text-danger)]'
-                }`}
-              >
-                {formatPercent(
-                  positionCollection.value[currency].difference?.percentage
-                )}
-              </p>
-            </div>
+                  )}
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

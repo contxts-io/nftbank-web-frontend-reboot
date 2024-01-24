@@ -28,6 +28,8 @@ const tooltip = ({
     'value - w.globals?.series?.[0][0]',
     value - w.globals?.series?.[0][0]
   );
+  console.log('value', value);
+  console.log('w.globals?.series?.[0][0]', w.globals?.series?.[0][0]);
   w.globals &&
     (setHoverValue(value), setDiffValue(value - w.globals?.series?.[0][0]));
   return (
@@ -69,9 +71,12 @@ const HistoricalTrendChart = (props: Props) => {
 
   let seriesData = useMemo(() => {
     const today = new Date().toLocaleDateString('en-us', {
+      year: 'numeric',
       month: 'short',
       day: 'numeric',
     });
+    const todayParts = today.replaceAll(',', '').split(' ');
+    const todayDate = `${todayParts[2]}, ${todayParts[0]} ${todayParts[1]}`;
     let todayValue =
       inventoryValue?.value[currency] &&
       parseFloat(inventoryValue.value[currency].amount || '0'); //현재값
@@ -111,11 +116,12 @@ const HistoricalTrendChart = (props: Props) => {
       [];
 
     //마지막에 현재 값을 넣어준다. (마지막 값이 없을 경우 그전값을 넣어준다.)
-    // historicalValueParam.window !== 'ytd' &&
-    //   todayValue &&
-    //   _series[0].data.push(todayValue);
+    historicalValueParam.window !== 'ytd' &&
+      todayValue &&
+      _series[0].data.push(todayValue);
 
-    category.push(today);
+    category.push(todayDate);
+    console.log('series', _series);
     return _series;
   }, [inventoryValueHistorical, currency, category, inventoryValue?.value]);
   useEffect(() => {
@@ -302,7 +308,7 @@ const HistoricalTrendChart = (props: Props) => {
         },
       },
     };
-  }, [series[0]?.data[0]]);
+  }, [series[0]?.data[0], isPlus]);
 
   const handleHover = (value: any) => {
     const currentValue = inventoryValue?.value[currency]?.amount
