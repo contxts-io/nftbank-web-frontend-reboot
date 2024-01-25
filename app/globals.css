@@ -22,6 +22,9 @@
     scrollbar-width: none; */
     @apply scrollbar-hide;
   }
+  *:focus {
+    outline: none;
+  }
   /* number input에서 위아래 화살표 삭제 - Chrome, Safari, Edge, Opera, Firefox */
   img {
     max-width: fit-content;

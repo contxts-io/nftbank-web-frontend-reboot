@@ -11,8 +11,13 @@ import CaretDown from '@/public/icon/CaretDown';
 import { useEffect, useRef, useState } from 'react';
 import { CHAIN_LIST } from '@/utils/supportedChains';
 import ChainSelector from './ChainSelector';
-import Dropdown from '../dropdown/Dropdown';
 import { set } from 'cypress/types/lodash';
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from '@nextui-org/react';
 const navLinks = [
   { name: 'Overview', href: '/portfolio/overview' },
   // { name: 'Analysis', href: '/portfolio/analysis' },
@@ -25,11 +30,9 @@ const PortfolioTabNavigation = () => {
   const [isInventoryModalOpen, setInventoryModalOpen] =
     useState<boolean>(false);
   const router = useRouter();
-  const listRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const navbar = document.querySelector('.sticky-navbar') as HTMLElement;
     const cloneNavbar = document.querySelector('.clone-navbar') as HTMLElement;
-    document.addEventListener('click', handleClickOutside);
     if (navbar) {
       console.log('window.scrollY ', window?.scrollY);
       document.addEventListener('scroll', () => {
@@ -42,15 +45,22 @@ const PortfolioTabNavigation = () => {
         }
       });
     }
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
   }, []);
-  const handleClickOutside = (event: MouseEvent) => {
-    if (listRef.current && !listRef.current.contains(event.target as Node)) {
-      setIsPopoverOpen(false);
+
+  const handleClickOutside = () => {
+    setIsPopoverOpen(false);
+    setInventoryModalOpen(false);
+  };
+  const handleClickDropdownMenu = (
+    href: string,
+    value: 'collection' | 'item'
+  ) => {
+    const paramType = pathname.split('/')[3] || '';
+    const paramValue = pathname.split('/')[4] || '';
+    router.push(`${href}/${paramType}/${paramValue}`),
+      setInventoryType(value),
       setInventoryModalOpen(false);
-    }
+    setIsPopoverOpen(false);
   };
   const handleClickButton = (type: 'collection' | 'item') => {
     setInventoryType(type);
@@ -80,64 +90,77 @@ const PortfolioTabNavigation = () => {
                     ? 'border-[var(--color-border-brand)]'
                     : 'border-[var(--color-border-main)]'
                 }
-                ${link.isHover ? 'relative' : ''}
               `}
-                ref={link.isHover ? listRef : null}
               >
-                <Link
-                  className={`font-body01-medium ${styles.link} ${
-                    isActive && 'text-[var(--color-text-main)]'
-                  }`}
-                  href={`${link.href}/[...slug]`}
-                  as={
-                    link.isHover
-                      ? `#`
-                      : `${link.href}/${paramType}/${paramValue}`
-                  }
-                  onClick={() => {
-                    if (link.isHover) {
-                      setInventoryModalOpen((prev) => !prev);
-                    }
-                  }}
-                >
-                  {link.name}
-                </Link>
-                {/* <Dropdown
-                id=''
-                className={styles.dropdown}
-                list={['Collections', 'Items']}
-                listStyle='w-full'
-                selected={'Collections'}
-                onClick={(type) => {
-                  setInventoryType(
-                    type === 'Collections' ? 'collection' : 'item'
-                  ),
-                    router.push(`${link.href}/${paramType}/${paramValue}`);
-                }}
-              /> */}
-                {link.isHover && isInventoryModalOpen && (
-                  <ul
-                    className={`${styles.dropdown} absolute top-70 left-0 w-130`}
+                {link.isHover ? (
+                  <Dropdown
+                    isOpen={isPopoverOpen}
+                    onClose={() => setIsPopoverOpen(false)}
                   >
-                    <li
-                      onClick={() => {
-                        router.push(`${link.href}/${paramType}/${paramValue}`),
-                          setInventoryType('collection'),
-                          setInventoryModalOpen(false);
-                      }}
+                    <DropdownTrigger
+                      onClick={() => setIsPopoverOpen((prev) => !prev)}
                     >
-                      Collections
-                    </li>
-                    <li
-                      onClick={() => {
-                        router.push(`${link.href}/${paramType}/${paramValue}`),
-                          setInventoryType('item'),
-                          setInventoryModalOpen(false);
-                      }}
+                      <Link
+                        className={`font-body01-medium ${styles.link} ${
+                          isActive && 'text-[var(--color-text-main)]'
+                        }`}
+                        href={`${link.href}/[...slug]`}
+                        as={
+                          link.isHover
+                            ? `#`
+                            : `${link.href}/${paramType}/${paramValue}`
+                        }
+                        onClick={() => {
+                          if (link.isHover) {
+                            setInventoryModalOpen((prev) => !prev);
+                          }
+                        }}
+                      >
+                        {link.name}
+                      </Link>
+                    </DropdownTrigger>
+                    <DropdownMenu
+                      className={`${styles.dropdown} top-10 left-38`}
                     >
-                      Items
-                    </li>
-                  </ul>
+                      <DropdownItem
+                        key='collection'
+                        value='collection'
+                        onClick={(e: any) =>
+                          handleClickDropdownMenu(link.href, 'collection')
+                        }
+                      >
+                        Collection
+                      </DropdownItem>
+                      <DropdownItem
+                        key='item'
+                        value='item'
+                        onClick={(e: any) =>
+                          handleClickDropdownMenu(link.href, 'item')
+                        }
+                      >
+                        Item
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                ) : (
+                  <Link
+                    className={`font-body01-medium ${styles.link} ${
+                      isActive && 'text-[var(--color-text-main)]'
+                    }`}
+                    href={`${link.href}/[...slug]`}
+                    as={
+                      link.isHover
+                        ? `#`
+                        : `${link.href}/${paramType}/${paramValue}`
+                    }
+                    onClick={() => {
+                      if (link.isHover) {
+                        setInventoryModalOpen((prev) => !prev);
+                      }
+                    }}
+                  >
+                    {link.name}
+                  </Link>
                 )}
               </div>
             );
