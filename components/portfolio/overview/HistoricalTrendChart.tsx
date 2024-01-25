@@ -308,7 +308,7 @@ const HistoricalTrendChart = (props: Props) => {
         },
       },
     };
-  }, [series[0]?.data[0], isPlus]);
+  }, [series[0]?.data[0], isPlus, currency]);
 
   const handleHover = (value: any) => {
     const currentValue = inventoryValue?.value[currency]?.amount

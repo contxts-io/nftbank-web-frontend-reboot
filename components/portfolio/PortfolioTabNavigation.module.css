@@ -18,7 +18,7 @@
 }
 .dropdown {
   filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.1));
-  @apply absolute min-w-65 max-h-[206px] overflow-y-scroll border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface-overlay)] z-30;
+  @apply absolute w-132 max-h-[206px] overflow-y-scroll border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface-overlay)] z-30;
 }
 .dropdown li {
   @apply flex w-full justify-between items-center whitespace-nowrap;
