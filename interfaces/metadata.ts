@@ -1,16 +1,21 @@
 import { CollectionMetadata } from "./collection"
+import { TChain } from "./constants"
 type Trait = {
   traitType: string,
   value: string,
-  tokenCount: number
+  rarityScore : number,
 }
 export type Metadata = 
   {
+    networkId: TChain,
+    assetContract: string,
     collection: CollectionMetadata,
-    tokenId: number,
+    marketPlace: string,
+    tokenId: string,
     name: string,
     imageUrl: string,
     rarity: number,
     rarityRank: number,
-    traits: Trait[],
+    rarityTraits: Trait[],
+    owner: string | null,
   }

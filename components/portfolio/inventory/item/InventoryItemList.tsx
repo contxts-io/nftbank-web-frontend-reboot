@@ -157,7 +157,12 @@ const InventoryItemList = (props: Props) => {
         }}
       >
         <div className={`${styles.sidebar} ${drawerOpen ? styles.open : ''}`}>
-          {selectedToken && <InventoryItemDetail token={selectedToken} />}
+          {selectedToken && (
+            <InventoryItemDetail
+              token={selectedToken}
+              walletAddress={requestParam.walletAddress || ''}
+            />
+          )}
         </div>
       </ReactModal>
     </section>

@@ -29,7 +29,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
   return (
     <article
       className={`font-caption-medium ${styles.cardWrapper}`}
-      // onClick={() => handleClickToken(token)}
+      onClick={() => handleClickToken(token)}
     >
       {token.token.imageUrl ? (
         <div className='flex w-full pb-[100%] overflow-hidden relative'>
@@ -38,7 +38,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             alt={`${token.collection.name}-${token.token.name}`}
             // objectFit='contain' // 이미지를 가운데 기준으로 크롭
             // objectPosition='center center'
-            className='w-full h-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'
+            className='w-full h-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] cursor-pointer'
           />
         </div>
       ) : (

@@ -7,26 +7,60 @@ import { useEffect, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { customToFixed, formatCurrency, formatDate } from '@/utils/common';
+import { TCurrency } from '@/interfaces/constants';
 
 const COLORS = [
   'var(--color-chart-accent-teal-bold)',
-  'var(--color-chart-accent-purple-bold)',
   'var(--color-chart-accent-lime-bold)',
   'var(--color-chart-accent-yellow-bolder)',
   'var(--color-chart-accent-red-bold)',
+  'var(--color-chart-accent-purple-bold)',
 ];
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const tooltip = ({ series, seriesIndex, dataPointIndex, w, currency }: any) => {
-  console.log('w', w);
+const tooltip = ({
+  series,
+  seriesIndex,
+  dataPointIndex,
+  w,
+  currency,
+}: {
+  series: number[][];
+  seriesIndex: number;
+  dataPointIndex: number;
+  w: any;
+  currency: TCurrency;
+}) => {
+  const NULL_MESSAGE = {
+    Estimated: 'No Listings',
+    'Collection Floor': 'No Listings',
+    'Trait Floor': 'No Listings',
+    '30d Avg.': 'No Trade Data',
+    '90d Avg.': 'No Trade Data',
+  };
   return (
     <section className={`font-caption-regular ${styles.tooltip}`}>
       <div className={`${styles.header}`}>
         {w.globals.categoryLabels[dataPointIndex]}
       </div>
       <ul className='pt-11'>
-        {series.map((item: any, index: number) => {
+        {series.map((item, index: number) => {
+          const label = w.globals.seriesNames[index];
+          const todayValue =
+            item[dataPointIndex] || item[dataPointIndex - 1] || 0;
+          const yesterdayValue = item[dataPointIndex - 1] || 0;
+          const change = todayValue - yesterdayValue;
+          console.log(
+            'label : ',
+            label,
+            ' : ',
+            todayValue,
+            ' : ',
+            yesterdayValue,
+            ' : ',
+            change
+          );
           return (
             <li key={index}>
               <div className='flex items-center'>
@@ -34,7 +68,9 @@ const tooltip = ({ series, seriesIndex, dataPointIndex, w, currency }: any) => {
                 <p>{w.globals.seriesNames[index]}</p>
               </div>
               <p className={`text-[var(--color-text-main)]`}>
-                {formatCurrency(series[index][dataPointIndex], currency)}
+                {change === 0
+                  ? NULL_MESSAGE[label as keyof typeof NULL_MESSAGE]
+                  : formatCurrency(todayValue?.toString() || '0', currency)}
               </p>
             </li>
           );
@@ -48,7 +84,6 @@ type Series = {
   id: string;
   name: string;
   data: (number | null)[];
-  noDataIndex: number[];
 }[];
 const InventoryItemDetailChart = ({
   historicalData,
@@ -66,51 +101,52 @@ const InventoryItemDetailChart = ({
         id: 'estimate',
         name: 'Estimated',
         data: [],
-        noDataIndex: [],
       },
       {
         id: 'floor',
         name: 'Collection Floor',
         data: [],
-        noDataIndex: [],
       },
-      {
-        id: 'traitFloor',
-        name: 'Trait Floor',
-        data: [],
-        noDataIndex: [],
-      },
+      // {
+      //   id: 'traitFloor',
+      //   name: 'Trait Floor',
+      //   data: [],
+      //   noDataIndex: [],
+      // },
       {
         id: 'd30Avg',
         name: '30d Avg.',
         data: [],
-        noDataIndex: [],
       },
       {
         id: 'd90Avg',
         name: '90d Avg.',
         data: [],
-        noDataIndex: [],
       },
     ];
     historicalData &&
       historicalData.map((item, index) => {
         const _date = formatDate(new Date(item.processedAt)).split('/');
-        const date = `${_date[1]}/${_date[2]}`;
+        console.log('_date', _date);
+        const date = `${_date[0]}/${_date[1].replace(
+          /^0+/,
+          ''
+        )}/${_date[2].replace(/^0+/, '')}`;
         category.push(date);
         const keys = Object.keys(item) as (keyof typeof item)[];
+        console.log('item :', item, ', keys : ', keys);
         keys.map((key) => {
           key !== 'processedAt' &&
             _seriesData.map((series) => {
               if (key === series.id) {
-                const prevValue =
-                  index > 0 ? series.data[index - 1] || null : null;
-                const value = item[key]?.[currency]
-                  ? item[key]?.[currency]
-                  : prevValue?.toString();
-                value
-                  ? series.data.push(parseFloat(value))
-                  : (series.data.push(null), series.noDataIndex.push(index));
+                const prevValue = index > 0 ? series.data[index - 1] : null;
+                // console.log('prevValue : ', prevValue);
+                const value =
+                  item[key]?.[currency] && item[key]?.[currency] !== 'nan'
+                    ? item[key]?.[currency]
+                    : prevValue?.toString();
+                console.log('value : ', value);
+                series.data.push(parseFloat(value || '0'));
               }
             });
         });
@@ -163,7 +199,17 @@ const InventoryItemDetailChart = ({
     },
     tooltip: {
       followCursor: true,
-      custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
+      custom: function ({
+        series,
+        seriesIndex,
+        dataPointIndex,
+        w,
+      }: {
+        series: number[][];
+        seriesIndex: number;
+        dataPointIndex: number;
+        w: any;
+      }) {
         return renderToString(
           tooltip({ series, seriesIndex, dataPointIndex, w, currency })
         );
@@ -195,14 +241,16 @@ const InventoryItemDetailChart = ({
       },
     },
   };
-
+  useEffect(() => {
+    console.log('finally seriesData : ', seriesData);
+  }, [seriesData]);
   return (
     <section className='w-full'>
       <ApexCharts
         options={options}
         series={seriesData.map((item, index) => ({
           ...item,
-          color: COLORS[index % COLORS.length],
+          color: COLORS[index],
         }))}
         type='line'
         width='100%'
