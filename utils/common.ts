@@ -109,7 +109,7 @@ export function formatAmount(amount: string | number) {
 export function shortenAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
-export function customToFixed(number:number) {
+export function customToFixed(number:number, precision:number = 2) {
   if (Number.isNaN(number)) {
     return "NaN";
   }
@@ -120,8 +120,8 @@ export function customToFixed(number:number) {
   // 소수점 이하 2자리 이상인 경우에만 toFixed(2)를 적용
   if (numberStr.includes('.')) {
     const decimalPart = numberStr.split('.')[1];
-    if (decimalPart.length >= 2) {
-      return number.toFixed(2);
+    if (decimalPart.length >= precision) {
+      return number.toFixed(precision);
     }
   }
 
