@@ -6,7 +6,13 @@ import { TokenHistory } from '@/interfaces/valuation';
 import { useEffect, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
-import { customToFixed, formatCurrency, formatDate } from '@/utils/common';
+import {
+  customToFixed,
+  formatCurrency,
+  formatDate,
+  mathSqrt,
+  reverseMathSqrt,
+} from '@/utils/common';
 import { TCurrency } from '@/interfaces/constants';
 
 const COLORS = [
@@ -25,12 +31,14 @@ const tooltip = ({
   dataPointIndex,
   w,
   currency,
+  seriesData,
 }: {
   series: number[][];
   seriesIndex: number;
   dataPointIndex: number;
   w: any;
   currency: TCurrency;
+  seriesData: Series;
 }) => {
   const NULL_MESSAGE = {
     Estimated: 'No Listings',
@@ -47,20 +55,28 @@ const tooltip = ({
       <ul className='pt-11'>
         {series.map((item, index: number) => {
           const label = w.globals.seriesNames[index];
+          // const todayValue =
+          //   item[dataPointIndex] || item[dataPointIndex - 1] || 0;
           const todayValue =
-            item[dataPointIndex] || item[dataPointIndex - 1] || 0;
-          const yesterdayValue = item[dataPointIndex - 1] || 0;
-          const change = todayValue - yesterdayValue;
+            w.globals.initialSeries[index].realData[dataPointIndex] ||
+            w.globals.initialSeries[index].realData[dataPointIndex - 1] ||
+            0;
+
+          const todayFormattedValue =
+            w.globals.initialSeries[index].data[dataPointIndex] ||
+            w.globals.initialSeries[index].data[dataPointIndex - 1] ||
+            0;
+
+          const todayReversedValue = reverseMathSqrt(todayFormattedValue);
+
+          console.log('todayValue : ', todayValue);
+          console.log('todayFormattedValue : ', mathSqrt(todayValue));
           console.log(
-            'label : ',
-            label,
-            ' : ',
-            todayValue,
-            ' : ',
-            yesterdayValue,
-            ' : ',
-            change
+            'todayReversedValue : ',
+            reverseMathSqrt(mathSqrt(todayValue))
           );
+          console.log('seriesData ::: ', seriesData);
+          console.log('w', w);
           return (
             <li key={index}>
               <div className='flex items-center'>
@@ -68,7 +84,7 @@ const tooltip = ({
                 <p>{w.globals.seriesNames[index]}</p>
               </div>
               <p className={`text-[var(--color-text-main)]`}>
-                {change === 0
+                {w.globals.initialSeries[index].noDataIndex.includes(index)
                   ? NULL_MESSAGE[label as keyof typeof NULL_MESSAGE]
                   : formatCurrency(todayValue?.toString() || '0', currency)}
               </p>
@@ -84,6 +100,8 @@ type Series = {
   id: string;
   name: string;
   data: (number | null)[];
+  realData: (number | null)[];
+  noDataIndex: number[];
 }[];
 const InventoryItemDetailChart = ({
   historicalData,
@@ -101,27 +119,40 @@ const InventoryItemDetailChart = ({
         id: 'estimate',
         name: 'Estimated',
         data: [],
+        realData: [],
+        noDataIndex: [],
       },
       {
         id: 'floor',
         name: 'Collection Floor',
+
         data: [],
+        realData: [],
+        noDataIndex: [],
       },
       // {
       //   id: 'traitFloor',
       //   name: 'Trait Floor',
-      //   data: [],
-      //   noDataIndex: [],
+      //
+      // data: [],
+      // realData: [],
+      // noDataIndex: [],
       // },
       {
         id: 'd30Avg',
         name: '30d Avg.',
+
         data: [],
+        realData: [],
+        noDataIndex: [],
       },
       {
         id: 'd90Avg',
         name: '90d Avg.',
+
         data: [],
+        realData: [],
+        noDataIndex: [],
       },
     ];
     historicalData &&
@@ -145,11 +176,42 @@ const InventoryItemDetailChart = ({
                   item[key]?.[currency] && item[key]?.[currency] !== 'nan'
                     ? item[key]?.[currency]
                     : prevValue?.toString();
-                console.log('value : ', value);
-                series.data.push(parseFloat(value || '0'));
+                // console.log('value : ', value);
+                // series.data.push(parseFloat(value || '0'));
+                // series.realData.push(parseFloat(value || '0'));
+                if (item[key]?.[currency] && item[key]?.[currency] !== 'nan') {
+                  console.log('value : ', value);
+                  console.log(
+                    'item[key]?.[currency] : ',
+                    item[key]?.[currency]
+                  );
+                  console.log('is same : ', value === item[key]?.[currency]);
+                  series.data.push(
+                    mathSqrt(parseFloat(item[key]?.[currency] || '0'))
+                  );
+                  series.realData.push(
+                    parseFloat(item[key]?.[currency] || '0')
+                  );
+                } else {
+                  console.log('nodata value : ', value);
+                  console.log(
+                    'prevValue?.toString() : ',
+                    prevValue?.toString()
+                  );
+                  console.log('is same : ', value === prevValue?.toString());
+                  series.noDataIndex.push(index);
+                  console.log('no data ', index, series.noDataIndex);
+                  series.data.push(
+                    mathSqrt(parseFloat(prevValue?.toString() || '0'))
+                  );
+                  series.realData.push(
+                    parseFloat(prevValue?.toString() || '0')
+                  );
+                }
               }
             });
         });
+        console.log('no data index : ', _seriesData);
       });
     return _seriesData;
   }, [historicalData, currency, category]);
@@ -184,13 +246,20 @@ const InventoryItemDetailChart = ({
     },
     yaxis: {
       tickAmount: 6,
+
       labels: {
         style: {
           colors: axisColor,
           fontSize: '12px',
         },
         formatter: function (value: any) {
-          return value ? customToFixed(value) : value;
+          console.log('yaxis value : ', value);
+          return value
+            ? formatCurrency(
+                reverseMathSqrt(value).toString(),
+                currency
+              ).substring(1)
+            : value;
         },
       },
     },
@@ -204,14 +273,23 @@ const InventoryItemDetailChart = ({
         seriesIndex,
         dataPointIndex,
         w,
+        seriesData,
       }: {
         series: number[][];
         seriesIndex: number;
         dataPointIndex: number;
         w: any;
+        seriesData: Series;
       }) {
         return renderToString(
-          tooltip({ series, seriesIndex, dataPointIndex, w, currency })
+          tooltip({
+            series,
+            seriesIndex,
+            dataPointIndex,
+            w,
+            currency,
+            seriesData: seriesData,
+          })
         );
       },
     },
@@ -250,6 +328,7 @@ const InventoryItemDetailChart = ({
         options={options}
         series={seriesData.map((item, index) => ({
           ...item,
+          // data: item.data.map((value) => mathSqrt(value || 0)),
           color: COLORS[index],
         }))}
         type='line'

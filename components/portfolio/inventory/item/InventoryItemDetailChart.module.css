@@ -11,17 +11,17 @@
   @apply border-2 bg-[var(--color-elevation-surface)] w-10 h-10 rounded-full mr-9;
 }
 .dot--0 {
-  @apply border-[var(--color-border-accent-teal)];
+  @apply border-[var(--color-chart-accent-teal-bold)];
 }
 .dot--1 {
-  @apply border-[var(--color-border-accent-purple)];
+  @apply border-[var(--color-chart-accent-lime-bold)];
 }
 .dot--2 {
-  @apply border-[var(--color-border-accent-green)];
+  @apply border-[var(--color-chart-accent-yellow-bolder)];
 }
 .dot--3 {
-  @apply border-[var(--color-border-accent-yellow)];
+  @apply border-[var(--color-chart-accent-red-bold)];
 }
 .dot--4 {
-  @apply border-[var(--color-border-accent-red)];
+  @apply border-[var(--color-chart-accent-purple-bold)];
 }
