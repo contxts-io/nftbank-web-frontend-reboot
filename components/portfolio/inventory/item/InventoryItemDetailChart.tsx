@@ -41,7 +41,7 @@ const tooltip = ({
   seriesData: Series;
 }) => {
   const NULL_MESSAGE = {
-    Estimated: 'No Listings',
+    Estimated: 'Not Supported',
     'Collection Floor': 'No Listings',
     'Trait Floor': 'No Listings',
     '30d Avg.': 'No Trade Data',
@@ -69,13 +69,13 @@ const tooltip = ({
 
           const todayReversedValue = reverseMathSqrt(todayFormattedValue);
 
-          console.log('todayValue : ', todayValue);
-          console.log('todayFormattedValue : ', mathSqrt(todayValue));
-          console.log(
-            'todayReversedValue : ',
-            reverseMathSqrt(mathSqrt(todayValue))
-          );
-          console.log('seriesData ::: ', seriesData);
+          // console.log('todayValue : ', todayValue);
+          // console.log('todayFormattedValue : ', mathSqrt(todayValue));
+          // console.log(
+          //   'todayReversedValue : ',
+          //   reverseMathSqrt(mathSqrt(todayValue))
+          // );
+          // console.log('seriesData ::: ', seriesData);
           console.log('w', w);
           return (
             <li key={index}>
@@ -179,7 +179,11 @@ const InventoryItemDetailChart = ({
                 // console.log('value : ', value);
                 // series.data.push(parseFloat(value || '0'));
                 // series.realData.push(parseFloat(value || '0'));
-                if (item[key]?.[currency] && item[key]?.[currency] !== 'nan') {
+                if (
+                  item[key]?.[currency] &&
+                  item[key]?.[currency] !== 'nan' &&
+                  item[key]?.[currency] !== 'None'
+                ) {
                   console.log('value : ', value);
                   console.log(
                     'item[key]?.[currency] : ',
@@ -202,10 +206,12 @@ const InventoryItemDetailChart = ({
                   series.noDataIndex.push(index);
                   console.log('no data ', index, series.noDataIndex);
                   series.data.push(
-                    mathSqrt(parseFloat(prevValue?.toString() || '0'))
+                    prevValue
+                      ? mathSqrt(parseFloat(prevValue?.toString()))
+                      : null
                   );
                   series.realData.push(
-                    parseFloat(prevValue?.toString() || '0')
+                    prevValue ? parseFloat(prevValue?.toString()) : null
                   );
                 }
               }
