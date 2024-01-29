@@ -30,10 +30,10 @@ const PERIOD: { name: string; value: Period }[] = [
     name: '1M',
     value: '30d',
   },
-  {
-    name: '3M',
-    value: '90d',
-  },
+  // {
+  //   name: '3M',
+  //   value: '90d',
+  // },
   // {
   //   name: 'YTD',
   //   value: 'ytd',
