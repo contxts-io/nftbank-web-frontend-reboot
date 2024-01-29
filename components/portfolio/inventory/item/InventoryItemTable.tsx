@@ -3,7 +3,6 @@ import { useInventoryItemInfinite } from '@/utils/hooks/queries/inventory';
 import styles from './InventoryItemTable.module.css';
 import { useAtom, useAtomValue } from 'jotai';
 import { inventoryItemListAtom } from '@/store/requestParam';
-import Image from 'next/image';
 import { TValuation } from '@/interfaces/collection';
 import { Token } from '@/interfaces/token';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
@@ -183,7 +182,7 @@ const InventoryItemTable = (props: Props) => {
                         className={`font-caption-regular ${
                           styles.tableBodyRow
                         } ${isOpen && styles.isOpen}`}
-                        // onClick={() => handleOpenDetail(data)}
+                        onClick={() => handleOpenDetail(data)}
                       >
                         <td className='text-left p-0'>
                           <div className={`flex items-center my-8`}>

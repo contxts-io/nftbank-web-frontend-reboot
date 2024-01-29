@@ -2,6 +2,7 @@ import { Metadata } from "@/interfaces/metadata";
 import instance from "@/utils/axiosInterceptor";
 
 type Param = {
+  walletAddress: string,
   networkId: string,
   assetContract: string,
   tokenId: number,

@@ -3,7 +3,7 @@ import { Metadata } from "@/interfaces/metadata";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export function useMetadata(props: {networkId: string, assetContract: string, tokenId: number}) {
+export function useMetadata(props: {networkId: string, assetContract: string, tokenId: number, walletAddress: string }) {
   return useQuery<Metadata,AxiosError>(
     ['metadata',props],
     async () => {

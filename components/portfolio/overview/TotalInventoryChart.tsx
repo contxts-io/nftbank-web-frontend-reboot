@@ -20,15 +20,216 @@ import {
 import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
 import CurrencyComponent from '@/components/p/Currency';
 import { ApexOptions } from 'apexcharts';
+import { TCurrency } from '@/interfaces/constants';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
-const COLORS = [
-  'var(--color-chart-information)',
-  'var(--color-chart-accent-teal-boldest)',
-  'var(--color-chart-accent-purple-bold)',
-  'var(--color-chart-accent-teal-bold)',
-  'var(--color-chart-accent-blue-boldest)',
-  'var(--color-chart-accent-gray-bolder)',
-];
+const COLORS = {
+  eth: [
+    'var(--color-chart-information)',
+    'var(--color-chart-accent-teal-boldest)',
+    'var(--color-chart-accent-purple-bold)',
+    'var(--color-chart-accent-teal-bold)',
+    'var(--color-chart-accent-blue-boldest)',
+    'var(--color-chart-accent-gray-bolder)',
+  ],
+  usd: [
+    'var(--color-chart-information)',
+    'var(--color-chart-accent-teal-boldest)',
+    'var(--color-chart-accent-purple-bold)',
+    'var(--color-chart-accent-teal-bold)',
+    'var(--color-chart-accent-blue-boldest)',
+    'var(--color-chart-accent-gray-bolder)',
+  ],
+};
+
+const TotalInventoryChart = (props: {
+  selected: 'value' | 'amount';
+  totalAmount: number;
+}) => {
+  const { selected, totalAmount } = props;
+  const networkId = useAtomValue(networkIdAtom);
+  const portfolioUser = useAtomValue(portfolioUserAtom);
+  const currency = useAtomValue(currencyAtom);
+  const { data: totalInventoryPositionValue, status } =
+    useInventoryCollectionPositionValue({ ...portfolioUser, networkId });
+  const { data: totalInventoryPositionAmount, status: statusAmount } =
+    useInventoryCollectionPositionAmount({ ...portfolioUser, networkId });
+  const [labels, setLabels] = useState<string[]>([]);
+  const [series, setSeries] = useState<number[]>([]);
+  const [option, setOption] = useState<ApexOptions | null>(null);
+  useEffect(() => {
+    console.log('currency', currency);
+    selected === 'value' &&
+      totalInventoryPositionValue &&
+      (setLabels(
+        totalInventoryPositionValue?.map(
+          (item) =>
+            item.collection.name ||
+            shortenAddress(item.collection.assetContract)
+        )
+      ),
+      setSeries(
+        totalInventoryPositionValue.map((item) =>
+          parseFloat(item.value[currency].amount || '0')
+        )
+      ));
+    selected === 'amount' &&
+      totalInventoryPositionAmount &&
+      (setLabels(
+        totalInventoryPositionAmount?.map((item, index) => {
+          return (
+            item.collection.name ||
+            shortenAddress(item.collection.assetContract)
+          );
+        })
+      ),
+      setSeries(
+        totalInventoryPositionAmount.map(
+          (item) => (item.amount / totalAmount) * 100 || 0
+        )
+      ));
+    setOption({
+      chart: {
+        type: 'donut',
+        animations: {
+          enabled: true,
+          easing: 'easeout',
+          speed: 500,
+          animateGradually: {
+            enabled: true,
+            delay: 250,
+          },
+          dynamicAnimation: {
+            enabled: true,
+            speed: 250,
+          },
+        },
+      },
+      legend: {
+        show: false,
+      },
+      dataLabels: {
+        enabled: false,
+      },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {},
+        },
+      ],
+      stroke: {
+        show: false,
+      },
+      colors: COLORS[currency],
+      tooltip: {
+        custom: ({ series, seriesIndex, dataPointIndex, w }: any) => {
+          return renderToString(
+            tooltip({
+              series,
+              seriesIndex,
+              dataPointIndex,
+              w,
+              selected,
+              totalInventoryPositionValue,
+              totalInventoryPositionAmount,
+              currency,
+            })
+          );
+        },
+      },
+      labels: labels,
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '70%',
+          },
+        },
+      },
+    });
+  }, [
+    selected,
+    totalInventoryPositionValue,
+    totalInventoryPositionAmount,
+    currency,
+  ]);
+  // const _options: ApexOptions & { currency: TCurrency } = {
+  //   chart: {
+  //     type: 'donut',
+  //     animations: {
+  //       enabled: true,
+  //       easing: 'easeout',
+  //       speed: 500,
+  //       animateGradually: {
+  //         enabled: true,
+  //         delay: 250,
+  //       },
+  //       dynamicAnimation: {
+  //         enabled: true,
+  //         speed: 250,
+  //       },
+  //     },
+  //   },
+  //   legend: {
+  //     show: false,
+  //   },
+  //   dataLabels: {
+  //     enabled: false,
+  //   },
+  //   responsive: [
+  //     {
+  //       breakpoint: 480,
+  //       options: {},
+  //     },
+  //   ],
+  //   stroke: {
+  //     show: false,
+  //   },
+  //   colors: COLORS[currency],
+  //   tooltip: {
+  //     custom: ({ series, seriesIndex, dataPointIndex, w }: any) => {
+  //       return renderToString(
+  //         tooltip(
+  //           {
+  //             series,
+  //             seriesIndex,
+  //             dataPointIndex,
+  //             w,
+  //             selected,
+  //             totalInventoryPositionValue,
+  //             totalInventoryPositionAmount,
+  //           },
+  //           currency
+  //         )
+  //       );
+  //     },
+  //   },
+  //   labels: labels,
+  //   plotOptions: {
+  //     pie: {
+  //       donut: {
+  //         size: '70%',
+  //       },
+  //     },
+  //   },
+  // };
+
+  return (
+    <section className={`${styles.container} relative`}>
+      {option && (
+        <ApexCharts
+          options={{
+            ...option,
+            chart: { ...option.chart, type: 'donut' },
+          }}
+          type={'donut'}
+          series={series}
+          height={240}
+          width={240}
+          currency={currency}
+        />
+      )}
+    </section>
+  );
+};
 const tooltip = ({
   series,
   seriesIndex,
@@ -52,7 +253,9 @@ const tooltip = ({
     totalInventoryPositionValue?.[seriesIndex]?.value[currency].amount || '0',
     currency
   );
-  console.log('totalInventoryPositionAmount', totalInventoryPositionAmount);
+  console.log('position collection selected @@@ ', selected);
+  console.log('position collection w @@@ ', w);
+  console.log('position collection currency ### ', currency);
   return (
     <div
       className={`relative bg-[var(--color-elevation-surface)] ${
@@ -79,7 +282,7 @@ const tooltip = ({
               </span>
               <p>{positionCollectionAmount}</p>
             </div>
-            {totalInventoryPositionAmount.length !== seriesIndex + 1 && (
+            {totalInventoryPositionAmount?.length !== seriesIndex + 1 && (
               <div className='flex justify-between items-center'>
                 <span className='text-[var(--color-text-subtle)] mr-41'>
                   Amount Difference(24h)
@@ -103,7 +306,7 @@ const tooltip = ({
           <div className='w-full'>
             <div className='flex justify-between items-center'>
               <span className='text-[var(--color-text-subtle)] mr-41'>
-                {seriesIndex === totalInventoryPositionValue.length - 1
+                {seriesIndex === totalInventoryPositionValue?.length - 1
                   ? 'Various Valuation Types'
                   : positionCollection.valuation
                   ? mappingConstants(positionCollection.valuation.type)
@@ -111,7 +314,7 @@ const tooltip = ({
               </span>
               <CurrencyComponent value={amount} />
             </div>
-            {totalInventoryPositionAmount.length !== seriesIndex + 1 && (
+            {totalInventoryPositionAmount?.length !== seriesIndex + 1 && (
               <div className='flex justify-between items-center'>
                 <span className='text-[var(--color-text-subtle)] mr-41'>
                   Rate of Change(24h)
@@ -142,120 +345,5 @@ const tooltip = ({
     </div>
   );
 };
-const TotalInventoryChart = (props: {
-  selected: 'value' | 'amount';
-  totalAmount: number;
-}) => {
-  const { selected, totalAmount } = props;
-  const networkId = useAtomValue(networkIdAtom);
-  const portfolioUser = useAtomValue(portfolioUserAtom);
-  const currency = useAtomValue(currencyAtom);
-  const { data: totalInventoryPositionValue, status } =
-    useInventoryCollectionPositionValue({ ...portfolioUser, networkId });
-  const { data: totalInventoryPositionAmount, status: statusAmount } =
-    useInventoryCollectionPositionAmount({ ...portfolioUser, networkId });
-  const [labels, setLabels] = useState<string[]>([]);
-  const [series, setSeries] = useState<number[]>([]);
-  useEffect(() => {
-    selected === 'value' &&
-      totalInventoryPositionValue &&
-      (setLabels(
-        totalInventoryPositionValue?.map(
-          (item) =>
-            item.collection.name ||
-            shortenAddress(item.collection.assetContract)
-        )
-      ),
-      setSeries(
-        totalInventoryPositionValue.map((item) =>
-          parseFloat(item.value[currency].amount || '0')
-        )
-      ));
-    selected === 'amount' &&
-      totalInventoryPositionAmount &&
-      (setLabels(
-        totalInventoryPositionAmount?.map((item, index) => {
-          return (
-            item.collection.name ||
-            shortenAddress(item.collection.assetContract)
-          );
-        })
-      ),
-      setSeries(
-        totalInventoryPositionAmount.map(
-          (item) => (item.amount / totalAmount) * 100 || 0
-        )
-      ));
-  }, [selected, totalInventoryPositionValue, totalInventoryPositionAmount]);
-  const options: ApexOptions = {
-    chart: {
-      type: 'donut',
-      animations: {
-        enabled: true,
-        easing: 'easeout',
-        speed: 500,
-        animateGradually: {
-          enabled: true,
-          delay: 250,
-        },
-        dynamicAnimation: {
-          enabled: true,
-          speed: 250,
-        },
-      },
-    },
-    legend: {
-      show: false,
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    responsive: [
-      {
-        breakpoint: 480,
-        options: {},
-      },
-    ],
-    stroke: {
-      show: false,
-    },
-    colors: COLORS,
-    tooltip: {
-      custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
-        return renderToString(
-          tooltip({
-            series,
-            seriesIndex,
-            dataPointIndex,
-            w,
-            selected,
-            totalInventoryPositionValue,
-            totalInventoryPositionAmount,
-            currency,
-          })
-        );
-      },
-    },
-    labels: labels,
-    plotOptions: {
-      pie: {
-        donut: {
-          size: '70%',
-        },
-      },
-    },
-  };
 
-  return (
-    <section className={`${styles.container} relative`}>
-      <ApexCharts
-        options={{ ...options, chart: { ...options.chart, type: 'donut' } }}
-        type={'donut'}
-        series={series}
-        height={240}
-        width={240}
-      />
-    </section>
-  );
-};
 export default TotalInventoryChart;

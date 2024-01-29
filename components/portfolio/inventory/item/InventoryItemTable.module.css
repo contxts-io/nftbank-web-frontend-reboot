@@ -25,7 +25,7 @@
   @apply w-12 border-0;
 }
 .tableBodyRow {
-  @apply h-50 text-[var(--color-text-main)] border-[var(--color-border-disabled)] hover:bg-[var(--color-elevation-sunken)];
+  @apply h-50 text-[var(--color-text-main)] border-[var(--color-border-disabled)] hover:bg-[var(--color-elevation-sunken)] cursor-pointer;
 }
 .tableBodyRow p {
   @apply mr-30;

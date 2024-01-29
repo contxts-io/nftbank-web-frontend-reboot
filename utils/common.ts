@@ -109,7 +109,7 @@ export function formatAmount(amount: string | number) {
 export function shortenAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
-export function customToFixed(number:number) {
+export function customToFixed(number:number, precision:number = 2) {
   if (Number.isNaN(number)) {
     return "NaN";
   }
@@ -120,8 +120,8 @@ export function customToFixed(number:number) {
   // 소수점 이하 2자리 이상인 경우에만 toFixed(2)를 적용
   if (numberStr.includes('.')) {
     const decimalPart = numberStr.split('.')[1];
-    if (decimalPart.length >= 2) {
-      return number.toFixed(2);
+    if (decimalPart.length >= precision) {
+      return number.toFixed(precision);
     }
   }
 
@@ -168,9 +168,32 @@ export function mathSqrt(value: string | number) {
   if(typeof value === 'number') {
     _value = value;
   }
-  // return _value && _value >= 0 ? Math.sqrt(_value) : -(Math.sqrt(Math.abs(_value)));
-  return _value && _value >= 0 ? Math.log((_value + 1)*10 ) : -(Math.log(Math.abs((_value - 1)*10)));
+  // return _value && _value >= 0 ? Math.log((_value + 1)*10 ) : -(Math.log(Math.abs((_value - 1)*10)));
+  return _value ? Math.log((Math.abs(_value) + 1)*10 ) : 0;
 }
+export function reverseMathSqrt(value: number) {
+  // 양수에 대해서만 고려
+  if (value >= 0) {
+    // 로그 변환을 되돌리는 부분
+    const originalValue = Math.exp(value) / 10 - 1;
+    return originalValue;
+  } else {
+    return 0;
+  }
+}
+
+export function inverseMathSqrt(value: number) {
+  // 양수에 대해서만 고려
+  if (value >= 0) {
+    // 로그 변환을 되돌리는 부분
+    const originalValue = Math.exp(value) / 10 - 1;
+    return originalValue;
+  } else {
+    return 0;
+  };
+}
+
+
 type WalletData = {walletAddress: `0x${string}`, provider:string, type : 'evm'}
 export function formatToken (data: WalletData) {
   let walletJwt = '';

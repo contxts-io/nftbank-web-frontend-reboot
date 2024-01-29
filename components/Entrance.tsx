@@ -62,7 +62,7 @@ const Entrance = () => {
           width={20}
           height={20}
           alt='nftbank logo'
-          className='border-0'
+          className='border-0 mr-8'
         />
         <NFTBankLogo className={`fill-[var(--color-icon-main)]`} />
       </div>

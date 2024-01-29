@@ -53,11 +53,12 @@ const TotalInventoryValue = () => {
     let total = 0;
     if (totalInventoryPositionValue) {
       total = totalInventoryPositionValue.reduce((a: number, b) => {
+        console.log('b ::', b.value[currency].amount);
         return a + parseFloat(b.value[currency].amount || '0');
       }, 0);
     }
     return total;
-  }, [totalInventoryPositionValue]);
+  }, [totalInventoryPositionValue, currency]);
   const totalAmount = useMemo(() => {
     let total = 0;
     totalInventoryPositionAmount &&
