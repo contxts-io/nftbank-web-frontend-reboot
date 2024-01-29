@@ -46,17 +46,17 @@ const InventoryItemFilter = (props: Props) => {
     () => data?.pages.flatMap((page) => page.data),
     [data?.pages]
   );
-  useEffect(() => {
-    return () => {
-      //페이지 이동시 selectedCollection 초기화
-      setSelectedCollection([]);
-      setItemRequestParams((prev) => ({
-        ...prev,
-        page: 1,
-        assetContract: [],
-      }));
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     //페이지 이동시 selectedCollection 초기화
+  //     setSelectedCollection([]);
+  //     setItemRequestParams((prev) => ({
+  //       ...prev,
+  //       page: 1,
+  //       assetContract: [],
+  //     }));
+  //   };
+  // }, []);
   useEffect(() => {
     inView && fetchNextPage();
   }, [fetchNextPage, inView]);

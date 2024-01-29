@@ -5,19 +5,33 @@ import InventoryItemList from './InventoryItemList';
 import InventoryItemSelectCollection from './InventoryItemSelectCollection';
 import { useEffect, useRef, useState } from 'react';
 import CustomValuationSaveToast from './CustomValuationSaveToast';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import {
   customValuationAtom,
   selectedCollectionInventoryAtom,
 } from '@/store/portfolio';
+import { inventoryItemListAtom } from '@/store/requestParam';
 
 const InventoryItemSection = () => {
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(true);
   const [customValuations, setCustomValuations] = useAtom(customValuationAtom);
   const collections = useAtomValue(selectedCollectionInventoryAtom);
-
+  const setSelectedCollection = useSetAtom(selectedCollectionInventoryAtom);
+  const setItemRequestParams = useSetAtom(inventoryItemListAtom);
   useEffect(() => {
     setCustomValuations([]);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      //페이지 이동시 selectedCollection 초기화
+      setSelectedCollection([]);
+      setItemRequestParams((prev) => ({
+        ...prev,
+        page: 1,
+        assetContract: [],
+      }));
+    };
   }, []);
 
   const targetRef = useRef<HTMLDivElement>(null);
