@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server';
 import dynamic from 'next/dynamic';
 import styles from './InventoryItemDetailChart.module.css';
 import { TokenHistory } from '@/interfaces/valuation';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import {
@@ -110,7 +110,6 @@ const InventoryItemDetailChart = ({
   const markerFill = 'var(--color-elevation-surface)';
   const axisColor = 'var(--color-text-subtle)';
   const currency = useAtomValue(currencyAtom);
-
   let category: string[] = [];
 
   let seriesData = useMemo(() => {
@@ -155,6 +154,7 @@ const InventoryItemDetailChart = ({
         noDataIndex: [],
       },
     ];
+
     historicalData &&
       historicalData.map((item, index) => {
         const _date = formatDate(new Date(item.processedAt)).split('/');
@@ -221,7 +221,25 @@ const InventoryItemDetailChart = ({
       });
     return _seriesData;
   }, [historicalData, currency, category]);
+  const maxYValue = useMemo(() => {
+    function _findMaxValue(dataArray: number[]) {
+      if (dataArray.length === 0) {
+        return undefined; // 배열이 비어있을 경우 undefined 반환 또는 다른 적절한 값 설정
+      }
 
+      return Math.max(...dataArray);
+    }
+    // 'data' 배열의 최댓값 찾기
+    let maxValues = seriesData.map((series) =>
+      _findMaxValue(series.data as number[])
+    );
+
+    // 최종 최대값 찾기
+    let overallMaxValue = _findMaxValue(maxValues as number[]);
+
+    console.log('Max Values: overallMaxValue', overallMaxValue);
+    return overallMaxValue;
+  }, [seriesData]);
   const options = {
     chart: {
       id: 'basic-bar',
@@ -251,6 +269,7 @@ const InventoryItemDetailChart = ({
       },
     },
     yaxis: {
+      max: maxYValue,
       tickAmount: 6,
 
       labels: {
