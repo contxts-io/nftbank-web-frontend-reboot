@@ -2,12 +2,13 @@ import { CollectionMetadata } from "./collection"
 import { TChain } from "./constants"
 type Trait = {
   traitType: string,
-  value: string,
+  traitValue: string,
   rarityScore : number,
 }
 export type Metadata = 
   {
     networkId: TChain,
+    lastAcquisitionDate: string,
     assetContract: string,
     collection: CollectionMetadata,
     marketPlace: string,

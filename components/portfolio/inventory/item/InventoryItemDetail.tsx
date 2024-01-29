@@ -74,6 +74,7 @@ const InventoryItemDetail = ({ token, walletAddress }: Props) => {
     networkId: token.collection.chain.name,
     assetContract: token.collection.assetContract,
     tokenId: token.token.tokenId,
+    walletAddress: walletAddress || '',
   });
   const { data: historicalData, status: historicalStatus } =
     useValuationTokenHistory({
@@ -131,19 +132,19 @@ const InventoryItemDetail = ({ token, walletAddress }: Props) => {
             <TextInfo
               title='Owner'
               value={inventoryItem.owner ? '' : walletAddress || '-'}
-              href=''
+              href={`https://etherscan.io/address/${walletAddress}`}
             />
             <TextInfo
               title='Contract Address'
               value={inventoryItem.assetContract}
               href={`https://etherscan.io/address/${inventoryItem.assetContract}`}
             />
-            <TextInfo
+            {/* <TextInfo
               title='Acq. tx hash'
               value={inventoryItem.assetContract}
               tooltip='Based on latest acquisition date'
               href={`https://etherscan.io/address/${inventoryItem.assetContract}`}
-            />
+            /> */}
           </div>
         )}
         {/**
@@ -234,10 +235,11 @@ const InventoryItemDetail = ({ token, walletAddress }: Props) => {
                             </p>
                             <div className='w-full flex items-center justify-between'>
                               <p className='text-[var(--color-text-brand)]'>
-                                {trait.traitType.replace(
-                                  /(?:^|\s)\S/g,
-                                  (match) => match.toUpperCase()
-                                )}
+                                {trait.traitValue
+                                  .replace(/_/g, ' ')
+                                  .replace(/(?:^|\s)\S/g, (match) =>
+                                    match.toUpperCase()
+                                  )}
                               </p>
                               <p className='text-[var(--color-text-main)]'>
                                 {customToFixed(trait.rarityScore, 3)}
