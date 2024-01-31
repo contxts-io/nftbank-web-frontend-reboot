@@ -7,6 +7,8 @@ import localFont from 'next/font/local';
 import 'react-toastify/dist/ReactToastify.css';
 import LoginProvider from '@/components/providers/LoginProvider';
 import GlobalFooter from '@/components/GlobalFooter';
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google';
+import { Analytics } from '@/components/common/Analytics';
 
 const iosevkaCustom = localFont({
   src: [
@@ -74,8 +76,8 @@ const iosevkaCustom = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'NFTBank.ai',
-  description: 'NFTBank',
+  title: 'NFTBank.ai reboot',
+  description: 'NFTBank reboot',
 };
 
 export default async function RootLayout({
@@ -120,6 +122,8 @@ export default async function RootLayout({
     // 시작시 다크모드를 바로 적용 시켜줌
     document.body.setAttribute('data-theme', currentColorMode);
   }
+  const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || '';
+  const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID || '';
 
   return (
     <html lang='en' className={`${iosevkaCustom.className}`}>
@@ -138,6 +142,8 @@ export default async function RootLayout({
         <link rel='icon' href='/favicon.svg' type='image/svg+xml' />
         <link rel='apple-touch-icon' href='apple-icon-180.png' />
         <meta name='apple-mobile-web-app-capable' content='yes' />
+
+        <GoogleAnalytics gaId={GA_TRACKING_ID} />
         <Providers>
           {/**
            * 
@@ -150,12 +156,15 @@ export default async function RootLayout({
               <GlobalFooter />
             </div>
           </AuthProvider> */}
-          <div className='flex flex-col w-screen max-w-[1440] h-screen pt-61'>
-            <GlobalNavigation />
-            {children}
-            <GlobalFooter />
-          </div>
+          <Analytics>
+            <div className='flex flex-col w-screen max-w-[1440] h-screen pt-61'>
+              <GlobalNavigation />
+              {children}
+              <GlobalFooter />
+            </div>
+          </Analytics>
         </Providers>
+        <GoogleTagManager gtmId={GTM_ID} />
       </body>
     </html>
   );

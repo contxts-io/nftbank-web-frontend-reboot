@@ -65,7 +65,7 @@ export const getSummaryTotalSpend = async<T = TSummary>(searchParam:BasicParam |
   const query = jsonToQueryString(searchParam);
   const {data} = await instance.get<{data:T}>(`/inventory/summary/total-spend?${query}`);
   return data.data;
-}
+} 
 export const getSummaryGasSpend = async<T = TSummary>(searchParam:BasicParam | null): Promise<T> => {
   const query = jsonToQueryString(searchParam);
   const {data} = await instance.get<{data:T}>(`/inventory/summary/gas-spend?${query}`);

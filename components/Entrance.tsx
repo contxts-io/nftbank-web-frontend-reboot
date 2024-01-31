@@ -82,7 +82,7 @@ const Entrance = () => {
         </p>
       )}
       <Button
-        id=''
+        id='enterButton'
         className={`font-caption-regular ${styles.enterButton} 
         ${error && styles.disabled}
         ${searchAddress && styles.active}`}

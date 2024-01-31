@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import styles from './Button.module.css';
 import { twMerge } from 'tailwind-merge';
 import Spinner from '@/public/icon/Spinner';
+import { sendGTMEvent } from '@next/third-parties/google';
 // import * as gtag from '@/lib/gtag';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
@@ -17,6 +18,7 @@ const Button = ({
     e.preventDefault();
     e.stopPropagation();
     console.log('button clicked', id);
+    sendGTMEvent({ event: 'buttonClicked', value: id });
     props.onClick?.(e);
   };
   // useEffect(() => {
