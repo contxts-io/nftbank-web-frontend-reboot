@@ -107,13 +107,6 @@ const HistoricalTrendContainer = () => {
       parseFloatPrice(
         inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
       );
-    console.log(
-      'inventoryValueHistorical?.data[0]?.value[currency]',
-      inventoryValueHistorical?.data[0]?.value[currency],
-      parseFloatPrice(
-        inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
-      )
-    );
     return diff;
   }, [hoverValue, currency, inventoryValue]);
   const initialValue = useMemo(() => {

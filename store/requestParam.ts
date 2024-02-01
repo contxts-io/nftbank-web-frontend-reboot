@@ -23,11 +23,11 @@ export type ItemParam = BasicParam & {
 }
 export type TPeriod = {
   year: number,
-  quarter: 'q1'|'q2'|'q3'|'q4'|'all',
+  // quarter: 'q1'|'q2'|'q3'|'q4'|'all',
 }
 export type TAnalysisGainAndLossParam = TPeriod & BasicParam & {
   limit: number,
-  nextCursor: string | null,
+  page: number,
 }
 export type TAcquisitionParam =BasicParam &  TPeriod
 export type TOverviewHistoricalValueParam = BasicParam & {
@@ -81,10 +81,9 @@ export const inventoryItemListAtom = atom<ItemParam & {paging : boolean}>({
   paging: true,
 })
 export const analysisGainAndLossParamAtom = atom<TAnalysisGainAndLossParam>({
-  limit: 5,
-  nextCursor: null,
+  limit: 10,
+  page: 1,
   year: 2023,
-  quarter: 'all',
   networkId: 'ethereum',
 })
 export const overviewHistoricalValueParamAtom = atom<TOverviewHistoricalValueParam>({
@@ -93,6 +92,5 @@ export const overviewHistoricalValueParamAtom = atom<TOverviewHistoricalValuePar
 })
 export const analysisAcquisitionParamAtom = atom<TAcquisitionParam>({
   year: 2023,
-  quarter: 'all',
   networkId: 'ethereum',
 })

@@ -2,7 +2,7 @@
   @apply mt-20 border-1 border-[var(--color-border-main)] p-20;
 }
 .title {
-  @apply gap-12 flex items-center justify-between;
+  @apply gap-12 flex items-center;
 }
 .tableWrapper {
   @apply mt-20 w-full h-[310px] overflow-hidden;
