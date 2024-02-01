@@ -13,7 +13,7 @@ export const getInventoryUnrealizedPerformance = async<T = UnrealizedValue>(requ
   return data.data;
 }
 export type PerformanceParam = {
-  year: number;
+  year: number | 'all';
   gnlChartType: 'overall' | 'realized' | 'unrealized';
 }
 type PerformanceParamKey = keyof PerformanceParam;

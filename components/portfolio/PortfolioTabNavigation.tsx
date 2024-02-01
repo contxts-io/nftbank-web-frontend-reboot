@@ -20,7 +20,7 @@ import {
 } from '@nextui-org/react';
 const navLinks = [
   { name: 'Overview', href: '/portfolio/overview' },
-  // { name: 'Analysis', href: '/portfolio/analysis' },
+  { name: 'Analysis', href: '/portfolio/analysis' },
   { name: 'Inventory', href: '/portfolio/inventory', isHover: true },
 ];
 const PortfolioTabNavigation = () => {

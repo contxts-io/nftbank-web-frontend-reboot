@@ -38,11 +38,11 @@ type Param = {
   walletAddress: string;
   window?: string;
 }
-export function usePerformanceChartAnnual(requestParam: PerformanceParam & BasicParam & {window?: string}) {
+export function usePerformanceChartAnnual(requestParam: PerformanceParam & BasicParam) {
   return useQuery<PerformanceCollection,AxiosError>(
     ['inventoryPerformanceChartAnnual',requestParam],
     async () => {
-      const result = await getPerformanceChartAnnual({...requestParam, window: requestParam.window || 'ytd'});
+      const result = await getPerformanceChartAnnual(requestParam);
       return result.data;
     },
     {

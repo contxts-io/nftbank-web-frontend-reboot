@@ -12,6 +12,7 @@ import { set } from 'cypress/types/lodash';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { formatPercent, mathSqrt } from '@/utils/common';
 import { BasicParam } from '@/interfaces/request';
+import { ApexOptions } from 'apexcharts';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   console.log('w.globals.', w.globals);
@@ -45,9 +46,10 @@ const PerformanceChart = (props: Props) => {
   const labelColor = 'var(--color-text-subtle)';
   const currency = useAtomValue(currencyAtom);
   const [maxAbs, setMaxAbs] = useState(0);
+  const [infinityIndexList, setInfinityIndexList] = useState<number[]>([]);
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart(props.requestParam);
-  const options = {
+  const options: ApexOptions = {
     chart: {
       type: 'bar',
       stacked: true,
@@ -59,10 +61,17 @@ const PerformanceChart = (props: Props) => {
           enabled: false,
         },
       },
+      events: {
+        mouseMove: function (event, chartContext, config) {
+          // The last parameter config contains additional information like `seriesIndex` and `dataPointIndex` for cartesian charts.
+          console.log('event : ', event);
+          console.log('chartContext : ', chartContext);
+          console.log('config : ', config);
+        },
+      },
     },
     plotOptions: {
       bar: {
-        vertical: true,
         barHeight: '100%',
         columnWidth: '90%',
         colors: {
@@ -109,6 +118,8 @@ const PerformanceChart = (props: Props) => {
     yaxis: {
       tickAmount: 2,
       opposite: true,
+      min: mathSqrt(-maxAbs),
+      max: mathSqrt(maxAbs),
       labels: {
         show: true,
         style: {
@@ -147,24 +158,62 @@ const PerformanceChart = (props: Props) => {
     return [
       {
         name: 'positive',
-        data: performanceChart.data.map((item) =>
-          item.roi?.[currency] && parseFloat(item.roi[currency]) >= 0
-            ? parseFloat(item.roi[currency])
-            : 0
-        ),
+        // data: performanceChart.data.map((item) =>
+        //   item.roi?.[currency] && parseFloat(item.roi[currency]) >= 0
+        //     ? parseFloat(item.roi[currency])
+        //     : 0
+        // ),
+        data: Array(12)
+          .fill(0)
+          .map((_, index) => {
+            // const value = parseFloat(
+            //   performanceChart.data[index]?.roi?.[currency] || '0'
+            // );
+            const month = index + 1;
+            const value =
+              performanceChart.data?.find((item) => {
+                const date = new Date(item.processedAt);
+
+                const _value = date.getMonth() + 1 === month ? item : null;
+                return _value;
+              })?.roi?.[currency] || '0';
+            console.log('value : ', value, parseFloat(value));
+            return typeof parseFloat(value) === 'number' &&
+              parseFloat(value) > 0
+              ? parseFloat(value)
+              : null;
+          }),
       },
       {
         name: 'negative',
-        data: performanceChart.data.map((item) =>
-          item.roi?.[currency] && parseFloat(item.roi[currency]) <= 0
-            ? parseFloat(item.roi[currency])
-            : 0
-        ),
+        // data: performanceChart.data.map((item) =>
+        //   item.roi?.[currency] && parseFloat(item.roi[currency]) <= 0
+        //     ? parseFloat(item.roi[currency])
+        //     : 0
+        // ),
+        data: Array(12)
+          .fill(0)
+          .map((_, index) => {
+            // const value = parseFloat(
+            //   performanceChart.data[index]?.roi?.[currency] || '0'
+            // );
+            const month = index + 1;
+            const value =
+              performanceChart.data?.find((item) => {
+                const date = new Date(item.processedAt);
+                const _value = date.getMonth() + 1 === month ? item : null;
+                return _value;
+              })?.roi?.[currency] || '0';
+            return typeof parseFloat(value) === 'number' &&
+              parseFloat(value) <= 0
+              ? parseFloat(value)
+              : null;
+          }),
       },
     ];
   }, [performanceChart, currency]);
   useEffect(() => {
-    console.log('series', seriesData);
+    console.log('seriesData :: ', seriesData);
     if (
       !seriesData ||
       seriesData.length == 0 ||
@@ -174,10 +223,11 @@ const PerformanceChart = (props: Props) => {
       return;
     const maxAbs = Math.max(
       ...[
-        ...seriesData[0].data.map((value) => Math.abs(value)),
-        ...seriesData[1].data.map((value) => Math.abs(value)),
+        ...seriesData[0].data.map((value) => Math.abs(value || 0)),
+        ...seriesData[1].data.map((value) => Math.abs(value || 0)),
       ]
     );
+    console.log('maxAbs : ', maxAbs, mathSqrt(-maxAbs));
     setMaxAbs(maxAbs);
   }, [seriesData]);
   return (
@@ -195,7 +245,7 @@ const PerformanceChart = (props: Props) => {
             },
             yaxis: {
               ...options.yaxis,
-              min: maxAbs === 0 ? -1 : mathSqrt(-maxAbs),
+              min: maxAbs === 0 ? -1 : -mathSqrt(-maxAbs),
               max: maxAbs === 0 ? 1 : mathSqrt(maxAbs),
             },
           }}
@@ -205,7 +255,11 @@ const PerformanceChart = (props: Props) => {
               return {
                 name: series.name,
                 data: series.data.map((item) => {
-                  return item ? mathSqrt(item) : 0;
+                  return item && typeof item == 'number'
+                    ? item >= 0
+                      ? mathSqrt(item)
+                      : -mathSqrt(item)
+                    : 0;
                 }),
               };
             }),

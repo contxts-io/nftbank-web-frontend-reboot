@@ -13,6 +13,10 @@ import { useEffect, useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
+import { number } from 'zod';
+import Warning from '@/public/icon/Warning';
+import { Tooltip } from '@nextui-org/react';
+import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
 const THEAD = [
   'Jan',
   'Feb',
@@ -27,7 +31,7 @@ const THEAD = [
   'Nov',
   'Dec',
 ];
-const YEARS: number[] = [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015];
+const YEARS: number[] = [2024, 2023];
 const GNL_CHART_TYPE: ('Overall' | 'Realized' | 'Unrealized')[] = [
   'Overall',
   'Realized',
@@ -66,9 +70,14 @@ const PerformanceSection = () => {
   useEffect(() => {
     let _total = 0;
     performanceChart &&
-      performanceChart.data.map(
-        (item) => (_total += parseFloat(item.gainLoss?.[currency] || '0'))
-      );
+      performanceChart.data.map((item) => {
+        const value =
+          item.gainLoss?.[currency] &&
+          !isNaN(parseFloat(item.gainLoss?.[currency]))
+            ? parseFloat(item.gainLoss?.[currency])
+            : 0;
+        _total += value;
+      });
     setTotal(_total);
   }, [performanceChart, currency]);
   return (
@@ -151,26 +160,43 @@ const PerformanceSection = () => {
                   {Array(12)
                     .fill(0)
                     .map((_, index) => {
-                      const plus = isPlus(
-                        performanceChart.data[index]?.roi?.[currency] || '0'
-                      );
+                      const month = index + 1;
+                      const value =
+                        performanceChart.data?.find((item) => {
+                          const date = new Date(item.processedAt);
+                          const _value = date.getMonth() + 1 === month && item;
+                          return _value;
+                        })?.roi?.[currency] || null;
+
+                      const plus = isPlus(value || '0');
                       return (
                         <td key={index}>
-                          <p
-                            className={
-                              plus === '-'
-                                ? 'text-[var(--color-text-main)]'
-                                : plus === true
-                                ? 'text-[var(--color-text-success)]'
-                                : 'text-[var(--color-text-danger)]'
-                            }
-                          >
-                            {performanceChart.data[index]?.roi &&
-                              formatPercent(
-                                performanceChart.data[index].roi?.[currency] ||
-                                  '0'
-                              )}
-                          </p>
+                          {value ? (
+                            isNaN(parseFloat(value)) ? (
+                              <Tooltip
+                                content={UNABLE_TO_CALCULATE_ROI}
+                                className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                              >
+                                <div className='mt-20 w-full flex justify-center'>
+                                  <Warning />
+                                </div>
+                              </Tooltip>
+                            ) : (
+                              <p
+                                className={`${
+                                  plus === '-'
+                                    ? 'text-[var(--color-text-main)]'
+                                    : plus === true
+                                    ? 'text-[var(--color-text-success)]'
+                                    : 'text-[var(--color-text-danger)]'
+                                }`}
+                              >
+                                {formatPercent(value)}
+                              </p>
+                            )
+                          ) : (
+                            <p className='text-[var(--color-text-main)]'>-</p>
+                          )}
                         </td>
                       );
                     })}
@@ -198,29 +224,43 @@ const PerformanceSection = () => {
                   {Array(12)
                     .fill(0)
                     .map((_, index) => {
-                      const plus = isPlus(
-                        performanceChart.data[index]?.gainLoss?.[currency] ||
-                          '0'
-                      );
+                      const month = index + 1;
+                      const value =
+                        performanceChart.data?.find((item) => {
+                          const date = new Date(item.processedAt);
+                          const _value = date.getMonth() + 1 === month && item;
+                          return _value;
+                        })?.gainLoss?.[currency] || null;
+
+                      const plus = isPlus(value || '0');
                       return (
                         <td key={index}>
-                          <p
-                            className={
-                              plus === '-'
-                                ? 'text-[var(--color-text-main)]'
-                                : plus === true
-                                ? 'text-[var(--color-text-success)]'
-                                : 'text-[var(--color-text-danger)]'
-                            }
-                          >
-                            {performanceChart.data[index]?.gainLoss &&
-                              formatCurrency(
-                                performanceChart.data[index].gainLoss?.[
-                                  currency
-                                ] || '0',
-                                currency
-                              )}
-                          </p>
+                          {value ? (
+                            isNaN(parseFloat(value)) ? (
+                              <Tooltip
+                                content={UNABLE_TO_CALCULATE_ROI}
+                                className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                              >
+                                <div className='mt-20 w-full flex justify-center'>
+                                  <Warning />
+                                </div>
+                              </Tooltip>
+                            ) : (
+                              <p
+                                className={
+                                  plus === '-'
+                                    ? 'text-[var(--color-text-main)]'
+                                    : plus === true
+                                    ? 'text-[var(--color-text-success)]'
+                                    : 'text-[var(--color-text-danger)]'
+                                }
+                              >
+                                {formatCurrency(value, currency)}
+                              </p>
+                            )
+                          ) : (
+                            <p className='text-[var(--color-text-main)]'>-</p>
+                          )}
                         </td>
                       );
                     })}

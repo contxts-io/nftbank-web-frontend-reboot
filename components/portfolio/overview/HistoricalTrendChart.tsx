@@ -136,7 +136,6 @@ const HistoricalTrendChart = (props: Props) => {
 
   /* 최소값 */
   let minValue = useMemo(() => {
-    console.log('seriesData', seriesData);
     let _series = seriesData;
     let _minimumValue = _series[0]?.data[0] || 0;
     _series[0].data.map((item) => {
