@@ -194,18 +194,8 @@ const RealizedGainAndLoss = () => {
                   );
                   let realizedGainAndLoss =
                     parseFloat(item.proceed[currency]) - costBasis;
-                  let realizedROI =
-                    costBasis === 0 || !costBasis
-                      ? 'infinity'
-                      : realizedGainAndLoss / costBasis;
-                  console.log(
-                    '${pageIndex}-${index}',
-                    pageIndex - index,
-                    ', costbasis :',
-                    costBasis,
-                    ', item.gasFee[currency] : ',
-                    gasFee
-                  );
+                  let realizedROI = realizedGainAndLoss / costBasis;
+
                   return (
                     <tr
                       key={`${pageIndex}-${index}`}
@@ -281,7 +271,7 @@ const RealizedGainAndLoss = () => {
                       <td className='text-right'>
                         <p
                           className={`${
-                            realizedROI === 'infinity'
+                            isNaN(realizedROI)
                               ? 'text-[var(--color-text-main)]'
                               : realizedROI > 0
                               ? 'text-[var(--color-text-success)]'
