@@ -27,7 +27,7 @@ const AnalysisPage = ({ params }: { params: { slug: string[] } }) => {
     <section className='pt-20 px-24 pb-40'>
       <PerformanceSection />
       <RealizedGainAndLoss />
-      <AcquisitionType />
+      {/*<AcquisitionType /> */}
     </section>
   );
 };

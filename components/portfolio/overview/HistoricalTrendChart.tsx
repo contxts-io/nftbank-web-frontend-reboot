@@ -121,7 +121,6 @@ const HistoricalTrendChart = (props: Props) => {
       _series[0].data.push(todayValue);
 
     category.push(todayDate);
-    console.log('series', _series);
     return _series;
   }, [inventoryValueHistorical, currency, category, inventoryValue?.value]);
   useEffect(() => {
@@ -168,7 +167,6 @@ const HistoricalTrendChart = (props: Props) => {
   const textSubtle = 'var(--color-text-subtle)';
   // const minValue = series[0].data[0];
   const options = useMemo(() => {
-    console.log('series[0].data[0]', series[0]?.data[0] || 0);
     return {
       chart: {
         toolbar: {

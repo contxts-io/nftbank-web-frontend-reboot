@@ -17,6 +17,9 @@ import { number } from 'zod';
 import Warning from '@/public/icon/Warning';
 import { Tooltip } from '@nextui-org/react';
 import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
+import Info from '@/public/icon/Info';
+import NoData from '@/components/error/NoData';
+import FailToLoad from '@/components/error/FailToLoad';
 const THEAD = [
   'Jan',
   'Feb',
@@ -120,169 +123,179 @@ const PerformanceSection = () => {
           }
         />
       </div>
-
-      <section className={styles.dataWrapper}>
-        <PerformanceChart
-          requestParam={{
-            ...portfolioUser,
-            ...requestParam,
-          }}
-        />
-        <div className={styles.tableWrapper}>
-          {statusPerformanceChart === 'loading' && (
-            <SkeletonLoader className='w-full h-115' />
-          )}
-          {performanceChart?.data && (
-            <table className={`font-caption-regular ${styles.table}`}>
-              <thead>
-                <tr>
-                  <th className='w-70'>
-                    <p>{requestParam.year}</p>
-                  </th>
-                  {THEAD.map((item, index) => {
-                    return (
-                      <th key={index} className={styles.tableHeader}>
-                        <p>{item}</p>
-                      </th>
-                    );
-                  })}
-                  <th>
-                    <p>total</p>
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr>
-                  <td>
-                    <p className='text-[var(--color-text-subtle)]'>ROI</p>
-                  </td>
-                  {Array(12)
-                    .fill(0)
-                    .map((_, index) => {
-                      const month = index + 1;
-                      const value =
-                        performanceChart.data?.find((item) => {
-                          const date = new Date(item.processedAt);
-                          const _value = date.getMonth() + 1 === month && item;
-                          return _value;
-                        })?.roi?.[currency] || null;
-
-                      const plus = isPlus(value || '0');
+      {statusPerformanceChart === 'loading' && (
+        <SkeletonLoader className='w-full h-115' />
+      )}
+      {statusPerformanceChart === 'success' &&
+      performanceChart?.data.length === 0 ? (
+        <section className={`w-full pb-150 flex justify-center mt-40`}>
+          <NoData />
+        </section>
+      ) : (
+        <section className={styles.dataWrapper}>
+          <PerformanceChart
+            requestParam={{
+              ...portfolioUser,
+              ...requestParam,
+            }}
+          />
+          <div className={styles.tableWrapper}>
+            {performanceChart?.data && (
+              <table className={`font-caption-regular ${styles.table}`}>
+                <thead>
+                  <tr>
+                    <th className='w-70'>
+                      <p>{requestParam.year}</p>
+                    </th>
+                    {THEAD.map((item, index) => {
                       return (
-                        <td key={index}>
-                          {value ? (
-                            isNaN(parseFloat(value)) ? (
-                              <Tooltip
-                                content={UNABLE_TO_CALCULATE_ROI}
-                                className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
-                              >
-                                <div className='mt-20 w-full flex justify-center'>
-                                  <Warning />
-                                </div>
-                              </Tooltip>
-                            ) : (
-                              <p
-                                className={`${
-                                  plus === '-'
-                                    ? 'text-[var(--color-text-main)]'
-                                    : plus === true
-                                    ? 'text-[var(--color-text-success)]'
-                                    : 'text-[var(--color-text-danger)]'
-                                }`}
-                              >
-                                {formatPercent(value)}
-                              </p>
-                            )
-                          ) : (
-                            <p className='text-[var(--color-text-main)]'>-</p>
-                          )}
-                        </td>
+                        <th key={index} className={styles.tableHeader}>
+                          <p>{item}</p>
+                        </th>
                       );
                     })}
-                  <td>
-                    <p
-                      className={
-                        isPlus(performanceAnnual?.roi?.[currency] || '0') ===
-                        '-'
-                          ? 'text-[var(--color-text-main)]'
-                          : isPlus(
-                              performanceAnnual?.roi?.[currency] || '0'
-                            ) === true
-                          ? 'text-[var(--color-text-success)]'
-                          : 'text-[var(--color-text-danger)]'
-                      }
-                    >
-                      {formatPercent(performanceAnnual?.roi?.[currency] || '0')}
-                    </p>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <p className='text-[var(--color-text-subtle)]'>G&L</p>
-                  </td>
-                  {Array(12)
-                    .fill(0)
-                    .map((_, index) => {
-                      const month = index + 1;
-                      const value =
-                        performanceChart.data?.find((item) => {
-                          const date = new Date(item.processedAt);
-                          const _value = date.getMonth() + 1 === month && item;
-                          return _value;
-                        })?.gainLoss?.[currency] || null;
+                    <th>
+                      <p>total</p>
+                    </th>
+                  </tr>
+                </thead>
 
-                      const plus = isPlus(value || '0');
-                      return (
-                        <td key={index}>
-                          {value ? (
-                            isNaN(parseFloat(value)) ? (
-                              <Tooltip
-                                content={UNABLE_TO_CALCULATE_ROI}
-                                className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
-                              >
-                                <div className='mt-20 w-full flex justify-center'>
-                                  <Warning />
-                                </div>
-                              </Tooltip>
+                <tbody>
+                  <tr>
+                    <td>
+                      <p className='text-[var(--color-text-subtle)]'>ROI</p>
+                    </td>
+                    {Array(12)
+                      .fill(0)
+                      .map((_, index) => {
+                        const month = index + 1;
+                        const value =
+                          performanceChart.data?.find((item) => {
+                            const date = new Date(item.processedAt);
+                            const _value =
+                              date.getMonth() + 1 === month && item;
+                            return _value;
+                          })?.roi?.[currency] || null;
+
+                        const plus = isPlus(value || '0');
+                        return (
+                          <td key={index}>
+                            {value ? (
+                              isNaN(parseFloat(value)) ? (
+                                <Tooltip
+                                  content={UNABLE_TO_CALCULATE_ROI}
+                                  className='max-w-188 font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                                >
+                                  <div className='mt-20 w-full flex justify-center text-[var(--color-icon-subtle)]'>
+                                    <Info />
+                                  </div>
+                                </Tooltip>
+                              ) : (
+                                <p
+                                  className={`${
+                                    plus === '-'
+                                      ? 'text-[var(--color-text-main)]'
+                                      : plus === true
+                                      ? 'text-[var(--color-text-success)]'
+                                      : 'text-[var(--color-text-danger)]'
+                                  }`}
+                                >
+                                  {formatPercent(value)}
+                                </p>
+                              )
                             ) : (
-                              <p
-                                className={
-                                  plus === '-'
-                                    ? 'text-[var(--color-text-main)]'
-                                    : plus === true
-                                    ? 'text-[var(--color-text-success)]'
-                                    : 'text-[var(--color-text-danger)]'
-                                }
-                              >
-                                {formatCurrency(value, currency)}
-                              </p>
-                            )
-                          ) : (
-                            <p className='text-[var(--color-text-main)]'>-</p>
-                          )}
-                        </td>
-                      );
-                    })}
-                  <td>
-                    <p
-                      className={`text-ellipsis ${
-                        isPlus(total || '0') === '-'
-                          ? 'text-[var(--color-text-main)]'
-                          : isPlus(total || '0') === true
-                          ? 'text-[var(--color-text-success)]'
-                          : 'text-[var(--color-text-danger)]'
-                      }`}
-                    >
-                      {formatCurrency(total.toString(), currency)}
-                    </p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          )}
-        </div>
-      </section>
+                              <p className='text-[var(--color-text-main)]'>-</p>
+                            )}
+                          </td>
+                        );
+                      })}
+                    <td>
+                      <p
+                        className={
+                          isPlus(performanceAnnual?.roi?.[currency] || '0') ===
+                          '-'
+                            ? 'text-[var(--color-text-main)]'
+                            : isPlus(
+                                performanceAnnual?.roi?.[currency] || '0'
+                              ) === true
+                            ? 'text-[var(--color-text-success)]'
+                            : 'text-[var(--color-text-danger)]'
+                        }
+                      >
+                        {formatPercent(
+                          performanceAnnual?.roi?.[currency] || '0'
+                        )}
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p className='text-[var(--color-text-subtle)]'>G&L</p>
+                    </td>
+                    {Array(12)
+                      .fill(0)
+                      .map((_, index) => {
+                        const month = index + 1;
+                        const value =
+                          performanceChart.data?.find((item) => {
+                            const date = new Date(item.processedAt);
+                            const _value =
+                              date.getMonth() + 1 === month && item;
+                            return _value;
+                          })?.gainLoss?.[currency] || null;
+
+                        const plus = isPlus(value || '0');
+                        return (
+                          <td key={index}>
+                            {value ? (
+                              isNaN(parseFloat(value)) ? (
+                                <Tooltip
+                                  content={UNABLE_TO_CALCULATE_ROI}
+                                  className='max-w-188 font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                                >
+                                  <div className='mt-20 w-full flex justify-center text-[var(--color-icon-subtle)]'>
+                                    <Info />
+                                  </div>
+                                </Tooltip>
+                              ) : (
+                                <p
+                                  className={
+                                    plus === '-'
+                                      ? 'text-[var(--color-text-main)]'
+                                      : plus === true
+                                      ? 'text-[var(--color-text-success)]'
+                                      : 'text-[var(--color-text-danger)]'
+                                  }
+                                >
+                                  {formatCurrency(value, currency)}
+                                </p>
+                              )
+                            ) : (
+                              <p className='text-[var(--color-text-main)]'>-</p>
+                            )}
+                          </td>
+                        );
+                      })}
+                    <td>
+                      <p
+                        className={`text-ellipsis ${
+                          isPlus(total || '0') === '-'
+                            ? 'text-[var(--color-text-main)]'
+                            : isPlus(total || '0') === true
+                            ? 'text-[var(--color-text-success)]'
+                            : 'text-[var(--color-text-danger)]'
+                        }`}
+                      >
+                        {formatCurrency(total.toString(), currency)}
+                      </p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            )}
+          </div>
+        </section>
+      )}
     </section>
   );
 };

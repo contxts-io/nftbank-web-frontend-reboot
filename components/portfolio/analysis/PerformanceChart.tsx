@@ -100,7 +100,6 @@ const PerformanceChart = (props: Props) => {
     ];
   }, [performanceChart, currency, props.requestParam]);
   useEffect(() => {
-    console.log('series', seriesData);
     if (
       !seriesData ||
       seriesData.length == 0 ||

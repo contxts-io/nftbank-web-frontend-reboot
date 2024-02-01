@@ -10,6 +10,8 @@ export type TToken = {
   roi: Value,
   acquisitionDate: string,
   soldDate: string,
+  acquisitionPrice: Value,
+  gasFee: Value,
 }
 export type Token = Collection & {
   token: {
