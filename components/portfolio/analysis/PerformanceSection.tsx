@@ -27,7 +27,7 @@ const THEAD = [
   'Nov',
   'Dec',
 ];
-const YEARS: number[] = [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015];
+const YEARS: number[] = [2024, 2023];
 const GNL_CHART_TYPE: ('Overall' | 'Realized' | 'Unrealized')[] = [
   'Overall',
   'Realized',

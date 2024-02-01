@@ -59,10 +59,20 @@ const PerformanceChart = (props: Props) => {
         data: Array(13)
           .fill(0)
           .map((_, index) => {
-            const value = parseFloat(
-              performanceChart.data[index]?.roi?.[currency] || '0'
-            );
-            return value >= 0 ? value : 0;
+            // const value = parseFloat(
+            //   performanceChart.data[index]?.roi?.[currency] || '0'
+            // );
+            const month = index + 1;
+            const value =
+              performanceChart.data?.find((item) => {
+                const date = new Date(item.processedAt);
+                const _value =
+                  String(date.getMonth() + 1).padStart(2) === month.toString()
+                    ? item
+                    : null;
+                return _value;
+              })?.roi?.[currency] || '0';
+            return parseFloat(value) > 0 ? parseFloat(value) : 0;
           }),
       },
       {
@@ -95,7 +105,6 @@ const PerformanceChart = (props: Props) => {
     );
     console.log('maxAbs', maxAbs);
     setMaxAbs(maxAbs);
-    console.log('seriesData', seriesData);
   }, [seriesData]);
   const options = {
     chart: {

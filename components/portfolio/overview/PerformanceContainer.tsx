@@ -11,7 +11,7 @@ import { formatPercent, isPlus } from '@/utils/common';
 import { useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
-const YEARS: number[] = [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015];
+const YEARS: number[] = [2024, 2023];
 const PerformanceContainer = () => {
   const currency = useAtomValue(currencyAtom);
   const networkId = useAtomValue(networkIdAtom);
@@ -25,16 +25,16 @@ const PerformanceContainer = () => {
   });
   const { data: performanceAnnualAll, status: statusPerformanceAnnualAll } =
     usePerformanceChartAnnual({
-      window: 'all',
       ...requestParam,
       ...portfolioUser,
       networkId: 'ethereum',
+      year: 'all',
     });
   const { data: performanceAnnualYTD, status: statusPerformanceAnnualYTD } =
     usePerformanceChartAnnual({
       ...requestParam,
       ...portfolioUser,
-      window: 'ytd',
+      year: 2023,
     });
 
   return (

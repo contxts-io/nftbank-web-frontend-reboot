@@ -88,7 +88,6 @@ export function formatEth(amount: string | null): string {
   return parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' });
 }
 export function difference(diff: string, currency: TCurrency | 'percent') {
-  console.log('diff diff',diff)
   if (currency === 'percent') {
     return formatPercent(diff).replace('+', '').replace('-', '');
   }
@@ -238,8 +237,10 @@ export function jsonToQueryString(searchParam: any) {
       if(searchParam[key] === null || searchParam[key] === undefined || searchParam[key] === '' ) return;
       return searchParam[key].map((v: any) => `${key}=${v.toLowerCase()}`).join('&').replace(/^&/, '');
     }
-    if(searchParam[key] === null || searchParam[key] === undefined || searchParam[key] === '' ) return;
-    return `${key}=${searchParam[key].toLowerCase()}`;
+    if (searchParam[key] === null || searchParam[key] === undefined || searchParam[key] === '') return;
+    if (typeof searchParam[key] === 'string')
+      return `${key}=${searchParam[key].toLowerCase()}`;
+    else return `${key}=${searchParam[key]}`;
   }).join('&').replace(/^&/, '');
 }
 export const CATEGORY = [
