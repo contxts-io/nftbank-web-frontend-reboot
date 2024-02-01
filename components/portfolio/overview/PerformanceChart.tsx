@@ -12,6 +12,7 @@ import { set } from 'cypress/types/lodash';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { formatPercent, mathSqrt } from '@/utils/common';
 import { BasicParam } from '@/interfaces/request';
+import { ApexOptions } from 'apexcharts';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   console.log('w.globals.', w.globals);
@@ -48,7 +49,7 @@ const PerformanceChart = (props: Props) => {
   const [infinityIndexList, setInfinityIndexList] = useState<number[]>([]);
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart(props.requestParam);
-  const options = {
+  const options: ApexOptions = {
     chart: {
       type: 'bar',
       stacked: true,
@@ -60,10 +61,17 @@ const PerformanceChart = (props: Props) => {
           enabled: false,
         },
       },
+      events: {
+        mouseMove: function (event, chartContext, config) {
+          // The last parameter config contains additional information like `seriesIndex` and `dataPointIndex` for cartesian charts.
+          console.log('event : ', event);
+          console.log('chartContext : ', chartContext);
+          console.log('config : ', config);
+        },
+      },
     },
     plotOptions: {
       bar: {
-        vertical: true,
         barHeight: '100%',
         columnWidth: '90%',
         colors: {

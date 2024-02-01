@@ -1,0 +1,1 @@
+export const UNABLE_TO_CALCULATE_ROI = 'Unable to calculate ROI as the cost basis is zero.'

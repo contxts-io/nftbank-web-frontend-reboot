@@ -66,13 +66,13 @@ const PerformanceChart = (props: Props) => {
             const value =
               performanceChart.data?.find((item) => {
                 const date = new Date(item.processedAt);
-                const _value =
-                  String(date.getMonth() + 1).padStart(2) === month.toString()
-                    ? item
-                    : null;
+                const _value = date.getMonth() + 1 === month ? item : null;
                 return _value;
               })?.roi?.[currency] || '0';
-            return parseFloat(value) > 0 ? parseFloat(value) : 0;
+            return typeof parseFloat(value) === 'number' &&
+              parseFloat(value) > 0
+              ? parseFloat(value)
+              : null;
           }),
       },
       {
@@ -80,10 +80,21 @@ const PerformanceChart = (props: Props) => {
         data: Array(13)
           .fill(0)
           .map((_, index) => {
-            const value = parseFloat(
-              performanceChart.data[index]?.roi?.[currency] || '0'
-            );
-            return value <= 0 ? value : 0;
+            // const value = parseFloat(
+            //   performanceChart.data[index]?.roi?.[currency] || '0'
+            // );
+            // return value <= 0 ? value : 0;
+            const month = index + 1;
+            const value =
+              performanceChart.data?.find((item) => {
+                const date = new Date(item.processedAt);
+                const _value = date.getMonth() + 1 === month ? item : null;
+                return _value;
+              })?.roi?.[currency] || '0';
+            return typeof parseFloat(value) === 'number' &&
+              parseFloat(value) <= 0
+              ? parseFloat(value)
+              : null;
           }),
       },
     ];
@@ -99,8 +110,8 @@ const PerformanceChart = (props: Props) => {
       return;
     const maxAbs = Math.max(
       ...[
-        ...seriesData[0].data.map((value) => Math.abs(value)),
-        ...seriesData[1].data.map((value) => Math.abs(value)),
+        ...seriesData[0].data.map((value) => Math.abs(value || 0)),
+        ...seriesData[1].data.map((value) => Math.abs(value || 0)),
       ]
     );
     console.log('maxAbs', maxAbs);
@@ -233,6 +244,11 @@ const PerformanceChart = (props: Props) => {
                 ...options.chart,
                 type: 'bar',
               },
+              yaxis: {
+                ...options.yaxis,
+                min: maxAbs === 0 ? -1 : -mathSqrt(-maxAbs),
+                max: maxAbs === 0 ? 1 : mathSqrt(maxAbs),
+              },
             }}
             type='bar'
             // series={_series}
@@ -241,8 +257,12 @@ const PerformanceChart = (props: Props) => {
                 return {
                   name: series.name,
                   data: series.data.map((item) => {
-                    console.log('item', item, mathSqrt(item));
-                    return item && mathSqrt(item);
+                    // return item && mathSqrt(item);
+                    return item && typeof item == 'number'
+                      ? item >= 0
+                        ? mathSqrt(item)
+                        : -mathSqrt(item)
+                      : 0;
                   }),
                 };
               }),
