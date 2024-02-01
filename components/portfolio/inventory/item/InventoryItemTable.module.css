@@ -27,9 +27,9 @@
 .tableBodyRow {
   @apply h-50 text-[var(--color-text-main)] border-[var(--color-border-disabled)] hover:bg-[var(--color-elevation-sunken)] cursor-pointer;
 }
-.tableBodyRow p {
+/* .tableBodyRow p {
   @apply mr-30;
-}
+} */
 .isOpen {
   @apply bg-[var(--color-elevation-sunken)];
 }
@@ -39,9 +39,7 @@
 /* .tableBodyRow :first-child {
   @apply border-0;
 } */
-.tableBodyRow :last-child {
-  @apply border-0;
-}
+
 .pMain {
   @apply text-[var(--color-text-main)] mb-2;
 }

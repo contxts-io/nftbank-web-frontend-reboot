@@ -62,13 +62,8 @@ const InventoryContainer = () => {
     <section className='w-full'>
       {inventoryType === 'collection' && (
         <>
-          {/**
-           *
-           * sprint 1
-           * <InventoryCollectionSettings /> */}
-          <p className='font-subtitle01-medium text-[var(--color-text-main)] my-24'>
-            Collection
-          </p>
+          <InventoryCollectionSettings />
+
           <InventoryCollectionTable />
           {spamList.length > 0 && <SpamSaveToast />}
           {customValuations.length > 0 && <CustomValuationSaveToast />}

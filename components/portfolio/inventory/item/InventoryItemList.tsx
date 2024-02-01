@@ -77,11 +77,7 @@ const InventoryItemList = (props: Props) => {
           )}
         </div>
         <div className={`flex items-center mr-12`}>
-          {/**
-           * 
-           * sprint 1
-           * 
-           * <div className='flex px-12 mr-8'>
+          <div className='flex px-12 mr-8'>
             <span className='font-button03-medium text-[var(--color-text-subtle)] mr-8'>
               Include Gas fee
             </span>
@@ -90,7 +86,7 @@ const InventoryItemList = (props: Props) => {
               checked={priceType === 'costBasis'}
               id={''}
             />
-          </div> */}
+          </div>
           <div className='flex justify-between p-3 items-center border-1 w-72 border-[var(--color-border-main)]'>
             <div
               className={`${styles.viewType} ${
