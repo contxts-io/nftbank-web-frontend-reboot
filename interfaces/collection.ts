@@ -36,7 +36,7 @@ export type CollectionMetadata = {
   assetContract: string,
 }
 export type PerformanceValue = {
-  costBasis: Value | null,
+  // costBasis: Value | null,
   acquisitionPrice: Value| null,
   gasFee: Value | null,
 }

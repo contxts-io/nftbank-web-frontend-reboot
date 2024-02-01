@@ -73,9 +73,9 @@ export function isPlus (value: number | string): boolean | '-' {
     return false;
   }
 };
-export function formatPercent(_percent: string |'infinity'| null): string {
+export function formatPercent(_percent: string |'infinity'|'Infinity'| null): string {
   if (_percent === null) return '-%';
-  if (_percent === 'infinity') return '-%';
+  if (_percent === 'infinity' || _percent === 'Infinity') return '-%';
   const percent = parseFloat(_percent);
   if (Math.abs(percent) <= 0.001) return '0%';
   if (Math.abs(percent) < 1 && Math.abs(percent) >= 0.001)
@@ -280,9 +280,14 @@ export function findCategoryListById(categoryObj: typeof ARTICLE_CATEGORY , targ
   }
   return matchingCategories;
 }
-export const parseFloatPrice = (price: string) => {
+export const parseFloatPrice = (price: any):number => {
   
-  if (price === 'infinity') return 0;
-  const value = parseFloat(price);
+  if (!price || price === null || price === 'infinity') return 0;
+  const value = typeof price === 'number' ? price : parseFloat(price);
   return typeof value === 'number' && !Number.isNaN(value) ? value : 0;
+}
+export const formatFloat = (price: any): string => {
+  if (!price || price === null || price === 'infinity') return '-';
+  const value = typeof price === 'number' ? price : parseFloat(price);
+  return typeof value === 'number' && !Number.isNaN(value) ? value.toFixed(3).toString() : '-';
 }
