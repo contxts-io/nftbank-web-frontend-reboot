@@ -34,3 +34,7 @@ export const insertMyWalletBulk = async<T = { data: TWallet[] }>(data: BasicWall
   const result = await instance.post<{ data: T }>('/wallet/bulk', data);
   return result.data;
 }
+export const verifyWalletAddress = async<T = { data: {verified: boolean, processedAt: string} }>(walletAddress:string) => {
+  const result = await instance.get<T>(`/verifyWalletAddress?walletAddress=${walletAddress}`);
+  return result.data;
+}

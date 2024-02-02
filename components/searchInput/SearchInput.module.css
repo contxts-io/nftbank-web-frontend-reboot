@@ -6,7 +6,7 @@
   @apply border-[var(--color-border-selected)] text-[var(--color-icon-main)];
 }
 .textInput {
-  @apply w-full border-0 p-0 ml-8;
+  @apply w-full border-0 p-0 mx-8;
   @apply bg-transparent  text-[var(--color-text-main)] placeholder:text-[var(--color-text-subtlest)];
 }
 .error {
