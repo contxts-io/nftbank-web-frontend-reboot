@@ -37,7 +37,13 @@ const Button = ({
       id={id}
       onClick={handleClick}
     >
-      {isLoading ? <Spinner /> : children}
+      {isLoading ? (
+        <div className='w-full h-full flex items-center justify-center'>
+          <Spinner />
+        </div>
+      ) : (
+        children
+      )}
     </button>
   );
 };
