@@ -7,6 +7,10 @@ export function useDispatchDailyNav(walletAddress:string) {
     ['dailyNav',walletAddress],
     async () => {
       const result = await dispatchDailyNav(walletAddress);
+      if (result.taskId === 'CACHED') {
+        return result;  
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000));
       return result;
     },
     {
@@ -24,6 +28,10 @@ export function useDispatchPerformance(walletAddress:string) {
     ['dispatchPerformance',walletAddress],
     async () => {
       const result = await dispatchPerformance(walletAddress);
+      if (result.taskId === 'CACHED') {
+        return result;  
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000));
       return result;
     },
     {
