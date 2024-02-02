@@ -18,7 +18,6 @@ const ActivityCollection = () => {
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useState<TCollectionParam>({
       searchCollection: '',
-      includeGasUsed: 'false',
       page: 0,
       limit: 3,
       sort: 'nav',
