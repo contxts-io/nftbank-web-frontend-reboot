@@ -183,9 +183,9 @@ const AcquisitionType = () => {
                     <th className='text-right'>
                       <p>Total Cost Basis</p>
                     </th>
-                    <th className='text-right'>
+                    {/* <th className='text-right'>
                       <p>Activity</p>
-                    </th>
+                    </th> */}
                   </tr>
                 </thead>
                 <tbody className='font-caption-medium'>
@@ -214,11 +214,11 @@ const AcquisitionType = () => {
                           )}
                         </p>
                       </td>
-                      <td className='text-right'>
+                      {/* <td className='text-right'>
                         <div className='rotate-270 w-16 h-16 ml-auto'>
                           <CaretDown />
                         </div>
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>

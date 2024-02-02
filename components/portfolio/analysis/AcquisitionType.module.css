@@ -23,11 +23,11 @@
   @apply text-[var(--color-text-subtle)];
 }
 .table tbody tr {
-  @apply border-b-1 border-[var(--color-border-disabled)] cursor-pointer text-[var(--color-text-subtle)];
+  @apply border-b-1 border-[var(--color-border-disabled)] text-[var(--color-text-subtle)];
 }
-.table tbody tr:hover {
+/* .table tbody tr:hover {
   @apply text-[var(--color-text-main)]  bg-[var(--color-elevation-sunken)];
-}
+} */
 .table tbody tr p {
   @apply text-[var(--color-text-main)];
 }
