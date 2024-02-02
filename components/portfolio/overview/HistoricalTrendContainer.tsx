@@ -121,7 +121,7 @@ const HistoricalTrendContainer = () => {
     const diff =
       _value -
       parseFloatPrice(
-        inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+        inventoryValueHistorical?.data?.[0]?.value[currency] || '0.00'
       );
     return diff;
   }, [hoverValue, currency, inventoryValue]);
@@ -130,7 +130,7 @@ const HistoricalTrendContainer = () => {
     //   inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
     // );
     const value = parseFloatPrice(
-      inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+      inventoryValueHistorical?.data?.[0]?.value[currency] || '0.00'
     );
     return value;
   }, [currency, inventoryValueHistorical]);

@@ -141,15 +141,15 @@ const HistoricalTrendChart = (props: Props) => {
       ? parseFloat(inventoryValue.value[currency].amount || '0')
       : 0;
     const initValue = parseFloat(
-      inventoryValueHistorical?.data[0]?.value?.[currency] || '0'
+      inventoryValueHistorical?.data?.[0]?.value?.[currency] || '0'
     );
     initValue < currentValue ? setIsPlus(true) : setIsPlus(false);
-  }, [inventoryValue?.value, inventoryValueHistorical?.data[0]]);
+  }, [inventoryValue?.value, inventoryValueHistorical?.data?.[0]]);
 
   /* 최소값 */
   let minValue = useMemo(() => {
     let _series = seriesData;
-    let _minimumValue = _series[0]?.data[0] || 0;
+    let _minimumValue = _series[0]?.data?.[0] || 0;
     _series[0].data.map((item) => {
       if (item && item < _minimumValue) {
         _minimumValue = item;
@@ -178,7 +178,6 @@ const HistoricalTrendChart = (props: Props) => {
   const markerFill = 'var(--color-elevation-surface)';
   const borderColor = 'var(--color-border-accent-gray)';
   const textSubtle = 'var(--color-text-subtle)';
-  // const minValue = series[0].data[0];
   const options = useMemo(() => {
     return {
       chart: {
@@ -250,7 +249,7 @@ const HistoricalTrendChart = (props: Props) => {
       annotations: {
         yaxis: [
           {
-            y: mathSqrt(series[0]?.data[0] || 0),
+            y: mathSqrt(series[0]?.data?.[0] || 0),
             borderColor: borderColor,
             borderStyle: 'dashed',
           },
@@ -318,13 +317,13 @@ const HistoricalTrendChart = (props: Props) => {
         },
       },
     };
-  }, [series[0]?.data[0], isPlus, currency]);
+  }, [series[0]?.data?.[0], isPlus, currency]);
 
   const handleHover = (value: any) => {
     const currentValue = inventoryValue?.value[currency]?.amount
       ? parseFloat(inventoryValue.value[currency].amount || '0')
       : 0;
-    const initValue = seriesData[0].data[0] || 0;
+    const initValue = seriesData[0].data?.[0] || 0;
     initValue < value ? setIsPlus(true) : setIsPlus(false);
     props.setHoverValue(value);
     value === null &&
