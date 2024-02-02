@@ -4,6 +4,7 @@ import { portfolioUserAtom } from '@/store/portfolio';
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { formatCurrency, formatDate, mathSqrt } from '@/utils/common';
 import { useMe } from '@/utils/hooks/queries/auth';
+import { useDispatchDailyNav } from '@/utils/hooks/queries/dispatch';
 import {
   useInventoryValueHistorical,
   useInventoryValuePolling,
@@ -47,18 +48,29 @@ type Props = {
 const HistoricalTrendChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
+  const [isPolling, setIsPolling] = useState<boolean>(true);
   const [historicalValueParam, setHistoricalValueParam] = useAtom(
     overviewHistoricalValueParamAtom
   );
   const { data: inventoryValue, status: statusInventoryValue } =
     useInventoryValuePolling(portfolioUser);
+  const { data: dispatchDailyNav } = useDispatchDailyNav(
+    portfolioUser?.walletAddress || ''
+  );
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
-  } = useInventoryValueHistorical({
-    ...historicalValueParam,
-    ...portfolioUser,
-  });
+  } = useInventoryValueHistorical(
+    {
+      ...historicalValueParam,
+      ...portfolioUser,
+      taskId: dispatchDailyNav?.taskId,
+    },
+    isPolling
+  );
+  useEffect(() => {
+    statusInventoryValueHistorical === 'success' && setIsPolling(false);
+  }, [statusInventoryValueHistorical]);
   const [isPlus, setIsPlus] = useState(false);
   let category: string[] = [];
 

@@ -13,6 +13,7 @@ import SkeletonLoader from '@/components/SkeletonLoader';
 import { formatPercent, mathSqrt } from '@/utils/common';
 import { BasicParam } from '@/interfaces/request';
 import { ApexOptions } from 'apexcharts';
+import { useDispatchPerformance } from '@/utils/hooks/queries/dispatch';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   console.log('w.globals.', w.globals);
@@ -46,9 +47,27 @@ const PerformanceChart = (props: Props) => {
   const labelColor = 'var(--color-text-subtle)';
   const currency = useAtomValue(currencyAtom);
   const [maxAbs, setMaxAbs] = useState(0);
-  const [infinityIndexList, setInfinityIndexList] = useState<number[]>([]);
+  const [isPolling, setIsPolling] = useState<boolean>(true);
+  const { data: dispatchPerformance } = useDispatchPerformance(
+    props.requestParam?.walletAddress || ''
+  );
+
   const { data: performanceChart, status: statusPerformanceChart } =
-    usePerformanceChart(props.requestParam);
+    usePerformanceChart(
+      {
+        ...props.requestParam,
+        taskId: dispatchPerformance?.taskId,
+      },
+      isPolling
+    );
+  useEffect(() => {
+    statusPerformanceChart === 'success' &&
+      performanceChart.statusCode !== 'PENDING' &&
+      setIsPolling(false);
+  }, [statusPerformanceChart]);
+  useEffect(() => {
+    setIsPolling(true);
+  }, [props.requestParam]);
   const options: ApexOptions = {
     chart: {
       type: 'bar',

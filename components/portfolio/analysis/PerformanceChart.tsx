@@ -10,6 +10,7 @@ import { currencyAtom } from '@/store/currency';
 import { formatPercent, mathSqrt } from '@/utils/common';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { BasicParam } from '@/interfaces/request';
+import { useDispatchPerformance } from '@/utils/hooks/queries/dispatch';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w, year }: any) => {
   // const roi = series[seriesIndex][dataPointIndex];
@@ -39,18 +40,33 @@ type Props = {
 };
 const PerformanceChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
+  const { data: dispatchPerformance } = useDispatchPerformance(
+    props.requestParam?.walletAddress || ''
+  );
+  const [isPolling, setIsPolling] = useState<boolean>(true);
   const { data: performanceChart, status: statusPerformanceChart } =
-    usePerformanceChart({
-      ...props.requestParam,
-      gnlChartType: props.requestParam.gnlChartType.toLowerCase() as
-        | 'overall'
-        | 'realized'
-        | 'unrealized',
-    });
+    usePerformanceChart(
+      {
+        ...props.requestParam,
+        taskId: dispatchPerformance?.taskId,
+        gnlChartType: props.requestParam.gnlChartType.toLowerCase() as
+          | 'overall'
+          | 'realized'
+          | 'unrealized',
+      },
+      isPolling
+    );
   const [maxAbs, setMaxAbs] = useState(0);
   const barBackground = 'var(--color-elevation-surface-raised)';
   const labelColor = 'var(--color-text-subtle)';
-
+  useEffect(() => {
+    statusPerformanceChart === 'success' &&
+      performanceChart.statusCode !== 'PENDING' &&
+      setIsPolling(false);
+  }, [statusPerformanceChart]);
+  useEffect(() => {
+    setIsPolling(true);
+  }, [props.requestParam]);
   let seriesData = useMemo(() => {
     if (!performanceChart || performanceChart.data.length == 0) return [];
     return [

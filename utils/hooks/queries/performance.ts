@@ -20,17 +20,19 @@ export function useInventoryUnrealizedPerformance(searchParam: BasicParam | null
     },
   );
 }
-export function usePerformanceChart(requestParam: PerformanceParam & BasicParam) {
-  return useQuery<{data: PerformanceCollection[]},AxiosError>(
-    ['inventoryPerformanceChart',requestParam],
+export function usePerformanceChart(requestParam: PerformanceParam & BasicParam, polling=true ) {
+  return useQuery<{ data: PerformanceCollection[], statusCode?: "PENDING" }, AxiosError>(
+    ['inventoryPerformanceChart', requestParam],
     async () => {
       const result = await getPerformanceChart(requestParam);
       return result;
     },
     {
+      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId && !!polling,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      refetchInterval: 10000,
     },
   );
 }

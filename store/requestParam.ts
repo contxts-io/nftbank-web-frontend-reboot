@@ -33,7 +33,7 @@ export type TAcquisitionParam =BasicParam &  TPeriod
 export type TOverviewHistoricalValueParam = BasicParam & {
   // interval: 'hourly' | 'daily' | 'weekly' | 'monthly' | 'quarterly',
   window: '1d'| '3d'| '7d'| '30d'| '90d'| 'ytd'| '365d'| 'all',
-
+  taskId?: string,
 }
 type SpamParam = {
   includeSpam:boolean,

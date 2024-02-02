@@ -3,7 +3,8 @@
   @apply flex items-center;
 }
 .toggleButton {
-  @apply w-32 h-16 py-6 relative bg-transparent rounded-full border-1 m-0;
+  @apply rounded-full !important;
+  @apply w-32 h-16 py-6 relative bg-transparent border-1 m-0;
   @apply transition ease-in-out duration-150;
   @apply border-[var(--color-border-accent-gray)] hover:border-[var(--color-border-accent-gray)] !important;
 }
