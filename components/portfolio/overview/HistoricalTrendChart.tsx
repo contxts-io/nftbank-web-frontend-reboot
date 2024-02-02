@@ -30,7 +30,7 @@ const tooltip = ({
     value - w.globals?.series?.[0][0]
   );
   console.log('value', value);
-  console.log('w.globals?.series?.[0][0]', w.globals?.series?.[0][0]);
+  console.log('w.globals.categoryLabels', w.globals.categoryLabels);
   w.globals &&
     (setHoverValue(value), setDiffValue(value - w.globals?.series?.[0][0]));
   return (
@@ -106,12 +106,13 @@ const HistoricalTrendChart = (props: Props) => {
         //       month: 'short',
         //       day: 'numeric',
         //     };
-        const date = new Date(item.processedAt).toLocaleDateString(
-          'en-us',
-          option
-        );
+        const date = new Date(
+          item.processedAt.replace(/\s\d{2}:\d{2}:\d{2}T/, 'T')
+        ).toLocaleDateString('en-us', option);
+
         const parts = date.replaceAll(',', '').split(' ');
         const yDate = `${parts[2]}, ${parts[0]} ${parts[1]}`;
+        console.log('data date ::: ', date, 'parts ::: ', parts);
         // historicalValueParam.window === 'all'
         //   ? category.push(yDate)
         //   : category.push(date);
