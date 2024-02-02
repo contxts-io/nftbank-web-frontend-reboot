@@ -42,10 +42,10 @@ const InventoryValue = () => {
   const { data: inventoryUnrealized, status: statusInventoryUnrealized } =
     useSummaryUnrealized(portfolioUser);
 
-  const { data: collectionCount, isLoading: isLoadingCollectionCount } =
-    useCollectionCount(portfolioUser);
-  const { data: itemCount, isLoading: isLoadingItemCount } =
-    useItemCount(portfolioUser);
+  // const { data: collectionCount, isLoading: isLoadingCollectionCount } =
+  //   useCollectionCount(portfolioUser);
+  // const { data: itemCount, isLoading: isLoadingItemCount } =
+  //   useItemCount(portfolioUser);
   const currency = useAtomValue(currencyAtom);
 
   const inventoryType = useAtomValue(inventoryTypeAtom);

@@ -81,7 +81,7 @@ const PerformanceSection = () => {
   useEffect(() => {
     let _total = 0;
     performanceChart &&
-      performanceChart.data.map((item) => {
+      performanceChart.data?.map((item) => {
         const value =
           item.gainLoss?.[currency] &&
           !isNaN(parseFloat(item.gainLoss?.[currency]))
