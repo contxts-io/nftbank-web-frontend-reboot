@@ -47,14 +47,6 @@ const InventoryItemList = (props: Props) => {
     });
   };
   useEffect(() => {
-    setRequestParam((prev) => ({
-      ...prev,
-      page: 1,
-      includeGasUsed: priceType === 'costBasis' ? 'true' : 'false',
-    }));
-  }, [priceType]);
-
-  useEffect(() => {
     selectedToken && setShowModal(true);
   }, [selectedToken]);
   const handleChangePriceType = () => {
