@@ -3,7 +3,7 @@ import MagnifyingGlass from '@/public/icon/MagnifyingGlass';
 import styles from './InventoryCollectionSettings.module.css';
 import Gear from '@/public/icon/Gear';
 import { useAtom } from 'jotai';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { inventoryCollectionAtom } from '@/store/requestParam';
 import { priceTypeAtom } from '@/store/currency';
 import ReactModal from 'react-modal';
@@ -45,6 +45,14 @@ const InventoryCollectionSettings = () => {
   const handleBlur = () => {
     setIsFocused(false);
   };
+  useEffect(() => {
+    searchText.length >= 3 &&
+      setInventoryCollection({
+        ...inventoryCollection,
+        page: 0,
+        searchCollection: searchText,
+      });
+  }, [searchText]);
 
   return (
     <section className={`${styles.container}`}>
