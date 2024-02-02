@@ -17,36 +17,37 @@ import { currencyAtom } from '@/store/currency';
 import { AcquisitionType } from '@/interfaces/activity';
 import { analysisAcquisitionParamAtom } from '@/store/requestParam';
 import { portfolioUserAtom } from '@/store/portfolio';
+import NoData from '@/components/error/NoData';
 const LIST = [
   {
-    type: 'BUY' as const,
+    type: 'buy' as const,
     name: 'Buy',
     icon: (
       <ShoppingCart className='fill-[var(--color-icon-accent-green)]' />
     ) as JSX.Element,
     color: 'var(--color-border-accent-green)',
-    amount: 40,
+    amount: 0,
   },
   {
-    type: 'MINT' as const,
+    type: 'mint' as const,
     name: 'Mint',
     icon: <Jewel className='fill-[var(--color-icon-accent-blue)]' />,
     color: 'var(--color-border-accent-blue)',
-    amount: 40,
+    amount: 0,
   },
   {
-    type: 'AIRDROP' as const,
+    type: 'airdrop' as const,
     name: 'Airdrop',
     icon: <Parachute className='fill-[var(--color-icon-accent-orange)]' />,
     color: 'var(--color-border-accent-orange)',
-    amount: 40,
+    amount: 0,
   },
   {
-    type: 'TRANSFER' as const,
+    type: 'transfer' as const,
     name: 'Transfer',
     icon: <ArrowsDownUp className='fill-[var(--color-icon-accent-fuchsia)]' />,
     color: 'var(--color-border-accent-fuchsia)',
-    amount: 40,
+    amount: 0,
   },
 ];
 export type _List = (typeof LIST)[number] & Partial<AcquisitionType>;
@@ -71,12 +72,11 @@ const AcquisitionType = () => {
     })) as _Period[]
   );
   const [selectedYear, setSelectedYear] = useState<_Year[]>([
+    { name: '2024', value: 2024, selected: false },
     { name: '2023', value: 2023, selected: true },
-    { name: '2022', value: 2022, selected: false },
-    { name: '2021', value: 2021, selected: false },
-    { name: '2020', value: 2020, selected: false },
   ]);
   useEffect(() => {
+    console.log('acquisitionTypes', acquisitionTypes);
     acquisitionTypes &&
       setList((prev) => {
         return (
@@ -84,6 +84,7 @@ const AcquisitionType = () => {
             const acquisitionType = acquisitionTypes.data?.find(
               (acquisitionType) => acquisitionType.type === item.type
             );
+            console.log('find acquisitionType', acquisitionType);
             return {
               ...item,
               ...acquisitionType,
@@ -135,83 +136,92 @@ const AcquisitionType = () => {
           onClick={(name) => handleChangeYear(name)}
           className='w-78'
         />
-        <Dropdown
+        {/* <Dropdown
           list={selectedPeriod.map((item) => item.name)}
           selected={selectedPeriod.find((item) => item.selected)?.name || 'All'}
           onClick={(name) => handleChangePeriod(name)}
-        />
+        /> */}
       </div>
       <div className='w-full flex justify-center mt-20'>
         <section className='flex items-center w-[900px]'>
-          <div className='w-[310px] h-[260px] mr-40 relative'>
-            <AcquisitionTypePieChart
-              data={list}
-              totalCount={totalAcqCount}
-              status={acquisitionTypesStatus}
-            />
-            {acquisitionTypesStatus === 'success' && (
-              <div className='absoluteCenter flex flex-col items-center'>
-                <p className='font-subtitle02-bold text-[var(--color-text-main)] mb-4'>
-                  {totalAcqCount}
-                </p>
-                <p className='font-caption-regular text-[var(--color-text-subtle)]'>
-                  Total Acq. Count
-                </p>
-              </div>
-            )}
-          </div>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th className='text-left'>
-                  <p>Acquisition Type</p>
-                </th>
-                <th className='text-right'>
-                  <p>Amount</p>
-                </th>
-                <th className='text-right'>
-                  <p>Total Cost Basis</p>
-                </th>
-                <th className='text-right'>
-                  <p>Activity</p>
-                </th>
-              </tr>
-            </thead>
-            <tbody className='font-caption-medium'>
-              {list.map((item, index) => (
-                <tr key={index}>
-                  <td>
-                    <div className='flex items-center'>
-                      <div
-                        className={`flex items-center justify-center rounded-full border-1 w-32 h-32 mr-10 ${
-                          styles[`border--${item.type}`]
-                        }`}
-                      >
-                        {item.icon}
-                      </div>
-                      <p>{item.type}</p>
-                    </div>
-                  </td>
-                  <td className='text-right'>
-                    <p>{item.amount}</p>
-                  </td>
-                  <td className='text-right'>
-                    <p>
-                      {formatCurrency(
-                        item.costBasis?.[currency].amount || '0',
-                        currency
-                      )}
+          {acquisitionTypes?.data.length == 0 ? (
+            <div className=' w-full h-[260px] flex justify-center pt-40'>
+              <NoData />
+            </div>
+          ) : (
+            <>
+              <div className='w-[310px] h-[260px] mr-40 relative'>
+                <AcquisitionTypePieChart
+                  data={list}
+                  totalCount={totalAcqCount}
+                  status={acquisitionTypesStatus}
+                />
+                {acquisitionTypesStatus === 'success' && (
+                  <div className='absoluteCenter flex flex-col items-center'>
+                    <p className='font-subtitle02-bold text-[var(--color-text-main)] mb-4'>
+                      {totalAcqCount}
                     </p>
-                  </td>
-                  <td className='text-right'>
-                    <div className='rotate-270 w-16 h-16 ml-auto'>
-                      <CaretDown />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <p className='font-caption-regular text-[var(--color-text-subtle)]'>
+                      Total Acq. Count
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th className='text-left'>
+                      <p>Acquisition Type</p>
+                    </th>
+                    <th className='text-right'>
+                      <p>Amount</p>
+                    </th>
+                    <th className='text-right'>
+                      <p>Total Cost Basis</p>
+                    </th>
+                    <th className='text-right'>
+                      <p>Activity</p>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className='font-caption-medium'>
+                  {list.map((item, index) => (
+                    <tr key={index}>
+                      <td>
+                        <div className='flex items-center'>
+                          <div
+                            className={`flex items-center justify-center rounded-full border-1 w-32 h-32 mr-10 ${
+                              styles[`border--${item.type}`]
+                            }`}
+                          >
+                            {item.icon}
+                          </div>
+                          <p>{item.name}</p>
+                        </div>
+                      </td>
+                      <td className='text-right'>
+                        <p>{item.amount}</p>
+                      </td>
+                      <td className='text-right'>
+                        <p>
+                          {formatCurrency(
+                            item.costBasis?.[currency] || '0',
+                            currency
+                          )}
+                        </p>
+                      </td>
+                      <td className='text-right'>
+                        <div className='rotate-270 w-16 h-16 ml-auto'>
+                          <CaretDown />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )}
         </section>
       </div>
     </section>
