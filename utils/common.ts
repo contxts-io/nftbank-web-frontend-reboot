@@ -15,10 +15,14 @@ export function formatCurrency(amount: string | null, currency: TCurrency): stri
     return '-';
     // return '∞';
   if (currency === 'usd') {
-    return _formatFiat(parseFloat(amount),currency).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    // return _formatFiat(parseFloat(amount),currency).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    return _formatFiat(parseFloat(amount), currency).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+
   }
   if (currency === 'eth') {
-    return _formatEth(parseFloat(amount)).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    // return _formatEth(parseFloat(amount)).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    return _formatEth(parseFloat(amount)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+
   }
   return '';
 }
