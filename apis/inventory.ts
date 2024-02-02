@@ -3,7 +3,7 @@ import { ValueNested } from "@/interfaces/collection";
 import { IInventoryCollectionList, IInventoryItemList, InventoryValue, InventoryValueNested, IStat, PositionCollection, PositionCollectionAmount } from "@/interfaces/inventory";
 import { BasicParam } from "@/interfaces/request";
 import { TSummary, TUnrealized } from "@/interfaces/summary";
-import { TToken } from "@/interfaces/token";
+import { TRealizedToken } from "@/interfaces/token";
 import { Paging, PagingCursor } from "@/interfaces/utils";
 import { ItemParam, TAcquisitionParam, TAnalysisGainAndLossParam, TCollectionParam, TOverviewHistoricalValueParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
@@ -117,7 +117,7 @@ export const getInventoryCollectionPositionAmount = async<T = { data: PositionCo
   return data.data;
 }
 export type ResponseRealizedTokensData = {
-  data: TToken[],
+  data: TRealizedToken[],
   processedAt: string,
   paging: Paging,
 }

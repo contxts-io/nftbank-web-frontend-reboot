@@ -198,6 +198,9 @@ const RealizedGainAndLoss = () => {
                       item.acquisitionPrice?.[currency]
                     );
                     const gasFee = parseFloatPrice(item.gasFee?.[currency]);
+                    const proceedGasFee = parseFloatPrice(
+                      item.proceedGasFee?.[currency]
+                    );
                     const costBasis = acquisitionPrice + gasFee;
                     const proceed = parseFloatPrice(item.proceed[currency]);
                     const realizedGainAndLoss = proceed - acquisitionPrice;
@@ -260,8 +263,22 @@ const RealizedGainAndLoss = () => {
                         </td>
                         <td className='text-right'>
                           <p className='text-[var(--color-text-main)]'>
-                            {formatCurrency(proceed.toString(), currency)}
+                            {includeGasUsed
+                              ? formatCurrency(proceed.toString(), currency)
+                              : formatCurrency(
+                                  (proceed - proceedGasFee).toString(),
+                                  currency
+                                )}
                           </p>
+                          {includeGasUsed && (
+                            <p
+                              className={`text-[var(--color-text-brand)] mt-4`}
+                            >
+                              {`GAS +${parseFloatPrice(
+                                proceedGasFee.toFixed(3)
+                              )}`}
+                            </p>
+                          )}
                         </td>
                         <td className='text-right'>
                           <p
@@ -273,7 +290,11 @@ const RealizedGainAndLoss = () => {
                           >
                             {includeGasUsed
                               ? formatCurrency(
-                                  (realizedGainAndLoss - gasFee).toString(),
+                                  (
+                                    realizedGainAndLoss -
+                                    gasFee -
+                                    proceedGasFee
+                                  ).toString(),
                                   currency
                                 )
                               : formatCurrency(
@@ -295,8 +316,11 @@ const RealizedGainAndLoss = () => {
                             {includeGasUsed
                               ? formatPercent(
                                   (
-                                    ((realizedGainAndLoss - gasFee) /
-                                      costBasis) *
+                                    ((realizedGainAndLoss -
+                                      gasFee -
+                                      proceedGasFee) /
+                                      costBasis -
+                                      proceedGasFee) *
                                     100
                                   ).toString()
                                 )
