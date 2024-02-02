@@ -58,9 +58,6 @@ const GlobalNavigation = () => {
   useEffect(() => {
     const handleKeyDown = (e: any) => {
       if (e.key === 'Enter') {
-        // handleClickEnter();
-        console.log('verify', verify);
-        console.log('isChecking', isChecking);
         verify &&
           isChecking === false &&
           router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
@@ -84,17 +81,10 @@ const GlobalNavigation = () => {
       Boolean(walletAddress !== '') && getAddress(walletAddress);
       handleClickEnter();
     } catch (error) {
-      console.log('????? errr ', error);
       setError('Invalid wallet address');
       setSearchAddress(null);
     }
   }, [walletAddress]);
-  useEffect(() => {
-    console.log('global error', error);
-  }, [error]);
-  useEffect(() => {
-    console.log('path', path);
-  }, [path]);
   const handleClickEnter = async () => {
     setIsChecking(true);
     try {

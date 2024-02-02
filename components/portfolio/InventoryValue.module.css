@@ -1,5 +1,5 @@
 .container {
-  @apply w-full grid grid-cols-4 justify-between items-start mt-20 border-1 border-[var(--color-border-main)];
+  @apply w-full grid grid-cols-3 justify-between items-start mt-20 border-1 border-[var(--color-border-main)];
 }
 .articleBox {
   @apply border-r-1 h-92 ml-16 py-16 border-[var(--color-border-main)];

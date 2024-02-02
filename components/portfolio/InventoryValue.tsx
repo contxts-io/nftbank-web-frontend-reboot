@@ -14,17 +14,34 @@ import { useInventoryUnrealizedPerformance } from '@/utils/hooks/queries/perform
 import SkeletonLoader from '../SkeletonLoader';
 import { useEffect, useState } from 'react';
 import { portfolioUserAtom } from '@/store/portfolio';
-
+import { useSummaryUnrealized } from '@/utils/hooks/queries/summary';
+import { Tooltip } from '@nextui-org/react';
+import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
+import Info from '@/public/icon/Info';
+type InventoryValue = {
+  type: string;
+  name: string;
+  value: string;
+  diff: string;
+  diffPercent?: string;
+  isPlus: boolean;
+  status: string;
+  infinity?: boolean;
+};
 const InventoryValue = () => {
   const portfolioUser = useAtomValue(portfolioUserAtom);
   const searchParams = useSearchParams();
-  const [values, setValues] = useState<any[]>([]);
+  const [values, setValues] = useState<InventoryValue[]>([]);
   const { data: inventoryValue, status: statusInventoryValue } =
     useInventoryValue(portfolioUser);
   // const { data: inventoryValuePerformance, status: statusPerformance } =
   //   useInventoryValuePerformance(walletAddress);
+  // const { data: inventoryUnrealized, status: statusInventoryUnrealized } =
+  //   useInventoryUnrealizedPerformance(portfolioUser);
+
   const { data: inventoryUnrealized, status: statusInventoryUnrealized } =
-    useInventoryUnrealizedPerformance(portfolioUser);
+    useSummaryUnrealized(portfolioUser);
+
   const { data: collectionCount, isLoading: isLoadingCollectionCount } =
     useCollectionCount(portfolioUser);
   const { data: itemCount, isLoading: isLoadingItemCount } =
@@ -58,15 +75,15 @@ const InventoryValue = () => {
         type: 'unrealizedValue',
         name: 'Unrealized Gain&Loss',
         value: formatCurrency(
-          inventoryUnrealized?.gainLoss[currency] || '-',
+          inventoryUnrealized?.gainLoss[currency].amount || '-',
           currency
         ),
         diff: formatCurrency(
-          inventoryUnrealized?.gainLoss[currency] || '-',
+          inventoryUnrealized?.gainLoss[currency].amount || '-',
           currency
         ),
-        diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
-        isPlus: parseFloat(inventoryUnrealized?.gainLoss[currency] || '0') > 0,
+        isPlus:
+          parseFloat(inventoryUnrealized?.gainLoss[currency].amount || '0') > 0,
         status: statusInventoryUnrealized,
       },
       {
@@ -77,9 +94,13 @@ const InventoryValue = () => {
         diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
         isPlus: parseFloat(inventoryUnrealized?.roi[currency] || '0') > 0,
         status: statusInventoryUnrealized,
+        infinity: isNaN(Number(inventoryUnrealized?.roi[currency]))
+          ? true
+          : false,
       },
     ]);
   }, [inventoryValue, statusInventoryValue, inventoryUnrealized, currency]);
+
   return (
     <section className={`${styles.container}`}>
       {/* {statusInventoryValue === 'loading' && <div>Loading...</div>} */}
@@ -101,17 +122,28 @@ const InventoryValue = () => {
                 )}
                 {item.status === 'success' && (
                   <div className='mr-8 items-end'>
-                    <p
-                      className={`font-subtitle02-bold ${
-                        item.type == `inventoryValue`
-                          ? styles.pMain
-                          : item.isPlus
-                          ? 'text-[var(--color-text-success)]'
-                          : 'text-[var(--color-text-danger)]'
-                      }`}
-                    >
-                      {item.value && item.value}
-                    </p>
+                    {item.infinity ? (
+                      <Tooltip
+                        content={UNABLE_TO_CALCULATE_ROI}
+                        className='max-w-188 font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                      >
+                        <div className='mt-20 w-full flex justify-center text-[var(--color-icon-subtle)]'>
+                          <Info />
+                        </div>
+                      </Tooltip>
+                    ) : (
+                      <p
+                        className={`font-subtitle02-bold ${
+                          item.type == `inventoryValue`
+                            ? styles.pMain
+                            : item.isPlus
+                            ? 'text-[var(--color-text-success)]'
+                            : 'text-[var(--color-text-danger)]'
+                        }`}
+                      >
+                        {item.value && item.value}
+                      </p>
+                    )}
                   </div>
                 )}
                 {/* {item.type === 'inventoryValue' &&
@@ -146,7 +178,7 @@ const InventoryValue = () => {
           );
         })}
 
-      <article className='ml-16 py-16 h-92 flex flex-col justify-between'>
+      {/* <article className='ml-16 py-16 h-92 flex flex-col justify-between'>
         <div className='w-fit'>
           <p
             className={`font-caption-medium mb-4 text-[var(--color-text-subtle)] w-fit`}
@@ -164,7 +196,7 @@ const InventoryValue = () => {
             ? collectionCount?.totalCount
             : itemCount?.totalCount}
         </p>
-      </article>
+      </article> */}
     </section>
   );
 };
