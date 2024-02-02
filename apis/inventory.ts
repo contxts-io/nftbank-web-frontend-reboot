@@ -56,7 +56,6 @@ export const getItemList = async<T = IInventoryItemList>(requestParam: ItemParam
       }
   })
     .join('&');
-  console.log('getItemList query',query);
   // const { data } = await instance.get<{data:T}>(`/inventory/token?${query.replace('&&','&')}`);
   const { data } = await instance.post<{data:T}>(`/inventory/token`,requestParam);
   return data.data;
@@ -120,7 +119,7 @@ export const getInventoryCollectionPositionAmount = async<T = { data: PositionCo
 export type ResponseRealizedTokensData = {
   data: TToken[],
   processedAt: string,
-  paging: PagingCursor,
+  paging: Paging,
 }
 type GainAndLossKey = keyof TAnalysisGainAndLossParam;
 export const getInventoryRealizedTokens = async<T = ResponseRealizedTokensData>(requestParam: TAnalysisGainAndLossParam): Promise<T> => {

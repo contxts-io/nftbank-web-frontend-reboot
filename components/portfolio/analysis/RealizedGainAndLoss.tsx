@@ -33,7 +33,7 @@ import {
   UNABLE_TO_CALCULATE_ROI,
 } from '@/utils/messages';
 import ToggleButton from '@/components/buttons/ToggleButton';
-import { Value } from '@/interfaces/collection';
+import { useInView } from 'react-intersection-observer';
 const THEAD = [
   { key: 'item', value: 'Item' },
   { key: 'amount', value: 'Amount' },
@@ -43,7 +43,7 @@ const THEAD = [
   { key: 'realizedROI', value: 'Realized ROI' },
   { key: 'acquisitionDate', value: 'Acq. date', tooltip: true },
   { key: 'soldDate', value: 'Sold date' },
-  { key: 'activity', value: 'Activity' },
+  // { key: 'activity', value: 'Activity' },
 ];
 type _Year = TYear & { selected: boolean };
 type _Period = TPeriod & { selected: boolean };
@@ -52,6 +52,7 @@ const RealizedGainAndLoss = () => {
   const portfolioUser = useAtomValue(portfolioUserAtom);
   const [showMore, setShowMore] = useState(false);
   const [includeGasUsed, setIncludeGasUsed] = useState<boolean>(true);
+  const { ref, inView } = useInView();
   const [requestParams, setRequestParams] = useAtom(
     analysisGainAndLossParamAtom
   );
@@ -62,6 +63,7 @@ const RealizedGainAndLoss = () => {
   } = useInventoryRealizedTokensInfinite({
     ...portfolioUser,
     ...requestParams,
+    page: 0,
   });
   const [selectedStatus, setSelectedStatus] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({
@@ -89,40 +91,29 @@ const RealizedGainAndLoss = () => {
       }))
     );
   };
-  const handleClickShowMore = () => {
-    setShowMore(true);
-  };
+  useEffect(() => {
+    const isLast =
+      realizedTokenList?.pages?.[realizedTokenList?.pages.length - 1].isLast;
+    !isLast &&
+      inView &&
+      status !== 'loading' &&
+      (fetchNextPage(),
+      setRequestParams((prev) => ({ ...prev, page: prev.page + 1 })));
+  }, [fetchNextPage, inView]);
   useEffect(() => {
     console.log('changed!');
     setRequestParams((prev) => {
       return {
         ...prev,
+        page: 0,
         year: selectedYear.find((item) => item.selected)?.value || 2023,
       };
     });
   }, [selectedStatus, selectedYear]);
 
   const mergePosts = useMemo(
-    () =>
-      realizedTokenList?.pages.map((page, index) => {
-        return {
-          ...page,
-          // data: page.data.map((item) => ({
-          //   ...item,
-          //   acquisitionPrice: item.acquisitionPrice || {},
-          //   proceed: item.proceed || {},
-
-          //   gasFee: includeGasUsed
-          //     ? item.gasFee
-          //     : ({ usd: '0', eth: '0' } as Value),
-          // })),
-        };
-      }) || [],
-    [realizedTokenList?.pages, requestParams, includeGasUsed]
-  );
-  const latestPage = useMemo(
-    () => mergePosts[mergePosts.length - 1],
-    [mergePosts]
+    () => realizedTokenList?.pages,
+    [realizedTokenList?.pages, requestParams]
   );
   useEffect(() => {
     console.log('realizedTokenList', realizedTokenList, includeGasUsed);
@@ -157,182 +148,177 @@ const RealizedGainAndLoss = () => {
         </div>
       </div>
       <div className={styles.tableWrapper}>
-        {status === 'loading' && (
-          <SkeletonLoader className='w-full h-[200px]' />
-        )}
         {status === 'success' && (
-          <table className={styles.table}>
-            <thead className='font-caption-regular'>
-              <tr>
-                {THEAD.map((item, index) => (
-                  <th
-                    key={index}
-                    className={index === 0 ? 'text-left' : 'text-right'}
-                  >
-                    {item.tooltip ? (
-                      <div className='w-full flex items-center justify-end text-[var(--color-icon-subtle)]'>
-                        <Tooltip
-                          content={LATEST_ACQUISITION_DATE}
-                          className='cursor-pointer max-w-[228px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
-                        >
-                          <Info />
-                        </Tooltip>
-                        <p className='ml-4'>{item.value}</p>
-                      </div>
-                    ) : (
-                      <p>{item.value}</p>
-                    )}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className='font-caption-medium'>
-              {mergePosts?.map((page, pageIndex) =>
-                page.data.map((item, index) => {
-                  if (showMore === false && pageIndex === 0 && index > 4)
-                    return null;
-                  const acquisitionPrice = parseFloatPrice(
-                    item.acquisitionPrice?.[currency]
-                  );
-                  const gasFee = parseFloatPrice(item.gasFee?.[currency]);
-                  const costBasis = acquisitionPrice + gasFee;
-                  const proceed = parseFloatPrice(item.proceed[currency]);
-                  const realizedGainAndLoss = proceed - acquisitionPrice;
-                  const isPlus = realizedGainAndLoss > 0;
-                  const isMinus = realizedGainAndLoss < 0;
-                  const isZero = realizedGainAndLoss === 0;
-                  return (
-                    <tr
-                      key={`${pageIndex}-${index}`}
-                      className='text-[var(--color-text-subtle)] hover:text-[var(--color-text-main)]'
+          <>
+            <table className={styles.table}>
+              <thead className='font-caption-regular'>
+                <tr>
+                  {THEAD.map((item, index) => (
+                    <th
+                      key={index}
+                      className={index === 0 ? 'text-left' : 'text-right'}
                     >
-                      <td className='text-left'>
-                        <div className='flex items-center gap-x-8'>
-                          <div className='w-32 h-32 flex items-center justify-center border-1 border-[var(--color-border-main)]'>
-                            <Image
-                              src={`${
-                                item.token.imageUrl || '/icon/nftbank_icon.svg'
-                              }`}
-                              width={32}
-                              height={32}
-                              alt={`${item.collection.name}-${item.token.tokenId}`}
-                            />
-                          </div>
-                          <div>
-                            <p className='text-[var(--color-text-main)]'>
-                              {item.token.tokenId}
-                            </p>
-                            <p className='text-[var(--color-text-subtle)]'>
-                              {item.collection.name}
-                            </p>
-                          </div>
+                      {item.tooltip ? (
+                        <div className='w-full flex items-center justify-end text-[var(--color-icon-subtle)]'>
+                          <Tooltip
+                            content={LATEST_ACQUISITION_DATE}
+                            className='cursor-pointer max-w-[228px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                          >
+                            <Info />
+                          </Tooltip>
+                          <p className='ml-4'>{item.value}</p>
                         </div>
-                      </td>
-                      <td className='text-right'>
-                        <p className='text-[var(--color-text-main)]'>
-                          {item.amount}
-                        </p>
-                      </td>
-                      <td className='text-right'>
-                        <p className='text-[var(--color-text-main)]'>
-                          {/* {formatCurrency(
+                      ) : (
+                        <p>{item.value}</p>
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className='font-caption-medium'>
+                {mergePosts?.map((page, pageIndex) =>
+                  page.data.map((item, index) => {
+                    const acquisitionPrice = parseFloatPrice(
+                      item.acquisitionPrice?.[currency]
+                    );
+                    const gasFee = parseFloatPrice(item.gasFee?.[currency]);
+                    const costBasis = acquisitionPrice + gasFee;
+                    const proceed = parseFloatPrice(item.proceed[currency]);
+                    const realizedGainAndLoss = proceed - acquisitionPrice;
+                    const isPlus = realizedGainAndLoss > 0;
+                    const isMinus = realizedGainAndLoss < 0;
+                    const isZero = realizedGainAndLoss === 0;
+                    return (
+                      <tr
+                        key={`${pageIndex}-${index}`}
+                        className='text-[var(--color-text-subtle)] hover:text-[var(--color-text-main)]'
+                      >
+                        <td className='text-left'>
+                          <div className='flex items-center gap-x-8'>
+                            <div className='w-32 h-32 flex items-center justify-center border-1 border-[var(--color-border-main)]'>
+                              <Image
+                                src={`${
+                                  item.token.imageUrl ||
+                                  '/icon/nftbank_icon.svg'
+                                }`}
+                                width={32}
+                                height={32}
+                                alt={`${item.collection.name}-${item.token.tokenId}`}
+                              />
+                            </div>
+                            <div>
+                              <p className='text-[var(--color-text-main)]'>
+                                {item.token.tokenId}
+                              </p>
+                              <p className='text-[var(--color-text-subtle)]'>
+                                {item.collection.name}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className='text-right'>
+                          <p className='text-[var(--color-text-main)]'>
+                            {item.amount}
+                          </p>
+                        </td>
+                        <td className='text-right'>
+                          <p className='text-[var(--color-text-main)]'>
+                            {/* {formatCurrency(
                           item.costBasis[currency] || '0',
                           currency
                         )} */}
-                          {includeGasUsed
-                            ? formatCurrency(costBasis.toString(), currency)
-                            : formatCurrency(
-                                acquisitionPrice.toString(),
-                                currency
-                              )}
-                        </p>
-                        {includeGasUsed && (
-                          <p className={`text-[var(--color-text-brand)] mt-4`}>
-                            {`GAS +${parseFloatPrice(gasFee.toFixed(3))}`}
+                            {includeGasUsed
+                              ? formatCurrency(costBasis.toString(), currency)
+                              : formatCurrency(
+                                  acquisitionPrice.toString(),
+                                  currency
+                                )}
                           </p>
-                        )}
-                      </td>
-                      <td className='text-right'>
-                        <p className='text-[var(--color-text-main)]'>
-                          {formatCurrency(proceed.toString(), currency)}
-                        </p>
-                      </td>
-                      <td className='text-right'>
-                        <p
-                          className={`${
-                            realizedGainAndLoss > 0
-                              ? 'text-[var(--color-text-success)]'
-                              : 'text-[var(--color-text-danger)]'
-                          }`}
-                        >
-                          {includeGasUsed
-                            ? formatCurrency(
-                                (realizedGainAndLoss - gasFee).toString(),
-                                currency
-                              )
-                            : formatCurrency(
-                                realizedGainAndLoss.toString(),
-                                currency
-                              )}
-                        </p>
-                      </td>
-                      <td className='text-right'>
-                        <p
-                          className={`${
-                            isZero
-                              ? 'text-[var(--color-text-main)]'
-                              : isPlus
-                              ? 'text-[var(--color-text-success)]'
-                              : 'text-[var(--color-text-danger)]'
-                          }`}
-                        >
-                          {includeGasUsed
-                            ? formatPercent(
-                                (
-                                  ((realizedGainAndLoss - gasFee) / costBasis) *
-                                  100
-                                ).toString()
-                              )
-                            : formatPercent(
-                                (
-                                  (realizedGainAndLoss / acquisitionPrice) *
-                                  100
-                                ).toString()
-                              )}
-                        </p>
-                      </td>
-                      <td className='text-right'>
-                        <p className='text-[var(--color-text-main)]'>
-                          {item.acquisitionDate
-                            ? formatDate(new Date(item.acquisitionDate))
-                            : '-'}
-                        </p>
-                      </td>
-                      <td className='text-right'>
-                        <p className='text-[var(--color-text-main)]'>
-                          {formatDate(new Date(item.soldDate))}
-                        </p>
-                      </td>
-                      <td className='text-right'>
+                          {includeGasUsed && (
+                            <p
+                              className={`text-[var(--color-text-brand)] mt-4`}
+                            >
+                              {`GAS +${parseFloatPrice(gasFee.toFixed(3))}`}
+                            </p>
+                          )}
+                        </td>
+                        <td className='text-right'>
+                          <p className='text-[var(--color-text-main)]'>
+                            {formatCurrency(proceed.toString(), currency)}
+                          </p>
+                        </td>
+                        <td className='text-right'>
+                          <p
+                            className={`${
+                              realizedGainAndLoss > 0
+                                ? 'text-[var(--color-text-success)]'
+                                : 'text-[var(--color-text-danger)]'
+                            }`}
+                          >
+                            {includeGasUsed
+                              ? formatCurrency(
+                                  (realizedGainAndLoss - gasFee).toString(),
+                                  currency
+                                )
+                              : formatCurrency(
+                                  realizedGainAndLoss.toString(),
+                                  currency
+                                )}
+                          </p>
+                        </td>
+                        <td className='text-right'>
+                          <p
+                            className={`${
+                              isZero
+                                ? 'text-[var(--color-text-main)]'
+                                : isPlus
+                                ? 'text-[var(--color-text-success)]'
+                                : 'text-[var(--color-text-danger)]'
+                            }`}
+                          >
+                            {includeGasUsed
+                              ? formatPercent(
+                                  (
+                                    ((realizedGainAndLoss - gasFee) /
+                                      costBasis) *
+                                    100
+                                  ).toString()
+                                )
+                              : formatPercent(
+                                  (
+                                    (realizedGainAndLoss / acquisitionPrice) *
+                                    100
+                                  ).toString()
+                                )}
+                          </p>
+                        </td>
+                        <td className='text-right'>
+                          <p className='text-[var(--color-text-main)]'>
+                            {item.acquisitionDate
+                              ? formatDate(new Date(item.acquisitionDate))
+                              : '-'}
+                          </p>
+                        </td>
+                        <td className='text-right'>
+                          <p className='text-[var(--color-text-main)]'>
+                            {formatDate(new Date(item.soldDate))}
+                          </p>
+                        </td>
+                        {/* <td className='text-right'>
                         <div className='rotate-270 w-16 h-16  ml-auto'>
                           <CaretDown />
                         </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+                      </td> */}
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+            <div ref={ref} className='h-1' />
+          </>
         )}
       </div>
-      {latestPage?.isLast !== true && (
-        <div className='flex justify-center mt-20'>
-          <Button id='' onClick={() => handleClickShowMore()}>
-            Show more
-          </Button>
-        </div>
-      )}
     </section>
   );
 };

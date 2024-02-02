@@ -203,21 +203,16 @@ export const useInventoryCollectionPositionAmount = (requestParam: BasicParam) =
 export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAndLossParam) => {
   const fetchData = async ({ pageParam = 1 }) => {
     const result = await getInventoryRealizedTokens({ ...requestParam, page: pageParam});
-    // const isLast = result.paging.total === result.paging.limit ? true : false;
-    const isLast = result.paging.hasNext ? false : true;
-
-
+    const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
     return {
       ...result,
       page: pageParam,
       nextPage: pageParam + 1,
-      // currentCursor: pageParam,
-      // nextCursor: result.paging.nextCursor,
       isLast,
     };
   }
 
-  const query = useInfiniteQuery(['inventoryRealizedTokens',{...requestParam,nextCursor:null}],fetchData, {
+  const query = useInfiniteQuery(['inventoryRealizedTokens',requestParam],fetchData, {
     getNextPageParam: (lastPage) => {
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;

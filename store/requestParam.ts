@@ -29,7 +29,8 @@ export type TAnalysisGainAndLossParam = TPeriod & BasicParam & {
   limit: number,
   page: number,
 }
-export type TAcquisitionParam =BasicParam &  TPeriod
+export type TAcquisitionParam =BasicParam &  TPeriod & {
+  page?: number}
 export type TOverviewHistoricalValueParam = BasicParam & {
   // interval: 'hourly' | 'daily' | 'weekly' | 'monthly' | 'quarterly',
   window: '1d'| '3d'| '7d'| '30d'| '90d'| 'ytd'| '365d'| 'all',

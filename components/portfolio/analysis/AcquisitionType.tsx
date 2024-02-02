@@ -82,7 +82,8 @@ const AcquisitionType = () => {
         return (
           prev.map((item) => {
             const acquisitionType = acquisitionTypes.data?.find(
-              (acquisitionType) => acquisitionType.type === item.type
+              (acquisitionType) =>
+                acquisitionType.type.toLowerCase() === item.type.toLowerCase()
             );
             console.log('find acquisitionType', acquisitionType);
             return {
