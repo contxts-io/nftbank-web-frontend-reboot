@@ -44,7 +44,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             alt={`${token.collection.name}-${token.token.name}`}
             // objectFit='contain' // 이미지를 가운데 기준으로 크롭
             // objectPosition='center center'
-            className='w-full h-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] cursor-pointer'
+            className='w-full h-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'
           />
         </div>
       ) : (
@@ -78,6 +78,18 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
               : formatCurrency(costBasis.toString(), currency)}
           </p>
         </div>
+        {priceType === 'costBasis' && (
+          <div className='flex justify-between items-center'>
+            <p className='text-[var(--color-text-brand)]'>Gas fee</p>
+
+            <p className='text-[var(--color-text-brand)]'>
+              {formatCurrency(
+                parseFloatPrice(token.gasFee?.[currency]).toString(),
+                currency
+              )}
+            </p>
+          </div>
+        )}
         <div className='flex justify-between items-center'>
           <p className={styles.pName}>Unrealized G&L</p>
           {unrealizedGL ? (

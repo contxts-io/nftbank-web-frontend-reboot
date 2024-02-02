@@ -1,8 +1,11 @@
 .cardWrapper {
-  @apply flex flex-col items-center border-1 border-[var(--color-border-main)];
+  @apply flex flex-col items-center border-1 border-[var(--color-border-main)] cursor-pointer;
+}
+.cardWrapper:hover {
+  @apply border-[var(--color-border-selected)];
 }
 .pTitle {
-  @apply text-[var(--color-text-brand)] truncate;
+  @apply text-[var(--color-text-main)] truncate;
 }
 .pName {
   @apply text-[var(--color-text-subtle)];
