@@ -119,12 +119,7 @@ const InventoryItemFilter = (props: Props) => {
           <Filter />
         </div>
       </div>
-      {/**
-       * 
-       * 
-       * sprint 1
-       * 
-       *  <div className={`${styles.inputContainer}`}>
+      <div className={`${styles.inputContainer}`}>
         <MagnifyingGlass className={`${styles.icon}`} width={16} height={16} />
         <input
           type='text'
@@ -133,7 +128,7 @@ const InventoryItemFilter = (props: Props) => {
           onChange={handleInputText}
           value={searchText}
         />
-      </div> */}
+      </div>
       {status === 'error' && (
         <div className='mt-40'>
           <FailToLoad />
