@@ -8,5 +8,6 @@ export type TSummary = {
 };
 export type TUnrealized = {
   gainLoss: ValueNested,
+  roi: Value,
   processedAt: string
 }

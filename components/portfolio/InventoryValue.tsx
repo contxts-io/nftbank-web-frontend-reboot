@@ -14,6 +14,7 @@ import { useInventoryUnrealizedPerformance } from '@/utils/hooks/queries/perform
 import SkeletonLoader from '../SkeletonLoader';
 import { useEffect, useState } from 'react';
 import { portfolioUserAtom } from '@/store/portfolio';
+import { useSummaryUnrealized } from '@/utils/hooks/queries/summary';
 
 const InventoryValue = () => {
   const portfolioUser = useAtomValue(portfolioUserAtom);
@@ -23,8 +24,12 @@ const InventoryValue = () => {
     useInventoryValue(portfolioUser);
   // const { data: inventoryValuePerformance, status: statusPerformance } =
   //   useInventoryValuePerformance(walletAddress);
+  // const { data: inventoryUnrealized, status: statusInventoryUnrealized } =
+  //   useInventoryUnrealizedPerformance(portfolioUser);
+
   const { data: inventoryUnrealized, status: statusInventoryUnrealized } =
-    useInventoryUnrealizedPerformance(portfolioUser);
+    useSummaryUnrealized(portfolioUser);
+
   const { data: collectionCount, isLoading: isLoadingCollectionCount } =
     useCollectionCount(portfolioUser);
   const { data: itemCount, isLoading: isLoadingItemCount } =
@@ -58,15 +63,15 @@ const InventoryValue = () => {
         type: 'unrealizedValue',
         name: 'Unrealized Gain&Loss',
         value: formatCurrency(
-          inventoryUnrealized?.gainLoss[currency] || '-',
+          inventoryUnrealized?.gainLoss[currency].amount || '-',
           currency
         ),
         diff: formatCurrency(
-          inventoryUnrealized?.gainLoss[currency] || '-',
+          inventoryUnrealized?.gainLoss[currency].amount || '-',
           currency
         ),
-        diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
-        isPlus: parseFloat(inventoryUnrealized?.gainLoss[currency] || '0') > 0,
+        isPlus:
+          parseFloat(inventoryUnrealized?.gainLoss[currency].amount || '0') > 0,
         status: statusInventoryUnrealized,
       },
       {
@@ -146,7 +151,7 @@ const InventoryValue = () => {
           );
         })}
 
-      <article className='ml-16 py-16 h-92 flex flex-col justify-between'>
+      {/* <article className='ml-16 py-16 h-92 flex flex-col justify-between'>
         <div className='w-fit'>
           <p
             className={`font-caption-medium mb-4 text-[var(--color-text-subtle)] w-fit`}
@@ -164,7 +169,7 @@ const InventoryValue = () => {
             ? collectionCount?.totalCount
             : itemCount?.totalCount}
         </p>
-      </article>
+      </article> */}
     </section>
   );
 };
