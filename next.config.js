@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://reboot-fast-api.onrender.com';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
