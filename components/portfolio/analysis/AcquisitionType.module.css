@@ -1,5 +1,5 @@
 .container {
-  @apply border-1 border-[var(--color-border-main)] p-20;
+  @apply border-1 border-[var(--color-border-main)] p-20 my-20;
 }
 .title {
   @apply gap-12 flex items-center;
@@ -31,15 +31,15 @@
 .table tbody tr p {
   @apply text-[var(--color-text-main)];
 }
-.border--BUY {
+.border--buy {
   @apply border-1 border-[var(--color-border-accent-green)];
 }
-.border--MINT {
+.border--mint {
   @apply border-1 border-[var(--color-border-accent-blue)];
 }
-.border--AIRDROP {
+.border--airdrop {
   @apply border-1 border-[var(--color-border-accent-orange)];
 }
-.border--TRANSFER {
+.border--transfer {
   @apply border-1 border-[var(--color-border-accent-fuchsia)];
 }
