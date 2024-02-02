@@ -160,13 +160,17 @@ const RealizedGainAndLoss = () => {
                     >
                       {item.tooltip ? (
                         <div className='w-full flex items-center justify-end text-[var(--color-icon-subtle)]'>
+                          <p className='mr-4'>{item.value}</p>
                           <Tooltip
+                            key={'realized-tooltip'}
+                            placement={'bottom'}
                             content={LATEST_ACQUISITION_DATE}
                             className='cursor-pointer max-w-[228px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
                           >
-                            <Info />
+                            <div className='flex justify-center text-[var(--color-icon-subtle)]'>
+                              <Info />
+                            </div>
                           </Tooltip>
-                          <p className='ml-4'>{item.value}</p>
                         </div>
                       ) : (
                         <p>{item.value}</p>
