@@ -22,7 +22,7 @@ export type ItemParam = BasicParam & {
   page: number,
 }
 export type TPeriod = {
-  year: number,
+  year: number | 'all',
   // quarter: 'q1'|'q2'|'q3'|'q4'|'all',
 }
 export type TAnalysisGainAndLossParam = TPeriod & BasicParam & {

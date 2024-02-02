@@ -72,35 +72,37 @@ const AcquisitionType = () => {
     })) as _Period[]
   );
   const [selectedYear, setSelectedYear] = useState<_Year[]>([
-    { name: '2024', value: 2024, selected: false },
-    { name: '2023', value: 2023, selected: true },
+    { name: 'ALL', value: 'all', selected: true },
+    { name: '2023', value: 2023, selected: false },
+    { name: '2022', value: 2022, selected: false },
+    { name: '2021', value: 2021, selected: false },
+    { name: '2020', value: 2020, selected: false },
+    { name: '2019', value: 2019, selected: false },
+    { name: '2018', value: 2018, selected: false },
   ]);
   useEffect(() => {
-    console.log('acquisitionTypes', acquisitionTypes);
-    acquisitionTypes &&
-      setList((prev) => {
-        return (
-          prev.map((item) => {
-            const acquisitionType = acquisitionTypes.data?.find(
-              (acquisitionType) =>
-                acquisitionType.type.toLowerCase() === item.type.toLowerCase()
-            );
-            console.log('find acquisitionType', acquisitionType);
-            return {
-              ...item,
-              ...acquisitionType,
-            };
-          }) || prev
-        );
+    acquisitionTypes?.data &&
+      setList(() => {
+        return LIST.map((item) => {
+          const acquisitionType = acquisitionTypes.data?.find(
+            (acquisitionType) =>
+              acquisitionType.type.toLowerCase() === item.type.toLowerCase()
+          );
+          console.log('find acquisitionType', acquisitionType);
+          return {
+            ...item,
+            ...acquisitionType,
+          };
+        });
       });
-  }, [acquisitionTypes]);
+    console.log('acquisitionTypes', acquisitionTypes?.data, list);
+  }, [acquisitionTypes?.data, selectedYear]);
   useEffect(() => {
-    console.log('changed!');
     setRequestParams((prev) => {
       return {
         ...prev,
-        year: selectedYear.find((item) => item.selected)?.value || 2023,
-        quarter: selectedPeriod.find((item) => item.selected)?.value || 'all',
+        year: selectedYear.find((item) => item.selected)?.value || 'all',
+        // quarter: selectedPeriod.find((item) => item.selected)?.value || 'all',
       };
     });
   }, [selectedPeriod, selectedYear]);
@@ -145,7 +147,7 @@ const AcquisitionType = () => {
       </div>
       <div className='w-full flex justify-center mt-20'>
         <section className='flex items-center w-[900px]'>
-          {acquisitionTypes?.data.length == 0 ? (
+          {acquisitionTypes?.data?.length == 0 ? (
             <div className=' w-full h-[260px] flex justify-center pt-40'>
               <NoData />
             </div>
@@ -193,7 +195,7 @@ const AcquisitionType = () => {
                         <div className='flex items-center'>
                           <div
                             className={`flex items-center justify-center rounded-full border-1 w-32 h-32 mr-10 ${
-                              styles[`border--${item.type}`]
+                              styles[`border--${item.type.toLowerCase()}`]
                             }`}
                           >
                             {item.icon}

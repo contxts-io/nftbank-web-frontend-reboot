@@ -34,6 +34,7 @@ import {
 } from '@/utils/messages';
 import ToggleButton from '@/components/buttons/ToggleButton';
 import { useInView } from 'react-intersection-observer';
+import NoData from '@/components/error/NoData';
 const THEAD = [
   { key: 'item', value: 'Item' },
   { key: 'amount', value: 'Amount' },
@@ -72,8 +73,13 @@ const RealizedGainAndLoss = () => {
     }))
   );
   const [selectedYear, setSelectedYear] = useState<_Year[]>([
-    { name: '2024', value: 2024, selected: false },
-    { name: '2023', value: 2023, selected: true },
+    { name: 'ALL', value: 'all', selected: true },
+    { name: '2023', value: 2023, selected: false },
+    { name: '2022', value: 2022, selected: false },
+    { name: '2021', value: 2021, selected: false },
+    { name: '2020', value: 2020, selected: false },
+    { name: '2019', value: 2019, selected: false },
+    { name: '2018', value: 2018, selected: false },
   ]);
   const handleChangeYear = (name: string) => {
     setSelectedYear((prev) =>
@@ -92,6 +98,15 @@ const RealizedGainAndLoss = () => {
     );
   };
   useEffect(() => {
+    setRequestParams((prev) => {
+      return {
+        ...prev,
+        page: 0,
+        year: 'all',
+      };
+    });
+  }, []);
+  useEffect(() => {
     const isLast =
       realizedTokenList?.pages?.[realizedTokenList?.pages.length - 1].isLast;
     !isLast &&
@@ -106,7 +121,7 @@ const RealizedGainAndLoss = () => {
       return {
         ...prev,
         page: 0,
-        year: selectedYear.find((item) => item.selected)?.value || 2023,
+        year: selectedYear.find((item) => item.selected)?.value || 'all',
       };
     });
   }, [selectedStatus, selectedYear]);
@@ -320,6 +335,11 @@ const RealizedGainAndLoss = () => {
               </tbody>
             </table>
             <div ref={ref} className='h-1' />
+            {realizedTokenList?.pages.length === 0 && (
+              <div className='flex justify-center items-center h-[184px] p'>
+                <NoData />
+              </div>
+            )}
           </>
         )}
       </div>
