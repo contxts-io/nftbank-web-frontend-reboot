@@ -188,7 +188,7 @@ const PerformanceSection = () => {
                     .map((_, index) => {
                       const month = index + 1;
                       const value =
-                        performanceChart.data?.find((item) => {
+                        performanceChart?.data?.find((item) => {
                           const date = new Date(item.processedAt);
                           const _value = date.getMonth() + 1 === month && item;
                           return _value;
@@ -252,7 +252,7 @@ const PerformanceSection = () => {
                     .map((_, index) => {
                       const month = index + 1;
                       const value =
-                        performanceChart.data?.find((item) => {
+                        performanceChart?.data?.find((item) => {
                           const date = new Date(item.processedAt);
                           const _value = date.getMonth() + 1 === month && item;
                           return _value;
