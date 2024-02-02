@@ -58,9 +58,10 @@ const GlobalNavigation = () => {
   useEffect(() => {
     const handleKeyDown = (e: any) => {
       if (e.key === 'Enter') {
-        verify &&
-          isChecking === false &&
-          router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
+        // verify &&
+        //   isChecking === false &&
+        //   router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
+        handleClickEnter();
       }
     };
     document.addEventListener('keydown', handleKeyDown);
@@ -79,35 +80,56 @@ const GlobalNavigation = () => {
     }
     try {
       Boolean(walletAddress !== '') && getAddress(walletAddress);
-      handleClickEnter();
+      // handleClickEnter();
     } catch (error) {
       setError('Invalid wallet address');
       setSearchAddress(null);
     }
   }, [walletAddress]);
+  // const handleClickEnter = async () => {
+  //   setIsChecking(true);
+  //   try {
+  //     getAddress(walletAddress);
+  //     const result = await verifyWalletAddress(walletAddress);
+  //     if (result.data.verified === true) {
+  //       console.log('handleClickEnter result verified', result);
+  //       console.log();
+  //       setError(null);
+  //       // router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
+  //       setVerify(true);
+  //       setIsChecking(false);
+  //     } else {
+  //       console.log('handleClickEnter result unverified', result);
+  //       setError('Invalid wallet address');
+  //       setVerify(false);
+  //       setIsChecking(false);
+  //     }
+  //   } catch (error) {
+  //     setError('Invalid wallet address');
+  //     setSearchAddress(null);
+  //     setVerify(false);
+  //     setIsChecking(false);
+  //   }
+  // };
+
   const handleClickEnter = async () => {
     setIsChecking(true);
     try {
       getAddress(walletAddress);
       const result = await verifyWalletAddress(walletAddress);
       if (result.data.verified === true) {
-        console.log('handleClickEnter result verified', result);
-        console.log();
         setError(null);
-        // router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
-        setVerify(true);
         setIsChecking(false);
+        router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
       } else {
-        console.log('handleClickEnter result unverified', result);
         setError('Invalid wallet address');
-        setVerify(false);
         setIsChecking(false);
       }
     } catch (error) {
       setError('Invalid wallet address');
       setSearchAddress(null);
-      setVerify(false);
       setIsChecking(false);
+    } finally {
     }
   };
   const handleClickOutside = (event: MouseEvent) => {

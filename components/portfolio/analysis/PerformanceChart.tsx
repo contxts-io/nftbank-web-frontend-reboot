@@ -68,7 +68,12 @@ const PerformanceChart = (props: Props) => {
     setIsPolling(true);
   }, [props.requestParam]);
   let seriesData = useMemo(() => {
-    if (!performanceChart || performanceChart.data.length == 0) return [];
+    if (
+      !performanceChart ||
+      !performanceChart.data ||
+      performanceChart.data.length == 0
+    )
+      return [];
     return [
       {
         name: 'positive',
