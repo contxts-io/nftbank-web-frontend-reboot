@@ -73,12 +73,9 @@ const AcquisitionType = () => {
   );
   const [selectedYear, setSelectedYear] = useState<_Year[]>([
     { name: 'ALL', value: 'all', selected: true },
+    { name: '2024', value: 2023, selected: false },
     { name: '2023', value: 2023, selected: false },
     { name: '2022', value: 2022, selected: false },
-    { name: '2021', value: 2021, selected: false },
-    { name: '2020', value: 2020, selected: false },
-    { name: '2019', value: 2019, selected: false },
-    { name: '2018', value: 2018, selected: false },
   ]);
   useEffect(() => {
     acquisitionTypes?.data &&

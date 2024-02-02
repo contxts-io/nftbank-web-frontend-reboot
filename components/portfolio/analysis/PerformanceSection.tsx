@@ -50,7 +50,7 @@ const PerformanceSection = () => {
     year: number;
     gnlChartType: 'Overall' | 'Realized' | 'Unrealized';
   }>({
-    year: 2023,
+    year: 2024,
     gnlChartType: 'Overall',
   });
   const { data: dispatchPerformance, status: dispatchStatus } =
