@@ -264,11 +264,11 @@ const RealizedGainAndLoss = () => {
                         <td className='text-right'>
                           <p className='text-[var(--color-text-main)]'>
                             {includeGasUsed
-                              ? formatCurrency(proceed.toString(), currency)
-                              : formatCurrency(
+                              ? formatCurrency(
                                   (proceed - proceedGasFee).toString(),
                                   currency
-                                )}
+                                )
+                              : formatCurrency(proceed.toString(), currency)}
                           </p>
                           {includeGasUsed && (
                             <p
@@ -319,8 +319,7 @@ const RealizedGainAndLoss = () => {
                                     ((realizedGainAndLoss -
                                       gasFee -
                                       proceedGasFee) /
-                                      costBasis -
-                                      proceedGasFee) *
+                                      (costBasis + proceedGasFee)) *
                                     100
                                   ).toString()
                                 )
