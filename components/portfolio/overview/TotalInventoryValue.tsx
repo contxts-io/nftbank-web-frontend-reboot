@@ -134,7 +134,7 @@ const TotalInventoryValue = () => {
             </div>
           )}
         </div>
-        <table className='w-[460px] h-[160px] table-auto'>
+        <table className='w-[294px] h-[160px] table-auto'>
           <tbody>
             {statusValue === 'success' &&
               selected === 'value' &&
@@ -157,7 +157,7 @@ const TotalInventoryValue = () => {
                       />
                     </td>
                     <td>
-                      <p className='font-caption-medium text-[var(--color-text-main)] w-[360px] mr-20 truncate'>
+                      <p className='font-caption-medium text-[var(--color-text-main)] mr-20 truncate'>
                         {item.collection.name ||
                           shortenAddress(item.collection.assetContract)}
                       </p>
@@ -209,7 +209,7 @@ const TotalInventoryValue = () => {
                       />
                     </td>
                     <td>
-                      <p className='font-caption-medium text-[var(--color-text-main)] w-[360px] mr-20 truncate'>
+                      <p className='font-caption-medium text-[var(--color-text-main)] mr-20 truncate'>
                         {item.collection.name ||
                           shortenAddress(item.collection.assetContract)}
                       </p>

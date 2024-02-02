@@ -154,7 +154,7 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
   });
   return query;
 };
-export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalValueParam) => {
+export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalValueParam , polling=true ) => {
   return useQuery<TResponseInventoryValueHistory,AxiosError>(
     ['inventoryValueHistorical',requestParam],
     async () => {
@@ -162,10 +162,11 @@ export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalVal
       return inventoryValueHistorical;
     },
     {
-      enabled: requestParam.walletAddress !== '',
+      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId && !!polling,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      refetchInterval: 10000,
     },
   );
 }

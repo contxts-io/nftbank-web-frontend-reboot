@@ -19,7 +19,12 @@ import SkeletonLoader from '@/components/SkeletonLoader';
 import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { analysisGainAndLossParamAtom } from '@/store/requestParam';
-import { formatCurrency, formatDate, formatPercent } from '@/utils/common';
+import {
+  formatCurrency,
+  formatDate,
+  formatPercent,
+  parseFloatPrice,
+} from '@/utils/common';
 import { portfolioUserAtom } from '@/store/portfolio';
 import Info from '@/public/icon/Info';
 import { Tooltip } from '@nextui-org/react';
@@ -140,7 +145,7 @@ const RealizedGainAndLoss = () => {
           onClick={(name) => handleChangeStatus(name)}
           className='w-65'
         /> */}
-        {/* <div className='flex px-12 mr-8'>
+        <div className='ml-auto flex px-12'>
           <span className='font-button03-medium text-[var(--color-text-subtle)] mr-8'>
             Include Gas fee
           </span>
@@ -149,7 +154,7 @@ const RealizedGainAndLoss = () => {
             checked={includeGasUsed === true}
             id={''}
           />
-        </div> */}
+        </div>
       </div>
       <div className={styles.tableWrapper}>
         {status === 'loading' && (
@@ -172,7 +177,7 @@ const RealizedGainAndLoss = () => {
                         >
                           <Info />
                         </Tooltip>
-                        <p>{item.value}</p>
+                        <p className='ml-4'>{item.value}</p>
                       </div>
                     ) : (
                       <p>{item.value}</p>
@@ -186,16 +191,16 @@ const RealizedGainAndLoss = () => {
                 page.data.map((item, index) => {
                   if (showMore === false && pageIndex === 0 && index > 4)
                     return null;
-                  let gasFee = includeGasUsed
-                    ? parseFloat(item.gasFee[currency])
-                    : 0;
-                  let costBasis = parseFloat(
-                    item.acquisitionPrice[currency] + gasFee
+                  const acquisitionPrice = parseFloatPrice(
+                    item.acquisitionPrice?.[currency]
                   );
-                  let realizedGainAndLoss =
-                    parseFloat(item.proceed[currency]) - costBasis;
-                  let realizedROI = realizedGainAndLoss / costBasis;
-
+                  const gasFee = parseFloatPrice(item.gasFee?.[currency]);
+                  const costBasis = acquisitionPrice + gasFee;
+                  const proceed = parseFloatPrice(item.proceed[currency]);
+                  const realizedGainAndLoss = proceed - acquisitionPrice;
+                  const isPlus = realizedGainAndLoss > 0;
+                  const isMinus = realizedGainAndLoss < 0;
+                  const isZero = realizedGainAndLoss === 0;
                   return (
                     <tr
                       key={`${pageIndex}-${index}`}
@@ -235,23 +240,21 @@ const RealizedGainAndLoss = () => {
                           currency
                         )} */}
                           {includeGasUsed
-                            ? formatCurrency(
-                                item.gasFee[currency] +
-                                  item.acquisitionPrice[currency],
-                                currency
-                              )
+                            ? formatCurrency(costBasis.toString(), currency)
                             : formatCurrency(
-                                item.acquisitionPrice[currency],
+                                acquisitionPrice.toString(),
                                 currency
                               )}
                         </p>
+                        {includeGasUsed && (
+                          <p className={`text-[var(--color-text-brand)] mt-4`}>
+                            {`GAS +${parseFloatPrice(gasFee.toFixed(3))}`}
+                          </p>
+                        )}
                       </td>
                       <td className='text-right'>
                         <p className='text-[var(--color-text-main)]'>
-                          {formatCurrency(
-                            item.proceed[currency] || '0',
-                            currency
-                          )}
+                          {formatCurrency(proceed.toString(), currency)}
                         </p>
                       </td>
                       <td className='text-right'>
@@ -262,23 +265,40 @@ const RealizedGainAndLoss = () => {
                               : 'text-[var(--color-text-danger)]'
                           }`}
                         >
-                          {formatCurrency(
-                            realizedGainAndLoss.toString(),
-                            currency
-                          )}
+                          {includeGasUsed
+                            ? formatCurrency(
+                                (realizedGainAndLoss - gasFee).toString(),
+                                currency
+                              )
+                            : formatCurrency(
+                                realizedGainAndLoss.toString(),
+                                currency
+                              )}
                         </p>
                       </td>
                       <td className='text-right'>
                         <p
                           className={`${
-                            isNaN(realizedROI)
+                            isZero
                               ? 'text-[var(--color-text-main)]'
-                              : realizedROI > 0
+                              : isPlus
                               ? 'text-[var(--color-text-success)]'
                               : 'text-[var(--color-text-danger)]'
                           }`}
                         >
-                          {formatPercent(realizedROI.toString())}
+                          {includeGasUsed
+                            ? formatPercent(
+                                (
+                                  ((realizedGainAndLoss - gasFee) / costBasis) *
+                                  100
+                                ).toString()
+                              )
+                            : formatPercent(
+                                (
+                                  (realizedGainAndLoss / acquisitionPrice) *
+                                  100
+                                ).toString()
+                              )}
                         </p>
                       </td>
                       <td className='text-right'>

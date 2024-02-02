@@ -239,7 +239,7 @@ export function jsonToQueryString(searchParam: any) {
     }
     if (searchParam[key] === null || searchParam[key] === undefined || searchParam[key] === '') return;
     if (typeof searchParam[key] === 'string')
-      return `${key}=${searchParam[key].toLowerCase()}`;
+      return `${key}=${searchParam[key]}`;
     else return `${key}=${searchParam[key]}`;
   }).join('&').replace(/^&/, '');
 }

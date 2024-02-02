@@ -6,12 +6,13 @@ import PerformanceContainer from '@/components/portfolio/overview/PerformanceCon
 import TotalInventoryValue from '@/components/portfolio/overview/TotalInventoryValue';
 import { useEffect } from 'react';
 import { BasicParam } from '@/interfaces/request';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
+import { useDispatchDailyNav } from '@/utils/hooks/queries/dispatch';
 
 const OverviewPage = ({ params }: { params: { slug: string[] } }) => {
   const { slug } = params;
-  const setPortfolioUser = useSetAtom(portfolioUserAtom);
+  const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
   const setPortfolioNicknameAtom = useSetAtom(portfolioNicknameAtom);
   // useEffect(() => {
   //   if (slug && Array.isArray(slug) && slug.length === 2) {
