@@ -101,7 +101,7 @@ const HistoricalTrendContainer = () => {
   }, [hoverValue, currency, inventoryValue]);
   useEffect(() => {
     setIsPolling(true);
-  }, []);
+  }, [portfolioUser]);
   useEffect(() => {
     statusInventoryValueHistorical === 'success' && setIsPolling(false);
   }, [statusInventoryValueHistorical]);
