@@ -60,6 +60,9 @@ const PerformanceChart = (props: Props) => {
   const barBackground = 'var(--color-elevation-surface-raised)';
   const labelColor = 'var(--color-text-subtle)';
   useEffect(() => {
+    setIsPolling(true);
+  }, []);
+  useEffect(() => {
     statusPerformanceChart === 'success' &&
       performanceChart.statusCode !== 'PENDING' &&
       setIsPolling(false);

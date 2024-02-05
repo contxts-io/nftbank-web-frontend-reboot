@@ -69,6 +69,9 @@ const HistoricalTrendChart = (props: Props) => {
     isPolling
   );
   useEffect(() => {
+    setIsPolling(true);
+  }, []);
+  useEffect(() => {
     console.log('inventoryValueHistorical', inventoryValueHistorical);
     statusInventoryValueHistorical === 'success' &&
       !!inventoryValueHistorical &&

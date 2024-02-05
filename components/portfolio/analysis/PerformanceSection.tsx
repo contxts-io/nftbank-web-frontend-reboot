@@ -83,6 +83,9 @@ const PerformanceSection = () => {
     );
   const [total, setTotal] = useState(0);
   useEffect(() => {
+    setIsPolling(true);
+  }, []);
+  useEffect(() => {
     let _total = 0;
     performanceChart &&
       performanceChart.data?.map((item) => {

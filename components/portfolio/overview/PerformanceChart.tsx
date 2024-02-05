@@ -61,6 +61,9 @@ const PerformanceChart = (props: Props) => {
       isPolling
     );
   useEffect(() => {
+    setIsPolling(true);
+  }, []);
+  useEffect(() => {
     statusPerformanceChart === 'success' &&
       performanceChart.statusCode !== 'PENDING' &&
       setIsPolling(false);

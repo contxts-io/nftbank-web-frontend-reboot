@@ -100,6 +100,9 @@ const HistoricalTrendContainer = () => {
     return formatCurrency(value, currency);
   }, [hoverValue, currency, inventoryValue]);
   useEffect(() => {
+    setIsPolling(true);
+  }, []);
+  useEffect(() => {
     statusInventoryValueHistorical === 'success' && setIsPolling(false);
   }, [statusInventoryValueHistorical]);
   const differenceValue = useMemo(() => {

@@ -8,7 +8,7 @@ import { useMe } from '@/utils/hooks/queries/auth';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { formatPercent, isPlus } from '@/utils/common';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
 import { useDispatchPerformance } from '@/utils/hooks/queries/dispatch';
@@ -49,7 +49,9 @@ const PerformanceContainer = () => {
       },
       isPolling
     );
-
+  useEffect(() => {
+    setIsPolling(true);
+  }, []);
   return (
     <section className={styles.container}>
       <div className={styles.row}>
