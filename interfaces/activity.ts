@@ -22,7 +22,7 @@ export type ActivityItem = {
     paging: Paging
 }
 export type AcquisitionType = {
-  type: 'buy' | 'mint' | 'transfer' | 'airdrop',
+  type: 'buy' | 'mint' | 'transfer' ,
   amount: number,
   costBasis : Value,
 }
