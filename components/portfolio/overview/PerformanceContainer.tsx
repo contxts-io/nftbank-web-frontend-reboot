@@ -20,7 +20,7 @@ const PerformanceContainer = () => {
     year: number;
     gnlChartType: 'overall' | 'realized' | 'unrealized';
   }>({
-    year: 2024,
+    year: 2023,
     gnlChartType: 'overall',
   });
   const { data: performanceAnnualAll, status: statusPerformanceAnnualAll } =
