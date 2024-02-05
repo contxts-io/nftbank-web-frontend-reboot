@@ -80,7 +80,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
         </div>
         {priceType === 'costBasis' && (
           <div className='flex justify-between items-center'>
-            <p className='text-[var(--color-text-brand)]'>Gas fee</p>
+            <p className={styles.pName}>Gas fee</p>
 
             <p className='text-[var(--color-text-brand)]'>
               {formatCurrency(
