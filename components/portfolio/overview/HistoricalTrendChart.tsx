@@ -69,7 +69,9 @@ const HistoricalTrendChart = (props: Props) => {
     isPolling
   );
   useEffect(() => {
-    statusInventoryValueHistorical === 'success' && setIsPolling(false);
+    statusInventoryValueHistorical === 'success' &&
+      inventoryValueHistorical.statusCode === 'NR20000' &&
+      setIsPolling(false);
   }, [statusInventoryValueHistorical]);
   const [isPlus, setIsPlus] = useState(false);
   let category: string[] = [];

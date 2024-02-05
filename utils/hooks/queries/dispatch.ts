@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 
 export function useDispatchDailyNav(walletAddress:string) {
   return useQuery<TDispatch,AxiosError>(
-    ['dailyNav',walletAddress],
+    ['dispatchDailyNav',walletAddress],
     async () => {
       const result = await dispatchDailyNav(walletAddress);
       if (result.taskId === 'CACHED') {

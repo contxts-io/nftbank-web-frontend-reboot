@@ -28,10 +28,7 @@ import {
 import { portfolioUserAtom } from '@/store/portfolio';
 import Info from '@/public/icon/Info';
 import { Tooltip } from '@nextui-org/react';
-import {
-  LATEST_ACQUISITION_DATE,
-  UNABLE_TO_CALCULATE_ROI,
-} from '@/utils/messages';
+import { LATEST_ACQUISITION_DATE } from '@/utils/messages';
 import ToggleButton from '@/components/buttons/ToggleButton';
 import { useInView } from 'react-intersection-observer';
 import NoData from '@/components/error/NoData';
@@ -51,7 +48,6 @@ type _Period = TPeriod & { selected: boolean };
 const RealizedGainAndLoss = () => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
-  const [showMore, setShowMore] = useState(false);
   const [includeGasUsed, setIncludeGasUsed] = useState<boolean>(true);
   const { ref, inView } = useInView();
   const [requestParams, setRequestParams] = useAtom(
@@ -113,7 +109,6 @@ const RealizedGainAndLoss = () => {
       setRequestParams((prev) => ({ ...prev, page: prev.page + 1 })));
   }, [fetchNextPage, inView]);
   useEffect(() => {
-    console.log('changed!');
     setRequestParams((prev) => {
       return {
         ...prev,
@@ -126,9 +121,7 @@ const RealizedGainAndLoss = () => {
   const mergePosts = useMemo(() => {
     return realizedTokenList?.pages.flatMap((page) => page.data);
   }, [realizedTokenList?.pages, requestParams, status]);
-  useEffect(() => {
-    console.log('realizedTokenList', realizedTokenList, includeGasUsed);
-  }, [realizedTokenList, includeGasUsed]);
+
   return (
     <section className={styles.container}>
       <div className={styles.title}>

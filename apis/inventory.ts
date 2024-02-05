@@ -85,7 +85,7 @@ export const getSummaryRealized = async<T = TSummary>(searchParam:BasicParam | n
   const {data} = await instance.get<{data:T}>(`/inventory/summary/realized?${query}`);
   return data.data;
 }
-export type TResponseInventoryValueHistory = { data: InventoryValue[],min: ValueNested, max:ValueNested };
+export type TResponseInventoryValueHistory = { data: InventoryValue[],min: ValueNested, max:ValueNested, statusCode: 'NR20000'| 'PENDING'};
 type HistoryValueKey = keyof TOverviewHistoricalValueParam;
 export const getInventoryValueHistory = async<T = TResponseInventoryValueHistory>(requestParam: TOverviewHistoricalValueParam): Promise<T> => {
   const query = Object.keys(requestParam)

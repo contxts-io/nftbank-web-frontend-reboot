@@ -166,7 +166,7 @@ export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalVal
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      refetchInterval: 10000,
+      refetchInterval: 2000,
     },
   );
 }
