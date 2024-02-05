@@ -70,7 +70,7 @@ const RealizedGainAndLoss = () => {
   );
   const [selectedYear, setSelectedYear] = useState<_Year[]>([
     { name: 'ALL', value: 'all', selected: true },
-    { name: '2024', value: 2023, selected: false },
+    { name: '2024', value: 2024, selected: false },
     { name: '2023', value: 2023, selected: false },
     { name: '2022', value: 2022, selected: false },
   ]);

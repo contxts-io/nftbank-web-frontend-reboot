@@ -49,8 +49,8 @@ const GlobalNavigation = () => {
   const [searchAddress, setSearchAddress] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    setError(null);
     document.addEventListener('click', handleClickOutside);
-
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
@@ -71,6 +71,7 @@ const GlobalNavigation = () => {
   }, [walletAddress, error]);
   useEffect(() => {
     setWalletAddress('');
+    setError(null);
   }, [path]);
   useEffect(() => {
     setVerify(false);
