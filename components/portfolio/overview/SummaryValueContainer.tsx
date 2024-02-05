@@ -84,15 +84,15 @@ const SummaryValueContainer = () => {
           {statusUnrealized === 'success' && (
             <p
               className={`font-subtitle02-bold ${
-                isPlus(unrealized.gainLoss[currency].amount || '0') === '-'
+                isPlus(unrealized?.gainLoss[currency].amount || '0') === '-'
                   ? 'text-[var(--color-text-main)]'
-                  : isPlus(unrealized.gainLoss[currency].amount || '0')
+                  : isPlus(unrealized?.gainLoss[currency].amount || '0')
                   ? 'text-[var(--color-text-success)]'
                   : 'text-[var(--color-text-danger)]'
               }`}
             >
               {formatCurrency(
-                unrealized.gainLoss[currency].amount || '0',
+                unrealized?.gainLoss[currency].amount || '0',
                 currency
               )}
             </p>

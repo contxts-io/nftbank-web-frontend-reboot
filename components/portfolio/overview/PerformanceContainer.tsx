@@ -34,7 +34,7 @@ const PerformanceContainer = () => {
     usePerformanceChartAnnual({
       ...requestParam,
       ...portfolioUser,
-      year: 2023,
+      year: 2024,
     });
 
   return (

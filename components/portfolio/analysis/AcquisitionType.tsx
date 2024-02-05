@@ -35,13 +35,13 @@ const LIST = [
     color: 'var(--color-border-accent-blue)',
     amount: 0,
   },
-  {
-    type: 'airdrop' as const,
-    name: 'Airdrop',
-    icon: <Parachute className='fill-[var(--color-icon-accent-orange)]' />,
-    color: 'var(--color-border-accent-orange)',
-    amount: 0,
-  },
+  // {
+  //   type: 'airdrop' as const,
+  //   name: 'Airdrop',
+  //   icon: <Parachute className='fill-[var(--color-icon-accent-orange)]' />,
+  //   color: 'var(--color-border-accent-orange)',
+  //   amount: 0,
+  // },
   {
     type: 'transfer' as const,
     name: 'Transfer',
@@ -73,7 +73,7 @@ const AcquisitionType = () => {
   );
   const [selectedYear, setSelectedYear] = useState<_Year[]>([
     { name: 'ALL', value: 'all', selected: true },
-    { name: '2024', value: 2023, selected: false },
+    { name: '2024', value: 2024, selected: false },
     { name: '2023', value: 2023, selected: false },
     { name: '2022', value: 2022, selected: false },
   ]);
