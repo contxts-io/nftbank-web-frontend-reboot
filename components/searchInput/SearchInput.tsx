@@ -41,13 +41,14 @@ const SearchInput = (props: Props) => {
         onFocus={() => setIsActive(true)}
         onBlur={() => setIsActive(false)}
       />
-      {props.isLoading ? (
-        <Spinner />
-      ) : (
-        <button onClick={() => props.handleClose && props.handleClose()}>
-          <CloseX />
-        </button>
-      )}
+      {props.value !== '' &&
+        (props.isLoading ? (
+          <Spinner />
+        ) : (
+          <button onClick={() => props.handleClose && props.handleClose()}>
+            <CloseX />
+          </button>
+        ))}
     </div>
   );
 };
