@@ -40,7 +40,7 @@ type Param = {
   walletAddress: string;
   window?: string;
 }
-export function usePerformanceChartAnnual(requestParam: PerformanceParam & BasicParam) {
+export function usePerformanceChartAnnual(requestParam: PerformanceParam & BasicParam,isPolling=true) {
   return useQuery<PerformanceCollection,AxiosError>(
     ['inventoryPerformanceChartAnnual',requestParam],
     async () => {
@@ -48,7 +48,7 @@ export function usePerformanceChartAnnual(requestParam: PerformanceParam & Basic
       return result.data;
     },
     {
-      enabled: requestParam.walletAddress !== '',
+      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId && !!isPolling,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,

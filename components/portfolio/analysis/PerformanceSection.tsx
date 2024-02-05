@@ -69,14 +69,18 @@ const PerformanceSection = () => {
       isPolling
     );
   const { data: performanceAnnual, status: statusPerformanceAnnual } =
-    usePerformanceChartAnnual({
-      ...portfolioUser,
-      ...requestParam,
-      gnlChartType: requestParam.gnlChartType.toLowerCase() as
-        | 'overall'
-        | 'realized'
-        | 'unrealized',
-    });
+    usePerformanceChartAnnual(
+      {
+        ...portfolioUser,
+        ...requestParam,
+        taskId: dispatchPerformance?.taskId,
+        gnlChartType: requestParam.gnlChartType.toLowerCase() as
+          | 'overall'
+          | 'realized'
+          | 'unrealized',
+      },
+      isPolling
+    );
   const [total, setTotal] = useState(0);
   useEffect(() => {
     let _total = 0;

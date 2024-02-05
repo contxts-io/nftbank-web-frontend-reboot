@@ -162,7 +162,7 @@ export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalVal
       return inventoryValueHistorical;
     },
     {
-      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId,
+      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId && !!polling,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,

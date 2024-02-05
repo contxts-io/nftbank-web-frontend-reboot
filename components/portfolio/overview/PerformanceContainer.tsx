@@ -11,11 +11,16 @@ import { formatPercent, isPlus } from '@/utils/common';
 import { useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
+import { useDispatchPerformance } from '@/utils/hooks/queries/dispatch';
 const YEARS: number[] = [2024, 2023];
 const PerformanceContainer = () => {
   const currency = useAtomValue(currencyAtom);
   const networkId = useAtomValue(networkIdAtom);
   const portfolioUser = { ...useAtomValue(portfolioUserAtom), networkId };
+  const [isPolling, setIsPolling] = useState<boolean>(true);
+  const { data: dispatchPerformance } = useDispatchPerformance(
+    portfolioUser?.walletAddress || ''
+  );
   const [requestParam, setRequestParam] = useState<{
     year: number;
     gnlChartType: 'overall' | 'realized' | 'unrealized';
@@ -24,18 +29,26 @@ const PerformanceContainer = () => {
     gnlChartType: 'overall',
   });
   const { data: performanceAnnualAll, status: statusPerformanceAnnualAll } =
-    usePerformanceChartAnnual({
-      ...requestParam,
-      ...portfolioUser,
-      networkId: 'ethereum',
-      year: 'all',
-    });
+    usePerformanceChartAnnual(
+      {
+        ...requestParam,
+        ...portfolioUser,
+        taskId: dispatchPerformance?.taskId,
+        networkId: 'ethereum',
+        year: 'all',
+      },
+      isPolling
+    );
   const { data: performanceAnnualYTD, status: statusPerformanceAnnualYTD } =
-    usePerformanceChartAnnual({
-      ...requestParam,
-      ...portfolioUser,
-      year: 2024,
-    });
+    usePerformanceChartAnnual(
+      {
+        ...requestParam,
+        ...portfolioUser,
+        taskId: dispatchPerformance?.taskId,
+        year: 2024,
+      },
+      isPolling
+    );
 
   return (
     <section className={styles.container}>
