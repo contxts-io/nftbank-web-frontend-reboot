@@ -67,7 +67,7 @@ const PerformanceContainer = () => {
       <div className={`font-button03-regular ${styles.bottom}`}>
         <div className='w-[50%] flex justify-between items-center'>
           <p className='text-[var(--color-text-subtle)]'>YTD Performance</p>
-          {statusPerformanceAnnualAll === 'success' && (
+          {statusPerformanceAnnualYTD === 'success' && (
             <p
               className={
                 isPlus(performanceAnnualYTD?.roi?.[currency] || '0')
@@ -78,12 +78,13 @@ const PerformanceContainer = () => {
               {formatPercent(performanceAnnualYTD?.roi?.[currency] || '0')}
             </p>
           )}
+          {statusPerformanceAnnualYTD === 'error' && <p>-</p>}
         </div>
         <div className='w-[50%] ml-20 flex justify-between items-center'>
           <p className='text-[var(--color-text-subtle)]'>
             All time Performance
           </p>
-          {statusPerformanceAnnualYTD === 'success' && (
+          {statusPerformanceAnnualAll === 'success' && (
             <p
               className={
                 isPlus(performanceAnnualAll?.roi?.[currency] || '0')
@@ -94,6 +95,7 @@ const PerformanceContainer = () => {
               {formatPercent(performanceAnnualAll?.roi?.[currency] || '0')}
             </p>
           )}
+          {statusPerformanceAnnualAll === 'error' && <p>-</p>}
         </div>
       </div>
     </section>
