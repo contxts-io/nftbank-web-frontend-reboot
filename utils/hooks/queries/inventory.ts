@@ -162,11 +162,12 @@ export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalVal
       return inventoryValueHistorical;
     },
     {
-      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId && !!polling,
+      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
       refetchInterval: 2000,
+      retry: 5,
     },
   );
 }
