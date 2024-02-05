@@ -78,7 +78,7 @@ export const inventoryItemListAtom = atom<ItemParam & {paging : boolean}>({
 export const analysisGainAndLossParamAtom = atom<TAnalysisGainAndLossParam>({
   limit: 10,
   page: 1,
-  year: 2024,
+  year: 'all',
   networkId: 'ethereum',
 })
 export const overviewHistoricalValueParamAtom = atom<TOverviewHistoricalValueParam>({
