@@ -8,8 +8,8 @@
   @apply bg-[var(--color-border-accent-blue)];
 }
 .dot--2 {
-  @apply bg-[var(--color-border-accent-orange)];
+  @apply bg-[var(--color-border-accent-fuchsia)];
 }
 .dot--3 {
-  @apply bg-[var(--color-border-accent-fuchsia)];
+  @apply bg-[var(--color-border-accent-orange)];
 }

@@ -20,17 +20,19 @@ export function useInventoryUnrealizedPerformance(searchParam: BasicParam | null
     },
   );
 }
-export function usePerformanceChart(requestParam: PerformanceParam & BasicParam) {
-  return useQuery<{data: PerformanceCollection[]},AxiosError>(
-    ['inventoryPerformanceChart',requestParam],
+export function usePerformanceChart(requestParam: PerformanceParam & BasicParam, polling=true ) {
+  return useQuery<{ data: PerformanceCollection[], statusCode?: "PENDING" }, AxiosError>(
+    ['inventoryPerformanceChart', requestParam],
     async () => {
       const result = await getPerformanceChart(requestParam);
       return result;
     },
     {
+      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId && !!polling,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      refetchInterval: 10000,
     },
   );
 }
@@ -38,15 +40,15 @@ type Param = {
   walletAddress: string;
   window?: string;
 }
-export function usePerformanceChartAnnual(requestParam: PerformanceParam & BasicParam & {window?: string}) {
+export function usePerformanceChartAnnual(requestParam: PerformanceParam & BasicParam,isPolling=true) {
   return useQuery<PerformanceCollection,AxiosError>(
     ['inventoryPerformanceChartAnnual',requestParam],
     async () => {
-      const result = await getPerformanceChartAnnual({...requestParam, window: requestParam.window || 'ytd'});
+      const result = await getPerformanceChartAnnual(requestParam);
       return result.data;
     },
     {
-      enabled: requestParam.walletAddress !== '',
+      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId && !!isPolling,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,

@@ -14,8 +14,10 @@ import Ethereum from '@/public/icon/Ethereum';
 import {
   difference,
   formatCurrency,
+  formatFloat,
   formatPercent,
   isPlus,
+  parseFloatPrice,
   shortenAddress,
 } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
@@ -38,10 +40,10 @@ const T_HEADER = [
     key: 'amount',
     sort: 'amount',
   },
-  // {
-  //   name: 'Cost basis',
-  //   key: 'costBasis',
-  // },
+  {
+    name: 'Cost basis',
+    key: 'costBasis',
+  },
   {
     name: 'Valuation Type',
   },
@@ -49,12 +51,12 @@ const T_HEADER = [
     name: 'Realtime NAV',
     sort: 'nav',
   },
-  // {
-  //   name: 'Unrealized G&L',
-  // },
-  // {
-  //   name: 'Unrealized ROI',
-  // },
+  {
+    name: 'Unrealized G&L',
+  },
+  {
+    name: 'Unrealized ROI',
+  },
 ];
 const InventoryCollectionTable = () => {
   const currency = useAtomValue(currencyAtom);
@@ -85,13 +87,7 @@ const InventoryCollectionTable = () => {
         page: prev.page + 1,
       })));
   }, [fetchNextPage, inView]);
-  useEffect(() => {
-    setInventoryCollectionRequestParam((prev) => ({
-      ...prev,
-      page: 0,
-      includeGasUsed: priceType === 'costBasis' ? 'true' : 'false',
-    }));
-  }, [priceType]);
+
   const handleClickSortButton = (sort: TSort) => {
     const order =
       inventoryCollectionRequestParam.sort !== sort
@@ -145,12 +141,7 @@ const InventoryCollectionTable = () => {
                     <th
                       key={index}
                       className={`font-caption-medium text-[var(--color-text-subtle)] py-12
-                ${
-                  index === T_HEADER.length - 1
-                    ? // : index > 1 && index !== 4
-                      'text-right'
-                    : 'text-left'
-                }
+                ${index > 1 ? 'text-right' : 'text-left'}
                 ${item.sort && 'cursor-pointer'}
                 ${index === 0 && 'pl-16'}
                 ${index === T_HEADER.length - 1 && 'pr-16'}
@@ -171,6 +162,12 @@ const InventoryCollectionTable = () => {
                 {collections?.map((page, pageIndex) => {
                   return page.data?.map((row, index) => {
                     const valuationType = selectedValueType(row.valuation);
+                    const costBasis =
+                      parseFloatPrice(row.acquisitionPrice?.[currency]) +
+                      parseFloatPrice(row.gasFee?.[currency]);
+                    const unrealizedGL =
+                      parseFloatPrice(row.nav[currency].amount) -
+                      parseFloatPrice(row.acquisitionPrice?.[currency]);
                     return (
                       <tr
                         key={`${pageIndex}-${index}}`}
@@ -209,8 +206,29 @@ const InventoryCollectionTable = () => {
                             </p>
                           </article>
                         </td>
-                        <td className='text-left'>
-                          <p className={styles.pTd}>{row.amount}</p>
+                        <td className='text-right'>
+                          <p className={styles.pTd}>{parseInt(row.amount)}</p>
+                        </td>
+                        <td className='text-right'>
+                          <p className={styles.pTd}>
+                            {priceType === 'costBasis'
+                              ? formatCurrency(costBasis.toString(), currency)
+                              : formatCurrency(
+                                  row.acquisitionPrice?.[currency] || null,
+                                  currency
+                                )}
+                          </p>
+                          {priceType === 'costBasis' && (
+                            <p
+                              className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                            >
+                              {row.gasFee?.[currency]
+                                ? `GAS +${parseFloatPrice(
+                                    row.gasFee[currency]
+                                  ).toFixed(3)} `
+                                : ''}
+                            </p>
+                          )}
                         </td>
                         {/* coast basis */}
                         {/**
@@ -246,7 +264,7 @@ const InventoryCollectionTable = () => {
                     </td>
                   )} */}
                         {/* valuation type */}
-                        <td className='text-left'>
+                        <td className='text-right'>
                           {/**
                      * 
                      * sprint 1
@@ -265,11 +283,60 @@ const InventoryCollectionTable = () => {
 
                         {/* realtime nav */}
                         <td className='text-right'>
-                          <p className={`${styles.pTd} pr-16`}>
+                          <p className={`${styles.pTd}`}>
                             {formatCurrency(
                               row.nav[currency].amount || null,
                               currency
                             ) || '-'}
+                          </p>
+                        </td>
+                        {/* unrealized G&L */}
+                        <td className='text-right'>
+                          <p
+                            className={`${styles.pTd} ${
+                              isPlus(unrealizedGL)
+                                ? 'text-[var(--color-text-success)]'
+                                : 'text-[var(--color-text-danger)]'
+                            }`}
+                          >
+                            {priceType === 'costBasis'
+                              ? formatCurrency(
+                                  (
+                                    unrealizedGL -
+                                    parseFloatPrice(row.gasFee?.[currency])
+                                  ).toString(),
+                                  currency
+                                )
+                              : formatCurrency(
+                                  unrealizedGL.toString(),
+                                  currency
+                                )}
+                          </p>
+                        </td>
+                        {/* unrealized ROI */}
+                        <td className='text-right'>
+                          <p
+                            className={`${styles.pTd} ${
+                              isPlus(unrealizedGL)
+                                ? 'text-[var(--color-text-success)]'
+                                : 'text-[var(--color-text-danger)]'
+                            } pr-16`}
+                          >
+                            {priceType === 'costBasis'
+                              ? formatPercent(
+                                  (
+                                    (unrealizedGL -
+                                      parseFloatPrice(row.gasFee?.[currency])) /
+                                    costBasis
+                                  ).toString()
+                                )
+                              : formatPercent(
+                                  (
+                                    unrealizedGL /
+                                    (costBasis -
+                                      parseFloatPrice(row.gasFee?.[currency]))
+                                  ).toString()
+                                )}
                           </p>
                         </td>
                         {/**

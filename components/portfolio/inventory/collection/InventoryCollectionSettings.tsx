@@ -3,7 +3,7 @@ import MagnifyingGlass from '@/public/icon/MagnifyingGlass';
 import styles from './InventoryCollectionSettings.module.css';
 import Gear from '@/public/icon/Gear';
 import { useAtom } from 'jotai';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { inventoryCollectionAtom } from '@/store/requestParam';
 import { priceTypeAtom } from '@/store/currency';
 import ReactModal from 'react-modal';
@@ -45,43 +45,60 @@ const InventoryCollectionSettings = () => {
   const handleBlur = () => {
     setIsFocused(false);
   };
+  useEffect(() => {
+    searchText.length >= 3 &&
+      setInventoryCollection({
+        ...inventoryCollection,
+        page: 0,
+        searchCollection: searchText,
+      });
+  }, [searchText]);
 
   return (
     <section className={`${styles.container}`}>
-      <div
-        className={`${styles.inputContainer} ${
-          isFocused ? styles.focused : ''
-        } `}
-      >
-        <MagnifyingGlass className={`${styles.icon}`} width={16} height={16} />
-        <input
-          type='text'
-          placeholder={'Search collection'}
-          className={`${styles.textInput} font-caption-regular`}
-          onChange={handleInputText}
-          value={searchText}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-        />
-      </div>
-      <div className='flex items-center'>
-        <div className='flex mr-24'>
-          <p className={`font-button03-medium ${styles.pSetting} mr-8`}>
-            Include Gas fee
-          </p>
-          <ToggleButton
-            onClick={handleTogglePriceType}
-            checked={priceType === 'costBasis'}
-            id={''}
+      <p className='font-subtitle01-medium text-[var(--color-text-main)] my-24'>
+        Collection
+      </p>
+      <div className='flex items-center gap-x-12'>
+        <div
+          className={`${styles.inputContainer} ${
+            isFocused ? styles.focused : ''
+          } `}
+        >
+          <MagnifyingGlass
+            className={`${styles.icon}`}
+            width={16}
+            height={16}
+          />
+          <input
+            type='text'
+            placeholder={'Search collection'}
+            className={`${styles.textInput} font-caption-regular`}
+            onChange={handleInputText}
+            value={searchText}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
           />
         </div>
-        <Button
+        <div className='flex items-center'>
+          <div className='flex mr-24'>
+            <p className={`font-button03-medium ${styles.pSetting} mr-8`}>
+              Include Gas fee
+            </p>
+            <ToggleButton
+              onClick={handleTogglePriceType}
+              checked={priceType === 'costBasis'}
+              id={''}
+            />
+          </div>
+          {/* <Button
           id={'/portfolio/inventory/collection/spam'}
           onClick={() => handleModalOpen()}
         >
           <Gear className='mr-4' />
           <p>Spam Settings</p>
-        </Button>
+        </Button> */}
+        </div>
       </div>
       <ReactModal
         isOpen={showModal}

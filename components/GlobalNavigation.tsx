@@ -24,6 +24,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import SearchBar from './SearchBar';
 import { getAddress } from 'ethers/lib/utils';
 import SearchInput from './searchInput/SearchInput';
+import { verifyWalletAddress } from '@/apis/wallet';
 
 const GlobalNavigation = () => {
   const router = useRouter();
@@ -43,11 +44,13 @@ const GlobalNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const [verify, setVerify] = useState<Boolean>(false);
+  const [isChecking, setIsChecking] = useState<boolean>(false);
   const [searchAddress, setSearchAddress] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    setError(null);
     document.addEventListener('click', handleClickOutside);
-
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
@@ -55,14 +58,10 @@ const GlobalNavigation = () => {
   useEffect(() => {
     const handleKeyDown = (e: any) => {
       if (e.key === 'Enter') {
-        try {
-          walletAddress !== '' && getAddress(walletAddress);
-          setError(null);
-          walletAddress !== '' &&
-            router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
-        } catch (error) {
-          setError('Invalid wallet address');
-        }
+        // verify &&
+        //   isChecking === false &&
+        //   router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
+        handleClickEnter();
       }
     };
     document.addEventListener('keydown', handleKeyDown);
@@ -72,20 +71,68 @@ const GlobalNavigation = () => {
   }, [walletAddress, error]);
   useEffect(() => {
     setWalletAddress('');
+    setError(null);
   }, [path]);
   useEffect(() => {
-    try {
-      walletAddress !== '' && getAddress(walletAddress);
+    setVerify(false);
+    if (walletAddress == '') {
       setError(null);
-      setSearchAddress(walletAddress);
+      return;
+    }
+    try {
+      Boolean(walletAddress !== '') && getAddress(walletAddress);
+      // handleClickEnter();
     } catch (error) {
       setError('Invalid wallet address');
       setSearchAddress(null);
     }
   }, [walletAddress]);
-  useEffect(() => {
-    console.log('path', path);
-  }, [path]);
+  // const handleClickEnter = async () => {
+  //   setIsChecking(true);
+  //   try {
+  //     getAddress(walletAddress);
+  //     const result = await verifyWalletAddress(walletAddress);
+  //     if (result.data.verified === true) {
+  //       console.log('handleClickEnter result verified', result);
+  //       console.log();
+  //       setError(null);
+  //       // router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
+  //       setVerify(true);
+  //       setIsChecking(false);
+  //     } else {
+  //       console.log('handleClickEnter result unverified', result);
+  //       setError('Invalid wallet address');
+  //       setVerify(false);
+  //       setIsChecking(false);
+  //     }
+  //   } catch (error) {
+  //     setError('Invalid wallet address');
+  //     setSearchAddress(null);
+  //     setVerify(false);
+  //     setIsChecking(false);
+  //   }
+  // };
+
+  const handleClickEnter = async () => {
+    setIsChecking(true);
+    try {
+      getAddress(walletAddress);
+      const result = await verifyWalletAddress(walletAddress);
+      if (result.data.verified === true) {
+        setError(null);
+        setIsChecking(false);
+        router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
+      } else {
+        setError('Invalid wallet address');
+        setIsChecking(false);
+      }
+    } catch (error) {
+      setError('Invalid wallet address');
+      setSearchAddress(null);
+      setIsChecking(false);
+    } finally {
+    }
+  };
   const handleClickOutside = (event: MouseEvent) => {
     if (listRef.current && !listRef.current.contains(event.target as Node)) {
       setIsOpen(false);
@@ -195,6 +242,8 @@ const GlobalNavigation = () => {
           onChange={(text) => handleChangeInput(text)}
           isError={error ? true : false}
           className={styles.searchInput}
+          isLoading={isChecking}
+          handleClose={() => setWalletAddress('')}
         />
       )}
 

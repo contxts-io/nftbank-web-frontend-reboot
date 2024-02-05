@@ -9,6 +9,8 @@ import ArrowElbowDownLeft from '@/public/icon/ArrowElbowDownLeft';
 import { useSearchUserList } from '@/utils/hooks/queries/search';
 import { useRouter } from 'next/navigation';
 import { getAddress } from 'ethers/lib/utils';
+import { verifyWalletAddress } from '@/apis/wallet';
+import { Spinner } from '@nextui-org/react';
 const Entrance = () => {
   const router = useRouter();
   const [walletAddress, setWalletAddress] = useState<string>('');
@@ -17,6 +19,7 @@ const Entrance = () => {
   //   useSearchUserList(searchAddress);
   const [error, setError] = useState<string | null>(null);
   const [isValid, setIsValid] = useState<boolean>(false);
+  const [isChecking, setIsChecking] = useState<boolean>(false);
   const handleChangeInput = (text: string) => {
     console.log('value', text);
     setWalletAddress(() => text);
@@ -24,7 +27,7 @@ const Entrance = () => {
   useEffect(() => {
     const handleKeyDown = (e: any) => {
       if (e.key === 'Enter') {
-        router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
+        handleClickEnter();
       }
     };
     document.addEventListener('keydown', handleKeyDown);
@@ -33,14 +36,24 @@ const Entrance = () => {
     };
   }, [walletAddress]);
 
-  const handleClickEnter = () => {
+  const handleClickEnter = async () => {
+    setIsChecking(true);
     try {
       getAddress(walletAddress);
-      setError(null);
-      router.push(`/portfolio/overview/walletAddress/${searchAddress}`);
+      const result = await verifyWalletAddress(walletAddress);
+      if (result.data.verified === true) {
+        setError(null);
+        setIsChecking(false);
+        router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
+      } else {
+        setError('Invalid wallet address');
+        setIsChecking(false);
+      }
     } catch (error) {
       setError('Invalid wallet address');
       setSearchAddress(null);
+      setIsChecking(false);
+    } finally {
     }
   };
   useEffect(() => {
@@ -82,11 +95,12 @@ const Entrance = () => {
         </p>
       )}
       <Button
-        id=''
+        id='enterButton'
         className={`font-caption-regular ${styles.enterButton} 
         ${error && styles.disabled}
         ${searchAddress && styles.active}`}
         onClick={() => handleClickEnter()}
+        isLoading={isChecking}
       >
         Enter
         <ArrowElbowDownLeft />

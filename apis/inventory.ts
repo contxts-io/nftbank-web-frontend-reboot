@@ -3,7 +3,7 @@ import { ValueNested } from "@/interfaces/collection";
 import { IInventoryCollectionList, IInventoryItemList, InventoryValue, InventoryValueNested, IStat, PositionCollection, PositionCollectionAmount } from "@/interfaces/inventory";
 import { BasicParam } from "@/interfaces/request";
 import { TSummary, TUnrealized } from "@/interfaces/summary";
-import { TToken } from "@/interfaces/token";
+import { TRealizedToken } from "@/interfaces/token";
 import { Paging, PagingCursor } from "@/interfaces/utils";
 import { ItemParam, TAcquisitionParam, TAnalysisGainAndLossParam, TCollectionParam, TOverviewHistoricalValueParam } from "@/store/requestParam";
 import instance from "@/utils/axiosInterceptor";
@@ -56,7 +56,6 @@ export const getItemList = async<T = IInventoryItemList>(requestParam: ItemParam
       }
   })
     .join('&');
-  console.log('getItemList query',query);
   // const { data } = await instance.get<{data:T}>(`/inventory/token?${query.replace('&&','&')}`);
   const { data } = await instance.post<{data:T}>(`/inventory/token`,requestParam);
   return data.data;
@@ -65,7 +64,7 @@ export const getSummaryTotalSpend = async<T = TSummary>(searchParam:BasicParam |
   const query = jsonToQueryString(searchParam);
   const {data} = await instance.get<{data:T}>(`/inventory/summary/total-spend?${query}`);
   return data.data;
-}
+} 
 export const getSummaryGasSpend = async<T = TSummary>(searchParam:BasicParam | null): Promise<T> => {
   const query = jsonToQueryString(searchParam);
   const {data} = await instance.get<{data:T}>(`/inventory/summary/gas-spend?${query}`);
@@ -86,7 +85,7 @@ export const getSummaryRealized = async<T = TSummary>(searchParam:BasicParam | n
   const {data} = await instance.get<{data:T}>(`/inventory/summary/realized?${query}`);
   return data.data;
 }
-export type TResponseInventoryValueHistory = { data: InventoryValue[],min: ValueNested, max:ValueNested };
+export type TResponseInventoryValueHistory = { data: InventoryValue[],min: ValueNested, max:ValueNested, statusCode: 'NR20000'| 'PENDING'};
 type HistoryValueKey = keyof TOverviewHistoricalValueParam;
 export const getInventoryValueHistory = async<T = TResponseInventoryValueHistory>(requestParam: TOverviewHistoricalValueParam): Promise<T> => {
   const query = Object.keys(requestParam)
@@ -118,9 +117,9 @@ export const getInventoryCollectionPositionAmount = async<T = { data: PositionCo
   return data.data;
 }
 export type ResponseRealizedTokensData = {
-  data: TToken[],
+  data: TRealizedToken[],
   processedAt: string,
-  paging: PagingCursor,
+  paging: Paging,
 }
 type GainAndLossKey = keyof TAnalysisGainAndLossParam;
 export const getInventoryRealizedTokens = async<T = ResponseRealizedTokensData>(requestParam: TAnalysisGainAndLossParam): Promise<T> => {

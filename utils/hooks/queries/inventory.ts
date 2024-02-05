@@ -154,7 +154,7 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
   });
   return query;
 };
-export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalValueParam) => {
+export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalValueParam , polling=true ) => {
   return useQuery<TResponseInventoryValueHistory,AxiosError>(
     ['inventoryValueHistorical',requestParam],
     async () => {
@@ -162,10 +162,12 @@ export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalVal
       return inventoryValueHistorical;
     },
     {
-      enabled: requestParam.walletAddress !== '',
+      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId && !!polling,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      refetchInterval: 2000,
+      retry: 5,
     },
   );
 }
@@ -200,25 +202,20 @@ export const useInventoryCollectionPositionAmount = (requestParam: BasicParam) =
   );
 }
 export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAndLossParam) => {
-  const fetchData = async ({ pageParam = null }) => {
-    const result = await getInventoryRealizedTokens({ ...requestParam, nextCursor: pageParam});
-    // const isLast = result.paging.total === result.paging.limit ? true : false;
-    const isLast = result.paging.hasNext ? false : true;
-
-
+  const fetchData = async ({ pageParam = 1 }) => {
+    const result = await getInventoryRealizedTokens({ ...requestParam, page: pageParam});
+    const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
     return {
       ...result,
-      // page: pageParam,
-      // nextPage: pageParam + 1,
-      currentCursor: pageParam,
-      nextCursor: result.paging.nextCursor,
+      page: pageParam,
+      nextPage: pageParam + 1,
       isLast,
     };
   }
 
-  const query = useInfiniteQuery(['inventoryRealizedTokens',{...requestParam,nextCursor:null}],fetchData, {
+  const query = useInfiniteQuery(['inventoryRealizedTokens',requestParam],fetchData, {
     getNextPageParam: (lastPage) => {
-      if (!lastPage.isLast) return lastPage.nextCursor;
+      if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
     enabled: requestParam.walletAddress !== '',

@@ -15,26 +15,30 @@ export function formatCurrency(amount: string | null, currency: TCurrency): stri
     return '-';
     // return '∞';
   if (currency === 'usd') {
-    return _formatFiat(parseFloat(amount),currency).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    // return _formatFiat(parseFloat(amount),currency).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    return _formatFiat(parseFloat(amount), currency).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+
   }
   if (currency === 'eth') {
-    return _formatEth(parseFloat(amount)).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    // return _formatEth(parseFloat(amount)).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+    return _formatEth(parseFloat(amount)).replace('Ξ-','-Ξ').replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,").replace('.000', '').replace(/(\.\d*?[1-9])0+$/, '$1').replace(/\.$/, '');
+
   }
   return '';
 }
-export function shortFormatCurrency(amount: string | null, currency: TCurrency): string {
-  if (!amount) return '';
-  if (amount === 'infinity')
-    return '-';
-    // return '∞';
-  if (currency === 'usd') {
-    return _formatFiat(parseFloat(amount), currency).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-  }
-  if (currency === 'eth') {
-    return _formatEth(parseFloat(amount)).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-  }
-  return '';
-}
+// export function shortFormatCurrency(amount: string | null, currency: TCurrency): string {
+//   if (!amount) return '';
+//   if (amount === 'infinity')
+//     return '-';
+//     // return '∞';
+//   if (currency === 'usd') {
+//     return _formatFiat(parseFloat(amount), currency).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+//   }
+//   if (currency === 'eth') {
+//     return _formatEth(parseFloat(amount)).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+//   }
+//   return '';
+// }
 function formatNumber(number:number): string {
   const suffixes = ["", "K", "M", "B", "T", "Q"];
   const suffixNum = Math.floor(("" + number).length / 3);
@@ -59,7 +63,7 @@ function _formatEth(amount: number): string {
   }
   // _amount = formatNumber(parseFloat(_amount));
   // return parseFloat(_amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' }).replace('ETH', 'Ξ');
-  return `Ξ${parseFloat(_amount)}`;
+  return `Ξ${parseFloat(_amount).toFixed(3)}`;
 }
 
 export function isPlus (value: number | string): boolean | '-' {
@@ -73,9 +77,9 @@ export function isPlus (value: number | string): boolean | '-' {
     return false;
   }
 };
-export function formatPercent(_percent: string |'infinity'| null): string {
+export function formatPercent(_percent: string |'infinity'|'Infinity'| null): string {
   if (_percent === null) return '-%';
-  if (_percent === 'infinity') return '-%';
+  if (_percent === 'infinity' || _percent === 'Infinity') return '-%';
   const percent = parseFloat(_percent);
   if (Math.abs(percent) <= 0.001) return '0%';
   if (Math.abs(percent) < 1 && Math.abs(percent) >= 0.001)
@@ -88,7 +92,6 @@ export function formatEth(amount: string | null): string {
   return parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' });
 }
 export function difference(diff: string, currency: TCurrency | 'percent') {
-  console.log('diff diff',diff)
   if (currency === 'percent') {
     return formatPercent(diff).replace('+', '').replace('-', '');
   }
@@ -238,8 +241,10 @@ export function jsonToQueryString(searchParam: any) {
       if(searchParam[key] === null || searchParam[key] === undefined || searchParam[key] === '' ) return;
       return searchParam[key].map((v: any) => `${key}=${v.toLowerCase()}`).join('&').replace(/^&/, '');
     }
-    if(searchParam[key] === null || searchParam[key] === undefined || searchParam[key] === '' ) return;
-    return `${key}=${searchParam[key].toLowerCase()}`;
+    if (searchParam[key] === null || searchParam[key] === undefined || searchParam[key] === '') return;
+    if (typeof searchParam[key] === 'string')
+      return `${key}=${searchParam[key]}`;
+    else return `${key}=${searchParam[key]}`;
   }).join('&').replace(/^&/, '');
 }
 export const CATEGORY = [
@@ -279,9 +284,14 @@ export function findCategoryListById(categoryObj: typeof ARTICLE_CATEGORY , targ
   }
   return matchingCategories;
 }
-export const parseFloatPrice = (price: string) => {
+export const parseFloatPrice = (price: any):number => {
   
-  if (price === 'infinity') return 0;
-  const value = parseFloat(price);
+  if (!price || price === null || price === 'infinity') return 0;
+  const value = typeof price === 'number' ? price : parseFloat(price);
   return typeof value === 'number' && !Number.isNaN(value) ? value : 0;
+}
+export const formatFloat = (price: any): string => {
+  if (!price || price === null || price === 'infinity') return '-';
+  const value = typeof price === 'number' ? price : parseFloat(price);
+  return typeof value === 'number' && !Number.isNaN(value) ? value.toFixed(3).toString() : '-';
 }

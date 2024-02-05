@@ -2,10 +2,10 @@
   @apply mt-20 border-1 border-[var(--color-border-main)] p-20;
 }
 .title {
-  @apply gap-12 flex items-center justify-between;
+  @apply gap-12 flex items-center;
 }
 .tableWrapper {
-  @apply mt-20 w-full h-[310px] overflow-hidden;
+  @apply mt-20 w-full max-h-[338px] overflow-scroll;
 }
 .table {
   @apply w-full table-auto;
@@ -20,8 +20,8 @@
   @apply text-[var(--color-text-subtle)];
 }
 .table tbody tr {
-  @apply cursor-pointer border-b-1 border-[var(--color-border-disabled)];
+  @apply border-b-1 border-[var(--color-border-disabled)];
 }
-.table tbody tr:hover {
+/* .table tbody tr:hover {
   @apply text-[var(--color-text-main)] bg-[var(--color-elevation-sunken)];
-}
+} */

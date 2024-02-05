@@ -8,14 +8,19 @@ import { useMe } from '@/utils/hooks/queries/auth';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { formatPercent, isPlus } from '@/utils/common';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
-const YEARS: number[] = [2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015];
+import { useDispatchPerformance } from '@/utils/hooks/queries/dispatch';
+const YEARS: number[] = [2024, 2023];
 const PerformanceContainer = () => {
   const currency = useAtomValue(currencyAtom);
   const networkId = useAtomValue(networkIdAtom);
   const portfolioUser = { ...useAtomValue(portfolioUserAtom), networkId };
+  const [isPolling, setIsPolling] = useState<boolean>(true);
+  const { data: dispatchPerformance } = useDispatchPerformance(
+    portfolioUser?.walletAddress || ''
+  );
   const [requestParam, setRequestParam] = useState<{
     year: number;
     gnlChartType: 'overall' | 'realized' | 'unrealized';
@@ -24,19 +29,29 @@ const PerformanceContainer = () => {
     gnlChartType: 'overall',
   });
   const { data: performanceAnnualAll, status: statusPerformanceAnnualAll } =
-    usePerformanceChartAnnual({
-      window: 'all',
-      ...requestParam,
-      ...portfolioUser,
-      networkId: 'ethereum',
-    });
+    usePerformanceChartAnnual(
+      {
+        ...requestParam,
+        ...portfolioUser,
+        taskId: dispatchPerformance?.taskId,
+        networkId: 'ethereum',
+        year: 'all',
+      },
+      isPolling
+    );
   const { data: performanceAnnualYTD, status: statusPerformanceAnnualYTD } =
-    usePerformanceChartAnnual({
-      ...requestParam,
-      ...portfolioUser,
-      window: 'ytd',
-    });
-
+    usePerformanceChartAnnual(
+      {
+        ...requestParam,
+        ...portfolioUser,
+        taskId: dispatchPerformance?.taskId,
+        year: 2024,
+      },
+      isPolling
+    );
+  useEffect(() => {
+    setIsPolling(true);
+  }, []);
   return (
     <section className={styles.container}>
       <div className={styles.row}>
@@ -67,7 +82,7 @@ const PerformanceContainer = () => {
       <div className={`font-button03-regular ${styles.bottom}`}>
         <div className='w-[50%] flex justify-between items-center'>
           <p className='text-[var(--color-text-subtle)]'>YTD Performance</p>
-          {statusPerformanceAnnualAll === 'success' && (
+          {statusPerformanceAnnualYTD === 'success' && (
             <p
               className={
                 isPlus(performanceAnnualYTD?.roi?.[currency] || '0')
@@ -78,12 +93,13 @@ const PerformanceContainer = () => {
               {formatPercent(performanceAnnualYTD?.roi?.[currency] || '0')}
             </p>
           )}
+          {statusPerformanceAnnualYTD === 'error' && <p>-</p>}
         </div>
         <div className='w-[50%] ml-20 flex justify-between items-center'>
           <p className='text-[var(--color-text-subtle)]'>
             All time Performance
           </p>
-          {statusPerformanceAnnualYTD === 'success' && (
+          {statusPerformanceAnnualAll === 'success' && (
             <p
               className={
                 isPlus(performanceAnnualAll?.roi?.[currency] || '0')
@@ -94,6 +110,7 @@ const PerformanceContainer = () => {
               {formatPercent(performanceAnnualAll?.roi?.[currency] || '0')}
             </p>
           )}
+          {statusPerformanceAnnualAll === 'error' && <p>-</p>}
         </div>
       </div>
     </section>

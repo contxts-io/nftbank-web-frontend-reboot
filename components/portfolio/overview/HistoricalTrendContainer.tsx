@@ -20,6 +20,8 @@ import {
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { portfolioUserAtom } from '@/store/portfolio';
 import CurrencyComponent from '@/components/p/Currency';
+import { useDispatchDailyNav } from '@/utils/hooks/queries/dispatch';
+
 //'1d'| '3d'| '7d'| '30d'| '90d'| 'ytd'| '365d'| 'all'
 const PERIOD: { name: string; value: Period }[] = [
   {
@@ -50,6 +52,7 @@ const PERIOD: { name: string; value: Period }[] = [
 type Period = '1d' | '3d' | '7d' | '30d' | '90d' | 'ytd' | '365d' | 'all';
 const HistoricalTrendContainer = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('1W');
+
   const portfolioUser = useAtomValue(portfolioUserAtom);
   const currency = useAtomValue(currencyAtom);
 
@@ -58,15 +61,24 @@ const HistoricalTrendContainer = () => {
   );
   const [hoverValue, setHoverValue] = useState<number | null>(null);
   const [diffValue, setDiffValue] = useState<number | null>(null);
+  const [isPolling, setIsPolling] = useState<boolean>(true);
+
+  const { data: dispatchDailyNav } = useDispatchDailyNav(
+    portfolioUser?.walletAddress || ''
+  );
   const { data: inventoryValue, status: statusInventoryValue } =
     useInventoryValuePolling(portfolioUser);
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
-  } = useInventoryValueHistorical({
-    ...historicalValueParam,
-    ...portfolioUser,
-  });
+  } = useInventoryValueHistorical(
+    {
+      ...historicalValueParam,
+      ...portfolioUser,
+      taskId: dispatchDailyNav?.taskId,
+    },
+    isPolling
+  );
   const handleClickPeriod = (period: { name: string; value: Period }) => {
     console.log('handleClickPeriod', period);
     setSelectedPeriod(period.name);
@@ -74,6 +86,7 @@ const HistoricalTrendContainer = () => {
       ...prev,
       window: period.value,
     }));
+    setIsPolling(true);
   };
   const handleHoverValue = (value: number | null) => {
     console.log('handleHoverValue', value);
@@ -86,6 +99,12 @@ const HistoricalTrendContainer = () => {
       '0.00';
     return formatCurrency(value, currency);
   }, [hoverValue, currency, inventoryValue]);
+  useEffect(() => {
+    setIsPolling(true);
+  }, [portfolioUser]);
+  useEffect(() => {
+    statusInventoryValueHistorical === 'success' && setIsPolling(false);
+  }, [statusInventoryValueHistorical]);
   const differenceValue = useMemo(() => {
     let _value =
       hoverValue ||
@@ -105,15 +124,8 @@ const HistoricalTrendContainer = () => {
     const diff =
       _value -
       parseFloatPrice(
-        inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+        inventoryValueHistorical?.data?.[0]?.value[currency] || '0.00'
       );
-    console.log(
-      'inventoryValueHistorical?.data[0]?.value[currency]',
-      inventoryValueHistorical?.data[0]?.value[currency],
-      parseFloatPrice(
-        inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
-      )
-    );
     return diff;
   }, [hoverValue, currency, inventoryValue]);
   const initialValue = useMemo(() => {
@@ -121,7 +133,7 @@ const HistoricalTrendContainer = () => {
     //   inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
     // );
     const value = parseFloatPrice(
-      inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
+      inventoryValueHistorical?.data?.[0]?.value[currency] || '0.00'
     );
     return value;
   }, [currency, inventoryValueHistorical]);

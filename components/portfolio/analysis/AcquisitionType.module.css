@@ -1,5 +1,5 @@
 .container {
-  @apply border-1 border-[var(--color-border-main)] p-20;
+  @apply border-1 border-[var(--color-border-main)] p-20 my-20;
 }
 .title {
   @apply gap-12 flex items-center;
@@ -23,23 +23,23 @@
   @apply text-[var(--color-text-subtle)];
 }
 .table tbody tr {
-  @apply border-b-1 border-[var(--color-border-disabled)] cursor-pointer text-[var(--color-text-subtle)];
+  @apply border-b-1 border-[var(--color-border-disabled)] text-[var(--color-text-subtle)];
 }
-.table tbody tr:hover {
+/* .table tbody tr:hover {
   @apply text-[var(--color-text-main)]  bg-[var(--color-elevation-sunken)];
-}
+} */
 .table tbody tr p {
   @apply text-[var(--color-text-main)];
 }
-.border--BUY {
+.border--buy {
   @apply border-1 border-[var(--color-border-accent-green)];
 }
-.border--MINT {
+.border--mint {
   @apply border-1 border-[var(--color-border-accent-blue)];
 }
-.border--AIRDROP {
+.border--airdrop {
   @apply border-1 border-[var(--color-border-accent-orange)];
 }
-.border--TRANSFER {
+.border--transfer {
   @apply border-1 border-[var(--color-border-accent-fuchsia)];
 }

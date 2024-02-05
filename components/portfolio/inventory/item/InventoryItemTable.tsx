@@ -13,6 +13,7 @@ import {
   formatPercent,
   isPlus,
   mappingConstants,
+  parseFloatPrice,
   shortenAddress,
 } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
@@ -21,6 +22,9 @@ import { selectedTokenAtom } from '@/store/portfolio';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
 import FailToLoad from '@/components/error/FailToLoad';
 import NoData from '@/components/error/NoData';
+import { LATEST_ACQUISITION_DATE } from '@/utils/messages';
+import Info from '@/public/icon/Info';
+import { Tooltip } from '@nextui-org/react';
 const HEADER = [
   {
     type: 'Item',
@@ -31,26 +35,26 @@ const HEADER = [
     name: 'Amount',
     sort: true,
   },
-  // {
-  //   type: 'costBasis',
-  //   name: 'Cost basis',
-  // },
+  {
+    type: 'costBasis',
+    name: 'Cost basis',
+  },
+  {
+    type: 'valuationType',
+    name: 'Valuation Type',
+  },
   {
     type: 'nav',
     name: 'Realtime NAV',
     sort: true,
   },
-  // {
-  //   type: 'unrealizedG&L',
-  //   name: 'Unrealized G&L',
-  // },
-  // {
-  //   type: 'unrealizedROI',
-  //   name: 'Unrealized ROI',
-  // },
   {
-    type: 'valuationType',
-    name: 'Valuation Type',
+    type: 'unrealizedG&L',
+    name: 'Unrealized G&L',
+  },
+  {
+    type: 'unrealizedROI',
+    name: 'Unrealized ROI',
   },
   // {
   //   type: 'accuracy',
@@ -59,6 +63,7 @@ const HEADER = [
   {
     type: 'acquisitionDate',
     name: 'Acq. date',
+    tooltip: LATEST_ACQUISITION_DATE,
   },
 ];
 type Props = {
@@ -95,7 +100,6 @@ const InventoryItemTable = (props: Props) => {
     setRequestParam((prev) => ({
       ...prev,
       page: 0,
-      includeGasUsed: priceType === 'costBasis' ? 'true' : 'false',
     }));
   }, [priceType]);
   const mergePosts = useMemo(
@@ -148,15 +152,22 @@ const InventoryItemTable = (props: Props) => {
                   <th
                     key={index}
                     className={`font-caption-medium 
-                ${
-                  // index == 0 ? 'text-left' : 'text-right'
-                  index == HEADER.length - 1 ? 'text-right' : 'text-left'
-                } 
+                ${index == 0 ? 'text-left' : 'text-right'} 
                 ${item.sort ? 'cursor-pointer' : ''}`}
                     onClick={() => item.sort && handleSort(item.type)}
                   >
-                    {index === 1 ? (
-                      <span className='mr-30'>{item.name}</span>
+                    {item.tooltip ? (
+                      <div className='w-full flex items-center justify-end text-[var(--color-icon-subtle)]'>
+                        <Tooltip
+                          content={LATEST_ACQUISITION_DATE}
+                          className='cursor-pointer w-[230px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                        >
+                          <div className='flex justify-center text-[var(--color-icon-subtle)] mr-4'>
+                            <Info />
+                          </div>
+                        </Tooltip>
+                        <span>{item.name}</span>
+                      </div>
                     ) : (
                       <p>{item.name}</p>
                     )}
@@ -172,9 +183,18 @@ const InventoryItemTable = (props: Props) => {
                   const isOpen = openedItem.find((item) => item === itemKey)
                     ? true
                     : false;
-                  const plus = isPlus(
-                    data.nav[currency].difference?.amount || '0'
+                  const acquisitionPrice = parseFloatPrice(
+                    data.acquisitionPrice?.[currency]
                   );
+                  const costBasis =
+                    acquisitionPrice + parseFloatPrice(data.gasFee?.[currency]);
+                  const unrealizedGL =
+                    parseFloatPrice(data.nav[currency].amount) -
+                    parseFloatPrice(acquisitionPrice);
+                  const isPlus = unrealizedGL > 0;
+                  const isMinus = unrealizedGL < 0;
+                  const isZero = unrealizedGL === 0;
+
                   return (
                     <React.Fragment key={index}>
                       <tr
@@ -212,78 +232,31 @@ const InventoryItemTable = (props: Props) => {
                             </div>
                           </div>
                         </td>
-                        <td className='text-left'>
+                        <td className='text-right'>
                           <p>{data.amount}</p>
                         </td>
-                        {/**
-                       * 
-                       * 
-                       * sprint 1
-                       * 
-                       * 
-                       *  <td className='text-right'>
-                        <p>
-                          {formatCurrency(
-                            data.acquisitionPrice?.[currency] || null,
-                            currency
-                          )}
-                        </p>
-                        {priceType === 'costBasis' && (
-                          <p
-                            className={`${styles.pTd} text-[var(--color-text-brand)]`}
-                          >
-                            {data.gasFee?.[currency]
-                              ? `GAS +${parseFloat(
-                                  data.gasFee[currency] || ''
-                                ).toFixed(3)} `
-                              : ''}
-                          </p>
-                        )}
-                      </td> */}
-                        <td className='text-left'>
+                        <td className='text-right'>
                           <p>
-                            {formatCurrency(
-                              data.nav[currency].amount,
-                              currency
-                            )}
+                            {priceType === 'costBasis'
+                              ? formatCurrency(costBasis.toString(), currency)
+                              : formatCurrency(
+                                  acquisitionPrice.toString(),
+                                  currency
+                                )}
                           </p>
+                          {priceType === 'costBasis' && (
+                            <p
+                              className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                            >
+                              {data.gasFee?.[currency]
+                                ? `GAS +${parseFloatPrice(
+                                    data.gasFee[currency] || ''
+                                  ).toFixed(3)} `
+                                : ''}
+                            </p>
+                          )}
                         </td>
-                        {/**
-                       * 
-                       * 
-                       * sprint 1
-                       * 
-                       * 
-                       * <td className='text-right'>
-                        <p
-                          className={`${
-                            isPlus(data.nav[currency].difference?.amount || 0)
-                              ? 'text-[var(--color-text-success)]'
-                              : 'text-[var(--color-text-danger)]'
-                          }`}
-                        >
-                          {formatCurrency(
-                            data.nav[currency].difference?.amount || null,
-                            currency
-                          )}
-                        </p>
-                      </td>
-                      <td className='text-right'>
-                        <p
-                          className={`${
-                            plus === '-'
-                              ? 'text-[var(--color-text-main)]'
-                              : plus === true
-                              ? 'text-[var(--color-text-success)]'
-                              : 'text-[var(--color-text-danger)]'
-                          }`}
-                        >
-                          {formatPercent(
-                            data.nav[currency].difference?.percentage || null
-                          )}
-                        </p>
-                      </td> */}
-                        <td className='text-left'>
+                        <td className='text-right'>
                           <span>
                             {/* {data.valuation.length > 0
                             ? mappingConstants(data.valuation[0].type)
@@ -293,9 +266,77 @@ const InventoryItemTable = (props: Props) => {
                               : 'no valuation type'}
                           </span>
                         </td>
-                        {/* <td className='text-left'>
-                        <p>{formatPercent(valuationType?.accuracy || null)}</p>
-                      </td> */}
+                        {/** realtime nav **/}
+                        <td className='text-right'>
+                          <p className='text-[var(--color-text-main)]'>
+                            {formatCurrency(
+                              data.nav[currency].amount || null,
+                              currency
+                            )}
+                          </p>
+                        </td>
+                        <td className='text-right'>
+                          <p
+                            className={`${
+                              isPlus
+                                ? 'text-[var(--color-text-success)]'
+                                : isMinus
+                                ? 'text-[var(--color-text-danger)]'
+                                : 'text-[var(--color-text-main)]'
+                            }`}
+                          >
+                            {priceType === 'acquisitionPrice'
+                              ? formatCurrency(
+                                  (
+                                    parseFloatPrice(data.nav[currency].amount) -
+                                    acquisitionPrice
+                                  ).toString(),
+                                  currency
+                                )
+                              : formatCurrency(
+                                  (
+                                    parseFloatPrice(data.nav[currency].amount) -
+                                    costBasis
+                                  ).toString(),
+                                  currency
+                                )}
+                          </p>
+                        </td>
+                        <td className='text-right'>
+                          <p
+                            className={`${
+                              isZero
+                                ? 'text-[var(--color-text-main)]'
+                                : isPlus
+                                ? 'text-[var(--color-text-success)]'
+                                : isMinus
+                                ? 'text-[var(--color-text-danger)]'
+                                : 'text-[var(--color-text-main)]'
+                            }`}
+                          >
+                            {priceType === 'acquisitionPrice'
+                              ? formatPercent(
+                                  (
+                                    ((parseFloatPrice(
+                                      data.nav[currency].amount
+                                    ) -
+                                      acquisitionPrice) /
+                                      acquisitionPrice) *
+                                    100
+                                  ).toString()
+                                )
+                              : formatPercent(
+                                  (
+                                    ((parseFloatPrice(
+                                      data.nav[currency].amount
+                                    ) -
+                                      costBasis) /
+                                      costBasis) *
+                                    100
+                                  ).toString()
+                                )}
+                          </p>
+                        </td>
                         <td className='text-right'>
                           <span>
                             {data.acquisitionDate &&

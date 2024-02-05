@@ -1,5 +1,5 @@
 const siteMetadata = {
-  title: 'NFTBank.ai',
+  title: 'NFTBank.ai reboot ',
   description:
     'Boost NFT fund management efficiency and dapp user experience with the most accurate NFT valuation and interpretable Web3 data.',
   keywords:

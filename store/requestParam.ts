@@ -7,7 +7,6 @@ export type TSort = 'amount' | 'nav' | 'spam'
 export type TCollectionParam = {
   searchCollection: string,
   sort: TSort,
-  includeGasUsed: string,
   page: number,
   limit: number,
   order :TSortOrder,
@@ -15,25 +14,25 @@ export type TCollectionParam = {
 export type ItemParam = BasicParam & {
   assetContract: string[],
   currency: TCurrency,
-  includeGasUsed: 'true' | 'false',
   sort: TSort,
   order: TSortOrder,
   limit: number,
   page: number,
 }
 export type TPeriod = {
-  year: number,
-  quarter: 'q1'|'q2'|'q3'|'q4'|'all',
+  year: number | 'all',
+  // quarter: 'q1'|'q2'|'q3'|'q4'|'all',
 }
 export type TAnalysisGainAndLossParam = TPeriod & BasicParam & {
   limit: number,
-  nextCursor: string | null,
+  page: number,
 }
-export type TAcquisitionParam =BasicParam &  TPeriod
+export type TAcquisitionParam =BasicParam &  TPeriod & {
+  page?: number}
 export type TOverviewHistoricalValueParam = BasicParam & {
   // interval: 'hourly' | 'daily' | 'weekly' | 'monthly' | 'quarterly',
   window: '1d'| '3d'| '7d'| '30d'| '90d'| 'ytd'| '365d'| 'all',
-
+  taskId?: string,
 }
 type SpamParam = {
   includeSpam:boolean,
@@ -42,7 +41,6 @@ type SpamParam = {
 }
 export const inventoryCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
-  includeGasUsed: 'false',
   page: 1,
   limit: 30,
   sort: 'nav',
@@ -50,7 +48,6 @@ export const inventoryCollectionAtom = atom<TCollectionParam>({
 })
 export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
-  includeGasUsed: 'false',
   page: 1,
   limit: 30,
   sort: 'nav',
@@ -58,7 +55,6 @@ export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
 })
 export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
   searchCollection: '',
-  includeGasUsed: 'false',
   page: 1,
   limit: 30,
   sort: 'spam',
@@ -71,7 +67,6 @@ export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
 export const inventoryItemListAtom = atom<ItemParam & {paging : boolean}>({
   walletAddress: '',
   networkId: 'ethereum',
-  includeGasUsed: 'false',
   assetContract: [],
   page: 1,
   limit: 30,
@@ -81,10 +76,9 @@ export const inventoryItemListAtom = atom<ItemParam & {paging : boolean}>({
   paging: true,
 })
 export const analysisGainAndLossParamAtom = atom<TAnalysisGainAndLossParam>({
-  limit: 5,
-  nextCursor: null,
-  year: 2023,
-  quarter: 'all',
+  limit: 10,
+  page: 1,
+  year: 'all',
   networkId: 'ethereum',
 })
 export const overviewHistoricalValueParamAtom = atom<TOverviewHistoricalValueParam>({
@@ -92,7 +86,6 @@ export const overviewHistoricalValueParamAtom = atom<TOverviewHistoricalValuePar
   window: '7d',
 })
 export const analysisAcquisitionParamAtom = atom<TAcquisitionParam>({
-  year: 2023,
-  quarter: 'all',
+  year: 2024,
   networkId: 'ethereum',
 })

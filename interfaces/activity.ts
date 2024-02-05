@@ -1,4 +1,4 @@
-import { ValueNested } from "./collection";
+import { Value, ValueNested } from "./collection";
 import { Paging } from "./utils";
 
 type SendReceive = {
@@ -22,7 +22,7 @@ export type ActivityItem = {
     paging: Paging
 }
 export type AcquisitionType = {
-  type: 'BUY' | 'MINT' | 'TRANSFER' | 'AIRDROP',
+  type: 'buy' | 'mint' | 'transfer' ,
   amount: number,
-  costBasis : ValueNested,
+  costBasis : Value,
 }

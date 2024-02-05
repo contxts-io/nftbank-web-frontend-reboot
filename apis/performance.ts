@@ -13,11 +13,12 @@ export const getInventoryUnrealizedPerformance = async<T = UnrealizedValue>(requ
   return data.data;
 }
 export type PerformanceParam = {
-  year: number;
+  year: number | 'all';
   gnlChartType: 'overall' | 'realized' | 'unrealized';
+  taskId?: string,
 }
 type PerformanceParamKey = keyof PerformanceParam;
-export const getPerformanceChart = async<T = { data: PerformanceCollection[] }>(requestParam: PerformanceParam & BasicParam): Promise<T> => {
+export const getPerformanceChart = async<T = { data: PerformanceCollection[], status?: "PENDING" }>(requestParam: PerformanceParam & BasicParam): Promise<T> => {
   // const query = Object.keys(requestParam)
   // .filter(function(key) {
   //     return requestParam[key as PerformanceParamKey] && requestParam[key as PerformanceParamKey] !== ""; // 값이 있는 속성만 필터링
@@ -33,8 +34,9 @@ export const getPerformanceChart = async<T = { data: PerformanceCollection[] }>(
   // })
   //   .join('&');
   const query = jsonToQueryString(requestParam);
-  const { data } = await instance.get<{data:T}>(`/performance/chart?${query}`);
-return data.data;
+  
+  const {data} = await instance.get<{ data: T }>(`/performance/chart?${query}`);
+  return data.data;
 }
 
 type AnnualParam = {

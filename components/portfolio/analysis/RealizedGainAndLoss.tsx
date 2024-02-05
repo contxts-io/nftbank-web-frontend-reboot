@@ -19,8 +19,19 @@ import SkeletonLoader from '@/components/SkeletonLoader';
 import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { analysisGainAndLossParamAtom } from '@/store/requestParam';
-import { formatCurrency, formatDate, formatPercent } from '@/utils/common';
+import {
+  formatCurrency,
+  formatDate,
+  formatPercent,
+  parseFloatPrice,
+} from '@/utils/common';
 import { portfolioUserAtom } from '@/store/portfolio';
+import Info from '@/public/icon/Info';
+import { Tooltip } from '@nextui-org/react';
+import { LATEST_ACQUISITION_DATE } from '@/utils/messages';
+import ToggleButton from '@/components/buttons/ToggleButton';
+import { useInView } from 'react-intersection-observer';
+import NoData from '@/components/error/NoData';
 const THEAD = [
   { key: 'item', value: 'Item' },
   { key: 'amount', value: 'Amount' },
@@ -28,15 +39,17 @@ const THEAD = [
   { key: 'proceed', value: 'Proceed' },
   { key: 'realizedGainAndLoss', value: 'Realized G&L' },
   { key: 'realizedROI', value: 'Realized ROI' },
-  { key: 'acquisitionDate', value: 'Acq. date' },
+  { key: 'acquisitionDate', value: 'Acq. date', tooltip: true },
   { key: 'soldDate', value: 'Sold date' },
-  { key: 'activity', value: 'Activity' },
+  // { key: 'activity', value: 'Activity' },
 ];
 type _Year = TYear & { selected: boolean };
 type _Period = TPeriod & { selected: boolean };
 const RealizedGainAndLoss = () => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
+  const [includeGasUsed, setIncludeGasUsed] = useState<boolean>(true);
+  const { ref, inView } = useInView();
   const [requestParams, setRequestParams] = useAtom(
     analysisGainAndLossParamAtom
   );
@@ -47,6 +60,7 @@ const RealizedGainAndLoss = () => {
   } = useInventoryRealizedTokensInfinite({
     ...portfolioUser,
     ...requestParams,
+    page: 0,
   });
   const [selectedStatus, setSelectedStatus] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({
@@ -55,10 +69,10 @@ const RealizedGainAndLoss = () => {
     }))
   );
   const [selectedYear, setSelectedYear] = useState<_Year[]>([
-    { name: '2023', value: 2023, selected: true },
+    { name: 'ALL', value: 'all', selected: true },
+    { name: '2024', value: 2024, selected: false },
+    { name: '2023', value: 2023, selected: false },
     { name: '2022', value: 2022, selected: false },
-    { name: '2021', value: 2021, selected: false },
-    { name: '2020', value: 2020, selected: false },
   ]);
   const handleChangeYear = (name: string) => {
     setSelectedYear((prev) =>
@@ -76,39 +90,38 @@ const RealizedGainAndLoss = () => {
       }))
     );
   };
-  const handleClickShowMore = () => {
-    latestPage?.isLast === false &&
-      (setRequestParams((prev) => {
-        return {
-          ...prev,
-          limit: 1,
-          nextCursor: latestPage.nextCursor,
-        };
-      }),
-      fetchNextPage());
-  };
   useEffect(() => {
-    console.log('changed!');
     setRequestParams((prev) => {
       return {
         ...prev,
-        year: selectedYear.find((item) => item.selected)?.value || 2023,
-        quarter: selectedStatus.find((item) => item.selected)?.value || 'all',
+        page: 0,
+        year: 'all',
+      };
+    });
+  }, []);
+  useEffect(() => {
+    const isLast =
+      realizedTokenList?.pages?.[realizedTokenList?.pages.length - 1].isLast;
+    !isLast &&
+      inView &&
+      status !== 'loading' &&
+      (fetchNextPage(),
+      setRequestParams((prev) => ({ ...prev, page: prev.page + 1 })));
+  }, [fetchNextPage, inView]);
+  useEffect(() => {
+    setRequestParams((prev) => {
+      return {
+        ...prev,
+        page: 0,
+        year: selectedYear.find((item) => item.selected)?.value || 'all',
       };
     });
   }, [selectedStatus, selectedYear]);
 
-  const mergePosts = useMemo(
-    () => realizedTokenList?.pages || [],
-    [realizedTokenList?.pages, requestParams]
-  );
-  const latestPage = useMemo(
-    () => mergePosts[mergePosts.length - 1],
-    [mergePosts]
-  );
-  useEffect(() => {
-    console.log('realizedTokenList', realizedTokenList);
-  }, [realizedTokenList]);
+  const mergePosts = useMemo(() => {
+    return realizedTokenList?.pages.flatMap((page) => page.data);
+  }, [realizedTokenList?.pages, requestParams, status]);
+
   return (
     <section className={styles.container}>
       <div className={styles.title}>
@@ -121,40 +134,72 @@ const RealizedGainAndLoss = () => {
           onClick={(name) => handleChangeYear(name)}
           className='w-80'
         />
-        <Dropdown
+        {/* <Dropdown
           list={selectedStatus.map((item) => item.name)}
           selected={selectedStatus.find((item) => item.selected)?.name || 'All'}
           onClick={(name) => handleChangeStatus(name)}
           className='w-65'
-        />
-        <Button id='' className='ml-auto'>
-          Export
-          <Export className='ml-4' />
-        </Button>
+        /> */}
+        <div className='ml-auto flex px-12'>
+          <span className='font-button03-medium text-[var(--color-text-subtle)] mr-8'>
+            Include Gas fee
+          </span>
+          <ToggleButton
+            onClick={() => setIncludeGasUsed((prev) => !prev)}
+            checked={includeGasUsed === true}
+            id={''}
+          />
+        </div>
       </div>
       <div className={styles.tableWrapper}>
-        {status === 'loading' && (
-          <SkeletonLoader className='w-full h-[200px]' />
-        )}
-        {status === 'success' && (
-          <table className={styles.table}>
-            <thead className='font-caption-regular'>
-              <tr>
-                {THEAD.map((item, index) => (
-                  <th
-                    key={index}
-                    className={index === 0 ? 'text-left' : 'text-right'}
-                  >
-                    {item.value}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className='font-caption-medium'>
-              {mergePosts?.map((page, pageIndex) =>
-                page.data.map((item, index) => (
+        <table className={styles.table}>
+          <thead className='font-caption-regular'>
+            <tr>
+              {THEAD.map((item, index) => (
+                <th
+                  key={index}
+                  className={index === 0 ? 'text-left' : 'text-right'}
+                >
+                  {item.tooltip ? (
+                    <div className='w-full flex items-center justify-end text-[var(--color-icon-subtle)]'>
+                      <p className='mr-4'>{item.value}</p>
+                      <Tooltip
+                        key={'realized-tooltip'}
+                        placement={'bottom'}
+                        content={LATEST_ACQUISITION_DATE}
+                        className='cursor-pointer max-w-[228px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                      >
+                        <div className='flex justify-center text-[var(--color-icon-subtle)]'>
+                          <Info />
+                        </div>
+                      </Tooltip>
+                    </div>
+                  ) : (
+                    <p>{item.value}</p>
+                  )}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className='font-caption-medium'>
+            {mergePosts &&
+              mergePosts?.map((item, index) => {
+                const acquisitionPrice = parseFloatPrice(
+                  item.acquisitionPrice?.[currency]
+                );
+                const gasFee = parseFloatPrice(item.gasFee?.[currency]);
+                const proceedGasFee = parseFloatPrice(
+                  item.proceedGasFee?.[currency]
+                );
+                const costBasis = acquisitionPrice + gasFee;
+                const proceed = parseFloatPrice(item.proceed[currency]);
+                const realizedGainAndLoss = proceed - acquisitionPrice;
+                const isPlus = realizedGainAndLoss > 0;
+                const isMinus = realizedGainAndLoss < 0;
+                const isZero = realizedGainAndLoss === 0;
+                return (
                   <tr
-                    key={index}
+                    key={`realized-${index}`}
                     className='text-[var(--color-text-subtle)] hover:text-[var(--color-text-main)]'
                   >
                     <td className='text-left'>
@@ -186,45 +231,87 @@ const RealizedGainAndLoss = () => {
                     </td>
                     <td className='text-right'>
                       <p className='text-[var(--color-text-main)]'>
-                        {formatCurrency(
+                        {/* {formatCurrency(
                           item.costBasis[currency] || '0',
                           currency
-                        )}
+                        )} */}
+                        {includeGasUsed
+                          ? formatCurrency(costBasis.toString(), currency)
+                          : formatCurrency(
+                              acquisitionPrice.toString(),
+                              currency
+                            )}
                       </p>
+                      {includeGasUsed && (
+                        <p className={`text-[var(--color-text-brand)] mt-4`}>
+                          {`GAS +${parseFloatPrice(gasFee.toFixed(3))}`}
+                        </p>
+                      )}
                     </td>
                     <td className='text-right'>
                       <p className='text-[var(--color-text-main)]'>
-                        {formatCurrency(
-                          item.proceed[currency] || '0',
-                          currency
-                        )}
+                        {includeGasUsed
+                          ? formatCurrency(
+                              (proceed - proceedGasFee).toString(),
+                              currency
+                            )
+                          : formatCurrency(proceed.toString(), currency)}
                       </p>
+                      {includeGasUsed && (
+                        <p className={`text-[var(--color-text-brand)] mt-4`}>
+                          {`GAS +${parseFloatPrice(proceedGasFee.toFixed(3))}`}
+                        </p>
+                      )}
                     </td>
                     <td className='text-right'>
                       <p
                         className={`${
-                          parseFloat(item.gainLoss[currency] || '0') > 0
+                          realizedGainAndLoss > 0
                             ? 'text-[var(--color-text-success)]'
                             : 'text-[var(--color-text-danger)]'
                         }`}
                       >
-                        {formatCurrency(
-                          item.gainLoss[currency] || '0',
-                          currency
-                        )}
+                        {includeGasUsed
+                          ? formatCurrency(
+                              (
+                                realizedGainAndLoss -
+                                gasFee -
+                                proceedGasFee
+                              ).toString(),
+                              currency
+                            )
+                          : formatCurrency(
+                              realizedGainAndLoss.toString(),
+                              currency
+                            )}
                       </p>
                     </td>
                     <td className='text-right'>
                       <p
                         className={`${
-                          item.roi[currency] === 'infinity'
+                          isZero
                             ? 'text-[var(--color-text-main)]'
-                            : parseFloat(item.roi[currency] as string) > 0
+                            : isPlus
                             ? 'text-[var(--color-text-success)]'
                             : 'text-[var(--color-text-danger)]'
                         }`}
                       >
-                        {formatPercent(item.roi[currency])}
+                        {includeGasUsed
+                          ? formatPercent(
+                              (
+                                ((realizedGainAndLoss -
+                                  gasFee -
+                                  proceedGasFee) /
+                                  (costBasis + proceedGasFee)) *
+                                100
+                              ).toString()
+                            )
+                          : formatPercent(
+                              (
+                                (realizedGainAndLoss / acquisitionPrice) *
+                                100
+                              ).toString()
+                            )}
                       </p>
                     </td>
                     <td className='text-right'>
@@ -239,25 +326,24 @@ const RealizedGainAndLoss = () => {
                         {formatDate(new Date(item.soldDate))}
                       </p>
                     </td>
-                    <td className='text-right'>
-                      <div className='rotate-270 w-16 h-16  ml-auto'>
-                        <CaretDown />
-                      </div>
-                    </td>
+                    {/* <td className='text-right'>
+                        <div className='rotate-270 w-16 h-16  ml-auto'>
+                          <CaretDown />
+                        </div>
+                      </td> */}
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        )}
+                );
+              })}
+          </tbody>
+        </table>
+        <div ref={ref} className='h-1' />
+        {!mergePosts ||
+          (mergePosts?.length === 0 && (
+            <div className='flex justify-center items-center h-[184px] p'>
+              <NoData />
+            </div>
+          ))}
       </div>
-      {latestPage?.isLast !== true && (
-        <div className='flex justify-center mt-20'>
-          <Button id='' onClick={() => handleClickShowMore()}>
-            Show more
-          </Button>
-        </div>
-      )}
     </section>
   );
 };

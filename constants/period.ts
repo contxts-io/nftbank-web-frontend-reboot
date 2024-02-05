@@ -26,7 +26,7 @@ export const PERIOD_LIST: TPeriod[] = [
 ];
 export type TYear = {
   name: string;
-  value: number;
+  value: number | 'all';
 };
 export type TStatus = {
   name: 'Overall' | 'Realized' | 'Unrealized';

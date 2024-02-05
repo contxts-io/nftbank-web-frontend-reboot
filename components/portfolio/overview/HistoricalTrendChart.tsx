@@ -4,6 +4,7 @@ import { portfolioUserAtom } from '@/store/portfolio';
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { formatCurrency, formatDate, mathSqrt } from '@/utils/common';
 import { useMe } from '@/utils/hooks/queries/auth';
+import { useDispatchDailyNav } from '@/utils/hooks/queries/dispatch';
 import {
   useInventoryValueHistorical,
   useInventoryValuePolling,
@@ -29,7 +30,7 @@ const tooltip = ({
     value - w.globals?.series?.[0][0]
   );
   console.log('value', value);
-  console.log('w.globals?.series?.[0][0]', w.globals?.series?.[0][0]);
+  console.log('w.globals.categoryLabels', w.globals.categoryLabels);
   w.globals &&
     (setHoverValue(value), setDiffValue(value - w.globals?.series?.[0][0]));
   return (
@@ -47,18 +48,37 @@ type Props = {
 const HistoricalTrendChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
+  const [isPolling, setIsPolling] = useState<boolean>(true);
   const [historicalValueParam, setHistoricalValueParam] = useAtom(
     overviewHistoricalValueParamAtom
   );
   const { data: inventoryValue, status: statusInventoryValue } =
     useInventoryValuePolling(portfolioUser);
+  const { data: dispatchDailyNav } = useDispatchDailyNav(
+    portfolioUser?.walletAddress || ''
+  );
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
-  } = useInventoryValueHistorical({
-    ...historicalValueParam,
-    ...portfolioUser,
-  });
+  } = useInventoryValueHistorical(
+    {
+      ...historicalValueParam,
+      ...portfolioUser,
+      taskId: dispatchDailyNav?.taskId,
+    },
+    isPolling
+  );
+  useEffect(() => {
+    setIsPolling(true);
+  }, []);
+  useEffect(() => {
+    console.log('inventoryValueHistorical', inventoryValueHistorical);
+    statusInventoryValueHistorical === 'success' &&
+      !!inventoryValueHistorical &&
+      !!inventoryValueHistorical.data &&
+      inventoryValueHistorical.data.length > 0 &&
+      setIsPolling(false);
+  }, [statusInventoryValueHistorical]);
   const [isPlus, setIsPlus] = useState(false);
   let category: string[] = [];
 
@@ -94,12 +114,13 @@ const HistoricalTrendChart = (props: Props) => {
         //       month: 'short',
         //       day: 'numeric',
         //     };
-        const date = new Date(item.processedAt).toLocaleDateString(
-          'en-us',
-          option
-        );
+        const date = new Date(
+          item.processedAt.replace(/\s\d{2}:\d{2}:\d{2}T/, 'T')
+        ).toLocaleDateString('en-us', option);
+
         const parts = date.replaceAll(',', '').split(' ');
         const yDate = `${parts[2]}, ${parts[0]} ${parts[1]}`;
+        console.log('data date ::: ', date, 'parts ::: ', parts);
         // historicalValueParam.window === 'all'
         //   ? category.push(yDate)
         //   : category.push(date);
@@ -121,7 +142,6 @@ const HistoricalTrendChart = (props: Props) => {
       _series[0].data.push(todayValue);
 
     category.push(todayDate);
-    console.log('series', _series);
     return _series;
   }, [inventoryValueHistorical, currency, category, inventoryValue?.value]);
   useEffect(() => {
@@ -129,16 +149,15 @@ const HistoricalTrendChart = (props: Props) => {
       ? parseFloat(inventoryValue.value[currency].amount || '0')
       : 0;
     const initValue = parseFloat(
-      inventoryValueHistorical?.data[0]?.value?.[currency] || '0'
+      inventoryValueHistorical?.data?.[0]?.value?.[currency] || '0'
     );
     initValue < currentValue ? setIsPlus(true) : setIsPlus(false);
-  }, [inventoryValue?.value, inventoryValueHistorical?.data[0]]);
+  }, [inventoryValue?.value, inventoryValueHistorical?.data?.[0]]);
 
   /* 최소값 */
   let minValue = useMemo(() => {
-    console.log('seriesData', seriesData);
     let _series = seriesData;
-    let _minimumValue = _series[0]?.data[0] || 0;
+    let _minimumValue = _series[0]?.data?.[0] || 0;
     _series[0].data.map((item) => {
       if (item && item < _minimumValue) {
         _minimumValue = item;
@@ -167,9 +186,7 @@ const HistoricalTrendChart = (props: Props) => {
   const markerFill = 'var(--color-elevation-surface)';
   const borderColor = 'var(--color-border-accent-gray)';
   const textSubtle = 'var(--color-text-subtle)';
-  // const minValue = series[0].data[0];
   const options = useMemo(() => {
-    console.log('series[0].data[0]', series[0]?.data[0] || 0);
     return {
       chart: {
         toolbar: {
@@ -240,7 +257,7 @@ const HistoricalTrendChart = (props: Props) => {
       annotations: {
         yaxis: [
           {
-            y: mathSqrt(series[0]?.data[0] || 0),
+            y: mathSqrt(series[0]?.data?.[0] || 0),
             borderColor: borderColor,
             borderStyle: 'dashed',
           },
@@ -308,13 +325,13 @@ const HistoricalTrendChart = (props: Props) => {
         },
       },
     };
-  }, [series[0]?.data[0], isPlus, currency]);
+  }, [series[0]?.data?.[0], isPlus, currency]);
 
   const handleHover = (value: any) => {
     const currentValue = inventoryValue?.value[currency]?.amount
       ? parseFloat(inventoryValue.value[currency].amount || '0')
       : 0;
-    const initValue = seriesData[0].data[0] || 0;
+    const initValue = seriesData[0].data?.[0] || 0;
     initValue < value ? setIsPlus(true) : setIsPlus(false);
     props.setHoverValue(value);
     value === null &&

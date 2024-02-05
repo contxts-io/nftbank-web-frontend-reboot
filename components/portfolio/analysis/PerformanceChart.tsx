@@ -10,6 +10,7 @@ import { currencyAtom } from '@/store/currency';
 import { formatPercent, mathSqrt } from '@/utils/common';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { BasicParam } from '@/interfaces/request';
+import { useDispatchPerformance } from '@/utils/hooks/queries/dispatch';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w, year }: any) => {
   // const roi = series[seriesIndex][dataPointIndex];
@@ -39,30 +40,63 @@ type Props = {
 };
 const PerformanceChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
+  const { data: dispatchPerformance } = useDispatchPerformance(
+    props.requestParam?.walletAddress || ''
+  );
+  const [isPolling, setIsPolling] = useState<boolean>(true);
   const { data: performanceChart, status: statusPerformanceChart } =
-    usePerformanceChart({
-      ...props.requestParam,
-      gnlChartType: props.requestParam.gnlChartType.toLowerCase() as
-        | 'overall'
-        | 'realized'
-        | 'unrealized',
-    });
+    usePerformanceChart(
+      {
+        ...props.requestParam,
+        taskId: dispatchPerformance?.taskId,
+        gnlChartType: props.requestParam.gnlChartType.toLowerCase() as
+          | 'overall'
+          | 'realized'
+          | 'unrealized',
+      },
+      isPolling
+    );
   const [maxAbs, setMaxAbs] = useState(0);
   const barBackground = 'var(--color-elevation-surface-raised)';
   const labelColor = 'var(--color-text-subtle)';
-
+  useEffect(() => {
+    setIsPolling(true);
+  }, []);
+  useEffect(() => {
+    statusPerformanceChart === 'success' &&
+      performanceChart.statusCode !== 'PENDING' &&
+      setIsPolling(false);
+  }, [statusPerformanceChart]);
+  useEffect(() => {
+    setIsPolling(true);
+  }, [props.requestParam]);
   let seriesData = useMemo(() => {
-    if (!performanceChart || performanceChart.data.length == 0) return [];
+    if (
+      !performanceChart ||
+      !performanceChart.data ||
+      performanceChart.data.length == 0
+    )
+      return [];
     return [
       {
         name: 'positive',
         data: Array(13)
           .fill(0)
           .map((_, index) => {
-            const value = parseFloat(
-              performanceChart.data[index]?.roi?.[currency] || '0'
-            );
-            return value >= 0 ? value : 0;
+            // const value = parseFloat(
+            //   performanceChart.data[index]?.roi?.[currency] || '0'
+            // );
+            const month = index + 1;
+            const value =
+              performanceChart.data?.find((item) => {
+                const date = new Date(item.processedAt);
+                const _value = date.getMonth() + 1 === month ? item : null;
+                return _value;
+              })?.roi?.[currency] || '0';
+            return typeof parseFloat(value) === 'number' &&
+              parseFloat(value) > 0
+              ? parseFloat(value)
+              : null;
           }),
       },
       {
@@ -70,16 +104,26 @@ const PerformanceChart = (props: Props) => {
         data: Array(13)
           .fill(0)
           .map((_, index) => {
-            const value = parseFloat(
-              performanceChart.data[index]?.roi?.[currency] || '0'
-            );
-            return value <= 0 ? value : 0;
+            // const value = parseFloat(
+            //   performanceChart.data[index]?.roi?.[currency] || '0'
+            // );
+            // return value <= 0 ? value : 0;
+            const month = index + 1;
+            const value =
+              performanceChart.data?.find((item) => {
+                const date = new Date(item.processedAt);
+                const _value = date.getMonth() + 1 === month ? item : null;
+                return _value;
+              })?.roi?.[currency] || '0';
+            return typeof parseFloat(value) === 'number' &&
+              parseFloat(value) <= 0
+              ? parseFloat(value)
+              : null;
           }),
       },
     ];
   }, [performanceChart, currency, props.requestParam]);
   useEffect(() => {
-    console.log('series', seriesData);
     if (
       !seriesData ||
       seriesData.length == 0 ||
@@ -89,13 +133,12 @@ const PerformanceChart = (props: Props) => {
       return;
     const maxAbs = Math.max(
       ...[
-        ...seriesData[0].data.map((value) => Math.abs(value)),
-        ...seriesData[1].data.map((value) => Math.abs(value)),
+        ...seriesData[0].data.map((value) => Math.abs(value || 0)),
+        ...seriesData[1].data.map((value) => Math.abs(value || 0)),
       ]
     );
     console.log('maxAbs', maxAbs);
     setMaxAbs(maxAbs);
-    console.log('seriesData', seriesData);
   }, [seriesData]);
   const options = {
     chart: {
@@ -224,6 +267,11 @@ const PerformanceChart = (props: Props) => {
                 ...options.chart,
                 type: 'bar',
               },
+              yaxis: {
+                ...options.yaxis,
+                min: maxAbs === 0 ? -1 : -mathSqrt(-maxAbs),
+                max: maxAbs === 0 ? 1 : mathSqrt(maxAbs),
+              },
             }}
             type='bar'
             // series={_series}
@@ -232,8 +280,12 @@ const PerformanceChart = (props: Props) => {
                 return {
                   name: series.name,
                   data: series.data.map((item) => {
-                    console.log('item', item, mathSqrt(item));
-                    return item && mathSqrt(item);
+                    // return item && mathSqrt(item);
+                    return item && typeof item == 'number'
+                      ? item >= 0
+                        ? mathSqrt(item)
+                        : -mathSqrt(item)
+                      : 0;
                   }),
                 };
               }),

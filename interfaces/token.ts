@@ -1,6 +1,6 @@
 import { Collection, CollectionMetadata, PerformanceValue, TValuation, Value, ValueNested } from "./collection";
 export type TokenBasic = {name:string,imageUrl:string,tokenId:string}
-export type TToken = {
+export type TRealizedToken = {
   collection: CollectionMetadata,
   token: TokenBasic,
   amount: number,
@@ -10,6 +10,9 @@ export type TToken = {
   roi: Value,
   acquisitionDate: string,
   soldDate: string,
+  acquisitionPrice: Value,
+  gasFee: Value,
+  proceedGasFee: Value,
 }
 export type Token = Collection & {
   token: {

@@ -31,9 +31,7 @@ const SummaryValueContainer = () => {
     useSummaryUnrealized(portfolioUser);
   const { data: realized, status: statusRealized } =
     useSummaryRealized(portfolioUser);
-  useEffect(() => {
-    console.log('portfolioUser', portfolioUser);
-  }, [portfolioUser]);
+
   return (
     <section className={`font-caption-medium ${styles.container}`}>
       <article className={styles.valueRect}>
@@ -75,14 +73,9 @@ const SummaryValueContainer = () => {
           </p>
         )}
       </article>
-      {/**
-       * 
-       * 
-       * sprint 1
-       * 
-       * <article className={styles.valueRect}>
+      <article className={styles.valueRect}>
         <div className={styles.subTitleWrapper}>
-          <p className={styles.subTitle}>Total Gain&Loss</p>
+          <p className={styles.subTitle}>Unrealized Gain&Loss</p>
         </div>
         <div className={styles.row}>
           {statusUnrealized === 'loading' && (
@@ -91,15 +84,15 @@ const SummaryValueContainer = () => {
           {statusUnrealized === 'success' && (
             <p
               className={`font-subtitle02-bold ${
-                isPlus(unrealized.gainLoss[currency].amount || '0') === '-'
+                isPlus(unrealized?.gainLoss[currency].amount || '0') === '-'
                   ? 'text-[var(--color-text-main)]'
-                  : isPlus(unrealized.gainLoss[currency].amount || '0')
+                  : isPlus(unrealized?.gainLoss[currency].amount || '0')
                   ? 'text-[var(--color-text-success)]'
                   : 'text-[var(--color-text-danger)]'
               }`}
             >
               {formatCurrency(
-                unrealized.gainLoss[currency].amount || '0',
+                unrealized?.gainLoss[currency].amount || '0',
                 currency
               )}
             </p>
@@ -135,7 +128,7 @@ const SummaryValueContainer = () => {
       </article>
       <article className={styles.valueRect}>
         <div className={styles.subTitleWrapper}>
-          <p className={styles.subTitle}>Total Gain&Loss</p>
+          <p className={styles.subTitle}>Realized Gain&Loss</p>
         </div>
         {statusRealized === 'loading' && (
           <SkeletonLoader className='w-80 h-20' />
@@ -154,8 +147,7 @@ const SummaryValueContainer = () => {
           </p>
         )}
       </article>
-       */}
-      <article className={styles.valueRect}>
+      {/* <article className={styles.valueRect}>
         <div className={styles.subTitleWrapper}>
           <p className={styles.subTitle}>Total Gain&Loss</p>
         </div>
@@ -179,7 +171,7 @@ const SummaryValueContainer = () => {
             {formatCurrency(unrealized?.gainLoss[currency].amount, currency)}
           </p>
         )}
-      </article>
+      </article> */}
     </section>
   );
 };
