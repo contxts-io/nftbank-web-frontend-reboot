@@ -100,7 +100,6 @@ const InventoryItemTable = (props: Props) => {
     setRequestParam((prev) => ({
       ...prev,
       page: 0,
-      includeGasUsed: priceType === 'costBasis' ? 'true' : 'false',
     }));
   }, [priceType]);
   const mergePosts = useMemo(
