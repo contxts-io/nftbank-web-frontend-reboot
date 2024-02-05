@@ -124,7 +124,7 @@ const RealizedGainAndLoss = () => {
   }, [selectedStatus, selectedYear]);
 
   const mergePosts = useMemo(
-    () => realizedTokenList?.pages,
+    () => realizedTokenList?.pages.flatMap((page) => page.data),
     [realizedTokenList?.pages, requestParams]
   );
   useEffect(() => {
@@ -192,8 +192,8 @@ const RealizedGainAndLoss = () => {
                 </tr>
               </thead>
               <tbody className='font-caption-medium'>
-                {mergePosts?.map((page, pageIndex) =>
-                  page.data.map((item, index) => {
+                {mergePosts &&
+                  mergePosts?.map((item, index) => {
                     const acquisitionPrice = parseFloatPrice(
                       item.acquisitionPrice?.[currency]
                     );
@@ -209,7 +209,7 @@ const RealizedGainAndLoss = () => {
                     const isZero = realizedGainAndLoss === 0;
                     return (
                       <tr
-                        key={`${pageIndex}-${index}`}
+                        key={`realized-${index}`}
                         className='text-[var(--color-text-subtle)] hover:text-[var(--color-text-main)]'
                       >
                         <td className='text-left'>
@@ -350,16 +350,16 @@ const RealizedGainAndLoss = () => {
                       </td> */}
                       </tr>
                     );
-                  })
-                )}
+                  })}
               </tbody>
             </table>
             <div ref={ref} className='h-1' />
-            {realizedTokenList?.pages.length === 0 && (
-              <div className='flex justify-center items-center h-[184px] p'>
-                <NoData />
-              </div>
-            )}
+            {!mergePosts ||
+              (mergePosts?.length === 0 && (
+                <div className='flex justify-center items-center h-[184px] p'>
+                  <NoData />
+                </div>
+              ))}
           </>
         )}
       </div>
