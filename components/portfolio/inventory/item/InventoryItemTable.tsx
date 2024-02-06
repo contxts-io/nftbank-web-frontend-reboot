@@ -8,6 +8,7 @@ import { Token } from '@/interfaces/token';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
+  defaultImg,
   formatCurrency,
   formatDate,
   formatPercent,
@@ -206,14 +207,16 @@ const InventoryItemTable = (props: Props) => {
                       >
                         <td className='text-left p-0'>
                           <div className={`flex items-center my-8`}>
-                            <div className={styles.tokenImage}>
+                            <div
+                              className={`${styles.tokenImage} bg-[--color-elevation-surface-raised] `}
+                            >
                               {data?.token.imageUrl ? (
                                 <img
                                   src={data?.token.imageUrl}
                                   width={32}
                                   height={32}
-                                  placeholder='data:image/icon/nftbank_icon.svg'
                                   alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
+                                  onError={defaultImg}
                                 />
                               ) : (
                                 <div className='w-32 h-32 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center border-1'>
