@@ -296,12 +296,12 @@ export const formatFloat = (price: any): string => {
   const value = typeof price === 'number' ? price : parseFloat(price);
   return typeof value === 'number' && !Number.isNaN(value) ? value.toFixed(3).toString() : '-';
 }
-export const defaultImg = (e: SyntheticEvent<HTMLImageElement, Event>) => {
+export const defaultImg = (e: SyntheticEvent<HTMLImageElement, Event>, size?: number ) => {
   e.currentTarget.src = '/icon/image_square.svg';
   e.currentTarget.classList.remove('w-full', 'h-full');
   e.currentTarget.classList.add(
-    'w-40',
-    'h-40',
+    `w-${size || 40}`,
+    `h-${size || 40}`,
     'fill-[var(--color-background-neutral-bold)]'
   );
 };

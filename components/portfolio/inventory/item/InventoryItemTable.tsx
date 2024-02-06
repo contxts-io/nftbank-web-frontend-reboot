@@ -216,7 +216,7 @@ const InventoryItemTable = (props: Props) => {
                                   width={32}
                                   height={32}
                                   alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
-                                  onError={defaultImg}
+                                  onError={(e) => defaultImg(e, 12)}
                                 />
                               ) : (
                                 <div className='w-32 h-32 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center border-1'>
