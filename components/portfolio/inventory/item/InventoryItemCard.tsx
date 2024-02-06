@@ -15,6 +15,8 @@ import SkeletonLoader from '@/components/SkeletonLoader';
 import { selectedTokenAtom } from '@/store/portfolio';
 import ValuationDropdown from './ValuationDropdown';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
+import { SyntheticEvent } from 'react';
+import defaultImg from '@/public/icon/image_square.svg';
 
 const InventoryItemCard = ({ token }: { token: Token }) => {
   const currency = useAtomValue(currencyAtom);
@@ -32,19 +34,31 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
   const handleClickToken = (token: Token) => {
     setSelectedToken(token);
   };
+  const addDefaultImg = (e: SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = '/icon/image_square.svg';
+    e.currentTarget.classList.remove('w-full', 'h-full');
+    e.currentTarget.classList.add(
+      'w-40',
+      'h-40',
+      'fill-[var(--color-background-neutral-bold)]'
+    );
+
+    console.log('error', e.currentTarget.src);
+  };
   return (
     <article
       className={`font-caption-medium ${styles.cardWrapper}`}
       onClick={() => handleClickToken(token)}
     >
       {token.token.imageUrl ? (
-        <div className='flex w-full pb-[100%] overflow-hidden relative'>
+        <div className='flex w-full pb-[100%] overflow-hidden relative bg-[var(--color-elevation-surface-raised)]'>
           <img
             src={token.token.imageUrl}
             alt={`${token.collection.name}-${token.token.name}`}
             // objectFit='contain' // 이미지를 가운데 기준으로 크롭
             // objectPosition='center center'
             className='w-full h-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'
+            onError={addDefaultImg}
           />
         </div>
       ) : (
