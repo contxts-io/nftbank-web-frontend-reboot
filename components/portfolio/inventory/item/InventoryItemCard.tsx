@@ -42,8 +42,6 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
       'h-40',
       'fill-[var(--color-background-neutral-bold)]'
     );
-
-    console.log('error', e.currentTarget.src);
   };
   return (
     <article
