@@ -4,6 +4,7 @@ import { Token } from '@/interfaces/token';
 import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import {
+  defaultImg,
   formatCurrency,
   formatDate,
   formatPercent,
@@ -16,7 +17,6 @@ import { selectedTokenAtom } from '@/store/portfolio';
 import ValuationDropdown from './ValuationDropdown';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
 import { SyntheticEvent } from 'react';
-import defaultImg from '@/public/icon/image_square.svg';
 
 const InventoryItemCard = ({ token }: { token: Token }) => {
   const currency = useAtomValue(currencyAtom);
@@ -34,15 +34,6 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
   const handleClickToken = (token: Token) => {
     setSelectedToken(token);
   };
-  const addDefaultImg = (e: SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = '/icon/image_square.svg';
-    e.currentTarget.classList.remove('w-full', 'h-full');
-    e.currentTarget.classList.add(
-      'w-40',
-      'h-40',
-      'fill-[var(--color-background-neutral-bold)]'
-    );
-  };
   return (
     <article
       className={`font-caption-medium ${styles.cardWrapper}`}
@@ -56,7 +47,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
             // objectFit='contain' // 이미지를 가운데 기준으로 크롭
             // objectPosition='center center'
             className='w-full h-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'
-            onError={addDefaultImg}
+            onError={defaultImg}
           />
         </div>
       ) : (

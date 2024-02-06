@@ -17,7 +17,7 @@ import { Tooltip } from '@nextui-org/react';
 import EtherscanLogo from '@/public/icon/EtherscanLogo';
 import FailToLoad from '@/components/error/FailToLoad';
 import NoData from '@/components/error/NoData';
-import { customToFixed, shortenAddress } from '@/utils/common';
+import { customToFixed, defaultImg, shortenAddress } from '@/utils/common';
 
 const TextInfo = ({
   title,
@@ -185,12 +185,15 @@ const InventoryItemDetail = ({ token, walletAddress }: Props) => {
         {viewType === 'overview' && (
           <article className='flex flex-col items-center w-full'>
             <div className='flex items-center gap-x-20 my-40'>
-              <div className={`${styles.tokenImage} relative`}>
+              <div
+                className={`${styles.tokenImage} relative bg-[var(--color-elevation-surface-raised)]`}
+              >
                 {token.token.imageUrl ? (
                   <img
                     src={token.token.imageUrl}
                     alt={`${token.token.name}-${token.token.tokenId}`}
                     className='w-full h-full absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]'
+                    onError={defaultImg}
                   />
                 ) : (
                   <div className='w-full pb-[100%] flex items-center justify-center relative bg-[var(--color-elevation-surface-raised)]'>
