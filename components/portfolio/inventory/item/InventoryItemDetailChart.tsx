@@ -14,6 +14,7 @@ import {
   reverseMathSqrt,
 } from '@/utils/common';
 import { TCurrency } from '@/interfaces/constants';
+import { ApexOptions } from 'apexcharts';
 
 const COLORS = [
   'var(--color-chart-accent-teal-bold)',
@@ -240,11 +241,24 @@ const InventoryItemDetailChart = ({
     console.log('Max Values: overallMaxValue', overallMaxValue);
     return overallMaxValue;
   }, [seriesData]);
-  const options = {
+  const options: ApexOptions = {
     chart: {
       id: 'basic-bar',
       toolbar: {
         show: false,
+      },
+      animations: {
+        enabled: false,
+        easing: 'easeinout',
+        speed: 800,
+        animateGradually: {
+          enabled: true,
+          delay: 150,
+        },
+        dynamicAnimation: {
+          enabled: true,
+          speed: 350,
+        },
       },
     },
     xaxis: {
@@ -318,7 +332,7 @@ const InventoryItemDetailChart = ({
         );
       },
     },
-    dataLabel: {
+    dataLabels: {
       enabled: false,
     },
     legend: {
