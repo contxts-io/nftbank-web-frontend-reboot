@@ -12,13 +12,11 @@ import {
   formatCurrency,
   formatDate,
   formatPercent,
-  isPlus,
   mappingConstants,
   parseFloatPrice,
   shortenAddress,
 } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
-import { TValuationType } from '@/interfaces/constants';
 import { selectedTokenAtom } from '@/store/portfolio';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
 import FailToLoad from '@/components/error/FailToLoad';

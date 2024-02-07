@@ -60,35 +60,30 @@ const InventoryItemSection = () => {
   //   };
   // }, []);
   return (
-    <section className='transition-all duration-200'>
-      <p className='font-subtitle01-medium text-[var(--color-text-main)]'>
-        Items
-      </p>
-      <div
-        className={`mt-24 ${
-          collections.length > 0 ? `mb-16 ${styles.show}` : styles.hide
-        }`}
-      >
-        <InventoryItemSelectCollection />
-      </div>
-      <section
-        className={`${styles.container} h-[calc(100vh-250px)]`}
-        ref={targetRef}
-      >
-        <div className='w-fit h-full'>
-          {isFilterOpen && (
-            <InventoryItemFilter handleFilterOpen={setIsFilterOpen} />
-          )}
+    <section className='transition-all duration-200 flex items-start'>
+      {isFilterOpen && (
+        <InventoryItemFilter handleFilterOpen={setIsFilterOpen} />
+      )}
+      <div className='flex-1'>
+        <p className='font-subtitle01-medium text-[var(--color-text-main)] my-20 mx-16'>
+          Items
+        </p>
+        <div
+          className={`mt-24 mx-16 ${
+            collections.length > 0 ? `mb-16 ${styles.show}` : styles.hide
+          }`}
+        >
+          <InventoryItemSelectCollection />
         </div>
-        <div className='w-full'>
-          <div className='overflow-hidden'>
+        <section className={`${styles.container}`}>
+          <div className='w-full'>
             <InventoryItemList
               isFilterOpen={isFilterOpen}
               handleFilterOpen={setIsFilterOpen}
             />
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </section>
   );
 };

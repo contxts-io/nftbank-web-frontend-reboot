@@ -18,7 +18,7 @@
   @apply border-1 border-[var(--color-border-main)] flex items-center overflow-hidden justify-center mr-8 relative;
 }
 .tableHeadRow th {
-  @apply border-t-1 border-b-1 border-[var(--color-border-main)] px-12;
+  @apply border-y-1 border-[var(--color-border-main)] px-12;
 }
 
 .blanc {

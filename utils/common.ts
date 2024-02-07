@@ -299,6 +299,7 @@ export const formatFloat = (price: any): string => {
 export const defaultImg = (e: SyntheticEvent<HTMLImageElement, Event>, size?: number ) => {
   e.currentTarget.src = '/icon/image_square.svg';
   e.currentTarget.classList.remove('w-full', 'h-full');
+  e.currentTarget.parentElement?.classList.add('bg-[var(--color-elevation-surface-raised)]');
   e.currentTarget.classList.add(
     `w-${size || 40}`,
     `h-${size || 40}`,
