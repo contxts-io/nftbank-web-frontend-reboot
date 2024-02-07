@@ -139,12 +139,12 @@ const InventoryItemDetail = ({ token, walletAddress }: Props) => {
               value={inventoryItem.assetContract}
               href={`https://etherscan.io/address/${inventoryItem.assetContract}`}
             />
-            {/* <TextInfo
+            <TextInfo
               title='Acq. tx hash'
-              value={inventoryItem.assetContract}
+              value={inventoryItem.txHash}
               tooltip='Based on latest acquisition date'
-              href={`https://etherscan.io/address/${inventoryItem.assetContract}`}
-            /> */}
+              href={`https://etherscan.io/tx/${inventoryItem.txHash}`}
+            />
           </div>
         )}
         {/**

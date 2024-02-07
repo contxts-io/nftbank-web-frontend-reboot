@@ -10,6 +10,7 @@ export type Metadata =
     networkId: TChain,
     lastAcquisitionDate: string,
     assetContract: string,
+    txHash: string,
     collection: CollectionMetadata,
     marketPlace: string,
     tokenId: string,
