@@ -5,7 +5,7 @@
   @apply bg-[var(--color-elevation-surface)];
 }
 .stickyBar {
-  @apply sticky top-[-1px] z-20;
+  @apply sticky top-119 z-20;
 }
 .tableHeadRow {
   @apply h-40 py-12 text-[var(--color-text-subtle)];

@@ -107,27 +107,33 @@ const InventoryItemFilter = (props: Props) => {
 
   return (
     <aside className={`${styles.container}`}>
-      <div className='flex justify-between items-center my-12'>
-        <h2 className='font-subtitle02-bold text-[var(--color-text-main)]'>
-          Collection
-        </h2>
-        <div
-          onClick={() => handleFilterOpen(false)}
-          id={'filterButton'}
-          className={styles.filterButton}
-        >
-          <Filter />
+      <div className='h-92 my-12'>
+        <div className='flex justify-between items-center mb-12'>
+          <h2 className='font-subtitle02-bold text-[var(--color-text-main)]'>
+            Collection
+          </h2>
+          <div
+            onClick={() => handleFilterOpen(false)}
+            id={'filterButton'}
+            className={styles.filterButton}
+          >
+            <Filter />
+          </div>
         </div>
-      </div>
-      <div className={`${styles.inputContainer}`}>
-        <MagnifyingGlass className={`${styles.icon}`} width={16} height={16} />
-        <input
-          type='text'
-          placeholder={'Search by collections'}
-          className={`${styles.textInput} font-caption-regular`}
-          onChange={handleInputText}
-          value={searchText}
-        />
+        <div className={`${styles.inputContainer}`}>
+          <MagnifyingGlass
+            className={`${styles.icon}`}
+            width={16}
+            height={16}
+          />
+          <input
+            type='text'
+            placeholder={'Search by collections'}
+            className={`${styles.textInput} font-caption-regular`}
+            onChange={handleInputText}
+            value={searchText}
+          />
+        </div>
       </div>
       {status === 'error' && (
         <div className='mt-40'>
@@ -140,63 +146,201 @@ const InventoryItemFilter = (props: Props) => {
         </div>
       )}
       {status === 'success' && mergePosts && mergePosts?.length > 0 && (
-        <div className='h-full overflow-y-scroll'>
-          <ul className='mt-12 w-full flex flex-col'>
-            {mergePosts?.map((item, index) => {
-              const isSelected = selectedCollection?.find((collection) => {
-                return (
-                  collection.collection.assetContract ===
-                  item.collection.assetContract
-                );
-              })
-                ? true
-                : false;
+        <ul className='mt-12 w-full flex flex-col overflow-y-scroll max-h-[calc(100%-124px)]'>
+          {mergePosts?.map((item, index) => {
+            const isSelected = selectedCollection?.find((collection) => {
               return (
-                <Fragment key={`${item.collection.assetContract}-${index}`}>
-                  <li
-                    className='flex mb-12 items-center cursor-pointer'
-                    onClick={() => handleClickCheckBox(item)}
-                  >
-                    <CheckBox
-                      checked={isSelected}
-                      onClick={() => handleClickCheckBox(item)}
-                      className={`mr-8 ${
-                        isSelected && 'bg-[var(--color-background-brand-bold)]'
-                      }`}
-                    />
-                    {item.collection.imageUrl ? (
-                      <div className='w-20 h-20 rounded-full overflow-hidden mr-8'>
-                        <img
-                          src={item.collection.imageUrl}
-                          className='rounded-full w-full object-center'
-                          alt={`${
-                            item.collection.name ||
-                            item.collection.assetContract
-                          } image`}
-                        />
-                      </div>
-                    ) : (
-                      <div className='rounded-full w-20 h-20 flex items-center justify-center border-1 border-[var(--color-border-main)] mr-8'>
-                        <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)]' />
-                      </div>
-                    )}
-                    <p
-                      className={`font-caption-medium ${styles.pCollectionName}`}
-                    >
-                      {item.collection.name ||
-                        shortenAddress(item.collection.assetContract)}
-                    </p>
-                  </li>
-                </Fragment>
+                collection.collection.assetContract ===
+                item.collection.assetContract
               );
-            })}
-            {!data?.pages?.[data?.pages.length - 1].isLast && (
-              <li ref={ref} className='h-43 '>
-                more
-              </li>
-            )}
-          </ul>
-        </div>
+            })
+              ? true
+              : false;
+            return (
+              <Fragment key={`${item.collection.assetContract}-${index}`}>
+                <li
+                  className='flex mb-12 items-center cursor-pointer'
+                  onClick={() => handleClickCheckBox(item)}
+                >
+                  <CheckBox
+                    checked={isSelected}
+                    onClick={() => handleClickCheckBox(item)}
+                    className={`mr-8 ${
+                      isSelected && 'bg-[var(--color-background-brand-bold)]'
+                    }`}
+                  />
+                  {item.collection.imageUrl ? (
+                    <div className='w-20 h-20 rounded-full overflow-hidden mr-8'>
+                      <img
+                        src={item.collection.imageUrl}
+                        className='rounded-full w-full object-center'
+                        alt={`${
+                          item.collection.name || item.collection.assetContract
+                        } image`}
+                      />
+                    </div>
+                  ) : (
+                    <div className='rounded-full w-20 h-20 flex items-center justify-center border-1 border-[var(--color-border-main)] mr-8'>
+                      <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)]' />
+                    </div>
+                  )}
+                  <p
+                    className={`font-caption-medium ${styles.pCollectionName}`}
+                  >
+                    {item.collection.name ||
+                      shortenAddress(item.collection.assetContract)}
+                  </p>
+                </li>
+              </Fragment>
+            );
+          })}
+          {mergePosts?.map((item, index) => {
+            const isSelected = selectedCollection?.find((collection) => {
+              return (
+                collection.collection.assetContract ===
+                item.collection.assetContract
+              );
+            })
+              ? true
+              : false;
+            return (
+              <Fragment key={`${item.collection.assetContract}-${index}`}>
+                <li
+                  className='flex mb-12 items-center cursor-pointer'
+                  onClick={() => handleClickCheckBox(item)}
+                >
+                  <CheckBox
+                    checked={isSelected}
+                    onClick={() => handleClickCheckBox(item)}
+                    className={`mr-8 ${
+                      isSelected && 'bg-[var(--color-background-brand-bold)]'
+                    }`}
+                  />
+                  {item.collection.imageUrl ? (
+                    <div className='w-20 h-20 rounded-full overflow-hidden mr-8'>
+                      <img
+                        src={item.collection.imageUrl}
+                        className='rounded-full w-full object-center'
+                        alt={`${
+                          item.collection.name || item.collection.assetContract
+                        } image`}
+                      />
+                    </div>
+                  ) : (
+                    <div className='rounded-full w-20 h-20 flex items-center justify-center border-1 border-[var(--color-border-main)] mr-8'>
+                      <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)]' />
+                    </div>
+                  )}
+                  <p
+                    className={`font-caption-medium ${styles.pCollectionName}`}
+                  >
+                    {item.collection.name ||
+                      shortenAddress(item.collection.assetContract)}
+                  </p>
+                </li>
+              </Fragment>
+            );
+          })}
+          {mergePosts?.map((item, index) => {
+            const isSelected = selectedCollection?.find((collection) => {
+              return (
+                collection.collection.assetContract ===
+                item.collection.assetContract
+              );
+            })
+              ? true
+              : false;
+            return (
+              <Fragment key={`${item.collection.assetContract}-${index}`}>
+                <li
+                  className='flex mb-12 items-center cursor-pointer'
+                  onClick={() => handleClickCheckBox(item)}
+                >
+                  <CheckBox
+                    checked={isSelected}
+                    onClick={() => handleClickCheckBox(item)}
+                    className={`mr-8 ${
+                      isSelected && 'bg-[var(--color-background-brand-bold)]'
+                    }`}
+                  />
+                  {item.collection.imageUrl ? (
+                    <div className='w-20 h-20 rounded-full overflow-hidden mr-8'>
+                      <img
+                        src={item.collection.imageUrl}
+                        className='rounded-full w-full object-center'
+                        alt={`${
+                          item.collection.name || item.collection.assetContract
+                        } image`}
+                      />
+                    </div>
+                  ) : (
+                    <div className='rounded-full w-20 h-20 flex items-center justify-center border-1 border-[var(--color-border-main)] mr-8'>
+                      <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)]' />
+                    </div>
+                  )}
+                  <p
+                    className={`font-caption-medium ${styles.pCollectionName}`}
+                  >
+                    {item.collection.name ||
+                      shortenAddress(item.collection.assetContract)}
+                  </p>
+                </li>
+              </Fragment>
+            );
+          })}
+          {mergePosts?.map((item, index) => {
+            const isSelected = selectedCollection?.find((collection) => {
+              return (
+                collection.collection.assetContract ===
+                item.collection.assetContract
+              );
+            })
+              ? true
+              : false;
+            return (
+              <Fragment key={`${item.collection.assetContract}-${index}`}>
+                <li
+                  className='flex mb-12 items-center cursor-pointer'
+                  onClick={() => handleClickCheckBox(item)}
+                >
+                  <CheckBox
+                    checked={isSelected}
+                    onClick={() => handleClickCheckBox(item)}
+                    className={`mr-8 ${
+                      isSelected && 'bg-[var(--color-background-brand-bold)]'
+                    }`}
+                  />
+                  {item.collection.imageUrl ? (
+                    <div className='w-20 h-20 rounded-full overflow-hidden mr-8'>
+                      <img
+                        src={item.collection.imageUrl}
+                        className='rounded-full w-full object-center'
+                        alt={`${
+                          item.collection.name || item.collection.assetContract
+                        } image`}
+                      />
+                    </div>
+                  ) : (
+                    <div className='rounded-full w-20 h-20 flex items-center justify-center border-1 border-[var(--color-border-main)] mr-8'>
+                      <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)]' />
+                    </div>
+                  )}
+                  <p
+                    className={`font-caption-medium ${styles.pCollectionName}`}
+                  >
+                    {item.collection.name ||
+                      shortenAddress(item.collection.assetContract)}
+                  </p>
+                </li>
+              </Fragment>
+            );
+          })}
+          {!data?.pages?.[data?.pages.length - 1].isLast && (
+            <li ref={ref} className='h-43 '>
+              more
+            </li>
+          )}
+        </ul>
       )}
       <div>
         {isFetching && !isFetchingNextPage ? 'Background Updating...' : null}

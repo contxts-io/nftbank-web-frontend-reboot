@@ -352,7 +352,7 @@ const InventoryItemTable = (props: Props) => {
             </tbody>
           </table>
         )}
-      <div ref={ref} className='h-43' />
+      <div ref={ref} />
     </React.Fragment>
   );
 };

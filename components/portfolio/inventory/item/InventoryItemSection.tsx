@@ -75,13 +75,11 @@ const InventoryItemSection = () => {
         >
           <InventoryItemSelectCollection />
         </div>
-        <section className={`${styles.container}`}>
-          <div className='w-full'>
-            <InventoryItemList
-              isFilterOpen={isFilterOpen}
-              handleFilterOpen={setIsFilterOpen}
-            />
-          </div>
+        <section className={styles.container}>
+          <InventoryItemList
+            isFilterOpen={isFilterOpen}
+            handleFilterOpen={setIsFilterOpen}
+          />
         </section>
       </div>
     </section>
