@@ -12,13 +12,11 @@ import {
   formatCurrency,
   formatDate,
   formatPercent,
-  isPlus,
   mappingConstants,
   parseFloatPrice,
   shortenAddress,
 } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
-import { TValuationType } from '@/interfaces/constants';
 import { selectedTokenAtom } from '@/store/portfolio';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
 import FailToLoad from '@/components/error/FailToLoad';
@@ -354,7 +352,7 @@ const InventoryItemTable = (props: Props) => {
             </tbody>
           </table>
         )}
-      <div ref={ref} className='h-43' />
+      <div ref={ref} />
     </React.Fragment>
   );
 };

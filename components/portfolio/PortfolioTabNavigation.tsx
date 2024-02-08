@@ -30,22 +30,22 @@ const PortfolioTabNavigation = () => {
   const [isInventoryModalOpen, setInventoryModalOpen] =
     useState<boolean>(false);
   const router = useRouter();
-  useEffect(() => {
-    const navbar = document.querySelector('.sticky-navbar') as HTMLElement;
-    const cloneNavbar = document.querySelector('.clone-navbar') as HTMLElement;
-    if (navbar) {
-      console.log('window.scrollY ', window?.scrollY);
-      document.addEventListener('scroll', () => {
-        if (window?.scrollY > 132) {
-          navbar.style.position = 'fixed';
-          cloneNavbar.style.height = '69px';
-        } else {
-          navbar.style.position = 'static';
-          cloneNavbar.style.height = '0px';
-        }
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   const navbar = document.querySelector('.sticky-navbar') as HTMLElement;
+  //   const cloneNavbar = document.querySelector('.clone-navbar') as HTMLElement;
+  //   if (navbar) {
+  //     console.log('window.scrollY ', window?.scrollY);
+  //     document.addEventListener('scroll', () => {
+  //       if (window?.scrollY > 132) {
+  //         navbar.style.position = 'fixed';
+  //         cloneNavbar.style.height = '69px';
+  //       } else {
+  //         navbar.style.position = 'static';
+  //         cloneNavbar.style.height = '0px';
+  //       }
+  //     });
+  //   }
+  // }, []);
 
   const handleClickOutside = () => {
     setIsPopoverOpen(false);

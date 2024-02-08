@@ -1,7 +1,8 @@
 .container {
-  @apply flex flex-col overflow-hidden;
-  @apply pr-12 pb-43;
-  @apply min-w-[290px] w-[290px] max-w-[290px] min-h-[calc(100vh-112px)] max-h-[calc(100vh-112px)] border-r-1 border-[var(--color-border-main)];
+  @apply flex flex-col;
+  @apply pr-12;
+  @apply min-w-[290px] w-[290px] max-w-[290px] sticky top-120 border-r-1 border-[var(--color-border-main)];
+  @apply max-h-[calc(100vh-162px)];
 }
 .inputContainer {
   @apply w-full h-36 flex items-center justify-items-start px-12;
