@@ -386,7 +386,7 @@ const InventoryCollectionTable = () => {
                 })}
               </tbody>
             </table>
-            <div ref={ref} className='h-43' />
+            <div ref={ref} />
           </>
         )}
     </section>
