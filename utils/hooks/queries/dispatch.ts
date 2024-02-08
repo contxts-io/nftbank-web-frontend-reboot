@@ -1,6 +1,9 @@
 import { TDispatch, dispatchDailyNav, dispatchPerformance } from "@/apis/dispatch";
+import { TResponseInventoryValueHistory, getInventoryValueHistory } from "@/apis/inventory";
+import { historicalNavTaskIdAtom } from "@/store/dispatchTaskId";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 
 export function useDispatchDailyNav(walletAddress:string) {
   return useQuery<TDispatch,AxiosError>(

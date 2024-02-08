@@ -1,9 +1,12 @@
+import { dispatchDailyNav } from '@/apis/dispatch';
 import { ResponseAcquisitionTypesData, TResponseInventoryValueHistory, getCollectionList, getCollectionValuableCount, getInventoryAcquisitionType, getInventoryCollectionPositionAmount, getInventoryCollectionPositionValue, getInventoryRealizedTokens, getInventoryValue, getInventoryValueHistory, getItemList, getItemValuableCount } from '@/apis/inventory';
 import { IInventoryCollectionList, IInventoryItemList, InventoryValue, InventoryValueNested, IStat, PositionCollection, PositionCollectionAmount } from '@/interfaces/inventory';
 import { BasicParam } from '@/interfaces/request';
+import { historicalNavTaskIdAtom } from '@/store/dispatchTaskId';
 import { ItemParam, TAcquisitionParam, TAnalysisGainAndLossParam, TCollectionParam, TOverviewHistoricalValueParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { useAtom } from 'jotai';
 
 export function useInventoryValue(searchParam: BasicParam | null) {
   return useQuery<InventoryValueNested,AxiosError>(
@@ -154,15 +157,24 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
   });
   return query;
 };
-export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalValueParam , polling=true ) => {
+export const useInventoryValueHistorical = async (requestParam: TOverviewHistoricalValueParam, polling = true) => {
+  const [historicalNavTaskId, setHistoricalNavTaskId] = useAtom(historicalNavTaskIdAtom);
+  let taskId = historicalNavTaskId.find((item) => item.walletAddress && item.walletAddress === requestParam.walletAddress)?.taskId || '';
+  let walletAddress = requestParam.walletAddress || '';
+  if (taskId === '') {
+    taskId = await dispatchDailyNav(walletAddress).then((result) => result.taskId);
+    setHistoricalNavTaskId((prev) => {
+      return prev.filter((item) => item.walletAddress !== walletAddress).concat({walletAddress,taskId: taskId});
+    })
+  }
   return useQuery<TResponseInventoryValueHistory,AxiosError>(
     ['inventoryValueHistorical',requestParam],
     async () => {
-      const inventoryValueHistorical = await getInventoryValueHistory(requestParam);
+      const inventoryValueHistorical = await getInventoryValueHistory({...requestParam,taskId: taskId});
       return inventoryValueHistorical;
     },
     {
-      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId && !!polling,
+      enabled: walletAddress !== '' && !!polling,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
