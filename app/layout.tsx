@@ -157,7 +157,7 @@ export default async function RootLayout({
             </div>
           </AuthProvider> */}
           <Analytics>
-            <div className='flex flex-col w-screen h-screen max-w-[1440]'>
+            <div className='flex flex-col w-screen min-h-screen max-w-[1440]'>
               <GlobalNavigation />
               <div className='w-full flex-1'>{children}</div>
               <GlobalFooter />
