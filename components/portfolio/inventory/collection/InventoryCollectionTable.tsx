@@ -31,39 +31,40 @@ import NoData from '@/components/error/NoData';
 import { Tooltip } from '@nextui-org/react';
 import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
 import Info from '@/public/icon/Info';
-const T_HEADER = [
-  {
-    name: 'Chain',
-  },
-  {
-    name: 'Collection',
-  },
-  {
-    name: 'Amount',
-    key: 'amount',
-    sort: 'amount',
-  },
-  {
-    name: 'Cost basis',
-    key: 'costBasis',
-  },
-  {
-    name: 'Valuation Type',
-  },
-  {
-    name: 'Realtime NAV',
-    sort: 'nav',
-  },
-  {
-    name: 'Unrealized G&L',
-  },
-  {
-    name: 'Unrealized ROI',
-  },
-];
+
 const InventoryCollectionTable = () => {
-  const currency = useAtomValue(currencyAtom);
   const priceType = useAtomValue(priceTypeAtom);
+  const T_HEADER = [
+    {
+      name: 'Chain',
+    },
+    {
+      name: 'Collection',
+    },
+    {
+      name: 'Amount',
+      key: 'amount',
+      sort: 'amount',
+    },
+    {
+      name: priceType === 'costBasis' ? 'Cost basis' : 'Acq. price',
+      key: 'costBasis',
+    },
+    {
+      name: 'Valuation Type',
+    },
+    {
+      name: 'Realtime NAV',
+      sort: 'nav',
+    },
+    {
+      name: 'Unrealized G&L',
+    },
+    {
+      name: 'Unrealized ROI',
+    },
+  ];
+  const currency = useAtomValue(currencyAtom);
   const { ref, inView } = useInView();
   const [inventoryType, setInventoryType] = useAtom(inventoryTypeAtom);
   const setSelectedCollection = useSetAtom(selectedCollectionInventoryAtom);

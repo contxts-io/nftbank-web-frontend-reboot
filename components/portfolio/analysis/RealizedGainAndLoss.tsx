@@ -32,17 +32,30 @@ import { LATEST_ACQUISITION_DATE } from '@/utils/messages';
 import ToggleButton from '@/components/buttons/ToggleButton';
 import { useInView } from 'react-intersection-observer';
 import NoData from '@/components/error/NoData';
-const THEAD = [
-  { key: 'item', value: 'Item' },
-  { key: 'amount', value: 'Amount' },
-  { key: 'costBasis', value: 'Cost basis' },
-  { key: 'proceed', value: 'Proceed' },
-  { key: 'realizedGainAndLoss', value: 'Realized G&L' },
-  { key: 'realizedROI', value: 'Realized ROI' },
-  { key: 'acquisitionDate', value: 'Acq. date', tooltip: true },
-  { key: 'soldDate', value: 'Sold date' },
-  // { key: 'activity', value: 'Activity' },
-];
+const THEAD = {
+  costBasis: [
+    { key: 'item', value: 'Item' },
+    { key: 'amount', value: 'Amount' },
+    { key: 'costBasis', value: 'Cost basis' },
+    { key: 'proceed', value: 'Proceed' },
+    { key: 'realizedGainAndLoss', value: 'Realized G&L' },
+    { key: 'realizedROI', value: 'Realized ROI' },
+    { key: 'acquisitionDate', value: 'Acq. date', tooltip: true },
+    { key: 'soldDate', value: 'Sold date' },
+    // { key: 'activity', value: 'Activity' },
+  ],
+  acquisitionPrice: [
+    { key: 'item', value: 'Item' },
+    { key: 'amount', value: 'Amount' },
+    { key: 'costBasis', value: 'Acq. price' },
+    { key: 'proceed', value: 'Revenue' },
+    { key: 'realizedGainAndLoss', value: 'Realized G&L' },
+    { key: 'realizedROI', value: 'Realized ROI' },
+    { key: 'acquisitionDate', value: 'Acq. date', tooltip: true },
+    { key: 'soldDate', value: 'Sold date' },
+    // { key: 'activity', value: 'Activity' },
+  ],
+};
 type _Year = TYear & { selected: boolean };
 type _Period = TPeriod & { selected: boolean };
 const RealizedGainAndLoss = () => {
@@ -155,7 +168,9 @@ const RealizedGainAndLoss = () => {
         <table className={styles.table}>
           <thead className='font-caption-regular'>
             <tr>
-              {THEAD.map((item, index) => (
+              {THEAD[
+                includeGasUsed === true ? 'costBasis' : 'acquisitionPrice'
+              ].map((item, index) => (
                 <th
                   key={index}
                   className={index === 0 ? 'text-left' : 'text-right'}
