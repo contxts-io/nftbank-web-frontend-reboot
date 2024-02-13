@@ -210,7 +210,7 @@ const InventoryItemDetail = ({ token, walletAddress }: Props) => {
                     Top Traits
                   </p>
                 </div>
-                <div className='flex-1 w-full gap-y-8'>
+                <div className='flex-1 flex flex-col w-full gap-y-8'>
                   {itemMetadataStatus === 'error' && (
                     <div className='w-full h-full flex flex-col items-center'>
                       <FailToLoad />
@@ -231,22 +231,31 @@ const InventoryItemDetail = ({ token, walletAddress }: Props) => {
                             key={index}
                             className='font-caption-medium w-full h-52 py-8 px-16 border-1 border-[var(--color-border-main)]'
                           >
-                            <p className='text-[var(--color-text-main)]'>
-                              {trait.traitType.replace(/(?:^|\s)\S/g, (match) =>
-                                match.toUpperCase()
-                              )}
-                            </p>
-                            <div className='w-full flex items-center justify-between'>
-                              <p className='text-[var(--color-text-brand)]'>
-                                {trait.traitValue
-                                  .replace(/_/g, ' ')
-                                  .replace(/(?:^|\s)\S/g, (match) =>
-                                    match.toUpperCase()
+                            <div className='w-full flex justify-between'>
+                              <div className='h-full'>
+                                <p className='text-[var(--color-text-subtle)] mb-4'>
+                                  {trait.traitType.replace(
+                                    /(?:^|\s)\S/g,
+                                    (match) => match.toUpperCase()
                                   )}
-                              </p>
-                              <p className='text-[var(--color-text-main)]'>
-                                {customToFixed(trait.rarityScore, 3)}
-                              </p>
+                                </p>
+
+                                <p className='text-[var(--color-text-main)]'>
+                                  {trait.traitValue
+                                    .replace(/_/g, ' ')
+                                    .replace(/(?:^|\s)\S/g, (match) =>
+                                      match.toUpperCase()
+                                    )}
+                                </p>
+                              </div>
+                              <div className='h-full'>
+                                <p className='text-[var(--color-text-subtle)] mb-4'>
+                                  Rarity score
+                                </p>
+                                <p className='text-[var(--color-text-main)] text-end'>
+                                  {customToFixed(trait.rarityScore, 3)}
+                                </p>
+                              </div>
                             </div>
                           </div>
                         );
