@@ -259,7 +259,7 @@ const RealizedGainAndLoss = () => {
                       </p>
                       {includeGasUsed && (
                         <p className={`text-[var(--color-text-brand)] mt-4`}>
-                          {`GAS +${parseFloatPrice(gasFee.toFixed(3))}`}
+                          {`+${parseFloatPrice(gasFee.toFixed(3))}`}
                         </p>
                       )}
                     </td>
@@ -274,7 +274,7 @@ const RealizedGainAndLoss = () => {
                       </p>
                       {includeGasUsed && (
                         <p className={`text-[var(--color-text-brand)] mt-4`}>
-                          {`GAS +${parseFloatPrice(proceedGasFee.toFixed(3))}`}
+                          {`+${parseFloatPrice(proceedGasFee.toFixed(3))}`}
                         </p>
                       )}
                     </td>
