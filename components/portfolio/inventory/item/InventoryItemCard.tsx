@@ -77,7 +77,9 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
           </p>
         </div>
         <div className='flex justify-between items-center'>
-          <p className={styles.pName}>Cost basis</p>
+          <p className={styles.pName}>
+            {priceType === 'acquisitionPrice' ? 'Acq. price' : 'Cost basis'}
+          </p>
 
           <p className={styles.pValue}>
             {priceType === 'acquisitionPrice'

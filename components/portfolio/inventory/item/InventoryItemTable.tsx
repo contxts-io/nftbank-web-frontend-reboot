@@ -27,56 +27,17 @@ import {
 } from '@/utils/messages';
 import Info from '@/public/icon/Info';
 import { Tooltip } from '@nextui-org/react';
-const HEADER = [
-  {
-    type: 'Item',
-    name: 'Item',
-  },
-  {
-    type: 'amount',
-    name: 'Amount',
-    sort: true,
-  },
-  {
-    type: 'costBasis',
-    name: 'Cost basis',
-  },
-  {
-    type: 'valuationType',
-    name: 'Valuation Type',
-  },
-  {
-    type: 'nav',
-    name: 'Realtime NAV',
-    sort: true,
-  },
-  {
-    type: 'unrealizedG&L',
-    name: 'Unrealized G&L',
-  },
-  {
-    type: 'unrealizedROI',
-    name: 'Unrealized ROI',
-  },
-  // {
-  //   type: 'accuracy',
-  //   name: 'Accuracy',
-  // },
-  {
-    type: 'acquisitionDate',
-    name: 'Acq. date',
-    tooltip: LATEST_ACQUISITION_DATE,
-  },
-];
+
 type Props = {
   sticky?: boolean;
 };
 
 const InventoryItemTable = (props: Props) => {
-  const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
-  const [openedItem, setOpenedItem] = useState<string[]>([]);
   const currency = useAtomValue(currencyAtom);
   const priceType = useAtomValue(priceTypeAtom);
+
+  const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
+  const [openedItem, setOpenedItem] = useState<string[]>([]);
   const { ref, inView } = useInView();
   const [view, setView] = useState<{ key: string; open: boolean }>({
     key: '',
@@ -88,6 +49,47 @@ const InventoryItemTable = (props: Props) => {
     status,
   } = useInventoryItemInfinite({ ...requestParam, page: 0 });
   const [selectedToken, setSelectedToken] = useAtom(selectedTokenAtom);
+  const HEADER = [
+    {
+      type: 'Item',
+      name: 'Item',
+    },
+    {
+      type: 'amount',
+      name: 'Amount',
+      sort: true,
+    },
+    {
+      type: 'costBasis',
+      name: priceType === 'costBasis' ? 'Cost basis' : 'Acq. price',
+    },
+    {
+      type: 'valuationType',
+      name: 'Valuation Type',
+    },
+    {
+      type: 'nav',
+      name: 'Realtime NAV',
+      sort: true,
+    },
+    {
+      type: 'unrealizedG&L',
+      name: 'Unrealized G&L',
+    },
+    {
+      type: 'unrealizedROI',
+      name: 'Unrealized ROI',
+    },
+    // {
+    //   type: 'accuracy',
+    //   name: 'Accuracy',
+    // },
+    {
+      type: 'acquisitionDate',
+      name: 'Acq. date',
+      tooltip: LATEST_ACQUISITION_DATE,
+    },
+  ];
   useEffect(() => {
     const isLast =
       inventoryItemList?.pages?.[inventoryItemList?.pages.length - 1].isLast;
