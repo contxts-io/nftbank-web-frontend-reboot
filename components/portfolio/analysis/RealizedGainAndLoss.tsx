@@ -48,7 +48,7 @@ type _Period = TPeriod & { selected: boolean };
 const RealizedGainAndLoss = () => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
-  const [includeGasUsed, setIncludeGasUsed] = useState<boolean>(true);
+  const [includeGasUsed, setIncludeGasUsed] = useState<boolean>(false);
   const { ref, inView } = useInView();
   const [requestParams, setRequestParams] = useAtom(
     analysisGainAndLossParamAtom
