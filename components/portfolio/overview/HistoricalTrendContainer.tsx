@@ -127,7 +127,13 @@ const HistoricalTrendContainer = () => {
         inventoryValueHistorical?.data?.[0]?.value[currency] || '0.00'
       );
     return diff;
-  }, [hoverValue, currency, inventoryValue]);
+  }, [
+    hoverValue,
+    currency,
+    inventoryValue,
+    selectedPeriod,
+    inventoryValueHistorical?.data,
+  ]);
   const initialValue = useMemo(() => {
     // const value = parseFloatPrice(
     //   inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
