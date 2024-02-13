@@ -143,7 +143,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
               {acquisitionPrice == 0 ? (
                 <Tooltip
                   content={UNABLE_TO_CALCULATE_ROI}
-                  className='max-w-188 font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                  className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
                 >
                   <div className='w-full flex justify-end text-[var(--color-icon-subtle)]'>
                     <Info />
