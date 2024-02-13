@@ -230,7 +230,7 @@ const InventoryCollectionTable = () => {
                               className={`${styles.pTd} text-[var(--color-text-brand)]`}
                             >
                               {row.gasFee?.[currency]
-                                ? `GAS +${parseFloatPrice(
+                                ? `+${parseFloatPrice(
                                     row.gasFee[currency]
                                   ).toFixed(3)} `
                                 : ''}
@@ -262,7 +262,7 @@ const InventoryCollectionTable = () => {
                           className={`${styles.pTd} text-[var(--color-text-brand)]`}
                         >
                           {row.gasFee?.[currency]
-                            ? `GAS +${parseFloat(
+                            ? `+${parseFloat(
                                 row.gasFee[currency] || ''
                               ).toFixed(3)} `
                             : ''}

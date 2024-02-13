@@ -255,7 +255,7 @@ const InventoryItemTable = (props: Props) => {
                               className={`${styles.pTd} text-[var(--color-text-brand)]`}
                             >
                               {data.gasFee?.[currency]
-                                ? `GAS +${parseFloatPrice(
+                                ? `+${parseFloatPrice(
                                     data.gasFee[currency] || ''
                                   ).toFixed(3)} `
                                 : ''}
