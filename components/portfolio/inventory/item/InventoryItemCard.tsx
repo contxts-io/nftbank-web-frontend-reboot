@@ -17,6 +17,9 @@ import { selectedTokenAtom } from '@/store/portfolio';
 import ValuationDropdown from './ValuationDropdown';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
 import { SyntheticEvent } from 'react';
+import { Tooltip } from '@nextui-org/react';
+import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
+import Info from '@/public/icon/Info';
 
 const InventoryItemCard = ({ token }: { token: Token }) => {
   const currency = useAtomValue(currencyAtom);
@@ -27,6 +30,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
   const unrealizedGL =
     parseFloatPrice(token.nav[currency].amount) -
     parseFloatPrice(acquisitionPrice);
+
   const isPlus = unrealizedGL > 0;
   const isMinus = unrealizedGL < 0;
   const isZero = unrealizedGL === 0;
@@ -136,23 +140,33 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
                   : 'text-[var(--color-text-main)]'
               }`}
             >
-              {priceType === 'acquisitionPrice'
-                ? formatPercent(
-                    (
-                      ((parseFloatPrice(token.nav[currency].amount) -
-                        acquisitionPrice) /
-                        acquisitionPrice) *
-                      100
-                    ).toString()
-                  )
-                : formatPercent(
-                    (
-                      ((parseFloatPrice(token.nav[currency].amount) -
-                        costBasis) /
-                        costBasis) *
-                      100
-                    ).toString()
-                  )}
+              {acquisitionPrice == 0 ? (
+                <Tooltip
+                  content={UNABLE_TO_CALCULATE_ROI}
+                  className='max-w-188 font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                >
+                  <div className='w-full flex justify-end text-[var(--color-icon-subtle)]'>
+                    <Info />
+                  </div>
+                </Tooltip>
+              ) : priceType === 'acquisitionPrice' ? (
+                formatPercent(
+                  (
+                    ((parseFloatPrice(token.nav[currency].amount) -
+                      acquisitionPrice) /
+                      acquisitionPrice) *
+                    100
+                  ).toString()
+                )
+              ) : (
+                formatPercent(
+                  (
+                    ((parseFloatPrice(token.nav[currency].amount) - costBasis) /
+                      costBasis) *
+                    100
+                  ).toString()
+                )
+              )}
             </p>
           ) : (
             <SkeletonLoader className='h-16 w-50' />

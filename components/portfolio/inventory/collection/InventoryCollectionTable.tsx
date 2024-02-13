@@ -28,6 +28,9 @@ import ValuationDropdown from '../item/ValuationDropdown';
 import { twMerge } from 'tailwind-merge';
 import FailToLoad from '@/components/error/FailToLoad';
 import NoData from '@/components/error/NoData';
+import { Tooltip } from '@nextui-org/react';
+import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
+import Info from '@/public/icon/Info';
 const T_HEADER = [
   {
     name: 'Chain',
@@ -162,6 +165,9 @@ const InventoryCollectionTable = () => {
                 {collections?.map((page, pageIndex) => {
                   return page.data?.map((row, index) => {
                     const valuationType = selectedValueType(row.valuation);
+                    const acquisitionPrice = parseFloatPrice(
+                      row.acquisitionPrice?.[currency]
+                    );
                     const costBasis =
                       parseFloatPrice(row.acquisitionPrice?.[currency]) +
                       parseFloatPrice(row.gasFee?.[currency]);
@@ -322,21 +328,32 @@ const InventoryCollectionTable = () => {
                                 : 'text-[var(--color-text-danger)]'
                             } pr-16`}
                           >
-                            {priceType === 'costBasis'
-                              ? formatPercent(
-                                  (
-                                    (unrealizedGL -
-                                      parseFloatPrice(row.gasFee?.[currency])) /
-                                    costBasis
-                                  ).toString()
-                                )
-                              : formatPercent(
-                                  (
-                                    unrealizedGL /
-                                    (costBasis -
-                                      parseFloatPrice(row.gasFee?.[currency]))
-                                  ).toString()
-                                )}
+                            {acquisitionPrice == 0 ? (
+                              <Tooltip
+                                content={UNABLE_TO_CALCULATE_ROI}
+                                className='max-w-188 font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                              >
+                                <div className='w-full flex justify-end text-[var(--color-icon-subtle)]'>
+                                  <Info />
+                                </div>
+                              </Tooltip>
+                            ) : priceType === 'costBasis' ? (
+                              formatPercent(
+                                (
+                                  (unrealizedGL -
+                                    parseFloatPrice(row.gasFee?.[currency])) /
+                                  costBasis
+                                ).toString()
+                              )
+                            ) : (
+                              formatPercent(
+                                (
+                                  unrealizedGL /
+                                  (costBasis -
+                                    parseFloatPrice(row.gasFee?.[currency]))
+                                ).toString()
+                              )
+                            )}
                           </p>
                         </td>
                         {/**

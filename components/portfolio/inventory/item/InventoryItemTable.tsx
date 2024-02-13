@@ -21,7 +21,10 @@ import { selectedTokenAtom } from '@/store/portfolio';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
 import FailToLoad from '@/components/error/FailToLoad';
 import NoData from '@/components/error/NoData';
-import { LATEST_ACQUISITION_DATE } from '@/utils/messages';
+import {
+  LATEST_ACQUISITION_DATE,
+  UNABLE_TO_CALCULATE_ROI,
+} from '@/utils/messages';
 import Info from '@/public/icon/Info';
 import { Tooltip } from '@nextui-org/react';
 const HEADER = [
@@ -315,27 +318,34 @@ const InventoryItemTable = (props: Props) => {
                                 : 'text-[var(--color-text-main)]'
                             }`}
                           >
-                            {priceType === 'acquisitionPrice'
-                              ? formatPercent(
-                                  (
-                                    ((parseFloatPrice(
-                                      data.nav[currency].amount
-                                    ) -
-                                      acquisitionPrice) /
-                                      acquisitionPrice) *
-                                    100
-                                  ).toString()
-                                )
-                              : formatPercent(
-                                  (
-                                    ((parseFloatPrice(
-                                      data.nav[currency].amount
-                                    ) -
-                                      costBasis) /
-                                      costBasis) *
-                                    100
-                                  ).toString()
-                                )}
+                            {acquisitionPrice == 0 ? (
+                              <Tooltip
+                                content={UNABLE_TO_CALCULATE_ROI}
+                                className='max-w-188 font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                              >
+                                <div className='w-full flex justify-end text-[var(--color-icon-subtle)]'>
+                                  <Info />
+                                </div>
+                              </Tooltip>
+                            ) : priceType === 'acquisitionPrice' ? (
+                              formatPercent(
+                                (
+                                  ((parseFloatPrice(data.nav[currency].amount) -
+                                    acquisitionPrice) /
+                                    acquisitionPrice) *
+                                  100
+                                ).toString()
+                              )
+                            ) : (
+                              formatPercent(
+                                (
+                                  ((parseFloatPrice(data.nav[currency].amount) -
+                                    costBasis) /
+                                    costBasis) *
+                                  100
+                                ).toString()
+                              )
+                            )}
                           </p>
                         </td>
                         <td className='text-right'>
