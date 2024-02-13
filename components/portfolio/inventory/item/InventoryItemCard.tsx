@@ -40,7 +40,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
       onClick={() => handleClickToken(token)}
     >
       {token.token.imageUrl ? (
-        <div className='flex w-full pb-[100%] overflow-hidden relative bg-[var(--color-elevation-surface-raised)]'>
+        <div className='flex w-full pb-[100%] overflow-hidden relative'>
           <img
             src={token.token.imageUrl}
             alt={`${token.collection.name}-${token.token.name}`}

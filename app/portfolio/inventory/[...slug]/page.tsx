@@ -23,10 +23,10 @@ const InventoryPage = ({ params }: { params: { slug: string[] } }) => {
   //   }
   // }, [slug]);
   return (
-    <section className='w-screen px-24'>
+    <div className='pb-43'>
       <InventoryValue />
       <InventoryContainer />
-    </section>
+    </div>
   );
 };
 export default InventoryPage;

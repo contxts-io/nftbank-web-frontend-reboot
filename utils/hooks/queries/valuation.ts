@@ -7,7 +7,7 @@ import { AxiosError } from "axios";
 
 export function useValuationTokenHistory(props: TokenParam) {
   return useQuery<TokenHistory,AxiosError>(
-    ['token-history',props],
+    ['tokenHistory',props],
     async () => {
       const result = await getValuationTokenHistory(props);
       return result;

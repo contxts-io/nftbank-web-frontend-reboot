@@ -69,11 +69,7 @@ const InventoryContainer = () => {
           {customValuations.length > 0 && <CustomValuationSaveToast />}
         </>
       )}
-      {inventoryType === 'item' && (
-        <div className='mt-24'>
-          <InventoryItemSection />
-        </div>
-      )}
+      {inventoryType === 'item' && <InventoryItemSection />}
     </section>
   );
 };

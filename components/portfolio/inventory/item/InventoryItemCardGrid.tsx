@@ -34,7 +34,7 @@ const InventoryItemCardGrid = () => {
     [inventoryItemList?.pages, requestParam]
   );
   return (
-    <section className='w-full h-full overflow-auto'>
+    <section className='w-full overflow-auto'>
       {status === 'error' && (
         <div>
           <FailToLoad />
@@ -54,7 +54,7 @@ const InventoryItemCardGrid = () => {
           })}
         </div>
       )}
-      <div className='w-full h-43 mt-40' ref={ref} />
+      <div className='w-full' ref={ref} />
     </section>
   );
 };

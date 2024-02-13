@@ -146,9 +146,6 @@ const HistoricalTrendContainer = () => {
       }));
     };
   }, []);
-  useEffect(() => {
-    console.log('hoverValue', hoverValue);
-  }, [hoverValue]);
   return (
     <section className={styles.container}>
       <div className={styles.summary}>

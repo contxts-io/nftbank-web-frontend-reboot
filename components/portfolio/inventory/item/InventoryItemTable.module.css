@@ -5,7 +5,7 @@
   @apply bg-[var(--color-elevation-surface)];
 }
 .stickyBar {
-  @apply sticky top-[-1px] z-20;
+  @apply sticky top-119 z-20;
 }
 .tableHeadRow {
   @apply h-40 py-12 text-[var(--color-text-subtle)];
@@ -18,7 +18,7 @@
   @apply border-1 border-[var(--color-border-main)] flex items-center overflow-hidden justify-center mr-8 relative;
 }
 .tableHeadRow th {
-  @apply border-t-1 border-b-1 border-[var(--color-border-main)] px-12;
+  @apply border-y-1 border-[var(--color-border-main)] px-12;
 }
 
 .blanc {
