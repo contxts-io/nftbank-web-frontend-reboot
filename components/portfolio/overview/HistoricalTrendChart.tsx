@@ -49,14 +49,14 @@ const HistoricalTrendChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
   const [isPolling, setIsPolling] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [historicalValueParam, setHistoricalValueParam] = useAtom(
     overviewHistoricalValueParamAtom
   );
   const { data: inventoryValue, status: statusInventoryValue } =
     useInventoryValuePolling(portfolioUser);
-  const { data: dispatchDailyNav } = useDispatchDailyNav(
-    portfolioUser?.walletAddress || ''
-  );
+  const { data: dispatchDailyNav, status: statusDispatchDailyNav } =
+    useDispatchDailyNav(portfolioUser?.walletAddress || '');
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
@@ -71,6 +71,13 @@ const HistoricalTrendChart = (props: Props) => {
   useEffect(() => {
     setIsPolling(true);
   }, []);
+  useEffect(() => {
+    statusDispatchDailyNav === 'loading' ||
+    statusInventoryValueHistorical === 'loading' ||
+    isPolling === true
+      ? setIsLoading(true)
+      : setIsLoading(false);
+  }, [statusInventoryValueHistorical, isPolling, statusDispatchDailyNav]);
   useEffect(() => {
     console.log('inventoryValueHistorical', inventoryValueHistorical);
     statusInventoryValueHistorical === 'success' &&
@@ -339,10 +346,8 @@ const HistoricalTrendChart = (props: Props) => {
   };
   return (
     <section className='w-full relative'>
-      {statusInventoryValueHistorical === 'loading' && (
-        <SkeletonLoader className='w-full h-200' />
-      )}
-      {statusInventoryValueHistorical === 'success' && (
+      {isLoading === true && <SkeletonLoader className='w-full h-200' />}
+      {isLoading !== true && statusInventoryValueHistorical === 'success' && (
         // statusInventoryValue === 'success' &&
         <>
           <div className='absolute right-0 top-0 h-200 flex flex-col justify-between items-end font-caption-regular text-[var(--color-text-subtle)]'>
