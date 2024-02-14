@@ -21,6 +21,7 @@ import { currencyAtom } from '@/store/currency';
 import { analysisGainAndLossParamAtom } from '@/store/requestParam';
 import {
   formatCurrency,
+  formatCurrencyOriginal,
   formatDate,
   formatPercent,
   parseFloatPrice,
@@ -273,9 +274,18 @@ const RealizedGainAndLoss = () => {
                           : formatCurrency(proceed.toString(), currency)}
                       </p>
                       {includeGasUsed && (
-                        <p className={`text-[var(--color-text-brand)] mt-4`}>
-                          {`+${parseFloatPrice(proceedGasFee.toFixed(3))}`}
-                        </p>
+                        <Tooltip
+                          content={formatCurrencyOriginal(
+                            proceedGasFee.toString(),
+                            currency
+                          )}
+                          placement='bottom-end'
+                          className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                        >
+                          <p className={`text-[var(--color-text-brand)] mt-4`}>
+                            {`+${parseFloatPrice(proceedGasFee.toFixed(3))}`}
+                          </p>
+                        </Tooltip>
                       )}
                     </td>
                     <td className='text-right'>

@@ -27,6 +27,19 @@ export function formatCurrency(amount: string | null, currency: TCurrency): stri
   }
   return '';
 }
+export function formatCurrencyOriginal(amount: string | null, currency: TCurrency): string {
+  if (!amount) return '-';
+  if (amount === 'infinity')
+    return '-';
+    // return '∞';
+  if (currency === 'usd') {
+    return `$${parseFloat(amount).toLocaleString('en-US',{maximumFractionDigits: 10})}`;
+  }
+  if (currency === 'eth') {
+    return `Ξ${parseFloat(amount).toLocaleString('en-US',{maximumFractionDigits: 10})}`;
+  }
+  return '';
+}
 // export function shortFormatCurrency(amount: string | null, currency: TCurrency): string {
 //   if (!amount) return '';
 //   if (amount === 'infinity')
