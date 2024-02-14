@@ -6,6 +6,7 @@ import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import {
   defaultImg,
   formatCurrency,
+  formatCurrencyOriginal,
   formatDate,
   formatPercent,
   mappingConstants,
@@ -90,13 +91,21 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
         {priceType === 'costBasis' && (
           <div className='flex justify-between items-center'>
             <p className={styles.pName}>Gas fee</p>
-
-            <p className='text-[var(--color-text-brand)]'>
-              {formatCurrency(
-                parseFloatPrice(token.gasFee?.[currency]).toString(),
+            <Tooltip
+              content={formatCurrencyOriginal(
+                token.gasFee?.[currency] || '0',
                 currency
               )}
-            </p>
+              placement='bottom-end'
+              className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+            >
+              <p className='text-[var(--color-text-brand)]'>
+                {formatCurrency(
+                  parseFloatPrice(token.gasFee?.[currency]).toString(),
+                  currency
+                )}
+              </p>
+            </Tooltip>
           </div>
         )}
         <div className='flex justify-between items-center'>

@@ -10,6 +10,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   defaultImg,
   formatCurrency,
+  formatCurrencyOriginal,
   formatDate,
   formatPercent,
   mappingConstants,
@@ -251,15 +252,24 @@ const InventoryItemTable = (props: Props) => {
                                 )}
                           </p>
                           {priceType === 'costBasis' && (
-                            <p
-                              className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                            <Tooltip
+                              content={formatCurrencyOriginal(
+                                data.gasFee?.[currency] || '0',
+                                currency
+                              )}
+                              placement='bottom-end'
+                              className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
                             >
-                              {data.gasFee?.[currency]
-                                ? `+${parseFloatPrice(
-                                    data.gasFee[currency] || ''
-                                  ).toFixed(3)} `
-                                : ''}
-                            </p>
+                              <p
+                                className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                              >
+                                {data.gasFee?.[currency]
+                                  ? `+${parseFloatPrice(
+                                      data.gasFee[currency] || ''
+                                    ).toFixed(3)} `
+                                  : ''}
+                              </p>
+                            </Tooltip>
                           )}
                         </td>
                         <td className='text-right'>
