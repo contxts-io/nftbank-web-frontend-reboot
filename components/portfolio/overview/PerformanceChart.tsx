@@ -8,12 +8,12 @@ import { currencyAtom } from '@/store/currency';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { usePerformanceChart } from '@/utils/hooks/queries/performance';
 import { useEffect, useMemo, useState } from 'react';
-import { set } from 'cypress/types/lodash';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { formatPercent, mathSqrt } from '@/utils/common';
 import { BasicParam } from '@/interfaces/request';
 import { ApexOptions } from 'apexcharts';
 import { useDispatchPerformance } from '@/utils/hooks/queries/dispatch';
+import FailToLoad from '@/components/error/FailToLoad';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
   console.log('w.globals.', w.globals);
@@ -48,9 +48,9 @@ const PerformanceChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
   const [maxAbs, setMaxAbs] = useState(0);
   const [isPolling, setIsPolling] = useState<boolean>(true);
-  const { data: dispatchPerformance } = useDispatchPerformance(
-    props.requestParam?.walletAddress || ''
-  );
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { data: dispatchPerformance, status: statusDispatchPerformance } =
+    useDispatchPerformance(props.requestParam?.walletAddress || '');
 
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart(
@@ -62,12 +62,20 @@ const PerformanceChart = (props: Props) => {
     );
   useEffect(() => {
     setIsPolling(true);
-  }, []);
+  }, [props.requestParam?.walletAddress]);
   useEffect(() => {
-    statusPerformanceChart === 'success' &&
-      performanceChart.statusCode !== 'PENDING' &&
-      setIsPolling(false);
-  }, [statusPerformanceChart]);
+    statusDispatchPerformance === 'loading' ||
+    statusPerformanceChart === 'loading' ||
+    isPolling === true
+      ? setIsLoading(true)
+      : setIsLoading(false);
+  }, [statusDispatchPerformance, isPolling, statusPerformanceChart]);
+  useEffect(() => {
+    statusPerformanceChart === 'error' && setIsPolling(false);
+    statusPerformanceChart === 'success' && performanceChart?.data
+      ? setIsPolling(false)
+      : setIsPolling(true);
+  }, [statusPerformanceChart, performanceChart?.data]);
   useEffect(() => {
     setIsPolling(true);
   }, [props.requestParam]);
@@ -204,7 +212,6 @@ const PerformanceChart = (props: Props) => {
                 const _value = date.getMonth() + 1 === month ? item : null;
                 return _value;
               })?.roi?.[currency] || '0';
-            console.log('value : ', value, parseFloat(value));
             return typeof parseFloat(value) === 'number' &&
               parseFloat(value) > 0
               ? parseFloat(value)
@@ -238,9 +245,8 @@ const PerformanceChart = (props: Props) => {
           }),
       },
     ];
-  }, [performanceChart, currency]);
+  }, [performanceChart?.data, currency]);
   useEffect(() => {
-    console.log('seriesData :: ', seriesData);
     if (
       !seriesData ||
       seriesData.length == 0 ||
@@ -254,47 +260,53 @@ const PerformanceChart = (props: Props) => {
         ...seriesData[1].data.map((value) => Math.abs(value || 0)),
       ]
     );
-    console.log('maxAbs : ', maxAbs, mathSqrt(-maxAbs));
     setMaxAbs(maxAbs);
   }, [seriesData]);
   return (
     <section className={styles.container}>
-      {statusPerformanceChart === 'loading' && (
+      {statusPerformanceChart === 'error' && (
+        <div className='w-full h-[200px] pt-60'>
+          <FailToLoad />
+        </div>
+      )}
+      {statusPerformanceChart !== 'error' && isLoading === true && (
         <SkeletonLoader className='w-full h-[200px]' />
       )}
-      {statusPerformanceChart === 'success' && (
-        <ApexCharts
-          options={{
-            ...options,
-            chart: {
-              ...options.chart,
-              type: 'bar',
-            },
-            yaxis: {
-              ...options.yaxis,
-              min: maxAbs === 0 ? -1 : -mathSqrt(-maxAbs),
-              max: maxAbs === 0 ? 1 : mathSqrt(maxAbs),
-            },
-          }}
-          type='bar'
-          series={[
-            ...seriesData.map((series) => {
-              return {
-                name: series.name,
-                data: series.data.map((item) => {
-                  return item && typeof item == 'number'
-                    ? item >= 0
-                      ? mathSqrt(item)
-                      : -mathSqrt(item)
-                    : 0;
-                }),
-              };
-            }),
-          ]}
-          height={200}
-          width='100%'
-        />
-      )}
+      {statusPerformanceChart !== 'error' &&
+        isLoading !== true &&
+        statusPerformanceChart === 'success' && (
+          <ApexCharts
+            options={{
+              ...options,
+              chart: {
+                ...options.chart,
+                type: 'bar',
+              },
+              yaxis: {
+                ...options.yaxis,
+                min: maxAbs === 0 ? -1 : -mathSqrt(-maxAbs),
+                max: maxAbs === 0 ? 1 : mathSqrt(maxAbs),
+              },
+            }}
+            type='bar'
+            series={[
+              ...seriesData.map((series) => {
+                return {
+                  name: series.name,
+                  data: series.data.map((item) => {
+                    return item && typeof item == 'number'
+                      ? item >= 0
+                        ? mathSqrt(item)
+                        : -mathSqrt(item)
+                      : 0;
+                  }),
+                };
+              }),
+            ]}
+            height={200}
+            width='100%'
+          />
+        )}
     </section>
   );
 };
