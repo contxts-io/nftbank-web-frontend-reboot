@@ -3,7 +3,6 @@ import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory
 import styles from './InventoryCollectionTable.module.css';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
-import Image from 'next/image';
 import { TSort, inventoryCollectionAtom } from '@/store/requestParam';
 import SkeletonLoader from '../../../SkeletonLoader';
 import { Collection, TValuation } from '@/interfaces/collection';
@@ -12,20 +11,16 @@ import { selectedCollectionInventoryAtom } from '@/store/portfolio';
 import { useEffect, useMemo } from 'react';
 import Ethereum from '@/public/icon/Ethereum';
 import {
-  difference,
   formatCurrency,
-  formatFloat,
+  formatCurrencyOriginal,
   formatPercent,
   isPlus,
   parseFloatPrice,
   shortenAddress,
 } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
-import SpamInsertDropdown from './SpamInsertDropdown';
 import { ValuationTypes } from '@/utils/ValuationTypes';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
-import ValuationDropdown from '../item/ValuationDropdown';
-import { twMerge } from 'tailwind-merge';
 import FailToLoad from '@/components/error/FailToLoad';
 import NoData from '@/components/error/NoData';
 import { Tooltip } from '@nextui-org/react';
@@ -226,15 +221,24 @@ const InventoryCollectionTable = () => {
                                 )}
                           </p>
                           {priceType === 'costBasis' && (
-                            <p
-                              className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                            <Tooltip
+                              content={formatCurrencyOriginal(
+                                row.gasFee?.[currency] || '0',
+                                currency
+                              )}
+                              placement='bottom-end'
+                              className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
                             >
-                              {row.gasFee?.[currency]
-                                ? `+${parseFloatPrice(
-                                    row.gasFee[currency]
-                                  ).toFixed(3)} `
-                                : ''}
-                            </p>
+                              <p
+                                className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                              >
+                                {row.gasFee?.[currency]
+                                  ? `+${parseFloatPrice(
+                                      row.gasFee[currency]
+                                    ).toFixed(3)} `
+                                  : ''}
+                              </p>
+                            </Tooltip>
                           )}
                         </td>
                         {/* coast basis */}
