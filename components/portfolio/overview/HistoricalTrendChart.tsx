@@ -79,13 +79,12 @@ const HistoricalTrendChart = (props: Props) => {
       : setIsLoading(false);
   }, [statusInventoryValueHistorical, isPolling, statusDispatchDailyNav]);
   useEffect(() => {
-    console.log('inventoryValueHistorical', inventoryValueHistorical);
     statusInventoryValueHistorical === 'success' &&
       !!inventoryValueHistorical &&
       !!inventoryValueHistorical.data &&
       inventoryValueHistorical.data.length > 0 &&
       setIsPolling(false);
-  }, [statusInventoryValueHistorical]);
+  }, [statusInventoryValueHistorical, inventoryValueHistorical?.data]);
   const [isPlus, setIsPlus] = useState(false);
   let category: string[] = [];
 
