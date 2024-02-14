@@ -2,5 +2,5 @@
   @apply fixed z-10 bottom-0 h-42 w-full flex items-center px-40 text-[var(--color-text-subtlest)] fill-[var(--color-background-accent-gray-bolder)] border-t-1 border-[var(--color-border-main)] bg-[var(--color-etc-footer)] backdrop-blur-[8px];
 }
 .footerWrapper li {
-  @apply mr-20;
+  @apply mr-20 cursor-pointer;
 }
