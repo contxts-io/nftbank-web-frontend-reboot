@@ -23,6 +23,7 @@ import {
   formatCurrency,
   formatCurrencyOriginal,
   formatDate,
+  formatGasFee,
   formatPercent,
   parseFloatPrice,
 } from '@/utils/common';
@@ -283,7 +284,10 @@ const RealizedGainAndLoss = () => {
                           className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
                         >
                           <p className={`text-[var(--color-text-brand)] mt-4`}>
-                            {`+${parseFloatPrice(proceedGasFee.toFixed(3))}`}
+                            {formatGasFee(
+                              item.proceedGasFee?.[currency],
+                              currency
+                            )}
                           </p>
                         </Tooltip>
                       )}

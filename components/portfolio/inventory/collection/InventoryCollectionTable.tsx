@@ -13,6 +13,7 @@ import Ethereum from '@/public/icon/Ethereum';
 import {
   formatCurrency,
   formatCurrencyOriginal,
+  formatGasFee,
   formatPercent,
   isPlus,
   parseFloatPrice,
@@ -232,11 +233,10 @@ const InventoryCollectionTable = () => {
                               <p
                                 className={`${styles.pTd} text-[var(--color-text-brand)]`}
                               >
-                                {row.gasFee?.[currency]
-                                  ? `+${parseFloatPrice(
-                                      row.gasFee[currency]
-                                    ).toFixed(3)} `
-                                  : ''}
+                                {`${formatGasFee(
+                                  row.gasFee?.[currency] || null,
+                                  currency
+                                )} `}
                               </p>
                             </Tooltip>
                           )}
@@ -326,40 +326,42 @@ const InventoryCollectionTable = () => {
                         </td>
                         {/* unrealized ROI */}
                         <td className='text-right'>
-                          <p
-                            className={`${styles.pTd} ${
-                              isPlus(unrealizedGL)
-                                ? 'text-[var(--color-text-success)]'
-                                : 'text-[var(--color-text-danger)]'
-                            } pr-16`}
-                          >
-                            {acquisitionPrice == 0 ? (
-                              <Tooltip
-                                content={UNABLE_TO_CALCULATE_ROI}
-                                className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
-                              >
-                                <div className='w-full flex justify-end text-[var(--color-icon-subtle)]'>
-                                  <Info />
-                                </div>
-                              </Tooltip>
-                            ) : priceType === 'costBasis' ? (
-                              formatPercent(
-                                (
-                                  (unrealizedGL -
-                                    parseFloatPrice(row.gasFee?.[currency])) /
-                                  costBasis
-                                ).toString()
-                              )
-                            ) : (
-                              formatPercent(
-                                (
-                                  unrealizedGL /
-                                  (costBasis -
-                                    parseFloatPrice(row.gasFee?.[currency]))
-                                ).toString()
-                              )
-                            )}
-                          </p>
+                          {acquisitionPrice == 0 ? (
+                            <Tooltip
+                              content={UNABLE_TO_CALCULATE_ROI}
+                              className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                            >
+                              <div className='w-full flex justify-end text-[var(--color-icon-subtle)]'>
+                                <Info />
+                              </div>
+                            </Tooltip>
+                          ) : (
+                            <p
+                              className={`${styles.pTd} ${
+                                isPlus(unrealizedGL)
+                                  ? 'text-[var(--color-text-success)]'
+                                  : 'text-[var(--color-text-danger)]'
+                              } pr-16`}
+                            >
+                              {priceType === 'costBasis'
+                                ? formatPercent(
+                                    (
+                                      (unrealizedGL -
+                                        parseFloatPrice(
+                                          row.gasFee?.[currency]
+                                        )) /
+                                      costBasis
+                                    ).toString()
+                                  )
+                                : formatPercent(
+                                    (
+                                      unrealizedGL /
+                                      (costBasis -
+                                        parseFloatPrice(row.gasFee?.[currency]))
+                                    ).toString()
+                                  )}
+                            </p>
+                          )}
                         </td>
                         {/**
                    * 
