@@ -331,7 +331,7 @@ const InventoryCollectionTable = () => {
                               content={UNABLE_TO_CALCULATE_ROI}
                               className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
                             >
-                              <div className='w-full flex justify-end text-[var(--color-icon-subtle)]'>
+                              <div className='w-full flex justify-end text-[var(--color-icon-subtle)] pr-16'>
                                 <Info />
                               </div>
                             </Tooltip>
