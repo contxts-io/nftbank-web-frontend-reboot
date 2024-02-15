@@ -79,15 +79,17 @@ const TotalInventoryValue = () => {
         </p>
         <div className={`font-caption-medium ${styles.selector}`}>
           <Button
-            id={'/portfolio/overview/totalInventory/value'}
+            id={'top5_collection_pie_chart_filter_click'}
             className={`${selected === 'value' && styles.selected}`}
+            parameter='value'
             onClick={() => handleSelect('value')}
           >
             Value
           </Button>
           <Button
-            id={'/portfolio/overview/totalInventory/nfts'}
+            id={'top5_collection_pie_chart_filter_click'}
             className={`${selected === 'amount' && styles.selected}`}
+            parameter='amount'
             onClick={() => handleSelect('amount')}
           >
             Amount

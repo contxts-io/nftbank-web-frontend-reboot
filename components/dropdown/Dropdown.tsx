@@ -3,6 +3,7 @@ import styles from './Dropdown.module.css';
 import CaretDown from '@/public/icon/CaretDown';
 import { useEffect, useRef, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
+import Button from '../buttons/Button';
 type Props = {
   id: string;
   list: string[];
@@ -61,12 +62,17 @@ const Dropdown = (props: Props) => {
         >
           {props.list.map((item, index) => {
             return (
-              <li
-                key={index}
-                onClick={() => props.onClick(item)}
-                className={props.selected === item ? styles.selected : ''}
-              >
-                {item}
+              <li key={index}>
+                <Button
+                  id={`performance_chart_summarized_year_filter_click_${item}`}
+                  parameter={item}
+                  onClick={() => props.onClick(item)}
+                  className={`${
+                    props.selected === item ? styles.selected : ''
+                  }`}
+                >
+                  {item}
+                </Button>
               </li>
             );
           })}

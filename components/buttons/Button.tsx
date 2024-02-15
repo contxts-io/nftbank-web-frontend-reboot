@@ -13,12 +13,21 @@ const Button = ({
   className,
   isLoading,
   ...props
-}: { id: string; isLoading?: boolean } & ButtonProps) => {
+}: {
+  id?: string;
+  isLoading?: boolean;
+  name?: string;
+  parameter?: string;
+} & ButtonProps) => {
   const handleClick = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
     console.log('button clicked', id);
-    sendGTMEvent({ event: 'buttonClicked', value: id });
+    sendGTMEvent({
+      event: 'buttonClicked',
+      name: id,
+      parameter: props.parameter,
+    });
     props.onClick?.(e);
   };
   // useEffect(() => {
