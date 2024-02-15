@@ -6,7 +6,9 @@ import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import {
   defaultImg,
   formatCurrency,
+  formatCurrencyOriginal,
   formatDate,
+  formatGasFee,
   formatPercent,
   mappingConstants,
   parseFloatPrice,
@@ -17,6 +19,9 @@ import { selectedTokenAtom } from '@/store/portfolio';
 import ValuationDropdown from './ValuationDropdown';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
 import { SyntheticEvent } from 'react';
+import { Tooltip } from '@nextui-org/react';
+import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
+import Info from '@/public/icon/Info';
 
 const InventoryItemCard = ({ token }: { token: Token }) => {
   const currency = useAtomValue(currencyAtom);
@@ -27,6 +32,7 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
   const unrealizedGL =
     parseFloatPrice(token.nav[currency].amount) -
     parseFloatPrice(acquisitionPrice);
+
   const isPlus = unrealizedGL > 0;
   const isMinus = unrealizedGL < 0;
   const isZero = unrealizedGL === 0;
@@ -73,7 +79,9 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
           </p>
         </div>
         <div className='flex justify-between items-center'>
-          <p className={styles.pName}>Cost basis</p>
+          <p className={styles.pName}>
+            {priceType === 'acquisitionPrice' ? 'Acq. price' : 'Cost basis'}
+          </p>
 
           <p className={styles.pValue}>
             {priceType === 'acquisitionPrice'
@@ -84,49 +92,60 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
         {priceType === 'costBasis' && (
           <div className='flex justify-between items-center'>
             <p className={styles.pName}>Gas fee</p>
-
-            <p className='text-[var(--color-text-brand)]'>
-              {formatCurrency(
-                parseFloatPrice(token.gasFee?.[currency]).toString(),
+            <Tooltip
+              content={formatCurrencyOriginal(
+                token.gasFee?.[currency] || '0',
                 currency
               )}
-            </p>
+              placement='bottom-end'
+              className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+            >
+              <p className='text-[var(--color-text-brand)]'>
+                {formatGasFee(token.gasFee?.[currency] || '0', currency)}
+              </p>
+            </Tooltip>
           </div>
         )}
         <div className='flex justify-between items-center'>
           <p className={styles.pName}>Unrealized G&L</p>
-          {unrealizedGL ? (
-            <p
-              className={`${
-                isPlus
-                  ? 'text-[var(--color-text-success)]'
-                  : isMinus
-                  ? 'text-[var(--color-text-danger)]'
-                  : 'text-[var(--color-text-main)]'
-              }`}
-            >
-              {priceType === 'acquisitionPrice'
-                ? formatCurrency(
-                    (
-                      parseFloatPrice(token.nav[currency].amount) -
-                      acquisitionPrice
-                    ).toString(),
-                    currency
-                  )
-                : formatCurrency(
-                    (
-                      parseFloatPrice(token.nav[currency].amount) - costBasis
-                    ).toString(),
-                    currency
-                  )}
-            </p>
-          ) : (
-            <SkeletonLoader className='h-16 w-50' />
-          )}
+
+          <p
+            className={`${
+              isPlus
+                ? 'text-[var(--color-text-success)]'
+                : isMinus
+                ? 'text-[var(--color-text-danger)]'
+                : 'text-[var(--color-text-main)]'
+            }`}
+          >
+            {priceType === 'acquisitionPrice'
+              ? formatCurrency(
+                  (
+                    parseFloatPrice(token.nav[currency].amount) -
+                    acquisitionPrice
+                  ).toString(),
+                  currency
+                )
+              : formatCurrency(
+                  (
+                    parseFloatPrice(token.nav[currency].amount) - costBasis
+                  ).toString(),
+                  currency
+                )}
+          </p>
         </div>
         <div className='flex justify-between items-center'>
           <p className={styles.pName}>Unrealized ROI</p>
-          {unrealizedGL ? (
+          {acquisitionPrice == 0 ? (
+            <Tooltip
+              content={UNABLE_TO_CALCULATE_ROI}
+              className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+            >
+              <div className='flex justify-end text-[var(--color-icon-subtle)]'>
+                <Info />
+              </div>
+            </Tooltip>
+          ) : (
             <p
               className={`${
                 isPlus
@@ -154,8 +173,6 @@ const InventoryItemCard = ({ token }: { token: Token }) => {
                     ).toString()
                   )}
             </p>
-          ) : (
-            <SkeletonLoader className='h-16 w-50' />
           )}
         </div>
         {/**

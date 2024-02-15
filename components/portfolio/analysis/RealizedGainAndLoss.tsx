@@ -21,7 +21,9 @@ import { currencyAtom } from '@/store/currency';
 import { analysisGainAndLossParamAtom } from '@/store/requestParam';
 import {
   formatCurrency,
+  formatCurrencyOriginal,
   formatDate,
+  formatGasFee,
   formatPercent,
   parseFloatPrice,
 } from '@/utils/common';
@@ -32,23 +34,36 @@ import { LATEST_ACQUISITION_DATE } from '@/utils/messages';
 import ToggleButton from '@/components/buttons/ToggleButton';
 import { useInView } from 'react-intersection-observer';
 import NoData from '@/components/error/NoData';
-const THEAD = [
-  { key: 'item', value: 'Item' },
-  { key: 'amount', value: 'Amount' },
-  { key: 'costBasis', value: 'Cost basis' },
-  { key: 'proceed', value: 'Proceed' },
-  { key: 'realizedGainAndLoss', value: 'Realized G&L' },
-  { key: 'realizedROI', value: 'Realized ROI' },
-  { key: 'acquisitionDate', value: 'Acq. date', tooltip: true },
-  { key: 'soldDate', value: 'Sold date' },
-  // { key: 'activity', value: 'Activity' },
-];
+const THEAD = {
+  costBasis: [
+    { key: 'item', value: 'Item' },
+    { key: 'amount', value: 'Amount' },
+    { key: 'costBasis', value: 'Cost basis' },
+    { key: 'proceed', value: 'Proceed' },
+    { key: 'realizedGainAndLoss', value: 'Realized G&L' },
+    { key: 'realizedROI', value: 'Realized ROI' },
+    { key: 'acquisitionDate', value: 'Acq. date', tooltip: true },
+    { key: 'soldDate', value: 'Sold date' },
+    // { key: 'activity', value: 'Activity' },
+  ],
+  acquisitionPrice: [
+    { key: 'item', value: 'Item' },
+    { key: 'amount', value: 'Amount' },
+    { key: 'costBasis', value: 'Acq. price' },
+    { key: 'proceed', value: 'Revenue' },
+    { key: 'realizedGainAndLoss', value: 'Realized G&L' },
+    { key: 'realizedROI', value: 'Realized ROI' },
+    { key: 'acquisitionDate', value: 'Acq. date', tooltip: true },
+    { key: 'soldDate', value: 'Sold date' },
+    // { key: 'activity', value: 'Activity' },
+  ],
+};
 type _Year = TYear & { selected: boolean };
 type _Period = TPeriod & { selected: boolean };
 const RealizedGainAndLoss = () => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
-  const [includeGasUsed, setIncludeGasUsed] = useState<boolean>(true);
+  const [includeGasUsed, setIncludeGasUsed] = useState<boolean>(false);
   const { ref, inView } = useInView();
   const [requestParams, setRequestParams] = useAtom(
     analysisGainAndLossParamAtom
@@ -155,7 +170,9 @@ const RealizedGainAndLoss = () => {
         <table className={styles.table}>
           <thead className='font-caption-regular'>
             <tr>
-              {THEAD.map((item, index) => (
+              {THEAD[
+                includeGasUsed === true ? 'costBasis' : 'acquisitionPrice'
+              ].map((item, index) => (
                 <th
                   key={index}
                   className={index === 0 ? 'text-left' : 'text-right'}
@@ -244,7 +261,7 @@ const RealizedGainAndLoss = () => {
                       </p>
                       {includeGasUsed && (
                         <p className={`text-[var(--color-text-brand)] mt-4`}>
-                          {`GAS +${parseFloatPrice(gasFee.toFixed(3))}`}
+                          {`+${parseFloatPrice(gasFee.toFixed(3))}`}
                         </p>
                       )}
                     </td>
@@ -258,9 +275,21 @@ const RealizedGainAndLoss = () => {
                           : formatCurrency(proceed.toString(), currency)}
                       </p>
                       {includeGasUsed && (
-                        <p className={`text-[var(--color-text-brand)] mt-4`}>
-                          {`GAS +${parseFloatPrice(proceedGasFee.toFixed(3))}`}
-                        </p>
+                        <Tooltip
+                          content={formatCurrencyOriginal(
+                            proceedGasFee.toString(),
+                            currency
+                          )}
+                          placement='bottom-end'
+                          className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                        >
+                          <p className={`text-[var(--color-text-brand)] mt-4`}>
+                            {formatGasFee(
+                              item.proceedGasFee?.[currency],
+                              currency
+                            )}
+                          </p>
+                        </Tooltip>
                       )}
                     </td>
                     <td className='text-right'>

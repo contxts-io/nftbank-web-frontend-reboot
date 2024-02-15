@@ -125,7 +125,7 @@ const InventoryValue = () => {
                     {item.infinity ? (
                       <Tooltip
                         content={UNABLE_TO_CALCULATE_ROI}
-                        className='max-w-188 font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                        className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
                       >
                         <div className='mt-20 w-full flex justify-center text-[var(--color-icon-subtle)]'>
                           <Info />

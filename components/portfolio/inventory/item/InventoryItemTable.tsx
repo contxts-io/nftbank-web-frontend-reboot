@@ -10,7 +10,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   defaultImg,
   formatCurrency,
+  formatCurrencyOriginal,
   formatDate,
+  formatGasFee,
   formatPercent,
   mappingConstants,
   parseFloatPrice,
@@ -21,59 +23,23 @@ import { selectedTokenAtom } from '@/store/portfolio';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
 import FailToLoad from '@/components/error/FailToLoad';
 import NoData from '@/components/error/NoData';
-import { LATEST_ACQUISITION_DATE } from '@/utils/messages';
+import {
+  LATEST_ACQUISITION_DATE,
+  UNABLE_TO_CALCULATE_ROI,
+} from '@/utils/messages';
 import Info from '@/public/icon/Info';
 import { Tooltip } from '@nextui-org/react';
-const HEADER = [
-  {
-    type: 'Item',
-    name: 'Item',
-  },
-  {
-    type: 'amount',
-    name: 'Amount',
-    sort: true,
-  },
-  {
-    type: 'costBasis',
-    name: 'Cost basis',
-  },
-  {
-    type: 'valuationType',
-    name: 'Valuation Type',
-  },
-  {
-    type: 'nav',
-    name: 'Realtime NAV',
-    sort: true,
-  },
-  {
-    type: 'unrealizedG&L',
-    name: 'Unrealized G&L',
-  },
-  {
-    type: 'unrealizedROI',
-    name: 'Unrealized ROI',
-  },
-  // {
-  //   type: 'accuracy',
-  //   name: 'Accuracy',
-  // },
-  {
-    type: 'acquisitionDate',
-    name: 'Acq. date',
-    tooltip: LATEST_ACQUISITION_DATE,
-  },
-];
+
 type Props = {
   sticky?: boolean;
 };
 
 const InventoryItemTable = (props: Props) => {
-  const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
-  const [openedItem, setOpenedItem] = useState<string[]>([]);
   const currency = useAtomValue(currencyAtom);
   const priceType = useAtomValue(priceTypeAtom);
+
+  const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
+  const [openedItem, setOpenedItem] = useState<string[]>([]);
   const { ref, inView } = useInView();
   const [view, setView] = useState<{ key: string; open: boolean }>({
     key: '',
@@ -85,6 +51,47 @@ const InventoryItemTable = (props: Props) => {
     status,
   } = useInventoryItemInfinite({ ...requestParam, page: 0 });
   const [selectedToken, setSelectedToken] = useAtom(selectedTokenAtom);
+  const HEADER = [
+    {
+      type: 'Item',
+      name: 'Item',
+    },
+    {
+      type: 'amount',
+      name: 'Amount',
+      sort: true,
+    },
+    {
+      type: 'costBasis',
+      name: priceType === 'costBasis' ? 'Cost basis' : 'Acq. price',
+    },
+    {
+      type: 'valuationType',
+      name: 'Valuation Type',
+    },
+    {
+      type: 'nav',
+      name: 'Realtime NAV',
+      sort: true,
+    },
+    {
+      type: 'unrealizedG&L',
+      name: 'Unrealized G&L',
+    },
+    {
+      type: 'unrealizedROI',
+      name: 'Unrealized ROI',
+    },
+    // {
+    //   type: 'accuracy',
+    //   name: 'Accuracy',
+    // },
+    {
+      type: 'acquisitionDate',
+      name: 'Acq. date',
+      tooltip: LATEST_ACQUISITION_DATE,
+    },
+  ];
   useEffect(() => {
     const isLast =
       inventoryItemList?.pages?.[inventoryItemList?.pages.length - 1].isLast;
@@ -224,7 +231,7 @@ const InventoryItemTable = (props: Props) => {
                             </div>
                             <div className='font-caption-medium max-w-[230px]  white-space-nowrap overflow-hidden text-ellipsis'>
                               <p className={`${styles.pMain} mr-0`}>
-                                {data.token.tokenId}
+                                {data.token.name}
                               </p>
                               <p className={`${styles.pSub} truncate mr-0`}>
                                 {data.collection.name ||
@@ -246,15 +253,23 @@ const InventoryItemTable = (props: Props) => {
                                 )}
                           </p>
                           {priceType === 'costBasis' && (
-                            <p
-                              className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                            <Tooltip
+                              content={formatCurrencyOriginal(
+                                data.gasFee?.[currency] || '0',
+                                currency
+                              )}
+                              placement='bottom-end'
+                              className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
                             >
-                              {data.gasFee?.[currency]
-                                ? `GAS +${parseFloatPrice(
-                                    data.gasFee[currency] || ''
-                                  ).toFixed(3)} `
-                                : ''}
-                            </p>
+                              <p
+                                className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                              >
+                                {formatGasFee(
+                                  data.gasFee?.[currency] || '',
+                                  currency
+                                )}
+                              </p>
+                            </Tooltip>
                           )}
                         </td>
                         <td className='text-right'>
@@ -304,39 +319,50 @@ const InventoryItemTable = (props: Props) => {
                           </p>
                         </td>
                         <td className='text-right'>
-                          <p
-                            className={`${
-                              isZero
-                                ? 'text-[var(--color-text-main)]'
-                                : isPlus
-                                ? 'text-[var(--color-text-success)]'
-                                : isMinus
-                                ? 'text-[var(--color-text-danger)]'
-                                : 'text-[var(--color-text-main)]'
-                            }`}
-                          >
-                            {priceType === 'acquisitionPrice'
-                              ? formatPercent(
-                                  (
-                                    ((parseFloatPrice(
-                                      data.nav[currency].amount
-                                    ) -
-                                      acquisitionPrice) /
-                                      acquisitionPrice) *
-                                    100
-                                  ).toString()
-                                )
-                              : formatPercent(
-                                  (
-                                    ((parseFloatPrice(
-                                      data.nav[currency].amount
-                                    ) -
-                                      costBasis) /
-                                      costBasis) *
-                                    100
-                                  ).toString()
-                                )}
-                          </p>
+                          {acquisitionPrice == 0 ? (
+                            <Tooltip
+                              content={UNABLE_TO_CALCULATE_ROI}
+                              className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                            >
+                              <div className='w-full flex justify-end text-[var(--color-icon-subtle)]'>
+                                <Info />
+                              </div>
+                            </Tooltip>
+                          ) : (
+                            <p
+                              className={`${
+                                isZero
+                                  ? 'text-[var(--color-text-main)]'
+                                  : isPlus
+                                  ? 'text-[var(--color-text-success)]'
+                                  : isMinus
+                                  ? 'text-[var(--color-text-danger)]'
+                                  : 'text-[var(--color-text-main)]'
+                              }`}
+                            >
+                              {priceType === 'acquisitionPrice'
+                                ? formatPercent(
+                                    (
+                                      ((parseFloatPrice(
+                                        data.nav[currency].amount
+                                      ) -
+                                        acquisitionPrice) /
+                                        acquisitionPrice) *
+                                      100
+                                    ).toString()
+                                  )
+                                : formatPercent(
+                                    (
+                                      ((parseFloatPrice(
+                                        data.nav[currency].amount
+                                      ) -
+                                        costBasis) /
+                                        costBasis) *
+                                      100
+                                    ).toString()
+                                  )}
+                            </p>
+                          )}
                         </td>
                         <td className='text-right'>
                           <span>

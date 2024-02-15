@@ -27,6 +27,19 @@ export function formatCurrency(amount: string | null, currency: TCurrency): stri
   }
   return '';
 }
+export function formatCurrencyOriginal(amount: string | null, currency: TCurrency): string {
+  if (!amount) return '-';
+  if (amount === 'infinity')
+    return '-';
+    // return '∞';
+  if (currency === 'usd') {
+    return `$${parseFloat(amount).toLocaleString('en-US',{maximumFractionDigits: 10})}`;
+  }
+  if (currency === 'eth') {
+    return `Ξ${parseFloat(amount).toLocaleString('en-US',{maximumFractionDigits: 10})}`;
+  }
+  return '';
+}
 // export function shortFormatCurrency(amount: string | null, currency: TCurrency): string {
 //   if (!amount) return '';
 //   if (amount === 'infinity')
@@ -284,6 +297,18 @@ export function findCategoryListById(categoryObj: typeof ARTICLE_CATEGORY , targ
     }
   }
   return matchingCategories;
+}
+export const formatGasFee = (gasFee: string | null,currency : 'usd' | 'eth'): string => {
+  if (!gasFee || gasFee === null || gasFee === 'infinity') return 'No Gas Fee';
+  else if (parseFloatPrice(gasFee) === 0) return 'No Gas Fee';
+  else if (parseFloat(gasFee) < 0.001) return 'less than 0.001';
+  if (currency === 'usd') {
+    return `+${parseFloat(gasFee).toLocaleString('en-US',{maximumFractionDigits: 4})}`;
+  }
+  if (currency === 'eth') {
+    return `+${parseFloat(gasFee).toLocaleString('en-US',{maximumFractionDigits: 4})}`;
+  }
+  return '-'
 }
 export const parseFloatPrice = (price: any):number => {
   

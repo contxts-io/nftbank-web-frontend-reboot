@@ -70,14 +70,6 @@ const tooltip = ({
 
           const todayReversedValue = reverseMathSqrt(todayFormattedValue);
 
-          // console.log('todayValue : ', todayValue);
-          // console.log('todayFormattedValue : ', mathSqrt(todayValue));
-          // console.log(
-          //   'todayReversedValue : ',
-          //   reverseMathSqrt(mathSqrt(todayValue))
-          // );
-          // console.log('seriesData ::: ', seriesData);
-          console.log('w', w);
           return (
             <li key={index}>
               <div className='flex items-center'>
@@ -158,39 +150,23 @@ const InventoryItemDetailChart = ({
 
     historicalData &&
       historicalData.map((item, index) => {
-        const _date = formatDate(new Date(item.processedAt)).split('/');
-        console.log('_date', _date);
-        const date = `${_date[0]}/${_date[1].replace(
-          /^0+/,
-          ''
-        )}/${_date[2].replace(/^0+/, '')}`;
+        const date = item.processedAt.split(' ')[0]?.replaceAll('-', '/');
         category.push(date);
         const keys = Object.keys(item) as (keyof typeof item)[];
-        console.log('item :', item, ', keys : ', keys);
         keys.map((key) => {
           key !== 'processedAt' &&
             _seriesData.map((series) => {
               if (key === series.id) {
                 const prevValue = index > 0 ? series.data[index - 1] : null;
-                // console.log('prevValue : ', prevValue);
                 const value =
                   item[key]?.[currency] && item[key]?.[currency] !== 'nan'
                     ? item[key]?.[currency]
                     : prevValue?.toString();
-                // console.log('value : ', value);
-                // series.data.push(parseFloat(value || '0'));
-                // series.realData.push(parseFloat(value || '0'));
                 if (
                   item[key]?.[currency] &&
                   item[key]?.[currency] !== 'nan' &&
                   item[key]?.[currency] !== 'None'
                 ) {
-                  console.log('value : ', value);
-                  console.log(
-                    'item[key]?.[currency] : ',
-                    item[key]?.[currency]
-                  );
-                  console.log('is same : ', value === item[key]?.[currency]);
                   series.data.push(
                     mathSqrt(parseFloat(item[key]?.[currency] || '0'))
                   );
@@ -198,14 +174,7 @@ const InventoryItemDetailChart = ({
                     parseFloat(item[key]?.[currency] || '0')
                   );
                 } else {
-                  console.log('nodata value : ', value);
-                  console.log(
-                    'prevValue?.toString() : ',
-                    prevValue?.toString()
-                  );
-                  console.log('is same : ', value === prevValue?.toString());
                   series.noDataIndex.push(index);
-                  console.log('no data ', index, series.noDataIndex);
                   series.data.push(
                     prevValue
                       ? mathSqrt(parseFloat(prevValue?.toString()))
@@ -218,7 +187,6 @@ const InventoryItemDetailChart = ({
               }
             });
         });
-        console.log('no data index : ', _seriesData);
       });
     return _seriesData;
   }, [historicalData, currency, category]);
@@ -237,8 +205,6 @@ const InventoryItemDetailChart = ({
 
     // 최종 최대값 찾기
     let overallMaxValue = _findMaxValue(maxValues as number[]);
-
-    console.log('Max Values: overallMaxValue', overallMaxValue);
     return overallMaxValue;
   }, [seriesData]);
   const options: ApexOptions = {
@@ -292,7 +258,6 @@ const InventoryItemDetailChart = ({
           fontSize: '12px',
         },
         formatter: function (value: any) {
-          console.log('yaxis value : ', value);
           return value
             ? formatCurrency(
                 reverseMathSqrt(value).toString(),
@@ -358,9 +323,7 @@ const InventoryItemDetailChart = ({
       },
     },
   };
-  useEffect(() => {
-    console.log('finally seriesData : ', seriesData);
-  }, [seriesData]);
+
   return (
     <section className='w-full'>
       <ApexCharts

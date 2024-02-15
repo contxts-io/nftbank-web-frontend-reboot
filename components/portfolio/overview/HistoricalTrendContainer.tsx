@@ -127,7 +127,13 @@ const HistoricalTrendContainer = () => {
         inventoryValueHistorical?.data?.[0]?.value[currency] || '0.00'
       );
     return diff;
-  }, [hoverValue, currency, inventoryValue]);
+  }, [
+    hoverValue,
+    currency,
+    inventoryValue,
+    selectedPeriod,
+    inventoryValueHistorical?.data,
+  ]);
   const initialValue = useMemo(() => {
     // const value = parseFloatPrice(
     //   inventoryValueHistorical?.data[0]?.value[currency] || '0.00'
@@ -157,9 +163,10 @@ const HistoricalTrendContainer = () => {
             return (
               <Button
                 key={index}
-                id={`/portfolio/overview/historicalTrend/${item.name}`}
+                id={`historical_nav_chart_period_filter_click`}
                 onClick={() => handleClickPeriod(item)}
                 className={`${selectedPeriod === item.name && styles.selected}`}
+                parameter={item.name}
               >
                 {item.name}
               </Button>

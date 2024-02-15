@@ -49,14 +49,14 @@ const HistoricalTrendChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
   const [isPolling, setIsPolling] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [historicalValueParam, setHistoricalValueParam] = useAtom(
     overviewHistoricalValueParamAtom
   );
   const { data: inventoryValue, status: statusInventoryValue } =
     useInventoryValuePolling(portfolioUser);
-  const { data: dispatchDailyNav } = useDispatchDailyNav(
-    portfolioUser?.walletAddress || ''
-  );
+  const { data: dispatchDailyNav, status: statusDispatchDailyNav } =
+    useDispatchDailyNav(portfolioUser?.walletAddress || '');
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
@@ -70,15 +70,41 @@ const HistoricalTrendChart = (props: Props) => {
   );
   useEffect(() => {
     setIsPolling(true);
-  }, []);
+  }, [portfolioUser]);
   useEffect(() => {
+    statusDispatchDailyNav === 'loading' ||
+    statusInventoryValueHistorical === 'loading' ||
+    isPolling === true
+      ? setIsLoading(true)
+      : setIsLoading(false);
+  }, [statusInventoryValueHistorical, isPolling, statusDispatchDailyNav]);
+  useEffect(() => {
+    console.log(
+      'statusInventoryValueHistorical',
+      statusInventoryValueHistorical
+    );
     console.log('inventoryValueHistorical', inventoryValueHistorical);
+    console.log(
+      'inventoryValueHistorical?.data',
+      inventoryValueHistorical?.data
+    );
+    console.log(
+      'inventoryValueHistorical?.data.length',
+      inventoryValueHistorical?.data?.length
+    );
+    console.log(
+      'inventoryValueHistorical',
+      inventoryValueHistorical?.statusCode
+    );
     statusInventoryValueHistorical === 'success' &&
-      !!inventoryValueHistorical &&
-      !!inventoryValueHistorical.data &&
-      inventoryValueHistorical.data.length > 0 &&
-      setIsPolling(false);
-  }, [statusInventoryValueHistorical]);
+    inventoryValueHistorical?.data &&
+    inventoryValueHistorical?.statusCode !== 'PENDING'
+      ? setIsPolling(false)
+      : setIsPolling(true);
+  }, [statusInventoryValueHistorical, inventoryValueHistorical?.data]);
+  useEffect(() => {
+    console.log('isPolling', isPolling);
+  }, [isPolling]);
   const [isPlus, setIsPlus] = useState(false);
   let category: string[] = [];
 
@@ -120,7 +146,6 @@ const HistoricalTrendChart = (props: Props) => {
 
         const parts = date.replaceAll(',', '').split(' ');
         const yDate = `${parts[2]}, ${parts[0]} ${parts[1]}`;
-        console.log('data date ::: ', date, 'parts ::: ', parts);
         // historicalValueParam.window === 'all'
         //   ? category.push(yDate)
         //   : category.push(date);
@@ -143,7 +168,12 @@ const HistoricalTrendChart = (props: Props) => {
 
     category.push(todayDate);
     return _series;
-  }, [inventoryValueHistorical, currency, category, inventoryValue?.value]);
+  }, [
+    inventoryValueHistorical?.data,
+    currency,
+    category,
+    inventoryValue?.value,
+  ]);
   useEffect(() => {
     const currentValue = inventoryValue?.value[currency]?.amount
       ? parseFloat(inventoryValue.value[currency].amount || '0')
@@ -339,10 +369,8 @@ const HistoricalTrendChart = (props: Props) => {
   };
   return (
     <section className='w-full relative'>
-      {statusInventoryValueHistorical === 'loading' && (
-        <SkeletonLoader className='w-full h-200' />
-      )}
-      {statusInventoryValueHistorical === 'success' && (
+      {isLoading === true && <SkeletonLoader className='w-full h-200' />}
+      {isLoading !== true && statusInventoryValueHistorical === 'success' && (
         // statusInventoryValue === 'success' &&
         <>
           <div className='absolute right-0 top-0 h-200 flex flex-col justify-between items-end font-caption-regular text-[var(--color-text-subtle)]'>

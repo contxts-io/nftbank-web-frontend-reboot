@@ -8,7 +8,6 @@ import { usePerformanceChart } from '@/utils/hooks/queries/performance';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { formatPercent, mathSqrt } from '@/utils/common';
-import SkeletonLoader from '@/components/SkeletonLoader';
 import { BasicParam } from '@/interfaces/request';
 import { useDispatchPerformance } from '@/utils/hooks/queries/dispatch';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -61,15 +60,14 @@ const PerformanceChart = (props: Props) => {
   const labelColor = 'var(--color-text-subtle)';
   useEffect(() => {
     setIsPolling(true);
-  }, []);
+  }, [props.requestParam?.walletAddress]);
   useEffect(() => {
-    statusPerformanceChart === 'success' &&
-      performanceChart.statusCode !== 'PENDING' &&
-      setIsPolling(false);
-  }, [statusPerformanceChart]);
-  useEffect(() => {
-    setIsPolling(true);
-  }, [props.requestParam]);
+    statusPerformanceChart === 'error' && setIsPolling(false);
+    statusPerformanceChart === 'success' && performanceChart?.data
+      ? setIsPolling(false)
+      : setIsPolling(true);
+  }, [statusPerformanceChart, isPolling, performanceChart?.data]);
+
   let seriesData = useMemo(() => {
     if (
       !performanceChart ||
@@ -137,7 +135,6 @@ const PerformanceChart = (props: Props) => {
         ...seriesData[1].data.map((value) => Math.abs(value || 0)),
       ]
     );
-    console.log('maxAbs', maxAbs);
     setMaxAbs(maxAbs);
   }, [seriesData]);
   const options = {

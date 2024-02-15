@@ -3,7 +3,6 @@ import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory
 import styles from './InventoryCollectionTable.module.css';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
-import Image from 'next/image';
 import { TSort, inventoryCollectionAtom } from '@/store/requestParam';
 import SkeletonLoader from '../../../SkeletonLoader';
 import { Collection, TValuation } from '@/interfaces/collection';
@@ -12,55 +11,56 @@ import { selectedCollectionInventoryAtom } from '@/store/portfolio';
 import { useEffect, useMemo } from 'react';
 import Ethereum from '@/public/icon/Ethereum';
 import {
-  difference,
   formatCurrency,
-  formatFloat,
+  formatCurrencyOriginal,
+  formatGasFee,
   formatPercent,
   isPlus,
   parseFloatPrice,
   shortenAddress,
 } from '@/utils/common';
 import { useInView } from 'react-intersection-observer';
-import SpamInsertDropdown from './SpamInsertDropdown';
 import { ValuationTypes } from '@/utils/ValuationTypes';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
-import ValuationDropdown from '../item/ValuationDropdown';
-import { twMerge } from 'tailwind-merge';
 import FailToLoad from '@/components/error/FailToLoad';
 import NoData from '@/components/error/NoData';
-const T_HEADER = [
-  {
-    name: 'Chain',
-  },
-  {
-    name: 'Collection',
-  },
-  {
-    name: 'Amount',
-    key: 'amount',
-    sort: 'amount',
-  },
-  {
-    name: 'Cost basis',
-    key: 'costBasis',
-  },
-  {
-    name: 'Valuation Type',
-  },
-  {
-    name: 'Realtime NAV',
-    sort: 'nav',
-  },
-  {
-    name: 'Unrealized G&L',
-  },
-  {
-    name: 'Unrealized ROI',
-  },
-];
+import { Tooltip } from '@nextui-org/react';
+import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
+import Info from '@/public/icon/Info';
+
 const InventoryCollectionTable = () => {
-  const currency = useAtomValue(currencyAtom);
   const priceType = useAtomValue(priceTypeAtom);
+  const T_HEADER = [
+    {
+      name: 'Chain',
+    },
+    {
+      name: 'Collection',
+    },
+    {
+      name: 'Amount',
+      key: 'amount',
+      sort: 'amount',
+    },
+    {
+      name: priceType === 'costBasis' ? 'Cost basis' : 'Acq. price',
+      key: 'costBasis',
+    },
+    {
+      name: 'Valuation Type',
+    },
+    {
+      name: 'Realtime NAV',
+      sort: 'nav',
+    },
+    {
+      name: 'Unrealized G&L',
+    },
+    {
+      name: 'Unrealized ROI',
+    },
+  ];
+  const currency = useAtomValue(currencyAtom);
   const { ref, inView } = useInView();
   const [inventoryType, setInventoryType] = useAtom(inventoryTypeAtom);
   const setSelectedCollection = useSetAtom(selectedCollectionInventoryAtom);
@@ -162,6 +162,9 @@ const InventoryCollectionTable = () => {
                 {collections?.map((page, pageIndex) => {
                   return page.data?.map((row, index) => {
                     const valuationType = selectedValueType(row.valuation);
+                    const acquisitionPrice = parseFloatPrice(
+                      row.acquisitionPrice?.[currency]
+                    );
                     const costBasis =
                       parseFloatPrice(row.acquisitionPrice?.[currency]) +
                       parseFloatPrice(row.gasFee?.[currency]);
@@ -219,15 +222,23 @@ const InventoryCollectionTable = () => {
                                 )}
                           </p>
                           {priceType === 'costBasis' && (
-                            <p
-                              className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                            <Tooltip
+                              content={formatCurrencyOriginal(
+                                row.gasFee?.[currency] || '0',
+                                currency
+                              )}
+                              placement='bottom-end'
+                              className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
                             >
-                              {row.gasFee?.[currency]
-                                ? `GAS +${parseFloatPrice(
-                                    row.gasFee[currency]
-                                  ).toFixed(3)} `
-                                : ''}
-                            </p>
+                              <p
+                                className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                              >
+                                {`${formatGasFee(
+                                  row.gasFee?.[currency] || null,
+                                  currency
+                                )} `}
+                              </p>
+                            </Tooltip>
                           )}
                         </td>
                         {/* coast basis */}
@@ -255,7 +266,7 @@ const InventoryCollectionTable = () => {
                           className={`${styles.pTd} text-[var(--color-text-brand)]`}
                         >
                           {row.gasFee?.[currency]
-                            ? `GAS +${parseFloat(
+                            ? `+${parseFloat(
                                 row.gasFee[currency] || ''
                               ).toFixed(3)} `
                             : ''}
@@ -315,29 +326,42 @@ const InventoryCollectionTable = () => {
                         </td>
                         {/* unrealized ROI */}
                         <td className='text-right'>
-                          <p
-                            className={`${styles.pTd} ${
-                              isPlus(unrealizedGL)
-                                ? 'text-[var(--color-text-success)]'
-                                : 'text-[var(--color-text-danger)]'
-                            } pr-16`}
-                          >
-                            {priceType === 'costBasis'
-                              ? formatPercent(
-                                  (
-                                    (unrealizedGL -
-                                      parseFloatPrice(row.gasFee?.[currency])) /
-                                    costBasis
-                                  ).toString()
-                                )
-                              : formatPercent(
-                                  (
-                                    unrealizedGL /
-                                    (costBasis -
-                                      parseFloatPrice(row.gasFee?.[currency]))
-                                  ).toString()
-                                )}
-                          </p>
+                          {acquisitionPrice == 0 ? (
+                            <Tooltip
+                              content={UNABLE_TO_CALCULATE_ROI}
+                              className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                            >
+                              <div className='w-full flex justify-end text-[var(--color-icon-subtle)] pr-16'>
+                                <Info />
+                              </div>
+                            </Tooltip>
+                          ) : (
+                            <p
+                              className={`${styles.pTd} ${
+                                isPlus(unrealizedGL)
+                                  ? 'text-[var(--color-text-success)]'
+                                  : 'text-[var(--color-text-danger)]'
+                              } pr-16`}
+                            >
+                              {priceType === 'costBasis'
+                                ? formatPercent(
+                                    (
+                                      (unrealizedGL -
+                                        parseFloatPrice(
+                                          row.gasFee?.[currency]
+                                        )) /
+                                      costBasis
+                                    ).toString()
+                                  )
+                                : formatPercent(
+                                    (
+                                      unrealizedGL /
+                                      (costBasis -
+                                        parseFloatPrice(row.gasFee?.[currency]))
+                                    ).toString()
+                                  )}
+                            </p>
+                          )}
                         </td>
                         {/**
                    * 
