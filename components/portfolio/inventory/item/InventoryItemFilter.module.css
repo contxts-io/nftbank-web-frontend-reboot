@@ -1,7 +1,7 @@
 .container {
   @apply flex flex-col;
   @apply pr-12;
-  @apply min-w-[290px] w-[290px] max-w-[290px] sticky top-120 border-r-1 border-[var(--color-border-main)];
+  @apply min-w-[290px] w-[290px] h-[calc(100vh-162px)] max-w-[290px] sticky top-120 border-r-1 border-[var(--color-border-main)];
   @apply max-h-[calc(100vh-162px)];
 }
 .inputContainer {
