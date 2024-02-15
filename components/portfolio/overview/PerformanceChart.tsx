@@ -72,13 +72,9 @@ const PerformanceChart = (props: Props) => {
   }, [statusDispatchPerformance, isPolling, statusPerformanceChart]);
   useEffect(() => {
     statusPerformanceChart === 'error' && setIsPolling(false);
-    statusPerformanceChart === 'success' && performanceChart?.data
-      ? setIsPolling(false)
-      : setIsPolling(true);
+    !!performanceChart?.data ? setIsPolling(false) : setIsPolling(true);
   }, [statusPerformanceChart, performanceChart?.data]);
-  useEffect(() => {
-    setIsPolling(true);
-  }, [props.requestParam]);
+
   const options: ApexOptions = {
     chart: {
       type: 'bar',
