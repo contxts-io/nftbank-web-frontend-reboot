@@ -144,6 +144,7 @@ const RealizedGainAndLoss = () => {
           Realized Gain & Loss
         </p>
         <Dropdown
+          id='realized_gain_loss_period_filter'
           list={selectedYear.map((item) => item.name)}
           selected={selectedYear.find((item) => item.selected)?.name || '2023'}
           onClick={(name) => handleChangeYear(name)}
@@ -162,7 +163,7 @@ const RealizedGainAndLoss = () => {
           <ToggleButton
             onClick={() => setIncludeGasUsed((prev) => !prev)}
             checked={includeGasUsed === true}
-            id={''}
+            id={'realized_gain_loss_gas_fee_toggle'}
           />
         </div>
       </div>

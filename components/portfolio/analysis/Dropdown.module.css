@@ -4,11 +4,17 @@
 }
 .dropdown li {
   @apply flex w-full justify-between items-center whitespace-nowrap;
-  @apply text-[var(--color-text-subtle)] p-8 cursor-pointer hover:text-[var(--color-text-brand)] border-b-1 border-[var(--color-border-bold)] !important;
+  @apply text-[var(--color-text-subtle)] cursor-pointer hover:text-[var(--color-text-brand)] border-b-1 border-[var(--color-border-bold)] !important;
 }
 .dropdown li p {
   @apply text-right;
 }
+.dropdown button {
+  @apply border-none p-8 w-full h-full;
+}
 .dropdown li:last-child {
   @apply border-0 !important;
+}
+.selected {
+  @apply text-[var(--color-text-brand)] !important;
 }

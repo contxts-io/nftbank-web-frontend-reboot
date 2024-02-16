@@ -163,7 +163,7 @@ const HistoricalTrendContainer = () => {
             return (
               <Button
                 key={index}
-                id={`historical_nav_chart_period_filter_click`}
+                id={`historical_nav_chart_filter`}
                 onClick={() => handleClickPeriod(item)}
                 className={`${selectedPeriod === item.name && styles.selected}`}
                 parameter={item.name}

@@ -1,14 +1,12 @@
-'use client';
 import NoWallet from '@/components/portfolio/NoWallet';
 import PortfolioTabNavigation from '@/components/portfolio/PortfolioTabNavigation';
 import ProfileComponent from '@/components/profile/ProfileComponent';
-import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
-import { useMe } from '@/utils/hooks/queries/auth';
-import { useUser } from '@/utils/hooks/queries/user';
-import { useWalletList } from '@/utils/hooks/queries/wallet';
-import { useAtom } from 'jotai';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'NFTBank.ai reboot - Portfolio',
+  description: 'NFTBank.ai - Portfolio',
+};
 
 const PortfolioLayout = ({ children }: { children: React.ReactNode }) => {
   //** sprint 1 */

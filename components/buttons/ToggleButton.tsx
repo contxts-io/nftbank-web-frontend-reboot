@@ -15,6 +15,7 @@ const ToggleButton = ({ onClick, checked, label, ...props }: Props) => {
         onClick={onClick}
         className={`${styles.toggleButton} ${checked && styles.checked}`}
         {...props}
+        parameter={!checked ? 'on' : 'off'}
       >
         <div className={styles.circle} />
       </Button>
