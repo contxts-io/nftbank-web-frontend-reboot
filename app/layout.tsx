@@ -9,6 +9,7 @@ import LoginProvider from '@/components/providers/LoginProvider';
 import GlobalFooter from '@/components/GlobalFooter';
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google';
 import { Analytics } from '@/components/common/Analytics';
+import Script from 'next/script';
 
 const iosevkaCustom = localFont({
   src: [
@@ -127,7 +128,31 @@ export default async function RootLayout({
 
   return (
     <html lang='en' className={`${iosevkaCustom.className}`}>
+      <head>
+        <Script
+          id='gtag-init'
+          strategy='afterInteractive'
+          dangerouslySetInnerHTML={{
+            __html: `(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', '${GTM_ID}');`,
+          }}
+        />
+      </head>
       <body className='relative bg-[var(--color-elevation-surface)]'>
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height='0'
+            width='0'
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
         <script
           dangerouslySetInnerHTML={{
             __html: themeInitializerScript,
@@ -143,7 +168,6 @@ export default async function RootLayout({
         <link rel='apple-touch-icon' href='apple-icon-180.png' />
         <meta name='apple-mobile-web-app-capable' content='yes' />
 
-        <GoogleAnalytics gaId={GA_TRACKING_ID} />
         <Providers>
           {/**
            * 
@@ -164,8 +188,9 @@ export default async function RootLayout({
             </div>
           </Analytics>
         </Providers>
-        <GoogleTagManager gtmId={GTM_ID} />
       </body>
+      <GoogleAnalytics gaId={GA_TRACKING_ID} />
+      <GoogleTagManager gtmId={GTM_ID} />
     </html>
   );
 }

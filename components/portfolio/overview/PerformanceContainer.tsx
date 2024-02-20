@@ -57,7 +57,7 @@ const PerformanceContainer = () => {
       <div className={styles.row}>
         <p className={`font-subtitle02-bold ${styles.title}`}>Performance</p>
         <Dropdown
-          id='performanceChartYear'
+          id='summarized_performance_chart_filter'
           className='w-80 h-36 flex justify-between items-center'
           list={YEARS.map((item) => item.toString())}
           listStyle='w-full'

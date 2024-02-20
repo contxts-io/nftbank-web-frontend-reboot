@@ -135,6 +135,7 @@ const AcquisitionType = () => {
           selected={selectedYear.find((item) => item.selected)?.name || '2023'}
           onClick={(name) => handleChangeYear(name)}
           className='w-78'
+          id='acquisition_type_pie_chart_period_filter'
         />
         {/* <Dropdown
           list={selectedPeriod.map((item) => item.name)}

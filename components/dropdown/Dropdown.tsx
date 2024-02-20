@@ -64,7 +64,7 @@ const Dropdown = (props: Props) => {
             return (
               <li key={index}>
                 <Button
-                  id={`performance_chart_summarized_year_filter_click_${item}`}
+                  id={`${props.id}`}
                   parameter={item}
                   onClick={() => props.onClick(item)}
                   className={`${

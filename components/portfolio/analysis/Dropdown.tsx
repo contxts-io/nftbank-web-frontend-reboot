@@ -4,6 +4,7 @@ import Button from '@/components/buttons/Button';
 import CaretDown from '@/public/icon/CaretDown';
 import { useState } from 'react';
 type Props = {
+  id?: string;
   list: string[];
   selected: string;
   onClick: (value: string) => void;
@@ -12,9 +13,10 @@ type Props = {
 const Dropdown = (props: Props) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   return (
-    <Button
-      className={`relative cursor-pointer w-65 ${props.className || ''}`}
-      id={`/portfolio/collection/spam/status`}
+    <div
+      className={`border-1 border-[var(--color-border-bold)] px-12 h-36 relative cursor-pointer w-78 flex items-center ${
+        props.className || ''
+      }`}
       onClick={(e) => (e.stopPropagation(), setIsPopoverOpen((prev) => !prev))}
     >
       <div className='flex items-center'>
@@ -27,14 +29,23 @@ const Dropdown = (props: Props) => {
         <ul className={`${styles.dropdown} z-50`}>
           {props.list.map((item, index) => {
             return (
-              <li key={index} onClick={() => props.onClick(item)}>
-                {item}
+              <li key={index}>
+                <Button
+                  id={props.id}
+                  parameter={item}
+                  onClick={() => (props.onClick(item), setIsPopoverOpen(false))}
+                  className={`${
+                    props.selected === item ? styles.selected : ''
+                  }`}
+                >
+                  {item}
+                </Button>
               </li>
             );
           })}
         </ul>
       )}
-    </Button>
+    </div>
   );
 };
 export default Dropdown;

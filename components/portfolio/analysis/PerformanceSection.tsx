@@ -117,7 +117,7 @@ const PerformanceSection = () => {
         </p>
 
         <Dropdown
-          id=''
+          id='performance_chart_type_filter'
           className={styles.dropdown}
           list={GNL_CHART_TYPE.map((item) => item)}
           listStyle='w-full'
@@ -133,7 +133,7 @@ const PerformanceSection = () => {
           }
         />
         <Dropdown
-          id=''
+          id='performance_chart_period_filter'
           className='w-80 h-36 flex justify-between items-center'
           list={YEARS.map((item) => item.toString())}
           listStyle='w-full'

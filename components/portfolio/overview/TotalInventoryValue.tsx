@@ -79,7 +79,7 @@ const TotalInventoryValue = () => {
         </p>
         <div className={`font-caption-medium ${styles.selector}`}>
           <Button
-            id={'top5_collection_pie_chart_filter_click'}
+            id={'top5_collection_pie_chart_view'}
             className={`${selected === 'value' && styles.selected}`}
             parameter='value'
             onClick={() => handleSelect('value')}
@@ -87,7 +87,7 @@ const TotalInventoryValue = () => {
             Value
           </Button>
           <Button
-            id={'top5_collection_pie_chart_filter_click'}
+            id={'top5_collection_pie_chart_view'}
             className={`${selected === 'amount' && styles.selected}`}
             parameter='amount'
             onClick={() => handleSelect('amount')}
