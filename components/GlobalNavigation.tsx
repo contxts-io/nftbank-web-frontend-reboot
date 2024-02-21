@@ -243,7 +243,6 @@ const GlobalNavigation = () => {
       </div> */}
       {path !== '/' && (
         <SearchInput
-          id='top_nav_search'
           placeholder='Search any Wallet'
           value={walletAddress}
           onChange={(text) => handleChangeInput(text)}
