@@ -27,6 +27,7 @@ import NoData from '@/components/error/NoData';
 import { Tooltip } from '@nextui-org/react';
 import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
 import Info from '@/public/icon/Info';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 const InventoryCollectionTable = () => {
   const priceType = useAtomValue(priceTypeAtom);
@@ -102,6 +103,11 @@ const InventoryCollectionTable = () => {
     });
   };
   const handleClickCollection = (collection: Collection) => {
+    sendGTMEvent({
+      event: 'buttonClicked',
+      name: 'collection_detail',
+      parameter: collection.collection.name,
+    });
     setSelectedCollection([collection]);
     setInventoryType('item');
   };

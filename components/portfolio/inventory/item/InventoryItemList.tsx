@@ -17,6 +17,7 @@ import InventoryItemDetail from './InventoryItemDetail';
 import { selectedTokenAtom } from '@/store/portfolio';
 import Button from '@/components/buttons/Button';
 import Image from 'next/image';
+import { sendGTMEvent } from '@next/third-parties/google';
 type Props = {
   isFilterOpen: boolean;
   handleFilterOpen: (state: boolean) => void;
@@ -54,6 +55,14 @@ const InventoryItemList = (props: Props) => {
       prev === 'costBasis' ? 'acquisitionPrice' : 'costBasis'
     );
   };
+  const handleChangeViewType = (type: 'listView' | 'cardView') => {
+    setItemViewType(type);
+    sendGTMEvent({
+      event: 'buttonClicked',
+      name: 'item_view',
+      parameter: type,
+    });
+  };
 
   return (
     <section className={`${styles.container}  ${isFilterOpen ? 'pl-12' : ''}`}>
@@ -76,7 +85,7 @@ const InventoryItemList = (props: Props) => {
             <ToggleButton
               onClick={() => handleChangePriceType()}
               checked={priceType === 'costBasis'}
-              id={''}
+              id={'item_gas_fee_toggle'}
             />
           </div>
           <div className='flex justify-between p-3 items-center border-1 w-72 border-[var(--color-border-main)]'>
@@ -87,7 +96,7 @@ const InventoryItemList = (props: Props) => {
             >
               <div
                 className={`${styles.viewTypeButton}`}
-                onClick={() => setItemViewType('cardView')}
+                onClick={() => handleChangeViewType('cardView')}
                 id=''
               >
                 <DotsNine className={`${styles.viewTypeButtonIcon}`} />
@@ -107,7 +116,7 @@ const InventoryItemList = (props: Props) => {
             >
               <div
                 className={`${styles.viewTypeButton}`}
-                onClick={() => setItemViewType('listView')}
+                onClick={() => handleChangeViewType('listView')}
                 id=''
               >
                 <Hamburger className={`${styles.viewTypeButtonIcon}`} />

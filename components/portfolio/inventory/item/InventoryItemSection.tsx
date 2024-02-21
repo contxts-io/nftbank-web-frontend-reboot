@@ -11,6 +11,7 @@ import {
   selectedCollectionInventoryAtom,
 } from '@/store/portfolio';
 import { inventoryItemListAtom } from '@/store/requestParam';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 const InventoryItemSection = () => {
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(true);
@@ -33,7 +34,14 @@ const InventoryItemSection = () => {
       }));
     };
   }, []);
-
+  const handleFilterOpen = (state: boolean) => {
+    sendGTMEvent({
+      event: 'buttonClicked',
+      name: 'item_filter',
+      parameter: state ? 'on' : 'off',
+    });
+    setIsFilterOpen(state);
+  };
   const targetRef = useRef<HTMLDivElement>(null);
   // useEffect(() => {
   //   const handleScroll = () => {
@@ -62,7 +70,7 @@ const InventoryItemSection = () => {
   return (
     <section className='transition-all duration-200 flex items-start'>
       {isFilterOpen && (
-        <InventoryItemFilter handleFilterOpen={setIsFilterOpen} />
+        <InventoryItemFilter handleFilterOpen={handleFilterOpen} />
       )}
       <div className='flex-1'>
         <p className='font-subtitle01-medium text-[var(--color-text-main)] my-20 mx-16'>
@@ -78,7 +86,7 @@ const InventoryItemSection = () => {
         <section className={styles.container}>
           <InventoryItemList
             isFilterOpen={isFilterOpen}
-            handleFilterOpen={setIsFilterOpen}
+            handleFilterOpen={handleFilterOpen}
           />
         </section>
       </div>

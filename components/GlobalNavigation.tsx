@@ -25,6 +25,7 @@ import SearchBar from './SearchBar';
 import { getAddress } from 'ethers/lib/utils';
 import SearchInput from './searchInput/SearchInput';
 import { verifyWalletAddress } from '@/apis/wallet';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 const GlobalNavigation = () => {
   const router = useRouter();
@@ -115,6 +116,11 @@ const GlobalNavigation = () => {
 
   const handleClickEnter = async () => {
     setIsChecking(true);
+    sendGTMEvent({
+      event: 'inputTextChanged',
+      name: 'top_nav_search',
+      parameter: walletAddress,
+    });
     try {
       getAddress(walletAddress);
       const result = await verifyWalletAddress(walletAddress);

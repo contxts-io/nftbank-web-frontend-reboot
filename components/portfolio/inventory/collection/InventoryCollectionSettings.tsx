@@ -1,7 +1,6 @@
 'use client';
 import MagnifyingGlass from '@/public/icon/MagnifyingGlass';
 import styles from './InventoryCollectionSettings.module.css';
-import Gear from '@/public/icon/Gear';
 import { useAtom } from 'jotai';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { inventoryCollectionAtom } from '@/store/requestParam';
@@ -11,7 +10,7 @@ import SpamModal from './SpamModal';
 import ToggleButton from '@/components/buttons/ToggleButton';
 import Button from '@/components/buttons/Button';
 import CloseX from '@/public/icon/CloseX';
-import { Popover } from 'react-tiny-popover';
+import { sendGTMEvent } from '@next/third-parties/google';
 const InventoryCollectionSettings = () => {
   const [inventoryCollection, setInventoryCollection] = useAtom(
     inventoryCollectionAtom
@@ -46,13 +45,12 @@ const InventoryCollectionSettings = () => {
     setIsFocused(false);
   };
   useEffect(() => {
-    searchText.length >= 3 &&
-      setInventoryCollection({
-        ...inventoryCollection,
-        page: 0,
-        searchCollection: searchText,
-      });
-  }, [searchText]);
+    sendGTMEvent({
+      event: 'inputTextChanged',
+      name: 'collection_search',
+      parameter: inventoryCollection.searchCollection,
+    });
+  }, [inventoryCollection.searchCollection]);
 
   return (
     <section className={`${styles.container}`}>
@@ -88,7 +86,7 @@ const InventoryCollectionSettings = () => {
             <ToggleButton
               onClick={handleTogglePriceType}
               checked={priceType === 'costBasis'}
-              id={''}
+              id={'collection_gas_fee_toggle'}
             />
           </div>
           {/* <Button
