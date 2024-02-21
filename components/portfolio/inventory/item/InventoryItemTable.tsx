@@ -29,6 +29,8 @@ import {
 } from '@/utils/messages';
 import Info from '@/public/icon/Info';
 import { Tooltip } from '@nextui-org/react';
+import { send } from 'process';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 type Props = {
   sticky?: boolean;
@@ -115,6 +117,13 @@ const InventoryItemTable = (props: Props) => {
 
   const handleOpenDetail = (target: Token) => {
     setSelectedToken(target);
+    sendGTMEvent({
+      event: 'buttonClicked',
+      name: 'item_detail',
+      parameter: `${
+        target.collection.name || target.collection.assetContract
+      }-${target.token.tokenId}`,
+    });
   };
 
   const selectedValueType = (

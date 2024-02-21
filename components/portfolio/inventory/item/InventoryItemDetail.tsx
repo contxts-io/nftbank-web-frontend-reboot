@@ -18,13 +18,16 @@ import EtherscanLogo from '@/public/icon/EtherscanLogo';
 import FailToLoad from '@/components/error/FailToLoad';
 import NoData from '@/components/error/NoData';
 import { customToFixed, defaultImg, shortenAddress } from '@/utils/common';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 const TextInfo = ({
+  id,
   title,
   value,
   tooltip,
   href,
 }: {
+  id: string;
   title: string;
   value: string;
   tooltip?: string;
@@ -33,6 +36,11 @@ const TextInfo = ({
   const handleClickLink = () => {
     console.log('click link');
     window.open(href, '_blank');
+    sendGTMEvent({
+      event: 'buttonClicked',
+      name: id,
+      parameter: value,
+    });
   };
   return (
     <div className='flex flex-col gap-y-4'>
@@ -133,17 +141,20 @@ const InventoryItemDetail = ({ token, walletAddress }: Props) => {
               title='Owner'
               value={inventoryItem.owner ? '' : walletAddress || '-'}
               href={`https://etherscan.io/address/${walletAddress}`}
+              id='item_detail_owner'
             />
             <TextInfo
               title='Contract Address'
               value={inventoryItem.assetContract}
               href={`https://etherscan.io/address/${inventoryItem.assetContract}`}
+              id='item_detail_contract_address'
             />
             <TextInfo
               title='Acq. tx hash'
               value={inventoryItem.txHash}
               tooltip='Based on latest acquisition date'
               href={`https://etherscan.io/tx/${inventoryItem.txHash}`}
+              id='item_detail_acq_tx_hash'
             />
           </div>
         )}

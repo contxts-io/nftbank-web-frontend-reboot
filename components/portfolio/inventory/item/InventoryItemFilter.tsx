@@ -20,6 +20,8 @@ import CheckBox from '@/components/checkBox/CheckBox';
 import ImagePlaceholder from '@/public/icon/ImagePlaceholder';
 import FailToLoad from '@/components/error/FailToLoad';
 import NoData from '@/components/error/NoData';
+import { send } from 'process';
+import { sendGTMEvent } from '@next/third-parties/google';
 type Props = {
   handleFilterOpen: (state: boolean) => void;
 };
@@ -74,6 +76,13 @@ const InventoryItemFilter = (props: Props) => {
   }, [selectedCollection]);
 
   const handleClickCheckBox = (collection: Collection) => {
+    sendGTMEvent({
+      event: 'buttonClicked',
+      name: 'item_collection_filter',
+      parameter:
+        collection.collection.name || collection.collection.assetContract,
+    });
+
     setSelectedCollection((prev) => {
       if (
         prev.find(
@@ -96,13 +105,18 @@ const InventoryItemFilter = (props: Props) => {
     const { value } = e.target;
     setSearchText(value);
     (value.length >= 3 || value.length == 0) &&
-      setInventoryCollectionRequestParam((prev) => {
+      (setInventoryCollectionRequestParam((prev) => {
         return {
           ...prev,
           searchCollection: value,
           page: 1,
         };
-      });
+      }),
+      sendGTMEvent({
+        event: 'inputTextChanged',
+        name: 'item_search',
+        parameter: value,
+      }));
   };
 
   return (
@@ -114,7 +128,6 @@ const InventoryItemFilter = (props: Props) => {
           </h2>
           <div
             onClick={() => handleFilterOpen(false)}
-            id={'filterButton'}
             className={styles.filterButton}
           >
             <Filter />
