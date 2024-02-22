@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import styles from './layout.module.css';
 
 export const metadata: Metadata = {
-  title: 'NFTBank.ai reboot - Portfolio/Inventory',
+  title: 'Inventory | NFTBank',
   description: 'NFTBank.ai - Portfolio/Inventory',
 };
 const InventoryLayout = ({ children }: { children: React.ReactNode }) => {
