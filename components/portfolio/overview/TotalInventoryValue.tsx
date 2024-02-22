@@ -97,7 +97,7 @@ const TotalInventoryValue = () => {
         </div>
       </div>
       <div className={styles.body}>
-        <div className='w-[200px] h-[200px] mr-80 relative'>
+        <div className='w-[200px] h-[200px] md:mr-80 relative'>
           <TotalInventoryChart selected={selected} totalAmount={totalAmount} />
           {statusAmount === 'success' && (
             <div className='absoluteCenter flex flex-col items-center'>

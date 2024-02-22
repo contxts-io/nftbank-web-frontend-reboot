@@ -254,7 +254,7 @@ const GlobalNavigation = () => {
       )}
 
       <div className={`${styles.buttonBox}`}>
-        <div className='border-1 border-[var(--color-border-main)] mr-12'>
+        <div className='border-1 border-[var(--color-border-main)] mr-12 hidden md:inline'>
           <Button onClick={() => window.open('https://nftbank.ai')} id=''>
             Back to V1
           </Button>

@@ -1,5 +1,5 @@
 .container {
-  @apply w-full border-1 border-[var(--color-border-main)] grid grid-cols-5 mb-20;
+  @apply border-1 border-[var(--color-border-main)] grid grid-cols-1 md:grid-cols-5 mb-20;
 }
 .container > article {
   @apply border-r-1 border-[var(--color-border-main)];
