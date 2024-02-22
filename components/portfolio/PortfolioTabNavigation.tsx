@@ -18,6 +18,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from '@nextui-org/react';
+import { sendGTMEvent } from '@next/third-parties/google';
 const navLinks = [
   { name: 'Overview', href: '/portfolio/overview' },
   { name: 'Analysis', href: '/portfolio/analysis' },
@@ -57,6 +58,11 @@ const PortfolioTabNavigation = () => {
   ) => {
     const paramType = pathname.split('/')[3] || '';
     const paramValue = pathname.split('/')[4] || '';
+    sendGTMEvent({
+      event: 'buttonClicked',
+      name: `inventory_${value}`,
+      parameter: value,
+    });
     router.push(`${href}/${paramType}/${paramValue}`),
       setInventoryType(value),
       setInventoryModalOpen(false);
