@@ -4,7 +4,7 @@ import ProfileComponent from '@/components/profile/ProfileComponent';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'NFTBank.ai reboot - Portfolio',
+  title: 'Portfolio | NFTBank',
   description: 'NFTBank.ai - Portfolio',
 };
 
