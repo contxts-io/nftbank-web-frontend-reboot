@@ -116,11 +116,12 @@ const GlobalNavigation = () => {
 
   const handleClickEnter = async () => {
     setIsChecking(true);
-    sendGTMEvent({
-      event: 'inputTextChanged',
-      name: 'top_nav_search',
-      parameter: walletAddress,
-    });
+    walletAddress !== '' &&
+      sendGTMEvent({
+        event: 'inputTextChanged',
+        name: 'top_nav_search',
+        parameter: `search_${walletAddress}`,
+      });
     try {
       getAddress(walletAddress);
       const result = await verifyWalletAddress(walletAddress);
