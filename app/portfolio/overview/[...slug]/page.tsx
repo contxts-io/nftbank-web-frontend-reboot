@@ -39,7 +39,7 @@ const OverviewPage = ({ params }: { params: { slug: string[] } }) => {
       <div className='w-full'>
         <HistoricalTrendContainer />
         {/* <div className='w-full grid grid-cols-1 lg:grid-cols-2 gap-x-[20px]'> */}
-        <div className='w-full grid grid-cols-2 gap-x-[20px]'>
+        <div className='w-full grid gap-x-[20px] grid-cols-1 md:grid-cols-2'>
           <TotalInventoryValue />
           <PerformanceContainer />
         </div>

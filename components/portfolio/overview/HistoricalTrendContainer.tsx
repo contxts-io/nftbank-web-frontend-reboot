@@ -165,7 +165,9 @@ const HistoricalTrendContainer = () => {
                 key={index}
                 id={`historical_nav_chart_filter`}
                 onClick={() => handleClickPeriod(item)}
-                className={`${selectedPeriod === item.name && styles.selected}`}
+                className={`${
+                  selectedPeriod === item.name && styles.selected
+                } border-0 md:border-1`}
                 parameter={item.name}
               >
                 {item.name}

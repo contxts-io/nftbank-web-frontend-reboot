@@ -1,5 +1,5 @@
 .container {
-  @apply w-full h-[340px] p-20 flex flex-col items-center border-1 border-[var(--color-border-main)] mb-20;
+  @apply w-full min-h-[340px] p-20 flex flex-col items-center border-1 border-[var(--color-border-main)] mb-20;
 }
 .header {
   @apply w-full mb-40 flex justify-between items-center;
@@ -14,7 +14,7 @@
   @apply bg-[var(--color-background-brand-bold)] text-[var(--color-text-inverse)] !important;
 }
 .body {
-  @apply flex items-center justify-center w-full px-36;
+  @apply flex md:flex-row gap-y-20 flex-col items-center justify-center w-full px-36;
 }
 .dot {
   @apply w-4 h-4;
