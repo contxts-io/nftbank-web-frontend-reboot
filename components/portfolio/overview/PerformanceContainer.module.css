@@ -1,5 +1,5 @@
 .container {
-  @apply w-full mb-20 h-[340px] p-20 border-1 border-[var(--color-border-main)];
+  @apply w-full mb-20 min-h-[340px] p-20 border-1 border-[var(--color-border-main)];
 }
 .row {
   @apply flex w-full justify-between items-center;
@@ -9,12 +9,12 @@
 }
 .bottom {
   /* @apply flex flex-col md:flex-row justify-between items-center; */
-  @apply w-full border-t-1 border-[var(--color-border-main)] pt-20;
-  @apply grid md:grid-cols-2 divide-red-300;
+  @apply w-full border-t-1 border-[var(--color-border-main)] pt-20 gap-y-12;
+  @apply grid md:grid-cols-2;
 }
 .bottom div:first-child {
   @apply md:border-r-1 border-[var(--color-border-bold)];
 }
 .bottom div:last-child {
-  @apply md:ml-20;
+  @apply md:pl-20;
 }
