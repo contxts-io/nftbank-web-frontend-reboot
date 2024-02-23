@@ -8,8 +8,13 @@
   @apply text-[var(--color-text-main)];
 }
 .bottom {
-  @apply w-full flex justify-between items-center border-t-1 border-[var(--color-border-main)] pt-20;
+  /* @apply flex flex-col md:flex-row justify-between items-center; */
+  @apply w-full border-t-1 border-[var(--color-border-main)] pt-20;
+  @apply grid md:grid-cols-2 divide-red-300;
 }
 .bottom div:first-child {
-  @apply border-r-1 border-[var(--color-border-bold)];
+  @apply md:border-r-1 border-[var(--color-border-bold)];
+}
+.bottom div:last-child {
+  @apply md:ml-20;
 }

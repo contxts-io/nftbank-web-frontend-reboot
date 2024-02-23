@@ -71,7 +71,7 @@ const ProfileComponent = () => {
   return (
     <>
       {isClient ? (
-        <section className='w-full px-24 pt-24 pb-8 flex items-center justify-between'>
+        <section className='w-full px-24 pt-24 pb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-y-20'>
           <div className='flex items-center'>
             {user?.image ? (
               <Image
@@ -128,7 +128,7 @@ const ProfileComponent = () => {
               </div> */}
             </div>
           </div>
-          <div className='flex flex-col items-end'>
+          <div className='flex flex-col md:items-end'>
             <p className='font-caption-medium mb-8 text-[var(--color-text-subtlest)]'>
               Current Balance
             </p>

@@ -1,14 +1,14 @@
 .container {
-  @apply border-1 border-[var(--color-border-main)] grid grid-cols-1 md:grid-cols-5 mb-20;
+  @apply border-1 border-[var(--color-border-main)] grid grid-cols-1 md:grid-cols-5 mb-20 gap-y-20 p-12 md:p-0;
 }
 .container > article {
-  @apply border-r-1 border-[var(--color-border-main)];
+  @apply md:border-r-1 border-[var(--color-border-main)];
 }
 .container :last-child {
   @apply border-r-0;
 }
 .valueRect {
-  @apply p-16 flex flex-col justify-between items-start;
+  @apply md:p-16 flex flex-col justify-between items-start;
 }
 .subTitle {
   @apply text-[var(--color-text-subtle)] mb-4;

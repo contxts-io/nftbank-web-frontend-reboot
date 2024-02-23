@@ -14,7 +14,7 @@
   @apply bg-[var(--color-background-brand-bold)] text-[var(--color-text-inverse)] !important;
 }
 .body {
-  @apply flex md:flex-row flex-col items-center justify-center w-full px-36;
+  @apply flex md:flex-row gap-y-20 flex-col items-center justify-center w-full px-36;
 }
 .dot {
   @apply w-4 h-4;
