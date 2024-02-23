@@ -80,14 +80,14 @@ const PerformanceContainer = () => {
         }}
       />
       <div className={`font-button03-regular ${styles.bottom}`}>
-        <div className='w-[50%] flex justify-between items-center'>
+        <div className='w-full flex justify-between items-center'>
           <p className='text-[var(--color-text-subtle)]'>YTD Performance</p>
           {statusPerformanceAnnualYTD === 'success' && (
             <p
               className={
                 isPlus(performanceAnnualYTD?.roi?.[currency] || '0')
-                  ? 'text-[var(--color-text-success)]  mr-20'
-                  : 'text-[var(--color-text-danger)]  mr-20'
+                  ? 'text-[var(--color-text-success)] md:mr-20'
+                  : 'text-[var(--color-text-danger)]  md:mr-20'
               }
             >
               {formatPercent(performanceAnnualYTD?.roi?.[currency] || '0')}
@@ -95,7 +95,7 @@ const PerformanceContainer = () => {
           )}
           {statusPerformanceAnnualYTD === 'error' && <p>-</p>}
         </div>
-        <div className='w-[50%] ml-20 flex justify-between items-center'>
+        <div className='w-full flex justify-between items-center'>
           <p className='text-[var(--color-text-subtle)]'>
             All time Performance
           </p>
