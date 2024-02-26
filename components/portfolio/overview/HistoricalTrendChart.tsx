@@ -307,22 +307,17 @@ const HistoricalTrendChart = (props: Props) => {
       fill: {
         type: 'gradient',
         gradient: {
-          shade: 'dark',
+          shade: 'light',
           type: 'vertical',
           shadeIntensity: 0.5,
           gradientToColors: undefined,
           inverseColors: true,
           opacityFrom: 1,
           opacityTo: 1,
-          stops: [0, 10, 100],
+          stops: [0, 100],
           colorStops: [
             {
               offset: 0,
-              color: lineColor,
-              opacity: 0.4,
-            },
-            {
-              offset: 50,
               color: lineColor,
               opacity: 0.4,
             },
