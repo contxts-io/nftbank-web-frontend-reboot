@@ -19,11 +19,13 @@ import { useMe } from '@/utils/hooks/queries/auth';
 import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
+import DropdownMobile from '@/components/dropdown/DropdownMobile';
 
 const TotalInventoryValue = () => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
   const networkId = useAtomValue(networkIdAtom);
+  const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<'value' | 'amount'>('value');
   const { data: totalInventoryPositionValue, status: statusValue } =
     useInventoryCollectionPositionValue({ ...portfolioUser, networkId });
@@ -71,6 +73,10 @@ const TotalInventoryValue = () => {
       );
     return total;
   }, [totalInventoryPositionAmount]);
+  const handleClickItem = (item: { name: string; value: string }) => {
+    setIsOpen(false);
+    setSelected(item.value as 'value' | 'amount');
+  };
   return (
     <section className={styles.container}>
       <div className={styles.header}>
@@ -94,6 +100,25 @@ const TotalInventoryValue = () => {
           >
             Amount
           </Button>
+        </div>
+        <div>
+          <DropdownMobile
+            open={isOpen}
+            setOpen={setIsOpen}
+            list={[
+              { name: 'Value', value: 'value' },
+              { name: 'Amount', value: 'amount' },
+            ]}
+            value={selected.charAt(0).toUpperCase() + selected.slice(1)}
+            handleClickItem={(item) =>
+              handleClickItem(
+                item as {
+                  name: string;
+                  value: 'value' | 'amount';
+                }
+              )
+            }
+          />
         </div>
       </div>
       <div className={styles.body}>
