@@ -18,24 +18,32 @@ import { myDefaultPortfolioAtom } from '@/store/settings';
 import Wallet from '@/public/icon/Wallet';
 import { BasicParam } from '@/interfaces/request';
 import { TUser } from '@/interfaces/user';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useInventoryValue } from '@/utils/hooks/queries/inventory';
 import { currencyAtom } from '@/store/currency';
 import { difference, formatCurrency, isPlus } from '@/utils/common';
 import CurrencyComponent from '../p/Currency';
+import SearchInput from '../searchInput/SearchInput';
+import { getAddress } from 'ethers/lib/utils';
+import { sendGTMEvent } from '@next/third-parties/google';
+import { verifyWalletAddress } from '@/apis/wallet';
 const ProfileComponent = () => {
   const { data: me } = useMe();
   const path = usePathname();
+  const router = useRouter();
   const currency = useAtomValue(currencyAtom);
   const [isClient, setIsClient] = useState(false);
   const networkId = useAtomValue(networkIdAtom);
 
   const [nickname, setNickname] = useState<string | null>(null);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [searchAddress, setSearchAddress] = useState<string>('');
   // const [user, setUser] = useState<TUser | null>(null);
   const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
   // const { data: me, status } = useMe();
   const { data: user, status: userStatus } = useUser(nickname);
+  const [error, setError] = useState<string | null>(null);
+  const [isChecking, setIsChecking] = useState<boolean>(false);
   const { data: inventoryValue, status: statusInventoryValue } =
     useInventoryValue(portfolioUser);
   useEffect(() => {
@@ -50,6 +58,20 @@ const ProfileComponent = () => {
       me?.nickname &&
       setNickname(me.nickname);
   }, [path, me?.nickname]);
+  useEffect(() => {
+    const handleKeyDown = (e: any) => {
+      if (e.key === 'Enter') {
+        // verify &&
+        //   isChecking === false &&
+        //   router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
+        handleClickEnter();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [walletAddress, error]);
   useEffect(() => {
     nickname
       ? setPortfolioUser({
@@ -66,12 +88,64 @@ const ProfileComponent = () => {
       : null;
   }, [nickname, walletAddress]);
   useEffect(() => {
+    if (searchAddress == '') {
+      setError(null);
+      return;
+    }
+    try {
+      Boolean(searchAddress !== '') && getAddress(searchAddress);
+      // handleClickEnter();
+    } catch (error) {
+      setError('Invalid wallet address');
+    }
+  }, [searchAddress]);
+  useEffect(() => {
     console.log('ProfileComponent portfolioUser', portfolioUser);
   }, [portfolioUser]);
+  const handleChangeInput = (text: string) => {
+    console.log('value', text);
+    setSearchAddress(text);
+  };
+  const handleClickEnter = async () => {
+    setIsChecking(true);
+    walletAddress !== '' &&
+      sendGTMEvent({
+        event: 'inputTextChanged',
+        name: 'top_nav_search',
+        parameter: `search_${walletAddress}`,
+      });
+    try {
+      getAddress(searchAddress);
+      const result = await verifyWalletAddress(searchAddress);
+      if (result.data.verified === true) {
+        setError(null);
+        setIsChecking(false);
+        router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
+      } else {
+        setError('Invalid wallet address');
+        setIsChecking(false);
+      }
+    } catch (error) {
+      setError('Invalid wallet address');
+      setIsChecking(false);
+    } finally {
+    }
+  };
   return (
     <>
       {isClient ? (
         <section className='w-full px-24 pt-24 pb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-y-20'>
+          <div className='block md:hidden h-40 w-full'>
+            <SearchInput
+              placeholder='Search any Wallet'
+              value={searchAddress || ''}
+              onChange={(text) => handleChangeInput(text)}
+              isError={error ? true : false}
+              className={styles.searchInput}
+              isLoading={isChecking}
+              handleClose={() => setSearchAddress('')}
+            />
+          </div>
           <div className='flex items-center'>
             {user?.image ? (
               <Image

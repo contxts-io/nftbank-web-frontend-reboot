@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
 import { useDispatchPerformance } from '@/utils/hooks/queries/dispatch';
+import DropdownMobile from '@/components/dropdown/DropdownMobile';
 const YEARS: number[] = [2024, 2023];
 const PerformanceContainer = () => {
   const currency = useAtomValue(currencyAtom);
@@ -28,6 +29,7 @@ const PerformanceContainer = () => {
     year: 2023,
     gnlChartType: 'overall',
   });
+  const [isOpen, setIsOpen] = useState(false);
   const { data: performanceAnnualAll, status: statusPerformanceAnnualAll } =
     usePerformanceChartAnnual(
       {
@@ -58,7 +60,7 @@ const PerformanceContainer = () => {
         <p className={`font-subtitle02-bold ${styles.title}`}>Performance</p>
         <Dropdown
           id='summarized_performance_chart_filter'
-          className='w-80 h-36 flex justify-between items-center'
+          className='w-80 h-36 justify-between items-center hidden md:flex'
           list={YEARS.map((item) => item.toString())}
           listStyle='w-full'
           selected={
@@ -69,6 +71,26 @@ const PerformanceContainer = () => {
             setRequestParam({
               ...requestParam,
               year: parseInt(name),
+            })
+          }
+        />
+        <DropdownMobile
+          open={isOpen}
+          setOpen={setIsOpen}
+          list={YEARS.map((item) => {
+            return {
+              name: item.toString(),
+              value: item.toString(),
+            };
+          })}
+          value={
+            YEARS.find((item) => item === requestParam.year)?.toString() ||
+            '2023'
+          }
+          handleClickItem={(item) =>
+            setRequestParam({
+              ...requestParam,
+              year: parseInt(item.value),
             })
           }
         />

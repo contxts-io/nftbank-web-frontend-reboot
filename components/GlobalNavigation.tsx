@@ -243,15 +243,17 @@ const GlobalNavigation = () => {
         
       </div> */}
       {path !== '/' && (
-        <SearchInput
-          placeholder='Search any Wallet'
-          value={walletAddress}
-          onChange={(text) => handleChangeInput(text)}
-          isError={error ? true : false}
-          className={styles.searchInput}
-          isLoading={isChecking}
-          handleClose={() => setWalletAddress('')}
-        />
+        <div className='hidden md:block'>
+          <SearchInput
+            placeholder='Search any Wallet'
+            value={walletAddress}
+            onChange={(text) => handleChangeInput(text)}
+            isError={error ? true : false}
+            className={styles.searchInput}
+            isLoading={isChecking}
+            handleClose={() => setWalletAddress('')}
+          />
+        </div>
       )}
 
       <div className={`${styles.buttonBox}`}>
