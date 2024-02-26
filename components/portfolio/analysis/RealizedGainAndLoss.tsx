@@ -30,7 +30,10 @@ import {
 import { portfolioUserAtom } from '@/store/portfolio';
 import Info from '@/public/icon/Info';
 import { Tooltip } from '@nextui-org/react';
-import { LATEST_ACQUISITION_DATE } from '@/utils/messages';
+import {
+  LATEST_ACQUISITION_DATE,
+  UNABLE_TO_CALCULATE_ROI,
+} from '@/utils/messages';
 import ToggleButton from '@/components/buttons/ToggleButton';
 import { useInView } from 'react-intersection-observer';
 import NoData from '@/components/error/NoData';
@@ -212,6 +215,11 @@ const RealizedGainAndLoss = () => {
                 const costBasis = acquisitionPrice + gasFee;
                 const proceed = parseFloatPrice(item.proceed[currency]);
                 const realizedGainAndLoss = proceed - acquisitionPrice;
+                const realizedROI = includeGasUsed
+                  ? ((realizedGainAndLoss - gasFee - proceedGasFee) /
+                      (costBasis + proceedGasFee)) *
+                    100
+                  : (realizedGainAndLoss / acquisitionPrice) * 100;
                 const isPlus = realizedGainAndLoss > 0;
                 const isMinus = realizedGainAndLoss < 0;
                 const isZero = realizedGainAndLoss === 0;
@@ -261,9 +269,21 @@ const RealizedGainAndLoss = () => {
                             )}
                       </p>
                       {includeGasUsed && (
-                        <p className={`text-[var(--color-text-brand)] mt-4`}>
-                          {`+${parseFloatPrice(gasFee.toFixed(3))}`}
-                        </p>
+                        <Tooltip
+                          content={formatCurrencyOriginal(
+                            gasFee.toString(),
+                            currency
+                          )}
+                          placement='bottom-end'
+                          className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                        >
+                          <p className={`text-[var(--color-text-brand)] mt-4`}>
+                            {formatGasFee(
+                              gasFee.toFixed(3).toString(),
+                              currency
+                            )}
+                          </p>
+                        </Tooltip>
                       )}
                     </td>
                     <td className='text-right'>
@@ -275,23 +295,6 @@ const RealizedGainAndLoss = () => {
                             )
                           : formatCurrency(proceed.toString(), currency)}
                       </p>
-                      {includeGasUsed && (
-                        <Tooltip
-                          content={formatCurrencyOriginal(
-                            proceedGasFee.toString(),
-                            currency
-                          )}
-                          placement='bottom-end'
-                          className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
-                        >
-                          <p className={`text-[var(--color-text-brand)] mt-4`}>
-                            {formatGasFee(
-                              item.proceedGasFee?.[currency],
-                              currency
-                            )}
-                          </p>
-                        </Tooltip>
-                      )}
                     </td>
                     <td className='text-right'>
                       <p
@@ -326,7 +329,33 @@ const RealizedGainAndLoss = () => {
                             : 'text-[var(--color-text-danger)]'
                         }`}
                       >
-                        {includeGasUsed
+                        {realizedROI ? (
+                          isNaN(realizedROI) || realizedROI === Infinity ? (
+                            <Tooltip
+                              content={UNABLE_TO_CALCULATE_ROI}
+                              className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                            >
+                              <div className='w-full flex justify-end items-center text-[var(--color-icon-subtle)]'>
+                                <Info />
+                              </div>
+                            </Tooltip>
+                          ) : (
+                            <p
+                              className={`${
+                                isZero
+                                  ? 'text-[var(--color-text-main)]'
+                                  : isPlus === true
+                                  ? 'text-[var(--color-text-success)]'
+                                  : 'text-[var(--color-text-danger)]'
+                              }`}
+                            >
+                              {formatPercent(realizedROI.toString())}
+                            </p>
+                          )
+                        ) : (
+                          <p className='text-[var(--color-text-main)]'>-</p>
+                        )}
+                        {/* {includeGasUsed
                           ? formatPercent(
                               (
                                 ((realizedGainAndLoss -
@@ -341,7 +370,7 @@ const RealizedGainAndLoss = () => {
                                 (realizedGainAndLoss / acquisitionPrice) *
                                 100
                               ).toString()
-                            )}
+                            )} */}
                       </p>
                     </td>
                     <td className='text-right'>
