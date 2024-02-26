@@ -20,7 +20,6 @@ import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
 import Info from '@/public/icon/Info';
 import NoData from '@/components/error/NoData';
 import FailToLoad from '@/components/error/FailToLoad';
-import { useDispatchPerformance } from '@/utils/hooks/queries/dispatch';
 const THEAD = [
   'Jan',
   'Feb',
@@ -53,34 +52,25 @@ const PerformanceSection = () => {
     year: 2023,
     gnlChartType: 'Overall',
   });
-  const { data: dispatchPerformance, status: dispatchStatus } =
-    useDispatchPerformance(portfolioUser?.walletAddress || '');
+
   const { data: performanceChart, status: statusPerformanceChart } =
-    usePerformanceChart(
-      {
-        ...portfolioUser,
-        ...requestParam,
-        taskId: dispatchPerformance?.taskId,
-        gnlChartType: requestParam.gnlChartType.toLowerCase() as
-          | 'overall'
-          | 'realized'
-          | 'unrealized',
-      },
-      isPolling
-    );
+    usePerformanceChart({
+      ...portfolioUser,
+      ...requestParam,
+      gnlChartType: requestParam.gnlChartType.toLowerCase() as
+        | 'overall'
+        | 'realized'
+        | 'unrealized',
+    });
   const { data: performanceAnnual, status: statusPerformanceAnnual } =
-    usePerformanceChartAnnual(
-      {
-        ...portfolioUser,
-        ...requestParam,
-        taskId: dispatchPerformance?.taskId,
-        gnlChartType: requestParam.gnlChartType.toLowerCase() as
-          | 'overall'
-          | 'realized'
-          | 'unrealized',
-      },
-      isPolling
-    );
+    usePerformanceChartAnnual({
+      ...portfolioUser,
+      ...requestParam,
+      gnlChartType: requestParam.gnlChartType.toLowerCase() as
+        | 'overall'
+        | 'realized'
+        | 'unrealized',
+    });
   const [total, setTotal] = useState(0);
   useEffect(() => {
     setIsPolling(true);

@@ -9,7 +9,6 @@ import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { formatPercent, mathSqrt } from '@/utils/common';
 import { BasicParam } from '@/interfaces/request';
-import { useDispatchPerformance } from '@/utils/hooks/queries/dispatch';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w, year }: any) => {
   // const roi = series[seriesIndex][dataPointIndex];
@@ -39,15 +38,11 @@ type Props = {
 };
 const PerformanceChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
-  // const { data: dispatchPerformance } = useDispatchPerformance(
-  //   props.requestParam?.walletAddress || ''
-  // );
   const [isPolling, setIsPolling] = useState<boolean>(true);
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart(
       {
         ...props.requestParam,
-        // taskId: dispatchPerformance?.taskId,
         gnlChartType: props.requestParam.gnlChartType.toLowerCase() as
           | 'overall'
           | 'realized'

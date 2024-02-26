@@ -60,7 +60,7 @@ const InventoryValue = () => {
           currency
         ),
         diff: formatCurrency(
-          inventoryValue?.value[currency].difference.amount || '-',
+          inventoryValue?.value[currency].difference.amount || '0',
           currency
         ),
         diffPercent: formatPercent(

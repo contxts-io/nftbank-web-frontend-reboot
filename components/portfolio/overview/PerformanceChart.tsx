@@ -12,7 +12,6 @@ import SkeletonLoader from '@/components/SkeletonLoader';
 import { formatPercent, mathSqrt } from '@/utils/common';
 import { BasicParam } from '@/interfaces/request';
 import { ApexOptions } from 'apexcharts';
-import { useDispatchPerformance } from '@/utils/hooks/queries/dispatch';
 import FailToLoad from '@/components/error/FailToLoad';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({ series, seriesIndex, dataPointIndex, w }: any) => {
@@ -48,8 +47,6 @@ const PerformanceChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
   const [maxAbs, setMaxAbs] = useState(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  // const { data: dispatchPerformance, status: statusDispatchPerformance } =
-  //   useDispatchPerformance(props.requestParam?.walletAddress || '');
 
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart({

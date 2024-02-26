@@ -12,6 +12,7 @@ export function formatDate(date:  Date): string  {
 }
 export function formatCurrency(amount: string | null, currency: TCurrency): string {
   if (!amount) return '-';
+  if (amount === '-') return '-';
   if (amount === 'infinity')
     return '-';
     // return '∞';
