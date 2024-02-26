@@ -223,7 +223,7 @@ const InventoryCollectionTable = () => {
                             {priceType === 'costBasis'
                               ? formatCurrency(costBasis.toString(), currency)
                               : formatCurrency(
-                                  row.acquisitionPrice?.[currency] || null,
+                                  acquisitionPrice.toString(),
                                   currency
                                 )}
                           </p>

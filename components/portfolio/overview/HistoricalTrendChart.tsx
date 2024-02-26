@@ -4,7 +4,6 @@ import { portfolioUserAtom } from '@/store/portfolio';
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { formatCurrency, formatDate, mathSqrt } from '@/utils/common';
 import { useMe } from '@/utils/hooks/queries/auth';
-import { useDispatchDailyNav } from '@/utils/hooks/queries/dispatch';
 import {
   useInventoryValueHistorical,
   useInventoryValuePolling,
@@ -48,63 +47,26 @@ type Props = {
 const HistoricalTrendChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
-  const [isPolling, setIsPolling] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [historicalValueParam, setHistoricalValueParam] = useAtom(
     overviewHistoricalValueParamAtom
   );
   const { data: inventoryValue, status: statusInventoryValue } =
     useInventoryValuePolling(portfolioUser);
-  const { data: dispatchDailyNav, status: statusDispatchDailyNav } =
-    useDispatchDailyNav(portfolioUser?.walletAddress || '');
+
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
-  } = useInventoryValueHistorical(
-    {
-      ...historicalValueParam,
-      ...portfolioUser,
-      taskId: dispatchDailyNav?.taskId,
-    },
-    isPolling
-  );
+  } = useInventoryValueHistorical({
+    ...historicalValueParam,
+    ...portfolioUser,
+  });
   useEffect(() => {
-    setIsPolling(true);
-  }, [portfolioUser]);
-  useEffect(() => {
-    statusDispatchDailyNav === 'loading' ||
-    statusInventoryValueHistorical === 'loading' ||
-    isPolling === true
+    statusInventoryValueHistorical === 'loading'
       ? setIsLoading(true)
       : setIsLoading(false);
-  }, [statusInventoryValueHistorical, isPolling, statusDispatchDailyNav]);
-  useEffect(() => {
-    console.log(
-      'statusInventoryValueHistorical',
-      statusInventoryValueHistorical
-    );
-    console.log('inventoryValueHistorical', inventoryValueHistorical);
-    console.log(
-      'inventoryValueHistorical?.data',
-      inventoryValueHistorical?.data
-    );
-    console.log(
-      'inventoryValueHistorical?.data.length',
-      inventoryValueHistorical?.data?.length
-    );
-    console.log(
-      'inventoryValueHistorical',
-      inventoryValueHistorical?.statusCode
-    );
-    statusInventoryValueHistorical === 'success' &&
-    inventoryValueHistorical?.data &&
-    inventoryValueHistorical?.statusCode !== 'PENDING'
-      ? setIsPolling(false)
-      : setIsPolling(true);
-  }, [statusInventoryValueHistorical, inventoryValueHistorical?.data]);
-  useEffect(() => {
-    console.log('isPolling', isPolling);
-  }, [isPolling]);
+  }, [statusInventoryValueHistorical]);
+
   const [isPlus, setIsPlus] = useState(false);
   let category: string[] = [];
 

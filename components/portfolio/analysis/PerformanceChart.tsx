@@ -39,21 +39,21 @@ type Props = {
 };
 const PerformanceChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
-  const { data: dispatchPerformance } = useDispatchPerformance(
-    props.requestParam?.walletAddress || ''
-  );
+  // const { data: dispatchPerformance } = useDispatchPerformance(
+  //   props.requestParam?.walletAddress || ''
+  // );
   const [isPolling, setIsPolling] = useState<boolean>(true);
   const { data: performanceChart, status: statusPerformanceChart } =
     usePerformanceChart(
       {
         ...props.requestParam,
-        taskId: dispatchPerformance?.taskId,
+        // taskId: dispatchPerformance?.taskId,
         gnlChartType: props.requestParam.gnlChartType.toLowerCase() as
           | 'overall'
           | 'realized'
           | 'unrealized',
-      },
-      isPolling
+      }
+      // isPolling
     );
   const [maxAbs, setMaxAbs] = useState(0);
   const barBackground = 'var(--color-elevation-surface-raised)';

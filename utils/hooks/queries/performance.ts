@@ -20,7 +20,7 @@ export function useInventoryUnrealizedPerformance(searchParam: BasicParam | null
     },
   );
 }
-export function usePerformanceChart(requestParam: PerformanceParam & BasicParam, polling=true ) {
+export function usePerformanceChart(requestParam: PerformanceParam & BasicParam) {
   return useQuery<{ data: PerformanceCollection[], statusCode?: "PENDING" }, AxiosError>(
     ['inventoryPerformanceChart', requestParam],
     async () => {
@@ -28,11 +28,12 @@ export function usePerformanceChart(requestParam: PerformanceParam & BasicParam,
       return result;
     },
     {
-      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId && !!polling,
+      enabled: requestParam.walletAddress !== '',
+        // && !!requestParam.taskId && !!polling,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      refetchInterval: 10000,
+      // refetchInterval: 10000,
     },
   );
 }
@@ -40,7 +41,7 @@ type Param = {
   walletAddress: string;
   window?: string;
 }
-export function usePerformanceChartAnnual(requestParam: PerformanceParam & BasicParam,isPolling=true) {
+export function usePerformanceChartAnnual(requestParam: PerformanceParam & BasicParam) {
   return useQuery<PerformanceCollection,AxiosError>(
     ['inventoryPerformanceChartAnnual',requestParam],
     async () => {
@@ -48,7 +49,7 @@ export function usePerformanceChartAnnual(requestParam: PerformanceParam & Basic
       return result.data;
     },
     {
-      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId && !!isPolling,
+      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,

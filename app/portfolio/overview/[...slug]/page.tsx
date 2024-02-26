@@ -8,7 +8,6 @@ import { useEffect } from 'react';
 import { BasicParam } from '@/interfaces/request';
 import { useAtom, useSetAtom } from 'jotai';
 import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
-import { useDispatchDailyNav } from '@/utils/hooks/queries/dispatch';
 
 const OverviewPage = ({ params }: { params: { slug: string[] } }) => {
   const { slug } = params;
