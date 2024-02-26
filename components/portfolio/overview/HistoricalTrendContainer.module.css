@@ -11,7 +11,38 @@
   @apply flex items-end mt-12 h-40;
 }
 .periodButtons {
-  @apply flex items-center h-36;
+  @apply md:flex items-center h-36 hidden;
+}
+/* .dropDown {
+  @apply md:hidden items-center h-36 flex;
+} */
+
+.link {
+  @apply px-24 py-18;
+}
+.dropdown {
+  filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.1));
+  @apply flex items-center h-36 md:hidden;
+  @apply max-h-[206px] bg-[var(--color-elevation-surface-overlay)] z-30;
+}
+.dropdown li {
+  @apply flex w-full justify-between items-center whitespace-nowrap border-1 border-[var(--color-border-bold)];
+  @apply text-[var(--color-text-subtle)] p-8 cursor-pointer border-b-1 border-[var(--color-border-bold)];
+}
+.dropdown li p {
+  @apply text-right;
+}
+.dropdown li:last-child {
+  @apply border-0 !important;
+}
+.dropdownMenu {
+  @apply absolute top-0 right-30 w-fit border-1 border-[var(--color-border-main)];
+}
+.dropdownMenu p {
+  @apply text-[var(--color-text-subtle)];
+}
+.dropdownMenu li:first-child {
+  @apply border-b-1 border-[var(--color-border-main)] !important;
 }
 .periodButtons button {
   @apply border-0;

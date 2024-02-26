@@ -21,6 +21,7 @@ import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { portfolioUserAtom } from '@/store/portfolio';
 import CurrencyComponent from '@/components/p/Currency';
 import { useDispatchDailyNav } from '@/utils/hooks/queries/dispatch';
+import DropdownMobile from '@/components/dropdown/DropdownMobile';
 
 //'1d'| '3d'| '7d'| '30d'| '90d'| 'ytd'| '365d'| 'all'
 const PERIOD: { name: string; value: Period }[] = [
@@ -62,6 +63,7 @@ const HistoricalTrendContainer = () => {
   const [hoverValue, setHoverValue] = useState<number | null>(null);
   const [diffValue, setDiffValue] = useState<number | null>(null);
   const [isPolling, setIsPolling] = useState<boolean>(true);
+  const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
 
   const { data: dispatchDailyNav } = useDispatchDailyNav(
     portfolioUser?.walletAddress || ''
@@ -175,6 +177,51 @@ const HistoricalTrendContainer = () => {
             );
           })}
         </div>
+        <div className={styles.dropdown}>
+          <DropdownMobile
+            open={isPopoverOpen}
+            setOpen={setIsPopoverOpen}
+            list={PERIOD}
+            value={selectedPeriod}
+            handleClickItem={(item) =>
+              handleClickPeriod(
+                item as {
+                  name: string;
+                  value: Period;
+                }
+              )
+            }
+          />
+        </div>
+        {/* <div className={styles.dropdown}>
+          <Dropdown
+            isOpen={isPopoverOpen}
+            onClose={() => setIsPopoverOpen(false)}
+          >
+            <DropdownTrigger onClick={() => setIsPopoverOpen((prev) => !prev)}>
+              <li
+                className={`font-caption-medium text-[var(--color-text-subtle)] ${styles.link}`}
+              >
+                <p>{selectedPeriod}</p>
+                <div className={isPopoverOpen ? 'rotate-180' : ''}>
+                  <CaretDown />
+                </div>
+              </li>
+            </DropdownTrigger>
+            <DropdownMenu className={styles.dropdownMenu}>
+              {PERIOD.map((item) => (
+                <DropdownItem
+                  key={item.value}
+                  value={item.value}
+                  className='w-50 h-30 bg-[var(--color-elevation-surface)] px-8'
+                  onClick={() => handleClickPeriod(item)}
+                >
+                  <p className='font-caption-medium'>{item.name}</p>
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+        </div> */}
       </div>
       <div className={styles.rowEnd}>
         <div className='flex flex-col items-start h-full'>
