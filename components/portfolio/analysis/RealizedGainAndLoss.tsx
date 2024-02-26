@@ -215,11 +215,14 @@ const RealizedGainAndLoss = () => {
                 const costBasis = acquisitionPrice + gasFee;
                 const proceed = parseFloatPrice(item.proceed[currency]);
                 const realizedGainAndLoss = proceed - acquisitionPrice;
-                const realizedROI = includeGasUsed
-                  ? ((realizedGainAndLoss - gasFee - proceedGasFee) /
-                      (costBasis + proceedGasFee)) *
-                    100
-                  : (realizedGainAndLoss / acquisitionPrice) * 100;
+                const realizedROI =
+                  acquisitionPrice === 0
+                    ? Infinity
+                    : includeGasUsed
+                    ? ((realizedGainAndLoss - gasFee - proceedGasFee) /
+                        costBasis) *
+                      100
+                    : (realizedGainAndLoss / acquisitionPrice) * 100;
                 const isPlus = realizedGainAndLoss > 0;
                 const isMinus = realizedGainAndLoss < 0;
                 const isZero = realizedGainAndLoss === 0;
@@ -295,6 +298,23 @@ const RealizedGainAndLoss = () => {
                             )
                           : formatCurrency(proceed.toString(), currency)}
                       </p>
+                      {includeGasUsed && (
+                        <Tooltip
+                          content={formatCurrencyOriginal(
+                            proceedGasFee.toString(),
+                            currency
+                          )}
+                          placement='bottom-end'
+                          className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                        >
+                          <p className={`text-[var(--color-text-brand)] mt-4`}>
+                            {formatGasFee(
+                              proceedGasFee.toFixed(3).toString(),
+                              currency
+                            )}
+                          </p>
+                        </Tooltip>
+                      )}
                     </td>
                     <td className='text-right'>
                       <p
