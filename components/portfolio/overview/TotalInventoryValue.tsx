@@ -101,7 +101,7 @@ const TotalInventoryValue = () => {
             Amount
           </Button>
         </div>
-        <div>
+        <div className='flex md:hidden'>
           <DropdownMobile
             open={isOpen}
             setOpen={setIsOpen}

@@ -63,26 +63,28 @@ const PerformanceContainer = () => {
             })
           }
         />
-        <DropdownMobile
-          open={isOpen}
-          setOpen={setIsOpen}
-          list={YEARS.map((item) => {
-            return {
-              name: item.toString(),
-              value: item.toString(),
-            };
-          })}
-          value={
-            YEARS.find((item) => item === requestParam.year)?.toString() ||
-            '2023'
-          }
-          handleClickItem={(item) =>
-            setRequestParam({
-              ...requestParam,
-              year: parseInt(item.value),
-            })
-          }
-        />
+        <div className='flex md:hidden'>
+          <DropdownMobile
+            open={isOpen}
+            setOpen={setIsOpen}
+            list={YEARS.map((item) => {
+              return {
+                name: item.toString(),
+                value: item.toString(),
+              };
+            })}
+            value={
+              YEARS.find((item) => item === requestParam.year)?.toString() ||
+              '2023'
+            }
+            handleClickItem={(item) =>
+              setRequestParam({
+                ...requestParam,
+                year: parseInt(item.value),
+              })
+            }
+          />
+        </div>
       </div>
       <PerformanceChart
         requestParam={{
