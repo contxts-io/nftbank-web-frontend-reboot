@@ -5,6 +5,7 @@ import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { formatCurrency, formatDate, mathSqrt } from '@/utils/common';
 import { useMe } from '@/utils/hooks/queries/auth';
 import {
+  useInventoryValue,
   useInventoryValueHistorical,
   useInventoryValuePolling,
 } from '@/utils/hooks/queries/inventory';
@@ -52,7 +53,7 @@ const HistoricalTrendChart = (props: Props) => {
     overviewHistoricalValueParamAtom
   );
   const { data: inventoryValue, status: statusInventoryValue } =
-    useInventoryValuePolling(portfolioUser);
+    useInventoryValue(portfolioUser);
 
   const {
     data: inventoryValueHistorical,

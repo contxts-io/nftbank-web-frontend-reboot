@@ -1,22 +1,28 @@
 import { ResponseAcquisitionTypesData, TResponseInventoryValueHistory, getCollectionList, getCollectionValuableCount, getInventoryAcquisitionType, getInventoryCollectionPositionAmount, getInventoryCollectionPositionValue, getInventoryRealizedTokens, getInventoryValue, getInventoryValueHistory, getItemList, getItemValuableCount } from '@/apis/inventory';
 import { IInventoryCollectionList, IInventoryItemList, InventoryValue, InventoryValueNested, IStat, PositionCollection, PositionCollectionAmount } from '@/interfaces/inventory';
 import { BasicParam } from '@/interfaces/request';
+import { freshnessAtom } from '@/store/freshness';
 import { ItemParam, TAcquisitionParam, TAnalysisGainAndLossParam, TCollectionParam, TOverviewHistoricalValueParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { useAtomValue } from 'jotai';
 
 export function useInventoryValue(searchParam: BasicParam | null) {
+  const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<InventoryValueNested,AxiosError>(
-    ['inventoryValue',searchParam],
+    ['inventoryValue',searchParam,dataFreshness?.processedAt || 0],
     async () => {
       const inventoryValue = await getInventoryValue(searchParam);
       return inventoryValue;
     },
     {
+      keepPreviousData: true,
+      refetchInterval: 10000,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      enabled: searchParam !== null && searchParam.walletAddress !== undefined && searchParam?.walletAddress !== '' && searchParam?.walletAddress !== undefined,
+      // enabled: searchParam !== null && searchParam.walletAddress !== undefined && searchParam?.walletAddress !== '' && searchParam?.walletAddress !== undefined,
+      enabled: searchParam !== null,
     },
   );
 }

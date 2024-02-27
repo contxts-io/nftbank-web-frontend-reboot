@@ -4,7 +4,7 @@ import { DataFreshness } from "@/interfaces/utils";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export const useFreshnessAndUpdatePolling = (searchParam:BasicParam, forceUpdate: boolean = true) => {
+export const useFreshnessAndUpdatePolling = (searchParam:BasicParam, forceUpdate: boolean = false) => {
   return useQuery<DataFreshness,AxiosError>(
     ['freshness',searchParam],
     async () => {

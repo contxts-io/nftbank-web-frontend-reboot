@@ -26,6 +26,7 @@ import {
 } from '@thirdweb-dev/react';
 import { CookiesProvider } from 'react-cookie';
 import ModalProvider from './ModalProvider';
+import DataFreshnessProvider from './DataFreshnessProvider';
 
 const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '';
 const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID || '';
@@ -119,19 +120,21 @@ function Providers({ children }: React.PropsWithChildren) {
               clientId={THIRD_WEB_API_KEY}
               autoConnect={false}
             >
-              <ThemeProvider
-                attribute='class'
-                defaultTheme='system'
-                enableSystem
-              >
-                <NextUIProvider>
-                  <ModalProvider>
-                    <ToastContainer />
-                    {children}
-                  </ModalProvider>
-                  <ReactQueryDevtools initialIsOpen={false} />
-                </NextUIProvider>
-              </ThemeProvider>
+              <DataFreshnessProvider>
+                <ThemeProvider
+                  attribute='class'
+                  defaultTheme='system'
+                  enableSystem
+                >
+                  <NextUIProvider>
+                    <ModalProvider>
+                      <ToastContainer />
+                      {children}
+                    </ModalProvider>
+                    <ReactQueryDevtools initialIsOpen={false} />
+                  </NextUIProvider>
+                </ThemeProvider>
+              </DataFreshnessProvider>
             </ThirdwebProvider>
           </WagmiConfig>
         </JotaiProvider>

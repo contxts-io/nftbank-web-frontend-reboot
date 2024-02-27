@@ -65,7 +65,7 @@ const HistoricalTrendContainer = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
 
   const { data: inventoryValue, status: statusInventoryValue } =
-    useInventoryValuePolling(portfolioUser);
+    useInventoryValue(portfolioUser);
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
