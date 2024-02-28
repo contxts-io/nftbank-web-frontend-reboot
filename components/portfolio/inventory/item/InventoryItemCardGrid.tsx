@@ -1,7 +1,10 @@
 'use client';
 import styles from './InventoryItemCardGrid.module.css';
 import { inventoryItemListAtom } from '@/store/requestParam';
-import { useInventoryItemInfinite } from '@/utils/hooks/queries/inventory';
+import {
+  useInventoryItemInfinite,
+  useInventoryItemList,
+} from '@/utils/hooks/queries/inventory';
 import { useAtom } from 'jotai';
 import InventoryItemCard from './InventoryItemCard';
 import { useEffect, useMemo } from 'react';
@@ -18,6 +21,7 @@ const InventoryItemCardGrid = () => {
     data: inventoryItemList,
     status,
   } = useInventoryItemInfinite({ ...requestParam, page: 0 });
+  const { data: itemListFresh } = useInventoryItemList(requestParam);
   const { ref, inView } = useInView();
   useEffect(() => {
     const isLast =
@@ -30,8 +34,19 @@ const InventoryItemCardGrid = () => {
   }, [fetchNextPage, inView]);
 
   const mergePosts = useMemo(
-    () => inventoryItemList?.pages,
-    [inventoryItemList?.pages, requestParam]
+    () =>
+      inventoryItemList?.pages
+        .flatMap((page) => page.data)
+        .map((item) => {
+          const _item = itemListFresh?.data.find(
+            (itemFresh) =>
+              itemFresh.collection.assetContract ===
+                item.collection.assetContract &&
+              itemFresh.token.tokenId === item.token.tokenId
+          );
+          return { ...item, ..._item };
+        }),
+    [inventoryItemList?.pages, requestParam, itemListFresh]
   );
   return (
     <section className='w-full overflow-auto'>
@@ -47,10 +62,8 @@ const InventoryItemCardGrid = () => {
       )}
       {status === 'success' && mergePosts && mergePosts?.length > 0 && (
         <div className={styles.cardListSection}>
-          {mergePosts?.map((page, pageIndex) => {
-            return page.data.map((token, index) => {
-              return token && <InventoryItemCard token={token} key={index} />;
-            });
+          {mergePosts?.map((token, index) => {
+            return token && <InventoryItemCard token={token} key={index} />;
           })}
         </div>
       )}

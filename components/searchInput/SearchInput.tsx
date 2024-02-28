@@ -22,7 +22,6 @@ const SearchInput = (props: Props) => {
     props.onChange(value);
   };
   const handleFocus = () => {};
-  console.log('isError', props.isError);
   return (
     <div
       className={`font-body02-regular fadeIn ${styles.inputContainer} 

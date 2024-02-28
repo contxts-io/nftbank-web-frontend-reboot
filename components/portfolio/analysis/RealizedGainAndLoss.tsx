@@ -13,7 +13,10 @@ import {
   TStatus,
   TYear,
 } from '@/constants/period';
-import { useInventoryRealizedTokensInfinite } from '@/utils/hooks/queries/inventory';
+import {
+  useInventoryRealizedTokens,
+  useInventoryRealizedTokensInfinite,
+} from '@/utils/hooks/queries/inventory';
 import { useMe } from '@/utils/hooks/queries/auth';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { useAtom, useAtomValue } from 'jotai';
@@ -30,7 +33,10 @@ import {
 import { portfolioUserAtom } from '@/store/portfolio';
 import Info from '@/public/icon/Info';
 import { Tooltip } from '@nextui-org/react';
-import { LATEST_ACQUISITION_DATE } from '@/utils/messages';
+import {
+  LATEST_ACQUISITION_DATE,
+  UNABLE_TO_CALCULATE_ROI,
+} from '@/utils/messages';
 import ToggleButton from '@/components/buttons/ToggleButton';
 import { useInView } from 'react-intersection-observer';
 import NoData from '@/components/error/NoData';
@@ -76,6 +82,10 @@ const RealizedGainAndLoss = () => {
     ...portfolioUser,
     ...requestParams,
     page: 0,
+  });
+  const { data: realizedTokenListFresh } = useInventoryRealizedTokens({
+    ...portfolioUser,
+    ...requestParams,
   });
   const [selectedStatus, setSelectedStatus] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({
@@ -134,7 +144,18 @@ const RealizedGainAndLoss = () => {
   }, [selectedStatus, selectedYear]);
 
   const mergePosts = useMemo(() => {
-    return realizedTokenList?.pages.flatMap((page) => page.data);
+    return realizedTokenList?.pages
+      .flatMap((page) => page.data)
+      .map((item) => {
+        const _item = realizedTokenListFresh?.data.find(
+          (itemFresh) =>
+            itemFresh.collection.assetContract ===
+              item.collection.assetContract &&
+            itemFresh.token.tokenId === item.token.tokenId &&
+            itemFresh.soldDate === item.soldDate
+        );
+        return { ...item, ..._item };
+      });
   }, [realizedTokenList?.pages, requestParams, status]);
 
   return (
@@ -212,6 +233,14 @@ const RealizedGainAndLoss = () => {
                 const costBasis = acquisitionPrice + gasFee;
                 const proceed = parseFloatPrice(item.proceed[currency]);
                 const realizedGainAndLoss = proceed - acquisitionPrice;
+                const realizedROI =
+                  acquisitionPrice === 0
+                    ? Infinity
+                    : includeGasUsed
+                    ? ((realizedGainAndLoss - gasFee - proceedGasFee) /
+                        costBasis) *
+                      100
+                    : (realizedGainAndLoss / acquisitionPrice) * 100;
                 const isPlus = realizedGainAndLoss > 0;
                 const isMinus = realizedGainAndLoss < 0;
                 const isZero = realizedGainAndLoss === 0;
@@ -261,9 +290,21 @@ const RealizedGainAndLoss = () => {
                             )}
                       </p>
                       {includeGasUsed && (
-                        <p className={`text-[var(--color-text-brand)] mt-4`}>
-                          {`+${parseFloatPrice(gasFee.toFixed(3))}`}
-                        </p>
+                        <Tooltip
+                          content={formatCurrencyOriginal(
+                            gasFee.toString(),
+                            currency
+                          )}
+                          placement='bottom-end'
+                          className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                        >
+                          <p className={`text-[var(--color-text-brand)] mt-4`}>
+                            {formatGasFee(
+                              gasFee.toFixed(3).toString(),
+                              currency
+                            )}
+                          </p>
+                        </Tooltip>
                       )}
                     </td>
                     <td className='text-right'>
@@ -286,7 +327,7 @@ const RealizedGainAndLoss = () => {
                         >
                           <p className={`text-[var(--color-text-brand)] mt-4`}>
                             {formatGasFee(
-                              item.proceedGasFee?.[currency],
+                              proceedGasFee.toFixed(3).toString(),
                               currency
                             )}
                           </p>
@@ -326,7 +367,33 @@ const RealizedGainAndLoss = () => {
                             : 'text-[var(--color-text-danger)]'
                         }`}
                       >
-                        {includeGasUsed
+                        {realizedROI ? (
+                          isNaN(realizedROI) || realizedROI === Infinity ? (
+                            <Tooltip
+                              content={UNABLE_TO_CALCULATE_ROI}
+                              className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                            >
+                              <div className='w-full flex justify-end items-center text-[var(--color-icon-subtle)]'>
+                                <Info />
+                              </div>
+                            </Tooltip>
+                          ) : (
+                            <p
+                              className={`${
+                                isZero
+                                  ? 'text-[var(--color-text-main)]'
+                                  : isPlus === true
+                                  ? 'text-[var(--color-text-success)]'
+                                  : 'text-[var(--color-text-danger)]'
+                              }`}
+                            >
+                              {formatPercent(realizedROI.toString())}
+                            </p>
+                          )
+                        ) : (
+                          <p className='text-[var(--color-text-main)]'>-</p>
+                        )}
+                        {/* {includeGasUsed
                           ? formatPercent(
                               (
                                 ((realizedGainAndLoss -
@@ -341,7 +408,7 @@ const RealizedGainAndLoss = () => {
                                 (realizedGainAndLoss / acquisitionPrice) *
                                 100
                               ).toString()
-                            )}
+                            )} */}
                       </p>
                     </td>
                     <td className='text-right'>

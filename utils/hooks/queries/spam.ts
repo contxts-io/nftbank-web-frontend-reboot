@@ -8,6 +8,7 @@ export function useInventorySpamList(requestParam: TCollectionParam) {
   return useQuery<IInventoryCollectionList,AxiosError>(
     ['inventorySpamList',requestParam],
     async () => {
+      console.log('3. useInventorySpamList',requestParam)
       const inventoryCollectionList = await getCollectionList(requestParam);
       return inventoryCollectionList;
     },
