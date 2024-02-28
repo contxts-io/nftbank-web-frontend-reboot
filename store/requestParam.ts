@@ -5,6 +5,7 @@ export type TSortOrder = 'asc' | 'desc'
 export type TSort = 'amount' | 'nav' | 'spam'
 
 export type TCollectionParam = {
+  walletAddress: string,
   searchCollection: string,
   sort: TSort,
   page: number,
@@ -40,6 +41,7 @@ type SpamParam = {
   includeNonSpam:boolean,
 }
 export const inventoryCollectionAtom = atom<TCollectionParam>({
+  walletAddress: '',
   searchCollection: '',
   page: 1,
   limit: 30,
@@ -48,6 +50,7 @@ export const inventoryCollectionAtom = atom<TCollectionParam>({
 })
 export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
+  walletAddress: '',
   page: 1,
   limit: 30,
   sort: 'nav',
@@ -55,6 +58,7 @@ export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
 })
 export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
   searchCollection: '',
+  walletAddress: '',
   page: 1,
   limit: 30,
   sort: 'spam',

@@ -3,11 +3,9 @@ import { currencyAtom } from '@/store/currency';
 import { portfolioUserAtom } from '@/store/portfolio';
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { formatCurrency, formatDate, mathSqrt } from '@/utils/common';
-import { useMe } from '@/utils/hooks/queries/auth';
 import {
   useInventoryValue,
   useInventoryValueHistorical,
-  useInventoryValuePolling,
 } from '@/utils/hooks/queries/inventory';
 import { useAtom, useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
@@ -25,12 +23,6 @@ const tooltip = ({
   setDiffValue,
 }: any) => {
   const value = series[0].data[dataPointIndex] || 0;
-  console.log(
-    'value - w.globals?.series?.[0][0]',
-    value - w.globals?.series?.[0][0]
-  );
-  console.log('value', value);
-  console.log('w.globals.categoryLabels', w.globals.categoryLabels);
   w.globals &&
     (setHoverValue(value), setDiffValue(value - w.globals?.series?.[0][0]));
   return (
@@ -116,7 +108,8 @@ const HistoricalTrendChart = (props: Props) => {
         category.push(yDate);
         item.value?.[currency]
           ? _series[0].data.push(
-              item.value?.[currency] === 'nan'
+              item.value?.[currency] === 'nan' ||
+                parseFloat(item.value?.[currency]) == 0
                 ? _series[0].data[index - 1] || null
                 : parseFloat(item.value?.[currency] || '0')
             )

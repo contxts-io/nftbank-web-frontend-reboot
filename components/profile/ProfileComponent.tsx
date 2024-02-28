@@ -49,9 +49,7 @@ const ProfileComponent = () => {
   useEffect(() => {
     setIsClient(true);
   }, []);
-  useEffect(() => {
-    console.log('inventoryValue', inventoryValue, !!inventoryValue);
-  }, [inventoryValue]);
+
   useEffect(() => {
     path && setNickname(path.split('nickname/')[1] || null);
     path && setWalletAddress(path.split('walletAddress/')[1] || null);

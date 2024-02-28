@@ -44,7 +44,6 @@ const PerformanceSection = () => {
   const currency = useAtomValue(currencyAtom);
   const networkId = useAtomValue(networkIdAtom);
   const portfolioUser = { ...useAtomValue(portfolioUserAtom), networkId };
-  const [isPolling, setIsPolling] = useState<boolean>(true);
   const [requestParam, setRequestParam] = useState<{
     year: number;
     gnlChartType: 'Overall' | 'Realized' | 'Unrealized';
@@ -72,9 +71,7 @@ const PerformanceSection = () => {
         | 'unrealized',
     });
   const [total, setTotal] = useState(0);
-  useEffect(() => {
-    setIsPolling(true);
-  }, []);
+
   useEffect(() => {
     let _total = 0;
     performanceChart &&
@@ -88,17 +85,7 @@ const PerformanceSection = () => {
       });
     setTotal(_total);
   }, [performanceChart, currency]);
-  useEffect(() => {
-    statusPerformanceChart === 'success' &&
-      performanceChart.data &&
-      setIsPolling(false);
-  }, [statusPerformanceChart, performanceChart]);
-  useEffect(() => {
-    setIsPolling(true);
-  }, [requestParam]);
-  useEffect(() => {
-    console.log('isPolling', isPolling);
-  }, [isPolling]);
+
   return (
     <section className={styles.container}>
       <div className={styles.title}>

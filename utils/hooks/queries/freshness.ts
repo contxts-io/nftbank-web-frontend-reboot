@@ -4,11 +4,12 @@ import { DataFreshness } from "@/interfaces/utils";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export const useFreshnessAndUpdatePolling = (searchParam:BasicParam, forceUpdate: boolean = false) => {
+export const useFreshnessAndUpdatePolling = (requestParam:BasicParam | null, forceUpdate: boolean = false) => {
   return useQuery<DataFreshness,AxiosError>(
-    ['freshness',searchParam],
+    ['freshness',requestParam],
     async () => {
-      const inventoryValue = await checkFreshnessAndUpdate({...searchParam, forceUpdate});
+      if (requestParam === null) return Promise.reject('requestParam is null');
+      const inventoryValue = await checkFreshnessAndUpdate({...requestParam, forceUpdate});
       return inventoryValue;
     },
     {
@@ -16,6 +17,7 @@ export const useFreshnessAndUpdatePolling = (searchParam:BasicParam, forceUpdate
       staleTime: 0,
       cacheTime: 0,
       useErrorBoundary: false,
+      enabled: requestParam?.walletAddress !== ''
     },
   );
 }
