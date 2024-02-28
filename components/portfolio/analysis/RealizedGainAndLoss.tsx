@@ -152,7 +152,7 @@ const RealizedGainAndLoss = () => {
             itemFresh.collection.assetContract ===
               item.collection.assetContract &&
             itemFresh.token.tokenId === item.token.tokenId &&
-            itemFresh.acquisitionDate === item.acquisitionDate
+            itemFresh.soldDate === item.soldDate
         );
         return { ...item, ..._item };
       });
