@@ -56,11 +56,16 @@ export function useItemCount(searchParam: BasicParam | null) {
 }
 
 export function useInventoryCollectionList(requestParam: TCollectionParam) {
+  const dataFreshness = useAtomValue(freshnessAtom).find((f) => f.status === 'CURRENT');
+  const dataParam: TCollectionParam = {
+    ...requestParam,
+    limit: requestParam.limit * requestParam.page,
+    page: 1,
+  }
   return useQuery<IInventoryCollectionList,AxiosError>(
-    ['inventoryCollectionList',requestParam],
+    ['inventoryCollectionListFresh',requestParam, dataFreshness?.processedAt],
     async () => {
-      console.log('1. useInventoryCollectionList',requestParam)
-      const inventoryCollectionList = await getCollectionList(requestParam);
+      const inventoryCollectionList = await getCollectionList(dataParam);
       return inventoryCollectionList;
     },
     {
@@ -87,10 +92,16 @@ export function useInventoryItemFilter(requestParam: TCollectionParam) {
   );
 }
 export function useInventoryItemList(requestParam: ItemParam) {
+  const dataFreshness = useAtomValue(freshnessAtom).find((f) => f.status === 'CURRENT');
+  const dataParam: ItemParam = {
+    ...requestParam,
+    limit: requestParam.limit * requestParam.page,
+    page: 1,
+  }
   return useQuery<IInventoryItemList,AxiosError>(
-    ['inventoryItemList',requestParam],
+    ['inventoryItemListFresh',requestParam, dataFreshness?.processedAt],
     async () => {
-      const inventoryItemList = await getItemList(requestParam);
+      const inventoryItemList = await getItemList(dataParam);
       return inventoryItemList;
     },
     {
@@ -102,8 +113,6 @@ export function useInventoryItemList(requestParam: ItemParam) {
   );
 }
 export const useInventoryItemInfinite = (requestParam: ItemParam) => {
-  const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'CURRENT');
-  
   const fetchData = async ({ pageParam = 1 }) => {
     const result = await getItemList({...requestParam, page: pageParam});
     const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
@@ -117,7 +126,7 @@ export const useInventoryItemInfinite = (requestParam: ItemParam) => {
     };
   }
 
-  const query = useInfiniteQuery(['inventoryItemList',requestParam, dataFreshness?.processedAt], fetchData, {
+  const query = useInfiniteQuery(['inventoryItemList',requestParam], fetchData, {
     getNextPageParam: (lastPage) => {
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
@@ -136,13 +145,10 @@ export const useInventoryItemInfinite = (requestParam: ItemParam) => {
   return query;
 };
 export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) => {
-  const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'CURRENT');
   const fetchData = async ({ pageParam = 1 }) => {
-    console.log('4. useInventoryCollectionsInfinite',requestParam, dataFreshness?.processedAt)
     const result = await getCollectionList({...requestParam, page: pageParam});
     const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
     // const isLast = result.paging.total !== result.paging.limit ? true : false;
-    console.log('useInventoryCollectionsInfinite',requestParam)
     return {
       ...result,
       paging: result.paging,
@@ -152,7 +158,7 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
     };
   }
 
-  const query = useInfiniteQuery(['inventoryCollectionList',requestParam, dataFreshness?.processedAt], fetchData, {
+  const query = useInfiniteQuery(['inventoryCollectionList',requestParam], fetchData, {
     getNextPageParam: (lastPage) => {
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
@@ -220,8 +226,28 @@ export const useInventoryCollectionPositionAmount = (requestParam: BasicParam) =
     },
   );
 }
+export const useInventoryRealizedTokens = (requestParam: TAnalysisGainAndLossParam) => {
+  const dataFreshness = useAtomValue(freshnessAtom).find((f) => f.status === 'ALL');
+  const dataParam: TAnalysisGainAndLossParam = {
+    ...requestParam,
+    limit: requestParam.limit * requestParam.page,
+    page: 1,
+  }
+  return useQuery(
+    ['inventoryRealizedTokensFresh', requestParam, dataFreshness?.processedAt],
+    async () => {
+      const result = await getInventoryRealizedTokens(dataParam);
+      return result;
+    },
+    {
+      enabled: requestParam.walletAddress !== '',
+      staleTime: Infinity,
+      cacheTime: Infinity,
+      useErrorBoundary: false,
+    },
+  );
+}
 export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAndLossParam) => {
-  const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   const fetchData = async ({ pageParam = 1 }) => {
     const result = await getInventoryRealizedTokens({ ...requestParam, page: pageParam});
     const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
@@ -233,7 +259,7 @@ export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAn
     };
   }
 
-  const query = useInfiniteQuery(['inventoryRealizedTokens',requestParam, dataFreshness?.processedAt ],fetchData, {
+  const query = useInfiniteQuery(['inventoryRealizedTokens',requestParam],fetchData, {
     getNextPageParam: (lastPage) => {
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;

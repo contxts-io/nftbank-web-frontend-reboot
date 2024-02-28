@@ -13,7 +13,10 @@ import {
   TStatus,
   TYear,
 } from '@/constants/period';
-import { useInventoryRealizedTokensInfinite } from '@/utils/hooks/queries/inventory';
+import {
+  useInventoryRealizedTokens,
+  useInventoryRealizedTokensInfinite,
+} from '@/utils/hooks/queries/inventory';
 import { useMe } from '@/utils/hooks/queries/auth';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { useAtom, useAtomValue } from 'jotai';
@@ -80,6 +83,10 @@ const RealizedGainAndLoss = () => {
     ...requestParams,
     page: 0,
   });
+  const { data: realizedTokenListFresh } = useInventoryRealizedTokens({
+    ...portfolioUser,
+    ...requestParams,
+  });
   const [selectedStatus, setSelectedStatus] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({
       ...item,
@@ -137,7 +144,17 @@ const RealizedGainAndLoss = () => {
   }, [selectedStatus, selectedYear]);
 
   const mergePosts = useMemo(() => {
-    return realizedTokenList?.pages.flatMap((page) => page.data);
+    return realizedTokenList?.pages
+      .flatMap((page) => page.data)
+      .map((item) => {
+        const _item = realizedTokenListFresh?.data.find(
+          (itemFresh) =>
+            itemFresh.collection.assetContract ===
+              item.collection.assetContract &&
+            itemFresh.token.tokenId === item.token.tokenId
+        );
+        return { ...item, ..._item };
+      });
   }, [realizedTokenList?.pages, requestParams, status]);
 
   return (
