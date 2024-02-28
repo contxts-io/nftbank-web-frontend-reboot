@@ -72,6 +72,7 @@ export function useInventoryCollectionList(requestParam: TCollectionParam) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      keepPreviousData: true,
     },
   );
 }
@@ -109,6 +110,7 @@ export function useInventoryItemList(requestParam: ItemParam) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      keepPreviousData: true,
     },
   );
 }
@@ -244,6 +246,7 @@ export const useInventoryRealizedTokens = (requestParam: TAnalysisGainAndLossPar
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      keepPreviousData: true,
     },
   );
 }
