@@ -51,6 +51,7 @@
     "pino-pretty": "^10.2.3",
     "postcss": "8.4.29",
     "react": "18.2.0",
+    "react-animated-numbers": "^0.18.0",
     "react-apexcharts": "^1.4.1",
     "react-blockies": "^1.4.1",
     "react-calendar": "^4.6.1",

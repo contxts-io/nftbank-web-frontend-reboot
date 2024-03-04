@@ -102,6 +102,16 @@ export function formatPercent(_percent: string |'infinity'|'Infinity'| null): st
   
   return (percent/100).toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 1 }).replace('.0', '');
 }
+export function _formatPercent(_percent: string | null): number {
+  if (_percent === null) return 0;
+  if (_percent === 'infinity' || _percent === 'Infinity') return 0;
+  const percent = parseFloat(_percent);
+  if (Math.abs(percent) <= 0.001) return 0;
+  if (Math.abs(percent) < 1 && Math.abs(percent) >= 0.001)
+    return parseFloat((percent / 100).toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 3 }));
+  
+  return parseFloat((percent/100).toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 1 }).replace('.0', ''));
+}
 export function formatEth(amount: string | null): string {
   if (!amount) return '';
   return parseFloat(amount).toLocaleString('en-US', { style: 'currency', currency: 'ETH' });

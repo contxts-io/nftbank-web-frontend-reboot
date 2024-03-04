@@ -14,6 +14,7 @@ import { selectedCollectionInventoryAtom } from '@/store/portfolio';
 import { useEffect, useMemo } from 'react';
 import Ethereum from '@/public/icon/Ethereum';
 import {
+  _formatPercent,
   formatCurrency,
   formatCurrencyOriginal,
   formatGasFee,
@@ -31,6 +32,7 @@ import { Tooltip } from '@nextui-org/react';
 import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
 import Info from '@/public/icon/Info';
 import { sendGTMEvent } from '@next/third-parties/google';
+import AnimatedNumbers from 'react-animated-numbers';
 
 const InventoryCollectionTable = () => {
   const priceType = useAtomValue(priceTypeAtom);
@@ -356,29 +358,58 @@ const InventoryCollectionTable = () => {
                           </div>
                         </Tooltip>
                       ) : (
-                        <p
+                        // <p
+                        //   className={`${styles.pTd} ${
+                        //     isPlus(unrealizedGL)
+                        //       ? 'text-[var(--color-text-success)]'
+                        //       : 'text-[var(--color-text-danger)]'
+                        //   } pr-16`}
+                        // >
+                        //   {priceType === 'costBasis'
+                        //     ? formatPercent(
+                        //         (
+                        //           (unrealizedGL -
+                        //             parseFloatPrice(row.gasFee?.[currency])) /
+                        //           costBasis
+                        //         ).toString()
+                        //       )
+                        //     : formatPercent(
+                        //         (
+                        //           unrealizedGL /
+                        //           (costBasis -
+                        //             parseFloatPrice(row.gasFee?.[currency]))
+                        //         ).toString()
+                        //       )}
+                        // </p>
+                        <AnimatedNumbers
                           className={`${styles.pTd} ${
                             isPlus(unrealizedGL)
                               ? 'text-[var(--color-text-success)]'
                               : 'text-[var(--color-text-danger)]'
-                          } pr-16`}
-                        >
-                          {priceType === 'costBasis'
-                            ? formatPercent(
-                                (
-                                  (unrealizedGL -
-                                    parseFloatPrice(row.gasFee?.[currency])) /
-                                  costBasis
-                                ).toString()
-                              )
-                            : formatPercent(
-                                (
-                                  unrealizedGL /
-                                  (costBasis -
-                                    parseFloatPrice(row.gasFee?.[currency]))
-                                ).toString()
-                              )}
-                        </p>
+                          } pr-16 justify-end`}
+                          includeComma
+                          transitions={(index) => ({
+                            type: 'spring',
+                            duration: index * 0.2 + 0.05,
+                          })}
+                          animateToNumber={
+                            priceType === 'costBasis'
+                              ? _formatPercent(
+                                  (
+                                    (unrealizedGL -
+                                      parseFloatPrice(row.gasFee?.[currency])) /
+                                    costBasis
+                                  ).toString()
+                                )
+                              : _formatPercent(
+                                  (
+                                    unrealizedGL /
+                                    (costBasis -
+                                      parseFloatPrice(row.gasFee?.[currency]))
+                                  ).toString()
+                                )
+                          }
+                        />
                       )}
                     </td>
                     {/**
