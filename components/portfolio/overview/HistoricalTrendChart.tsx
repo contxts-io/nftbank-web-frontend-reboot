@@ -25,6 +25,7 @@ const tooltip = ({
   const value = series[0].data[dataPointIndex] || 0;
   w.globals &&
     (setHoverValue(value), setDiffValue(value - w.globals?.series?.[0][0]));
+  console.log('series', series);
   return (
     <div className='px-16 py-8 border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)]'>
       <p className={`font-caption-regular text-[var(--color-text-main)]`}>
@@ -306,7 +307,7 @@ const HistoricalTrendChart = (props: Props) => {
         },
       },
     };
-  }, [series[0]?.data?.[0], isPlus, currency]);
+  }, [series[0]?.data?.[0], seriesData, isPlus, currency]);
 
   const handleHover = (value: any) => {
     const currentValue = inventoryValue?.value[currency]?.amount
