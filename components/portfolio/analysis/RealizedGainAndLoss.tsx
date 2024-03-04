@@ -40,6 +40,7 @@ import {
 import ToggleButton from '@/components/buttons/ToggleButton';
 import { useInView } from 'react-intersection-observer';
 import NoData from '@/components/error/NoData';
+import DropdownMobile from '@/components/dropdown/DropdownMobile';
 const THEAD = {
   costBasis: [
     { key: 'item', value: 'Item' },
@@ -66,10 +67,12 @@ const THEAD = {
 };
 type _Year = TYear & { selected: boolean };
 type _Period = TPeriod & { selected: boolean };
+const YEARS: (number | string)[] = ['ALL', 2024, 2023];
 const RealizedGainAndLoss = () => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
   const [includeGasUsed, setIncludeGasUsed] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { ref, inView } = useInView();
   const [requestParams, setRequestParams] = useAtom(
     analysisGainAndLossParamAtom
@@ -161,23 +164,27 @@ const RealizedGainAndLoss = () => {
   return (
     <section className={styles.container}>
       <div className={styles.title}>
-        <p className='font-subtitle02-bold text-[var(--color-text-main)]'>
-          Realized Gain & Loss
-        </p>
-        <Dropdown
-          id='realized_gain_loss_period_filter'
-          list={selectedYear.map((item) => item.name)}
-          selected={selectedYear.find((item) => item.selected)?.name || '2023'}
-          onClick={(name) => handleChangeYear(name)}
-          className='w-80'
-        />
+        <div className='flex items-center gap-x-12'>
+          <p className='font-subtitle02-bold text-[var(--color-text-main)]'>
+            Realized Gain & Loss
+          </p>
+          <Dropdown
+            className='w-80 hidden md:flex'
+            id='realized_gain_loss_period_filter'
+            list={selectedYear.map((item) => item.name)}
+            selected={
+              selectedYear.find((item) => item.selected)?.name || '2023'
+            }
+            onClick={(name) => handleChangeYear(name)}
+          />
+        </div>
         {/* <Dropdown
           list={selectedStatus.map((item) => item.name)}
           selected={selectedStatus.find((item) => item.selected)?.name || 'All'}
           onClick={(name) => handleChangeStatus(name)}
           className='w-65'
         /> */}
-        <div className='ml-auto flex px-12'>
+        <div className='flex items-center w-full md:w-fit'>
           <span className='font-button03-medium text-[var(--color-text-subtle)] mr-8'>
             Include Gas fee
           </span>
@@ -186,6 +193,20 @@ const RealizedGainAndLoss = () => {
             checked={includeGasUsed === true}
             id={'realized_gain_loss_gas_fee_toggle'}
           />
+          <div className='md:hidden ml-auto'>
+            <DropdownMobile
+              open={isOpen}
+              setOpen={setIsOpen}
+              list={YEARS.map((item) => {
+                return {
+                  name: item.toString(),
+                  value: item.toString(),
+                };
+              })}
+              value={selectedYear.find((item) => item.selected)?.name || '2023'}
+              handleClickItem={(item) => handleChangeYear(item.name)}
+            />
+          </div>
         </div>
       </div>
       <div className={styles.tableWrapper}>

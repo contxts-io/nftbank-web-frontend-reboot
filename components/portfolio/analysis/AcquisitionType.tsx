@@ -2,7 +2,6 @@
 import styles from './AcquisitionType.module.css';
 import ShoppingCart from '@/public/icon/ShoppingCart';
 import Jewel from '@/public/icon/Jewel';
-import Parachute from '@/public/icon/Parachute';
 import ArrowsDownUp from '@/public/icon/ArrowsDownUp';
 import AcquisitionTypePieChart from './AcquisitionTypePieChart';
 import { useEffect, useMemo, useState } from 'react';
@@ -18,6 +17,7 @@ import { AcquisitionType } from '@/interfaces/activity';
 import { analysisAcquisitionParamAtom } from '@/store/requestParam';
 import { portfolioUserAtom } from '@/store/portfolio';
 import NoData from '@/components/error/NoData';
+import DropdownMobile from '@/components/dropdown/DropdownMobile';
 const LIST = [
   {
     type: 'buy' as const,
@@ -50,6 +50,7 @@ const LIST = [
     amount: 0,
   },
 ];
+const YEARS: (number | string)[] = ['ALL', 2024, 2023];
 export type _List = (typeof LIST)[number] & Partial<AcquisitionType>;
 type _Period = TPeriod & { selected: boolean };
 type _Year = TYear & { selected: boolean };
@@ -65,6 +66,7 @@ const AcquisitionType = () => {
       ...portfolioUser,
     });
   const [list, setList] = useState<_List[]>(LIST);
+  const [isOpenYears, setIsOpenYears] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({
       ...item,
@@ -75,7 +77,6 @@ const AcquisitionType = () => {
     { name: 'ALL', value: 'all', selected: true },
     { name: '2024', value: 2024, selected: false },
     { name: '2023', value: 2023, selected: false },
-    { name: '2022', value: 2022, selected: false },
   ]);
   useEffect(() => {
     acquisitionTypes?.data &&
@@ -117,6 +118,7 @@ const AcquisitionType = () => {
     );
   };
   const handleChangeYear = (name: string) => {
+    console.log('name', name);
     setSelectedYear((prev) =>
       prev.map((item) => ({
         ...item,
@@ -134,7 +136,7 @@ const AcquisitionType = () => {
           list={selectedYear.map((item) => item.name)}
           selected={selectedYear.find((item) => item.selected)?.name || '2023'}
           onClick={(name) => handleChangeYear(name)}
-          className='w-78'
+          className='w-78 md:flex hidden'
           id='acquisition_type_pie_chart_period_filter'
         />
         {/* <Dropdown
@@ -142,16 +144,30 @@ const AcquisitionType = () => {
           selected={selectedPeriod.find((item) => item.selected)?.name || 'All'}
           onClick={(name) => handleChangePeriod(name)}
         /> */}
+        <div className='ml-auto flex md:hidden'>
+          <DropdownMobile
+            open={isOpenYears}
+            setOpen={setIsOpenYears}
+            list={YEARS.map((item) => {
+              return {
+                name: item.toString(),
+                value: item.toString(),
+              };
+            })}
+            value={selectedYear.find((item) => item.selected)?.name || '2023'}
+            handleClickItem={(item) => handleChangeYear(item.name)}
+          />
+        </div>
       </div>
       <div className='w-full flex justify-center mt-20'>
-        <section className='flex items-center w-[900px]'>
+        <section className='w-full md:w-[900px] flex flex-col md:flex-row items-center gap-40'>
           {acquisitionTypes?.data?.length == 0 ? (
-            <div className=' w-full h-[260px] flex justify-center pt-40'>
+            <div className='w-full h-[260px] flex justify-center pt-40'>
               <NoData />
             </div>
           ) : (
             <>
-              <div className='w-[310px] h-[260px] mr-40 relative'>
+              <div className='w-[310px] h-[260px] relative'>
                 <AcquisitionTypePieChart
                   data={list}
                   totalCount={totalAcqCount}
@@ -168,59 +184,60 @@ const AcquisitionType = () => {
                   </div>
                 )}
               </div>
-
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th className='text-left'>
-                      <p>Acquisition Type</p>
-                    </th>
-                    <th className='text-right'>
-                      <p>Amount</p>
-                    </th>
-                    <th className='text-right'>
-                      <p>Total Cost Basis</p>
-                    </th>
-                    {/* <th className='text-right'>
+              <div className='w-full overflow-x-scroll'>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th className='text-left'>
+                        <p>Acquisition Type</p>
+                      </th>
+                      <th className='text-right'>
+                        <p>Amount</p>
+                      </th>
+                      <th className='text-right'>
+                        <p>Total Cost Basis</p>
+                      </th>
+                      {/* <th className='text-right'>
                       <p>Activity</p>
                     </th> */}
-                  </tr>
-                </thead>
-                <tbody className='font-caption-medium'>
-                  {list.map((item, index) => (
-                    <tr key={index}>
-                      <td>
-                        <div className='flex items-center'>
-                          <div
-                            className={`flex items-center justify-center rounded-full border-1 w-32 h-32 mr-10 ${
-                              styles[`border--${item.type.toLowerCase()}`]
-                            }`}
-                          >
-                            {item.icon}
+                    </tr>
+                  </thead>
+                  <tbody className='font-caption-medium'>
+                    {list.map((item, index) => (
+                      <tr key={index}>
+                        <td>
+                          <div className='flex items-center'>
+                            <div
+                              className={`flex items-center justify-center rounded-full border-1 w-32 h-32 mr-10 ${
+                                styles[`border--${item.type.toLowerCase()}`]
+                              }`}
+                            >
+                              {item.icon}
+                            </div>
+                            <p>{item.name}</p>
                           </div>
-                          <p>{item.name}</p>
-                        </div>
-                      </td>
-                      <td className='text-right'>
-                        <p>{item.amount}</p>
-                      </td>
-                      <td className='text-right'>
-                        <p>
-                          {formatCurrency(
-                            item.costBasis?.[currency] || '0',
-                            currency
-                          )}
-                        </p>
-                      </td>
-                      {/* <td className='text-right'>
+                        </td>
+                        <td className='text-right'>
+                          <p>{item.amount}</p>
+                        </td>
+                        <td className='text-right'>
+                          <p>
+                            {formatCurrency(
+                              item.costBasis?.[currency] || '0',
+                              currency
+                            )}
+                          </p>
+                        </td>
+                        {/* <td className='text-right'>
                         <div className='rotate-270 w-16 h-16 ml-auto'>
                           <CaretDown />
                         </div>
                       </td> */}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </>
           )}
         </section>
