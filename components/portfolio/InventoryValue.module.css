@@ -1,8 +1,8 @@
 .container {
-  @apply w-full grid grid-cols-3 justify-between items-start mt-20 border-1 border-[var(--color-border-main)];
+  @apply w-full grid md:grid-cols-3 justify-between items-start mt-20 border-1 border-[var(--color-border-main)];
 }
 .articleBox {
-  @apply border-r-1 h-92 ml-16 py-16 border-[var(--color-border-main)];
+  @apply md:border-r-1 h-92 ml-16 py-16 border-[var(--color-border-main)];
 }
 .pHeader {
   @apply border-[var(--color-border-accent-gray)];

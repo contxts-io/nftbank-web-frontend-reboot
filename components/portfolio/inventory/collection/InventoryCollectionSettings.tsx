@@ -98,6 +98,22 @@ const InventoryCollectionSettings = () => {
         </Button> */}
         </div>
       </div>
+      <div
+        className={`${styles.inputContainer} ${
+          isFocused ? styles.focused : ''
+        } `}
+      >
+        <MagnifyingGlass className={`${styles.icon}`} width={16} height={16} />
+        <input
+          type='text'
+          placeholder={'Search collection'}
+          className={`${styles.textInput} font-caption-regular`}
+          onChange={handleInputText}
+          value={searchText}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+        />
+      </div>
       <ReactModal
         isOpen={showModal}
         contentLabel='Minimal Modal Example'
