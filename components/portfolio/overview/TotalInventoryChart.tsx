@@ -282,7 +282,7 @@ const tooltip = ({
               </span>
               <p>{positionCollectionAmount}</p>
             </div>
-            {totalInventoryPositionAmount?.length !== seriesIndex + 1 && (
+            {/* {totalInventoryPositionAmount?.length !== seriesIndex + 1 && (
               <div className='flex justify-between items-center'>
                 <span className='text-[var(--color-text-subtle)] mr-41'>
                   Amount Difference(24h)
@@ -299,7 +299,7 @@ const tooltip = ({
                   {positionCollectionAmountDiff}
                 </p>
               </div>
-            )}
+            )} */}
           </div>
         )}
         {selected === 'value' && (
@@ -314,7 +314,7 @@ const tooltip = ({
               </span>
               <CurrencyComponent value={amount} />
             </div>
-            {totalInventoryPositionAmount?.length !== seriesIndex + 1 && (
+            {/* {totalInventoryPositionAmount?.length !== seriesIndex + 1 && (
               <div className='flex justify-between items-center'>
                 <span className='text-[var(--color-text-subtle)] mr-41'>
                   Rate of Change(24h)
@@ -338,7 +338,7 @@ const tooltip = ({
                   )}
                 </p>
               </div>
-            )}
+            )} */}
           </div>
         )}
       </div>

@@ -1,22 +1,28 @@
 import { ResponseAcquisitionTypesData, TResponseInventoryValueHistory, getCollectionList, getCollectionValuableCount, getInventoryAcquisitionType, getInventoryCollectionPositionAmount, getInventoryCollectionPositionValue, getInventoryRealizedTokens, getInventoryValue, getInventoryValueHistory, getItemList, getItemValuableCount } from '@/apis/inventory';
 import { IInventoryCollectionList, IInventoryItemList, InventoryValue, InventoryValueNested, IStat, PositionCollection, PositionCollectionAmount } from '@/interfaces/inventory';
 import { BasicParam } from '@/interfaces/request';
+import { freshnessAtom } from '@/store/freshness';
 import { ItemParam, TAcquisitionParam, TAnalysisGainAndLossParam, TCollectionParam, TOverviewHistoricalValueParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { useAtomValue } from 'jotai';
 
 export function useInventoryValue(searchParam: BasicParam | null) {
+  const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<InventoryValueNested,AxiosError>(
-    ['inventoryValue',searchParam],
+    ['inventoryValue', searchParam, dataFreshness?.processedAt],
     async () => {
       const inventoryValue = await getInventoryValue(searchParam);
       return inventoryValue;
     },
     {
+      keepPreviousData: true,
+      refetchInterval: 10000,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      enabled: searchParam !== null && searchParam.walletAddress !== undefined && searchParam?.walletAddress !== '' && searchParam?.walletAddress !== undefined,
+      // enabled: searchParam !== null && searchParam.walletAddress !== undefined && searchParam?.walletAddress !== '' && searchParam?.walletAddress !== undefined,
+      enabled: searchParam !== null,
     },
   );
 }
@@ -50,16 +56,23 @@ export function useItemCount(searchParam: BasicParam | null) {
 }
 
 export function useInventoryCollectionList(requestParam: TCollectionParam) {
+  const dataFreshness = useAtomValue(freshnessAtom).find((f) => f.status === 'CURRENT');
+  const dataParam: TCollectionParam = {
+    ...requestParam,
+    limit: requestParam.limit * requestParam.page,
+    page: 1,
+  }
   return useQuery<IInventoryCollectionList,AxiosError>(
-    ['inventoryCollectionList',requestParam],
+    ['inventoryCollectionListFresh',requestParam, dataFreshness?.processedAt],
     async () => {
-      const inventoryCollectionList = await getCollectionList(requestParam);
+      const inventoryCollectionList = await getCollectionList(dataParam);
       return inventoryCollectionList;
     },
     {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      keepPreviousData: true,
     },
   );
 }
@@ -68,6 +81,7 @@ export function useInventoryItemFilter(requestParam: TCollectionParam) {
   return useQuery<IInventoryCollectionList,AxiosError>(
     ['inventoryItemFilter',requestParam],
     async () => {
+      console.log('2. useInventoryItemFilter',requestParam)
       const inventoryItemFilterCollections = await getCollectionList(requestParam);
       return inventoryItemFilterCollections;
     },
@@ -79,10 +93,16 @@ export function useInventoryItemFilter(requestParam: TCollectionParam) {
   );
 }
 export function useInventoryItemList(requestParam: ItemParam) {
+  const dataFreshness = useAtomValue(freshnessAtom).find((f) => f.status === 'CURRENT');
+  const dataParam: ItemParam = {
+    ...requestParam,
+    limit: requestParam.limit * requestParam.page,
+    page: 1,
+  }
   return useQuery<IInventoryItemList,AxiosError>(
-    ['inventoryItemList',requestParam],
+    ['inventoryItemListFresh',requestParam, dataFreshness?.processedAt],
     async () => {
-      const inventoryItemList = await getItemList(requestParam);
+      const inventoryItemList = await getItemList(dataParam);
       return inventoryItemList;
     },
     {
@@ -90,6 +110,7 @@ export function useInventoryItemList(requestParam: ItemParam) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      keepPreviousData: true,
     },
   );
 }
@@ -113,6 +134,7 @@ export const useInventoryItemInfinite = (requestParam: ItemParam) => {
       return undefined;
     },
     enabled: requestParam.walletAddress !== '',
+    keepPreviousData: true,
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,
@@ -129,7 +151,6 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
     const result = await getCollectionList({...requestParam, page: pageParam});
     const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
     // const isLast = result.paging.total !== result.paging.limit ? true : false;
-        
     return {
       ...result,
       paging: result.paging,
@@ -144,6 +165,8 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
+    keepPreviousData: true,
+    enabled: requestParam.walletAddress !== '',
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,
@@ -154,31 +177,33 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
   });
   return query;
 };
-export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalValueParam , polling=true ) => {
+export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalValueParam) => {
+  const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<TResponseInventoryValueHistory,AxiosError>(
-    ['inventoryValueHistorical',requestParam],
+    ['inventoryValueHistorical',requestParam, dataFreshness?.processedAt],
     async () => {
       const inventoryValueHistorical = await getInventoryValueHistory(requestParam);
       return inventoryValueHistorical;
     },
     {
-      enabled: requestParam.walletAddress !== '' && !!requestParam.taskId && !!polling,
+      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      refetchInterval: 2000,
-      retry: 5,
+      keepPreviousData: true,
     },
   );
 }
 export const useInventoryCollectionPositionValue = (requestParam: BasicParam) => {
+  const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<PositionCollection[],AxiosError>(
-    ['inventoryCollectionPositionValue',requestParam],
+    ['inventoryCollectionPositionValue',requestParam, dataFreshness?.processedAt],
     async () => {
       const value = await getInventoryCollectionPositionValue(requestParam);
       return value.data;
     },
     {
+      keepPreviousData: true,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -187,17 +212,41 @@ export const useInventoryCollectionPositionValue = (requestParam: BasicParam) =>
   );
 }
 export const useInventoryCollectionPositionAmount = (requestParam: BasicParam) => {
+  const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<PositionCollectionAmount[],AxiosError>(
-    ['inventoryCollectionPositionAmount',requestParam],
+    ['inventoryCollectionPositionAmount',requestParam, dataFreshness?.processedAt],
     async () => {
       const value = await getInventoryCollectionPositionAmount(requestParam);
       return value.data;
     },
     {
+      keepPreviousData: true,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
       enabled: !!requestParam.walletAddress,
+    },
+  );
+}
+export const useInventoryRealizedTokens = (requestParam: TAnalysisGainAndLossParam) => {
+  const dataFreshness = useAtomValue(freshnessAtom).find((f) => f.status === 'ALL');
+  const dataParam: TAnalysisGainAndLossParam = {
+    ...requestParam,
+    limit: requestParam.limit * requestParam.page,
+    page: 1,
+  }
+  return useQuery(
+    ['inventoryRealizedTokensFresh', requestParam, dataFreshness?.processedAt],
+    async () => {
+      const result = await getInventoryRealizedTokens(dataParam);
+      return result;
+    },
+    {
+      enabled: requestParam.walletAddress !== '',
+      staleTime: Infinity,
+      cacheTime: Infinity,
+      useErrorBoundary: false,
+      keepPreviousData: true,
     },
   );
 }
@@ -218,6 +267,7 @@ export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAn
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
+    keepPreviousData: true,
     enabled: requestParam.walletAddress !== '',
     staleTime: Infinity,
     cacheTime: Infinity,
@@ -246,13 +296,15 @@ export const useInventoryValuePolling = (searchParam:BasicParam | null) => {
   );
 }
 export const useInventoryAcquisitionTypes = (requestParam: TAcquisitionParam) => {
+  const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<ResponseAcquisitionTypesData,AxiosError>(
-    ['inventoryAcquisitionTypes',requestParam],
+    ['inventoryAcquisitionTypes',requestParam, dataFreshness?.processedAt],
     async () => {
       const value = await getInventoryAcquisitionType(requestParam);
       return value;
     },
     {
+      keepPreviousData: true,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,

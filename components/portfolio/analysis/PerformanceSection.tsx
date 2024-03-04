@@ -21,6 +21,7 @@ import Info from '@/public/icon/Info';
 import NoData from '@/components/error/NoData';
 import FailToLoad from '@/components/error/FailToLoad';
 import DropdownMobile from '@/components/dropdown/DropdownMobile';
+
 const THEAD = [
   'Jan',
   'Feb',
@@ -45,7 +46,6 @@ const PerformanceSection = () => {
   const currency = useAtomValue(currencyAtom);
   const networkId = useAtomValue(networkIdAtom);
   const portfolioUser = { ...useAtomValue(portfolioUserAtom), networkId };
-  const [isPolling, setIsPolling] = useState<boolean>(true);
   const [isOpenType, setIsOpenType] = useState(false);
   const [isOpenYears, setIsOpenYears] = useState(false);
   const [requestParam, setRequestParam] = useState<{
@@ -75,9 +75,7 @@ const PerformanceSection = () => {
         | 'unrealized',
     });
   const [total, setTotal] = useState(0);
-  useEffect(() => {
-    setIsPolling(true);
-  }, []);
+
   useEffect(() => {
     let _total = 0;
     performanceChart &&
@@ -91,17 +89,7 @@ const PerformanceSection = () => {
       });
     setTotal(_total);
   }, [performanceChart, currency]);
-  useEffect(() => {
-    statusPerformanceChart === 'success' &&
-      performanceChart.data &&
-      setIsPolling(false);
-  }, [statusPerformanceChart, performanceChart]);
-  useEffect(() => {
-    setIsPolling(true);
-  }, [requestParam]);
-  useEffect(() => {
-    console.log('isPolling', isPolling);
-  }, [isPolling]);
+
   return (
     <section className={styles.container}>
       <div className={styles.title}>

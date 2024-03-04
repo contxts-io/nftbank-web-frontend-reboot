@@ -60,7 +60,7 @@ const InventoryValue = () => {
           currency
         ),
         diff: formatCurrency(
-          inventoryValue?.value[currency].difference.amount || '-',
+          inventoryValue?.value[currency].difference.amount || '0',
           currency
         ),
         diffPercent: formatPercent(
@@ -151,7 +151,7 @@ const InventoryValue = () => {
                   statusPerformance !== 'success' && (
                     <SkeletonLoader className='h-22 w-100' />
                   )} */}
-                {item.type === 'inventoryValue' && item.value && (
+                {/* {item.type === 'inventoryValue' && item.value && (
                   <>
                     <div
                       className={
@@ -172,7 +172,7 @@ const InventoryValue = () => {
                       </p>
                     </div>
                   </>
-                )}
+                )} */}
               </div>
             </article>
           );

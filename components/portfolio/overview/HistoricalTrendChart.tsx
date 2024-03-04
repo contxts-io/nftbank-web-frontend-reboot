@@ -3,11 +3,9 @@ import { currencyAtom } from '@/store/currency';
 import { portfolioUserAtom } from '@/store/portfolio';
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { formatCurrency, formatDate, mathSqrt } from '@/utils/common';
-import { useMe } from '@/utils/hooks/queries/auth';
-import { useDispatchDailyNav } from '@/utils/hooks/queries/dispatch';
 import {
+  useInventoryValue,
   useInventoryValueHistorical,
-  useInventoryValuePolling,
 } from '@/utils/hooks/queries/inventory';
 import { useAtom, useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
@@ -25,12 +23,6 @@ const tooltip = ({
   setDiffValue,
 }: any) => {
   const value = series[0].data[dataPointIndex] || 0;
-  console.log(
-    'value - w.globals?.series?.[0][0]',
-    value - w.globals?.series?.[0][0]
-  );
-  console.log('value', value);
-  console.log('w.globals.categoryLabels', w.globals.categoryLabels);
   w.globals &&
     (setHoverValue(value), setDiffValue(value - w.globals?.series?.[0][0]));
   return (
@@ -48,63 +40,26 @@ type Props = {
 const HistoricalTrendChart = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
-  const [isPolling, setIsPolling] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [historicalValueParam, setHistoricalValueParam] = useAtom(
     overviewHistoricalValueParamAtom
   );
   const { data: inventoryValue, status: statusInventoryValue } =
-    useInventoryValuePolling(portfolioUser);
-  const { data: dispatchDailyNav, status: statusDispatchDailyNav } =
-    useDispatchDailyNav(portfolioUser?.walletAddress || '');
+    useInventoryValue(portfolioUser);
+
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
-  } = useInventoryValueHistorical(
-    {
-      ...historicalValueParam,
-      ...portfolioUser,
-      taskId: dispatchDailyNav?.taskId,
-    },
-    isPolling
-  );
+  } = useInventoryValueHistorical({
+    ...historicalValueParam,
+    ...portfolioUser,
+  });
   useEffect(() => {
-    setIsPolling(true);
-  }, [portfolioUser]);
-  useEffect(() => {
-    statusDispatchDailyNav === 'loading' ||
-    statusInventoryValueHistorical === 'loading' ||
-    isPolling === true
+    statusInventoryValueHistorical === 'loading'
       ? setIsLoading(true)
       : setIsLoading(false);
-  }, [statusInventoryValueHistorical, isPolling, statusDispatchDailyNav]);
-  useEffect(() => {
-    console.log(
-      'statusInventoryValueHistorical',
-      statusInventoryValueHistorical
-    );
-    console.log('inventoryValueHistorical', inventoryValueHistorical);
-    console.log(
-      'inventoryValueHistorical?.data',
-      inventoryValueHistorical?.data
-    );
-    console.log(
-      'inventoryValueHistorical?.data.length',
-      inventoryValueHistorical?.data?.length
-    );
-    console.log(
-      'inventoryValueHistorical',
-      inventoryValueHistorical?.statusCode
-    );
-    statusInventoryValueHistorical === 'success' &&
-    inventoryValueHistorical?.data &&
-    inventoryValueHistorical?.statusCode !== 'PENDING'
-      ? setIsPolling(false)
-      : setIsPolling(true);
-  }, [statusInventoryValueHistorical, inventoryValueHistorical?.data]);
-  useEffect(() => {
-    console.log('isPolling', isPolling);
-  }, [isPolling]);
+  }, [statusInventoryValueHistorical]);
+
   const [isPlus, setIsPlus] = useState(false);
   let category: string[] = [];
 
@@ -153,7 +108,8 @@ const HistoricalTrendChart = (props: Props) => {
         category.push(yDate);
         item.value?.[currency]
           ? _series[0].data.push(
-              item.value?.[currency] === 'nan'
+              item.value?.[currency] === 'nan' ||
+                parseFloat(item.value?.[currency]) == 0
                 ? _series[0].data[index - 1] || null
                 : parseFloat(item.value?.[currency] || '0')
             )

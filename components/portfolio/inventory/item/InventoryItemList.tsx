@@ -30,8 +30,6 @@ const InventoryItemList = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [priceType, setPriceType] = useAtom(priceTypeAtom);
-  const { data: inventoryItemList, status } =
-    useInventoryItemList(requestParam);
   const currency = useAtomValue(currencyAtom);
   const [selectedToken, setSelectedToken] = useAtom(selectedTokenAtom);
   const handleClickSortButton = (sort: TSort) => {

@@ -97,7 +97,7 @@ const SummaryValueContainer = () => {
               )}
             </p>
           )}
-          {statusUnrealized === 'success' && (
+          {/* {statusUnrealized === 'success' && (
             <article className={styles.valueSubRect}>
               <div
                 className={`${styles.diffBox} ${
@@ -123,7 +123,7 @@ const SummaryValueContainer = () => {
                 <p>24h</p>
               </div>
             </article>
-          )}
+          )} */}
         </div>
       </article>
       <article className={styles.valueRect}>

@@ -1,5 +1,8 @@
 'use client';
-import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory';
+import {
+  useInventoryCollectionList,
+  useInventoryCollectionsInfinite,
+} from '@/utils/hooks/queries/inventory';
 import styles from './InventoryCollectionTable.module.css';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
@@ -32,9 +35,9 @@ import { sendGTMEvent } from '@next/third-parties/google';
 const InventoryCollectionTable = () => {
   const priceType = useAtomValue(priceTypeAtom);
   const T_HEADER = [
-    {
-      name: 'Chain',
-    },
+    // {
+    //   name: 'Chain',
+    // },
     {
       name: 'Collection',
     },
@@ -76,7 +79,23 @@ const InventoryCollectionTable = () => {
     page: number;
     collections: Collection[];
   };
-  const collections = useMemo(() => data?.pages, [data?.pages]);
+  const { data: collectionListFresh } = useInventoryCollectionList(
+    inventoryCollectionRequestParam
+  );
+  const collections = useMemo(
+    () =>
+      data?.pages
+        .flatMap((page) => page.data)
+        .map((item) => {
+          const collection = collectionListFresh?.data.find(
+            (collection) =>
+              collection.collection.assetContract ===
+              item.collection.assetContract
+          );
+          return { ...item, ...collection };
+        }),
+    [data?.pages, collectionListFresh]
+  );
   useEffect(() => {
     const isLastPage = data?.pages?.[data.pages.length - 1].isLast;
     !isLastPage &&
@@ -121,7 +140,8 @@ const InventoryCollectionTable = () => {
   };
   useEffect(() => {
     console.log('collections', collections);
-  }, [collections]);
+    console.log('collectionListFresh', collectionListFresh);
+  }, [collections, collectionListFresh]);
   if (status === 'loading')
     return <SkeletonLoader className='w-full h-[200px]' />;
   return (
@@ -131,124 +151,121 @@ const InventoryCollectionTable = () => {
           <FailToLoad />
         </div>
       )}
-      {status === 'success' && collections?.[0].paging.total === 0 && (
+      {status === 'success' && collections?.length === 0 && (
         <div>
           <NoData />
         </div>
       )}
-      {status === 'success' &&
-        collections &&
-        collections?.[0].paging.total > 0 && (
-          <>
-            <table className={`${styles.table} relative`}>
-              <thead className='sticky top-119 bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
-                <tr className='h-fit'>
-                  {T_HEADER.map((item, index) => (
-                    <th
-                      key={index}
-                      className={`font-caption-medium text-[var(--color-text-subtle)] py-12
-                ${index > 1 ? 'text-right' : 'text-left'}
+      {status === 'success' && collections && collections.length > 0 && (
+        <>
+          <table className={`${styles.table} relative`}>
+            <thead className='sticky top-119 bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
+              <tr className='h-fit'>
+                {T_HEADER.map((item, index) => (
+                  <th
+                    key={index}
+                    className={`font-caption-medium text-[var(--color-text-subtle)] py-12
+                ${index > 0 ? 'text-right' : 'text-left'}
                 ${item.sort && 'cursor-pointer'}
                 ${index === 0 && 'pl-16'}
                 ${index === T_HEADER.length - 1 && 'pr-16'}
                 `}
-                      onClick={() =>
-                        item.sort && handleClickSortButton(item.sort as TSort)
-                      }
-                    >
-                      <p className={index > 1 ? styles.pTd : ''}>{item.name}</p>
-                    </th>
-                  ))}
-                  {/* <th className='text-right'>
+                    onClick={() =>
+                      item.sort && handleClickSortButton(item.sort as TSort)
+                    }
+                  >
+                    <p className={index > 1 ? styles.pTd : ''}>{item.name}</p>
+                  </th>
+                ))}
+                {/* <th className='text-right'>
               <p className='ml-40'> </p>
             </th> */}
-                </tr>
-              </thead>
-              <tbody className='h-full z-0'>
-                {collections?.map((page, pageIndex) => {
-                  return page.data?.map((row, index) => {
-                    const valuationType = selectedValueType(row.valuation);
-                    const acquisitionPrice = parseFloatPrice(
-                      row.acquisitionPrice?.[currency]
-                    );
-                    const costBasis =
-                      parseFloatPrice(row.acquisitionPrice?.[currency]) +
-                      parseFloatPrice(row.gasFee?.[currency]);
-                    const unrealizedGL =
-                      parseFloatPrice(row.nav[currency].amount) -
-                      parseFloatPrice(row.acquisitionPrice?.[currency]);
-                    return (
-                      <tr
-                        key={`${pageIndex}-${index}}`}
-                        className={`font-caption-regular cursor-pointer ${styles.tableRow}`}
-                        onClick={() => handleClickCollection(row)}
-                      >
-                        <td className='flex items-center h-full'>
-                          <Ethereum
-                            width={24}
-                            height={24}
-                            className='ml-16 w-24 h-24 rounded-full flex items-center justify-center border-1 border-[var(--color-border-main)]'
-                          />
-                        </td>
-                        <td>
-                          <article className='flex items-center'>
-                            {row.collection.imageUrl ? (
-                              <div className='w-24 h-24 rounded-full overflow-hidden border-1 border-[var(--color-border-main)] mr-12 '>
-                                <img
-                                  src={row.collection.imageUrl}
-                                  className='rounded-full w-full object-center'
-                                  alt={
-                                    row.collection.name ||
-                                    row.collection.assetContract
-                                  }
-                                />
-                              </div>
-                            ) : (
-                              <div className='w-24 h-24 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center rounded-full mr-12 border-1'>
-                                <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)] ' />
-                              </div>
-                            )}
+              </tr>
+            </thead>
+            <tbody className='h-full z-0'>
+              {collections?.map((row, index) => {
+                const valuationType = selectedValueType(row.valuation);
+                const acquisitionPrice = parseFloatPrice(
+                  row.acquisitionPrice?.[currency]
+                );
+                const costBasis =
+                  parseFloatPrice(row.acquisitionPrice?.[currency]) +
+                  parseFloatPrice(row.gasFee?.[currency]);
+                const unrealizedGL =
+                  parseFloatPrice(row.nav[currency].amount) -
+                  parseFloatPrice(row.acquisitionPrice?.[currency]);
+                return (
+                  <tr
+                    key={`${index}`}
+                    className={`font-caption-regular cursor-pointer ${styles.tableRow}`}
+                    onClick={() => handleClickCollection(row)}
+                  >
+                    {/* <td className='flex items-center h-full'>
+                      <Ethereum
+                        width={24}
+                        height={24}
+                        className='ml-16 w-24 h-24 rounded-full flex items-center justify-center border-1 border-[var(--color-border-main)]'
+                      />
+                    </td> */}
+                    <td className='pl-16'>
+                      <article className='flex items-center'>
+                        {row.collection.imageUrl ? (
+                          <div className='w-24 h-24 rounded-full overflow-hidden border-1 border-[var(--color-border-main)] mr-12 '>
+                            <img
+                              src={row.collection.imageUrl}
+                              className='rounded-full w-full object-center'
+                              alt={
+                                row.collection.name ||
+                                row.collection.assetContract
+                              }
+                            />
+                          </div>
+                        ) : (
+                          <div className='w-24 h-24 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center rounded-full mr-12 border-1'>
+                            <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)] ' />
+                          </div>
+                        )}
 
-                            <p className='font-caption-medium'>
-                              {row.collection.name ||
-                                shortenAddress(row.collection.assetContract)}
-                            </p>
-                          </article>
-                        </td>
-                        <td className='text-right'>
-                          <p className={styles.pTd}>{parseInt(row.amount)}</p>
-                        </td>
-                        <td className='text-right'>
-                          <p className={styles.pTd}>
-                            {priceType === 'costBasis'
-                              ? formatCurrency(costBasis.toString(), currency)
-                              : formatCurrency(
-                                  row.acquisitionPrice?.[currency] || null,
-                                  currency
-                                )}
-                          </p>
-                          {priceType === 'costBasis' && (
-                            <Tooltip
-                              content={formatCurrencyOriginal(
-                                row.gasFee?.[currency] || '0',
-                                currency
-                              )}
-                              placement='bottom-end'
-                              className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
-                            >
-                              <p
-                                className={`${styles.pTd} text-[var(--color-text-brand)]`}
-                              >
-                                {`${formatGasFee(
-                                  row.gasFee?.[currency] || null,
-                                  currency
-                                )} `}
-                              </p>
-                            </Tooltip>
+                        <p className='font-caption-medium'>
+                          {row.collection.name ||
+                            shortenAddress(row.collection.assetContract)}
+                        </p>
+                      </article>
+                    </td>
+                    <td className='text-right'>
+                      <p className={styles.pTd}>{parseInt(row.amount)}</p>
+                    </td>
+                    <td className='text-right'>
+                      <p className={styles.pTd}>
+                        {priceType === 'costBasis'
+                          ? formatCurrency(costBasis.toString(), currency)
+                          : formatCurrency(
+                              acquisitionPrice.toString(),
+                              currency
+                            )}
+                      </p>
+                      {priceType === 'costBasis' && (
+                        <Tooltip
+                          content={formatCurrencyOriginal(
+                            row.gasFee?.[currency] || '0',
+                            currency
                           )}
-                        </td>
-                        {/* coast basis */}
-                        {/**
+                          placement='bottom-end'
+                          className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                        >
+                          <p
+                            className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                          >
+                            {`${formatGasFee(
+                              row.gasFee?.[currency] || null,
+                              currency
+                            )} `}
+                          </p>
+                        </Tooltip>
+                      )}
+                    </td>
+                    {/* coast basis */}
+                    {/**
                    * 
                    * sprint 1
                    * 
@@ -280,9 +297,9 @@ const InventoryCollectionTable = () => {
                       )}
                     </td>
                   )} */}
-                        {/* valuation type */}
-                        <td className='text-right'>
-                          {/**
+                    {/* valuation type */}
+                    <td className='text-right'>
+                      {/**
                      * 
                      * sprint 1
                      * 
@@ -295,81 +312,76 @@ const InventoryCollectionTable = () => {
                     ) : (
                       <p>no available price</p>
                     )} */}
-                          <p>{ValuationTypes(row.valuation)}</p>
-                        </td>
+                      <p>{ValuationTypes(row.valuation)}</p>
+                    </td>
 
-                        {/* realtime nav */}
-                        <td className='text-right'>
-                          <p className={`${styles.pTd}`}>
-                            {formatCurrency(
-                              row.nav[currency].amount || null,
+                    {/* realtime nav */}
+                    <td className='text-right'>
+                      <p className={`${styles.pTd}`}>
+                        {formatCurrency(
+                          row.nav[currency].amount || null,
+                          currency
+                        ) || '-'}
+                      </p>
+                    </td>
+                    {/* unrealized G&L */}
+                    <td className='text-right'>
+                      <p
+                        className={`${styles.pTd} ${
+                          isPlus(unrealizedGL)
+                            ? 'text-[var(--color-text-success)]'
+                            : 'text-[var(--color-text-danger)]'
+                        }`}
+                      >
+                        {priceType === 'costBasis'
+                          ? formatCurrency(
+                              (
+                                unrealizedGL -
+                                parseFloatPrice(row.gasFee?.[currency])
+                              ).toString(),
                               currency
-                            ) || '-'}
-                          </p>
-                        </td>
-                        {/* unrealized G&L */}
-                        <td className='text-right'>
-                          <p
-                            className={`${styles.pTd} ${
-                              isPlus(unrealizedGL)
-                                ? 'text-[var(--color-text-success)]'
-                                : 'text-[var(--color-text-danger)]'
-                            }`}
-                          >
-                            {priceType === 'costBasis'
-                              ? formatCurrency(
-                                  (
-                                    unrealizedGL -
-                                    parseFloatPrice(row.gasFee?.[currency])
-                                  ).toString(),
-                                  currency
-                                )
-                              : formatCurrency(
-                                  unrealizedGL.toString(),
-                                  currency
-                                )}
-                          </p>
-                        </td>
-                        {/* unrealized ROI */}
-                        <td className='text-right'>
-                          {acquisitionPrice == 0 ? (
-                            <Tooltip
-                              content={UNABLE_TO_CALCULATE_ROI}
-                              className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
-                            >
-                              <div className='w-full flex justify-end text-[var(--color-icon-subtle)] pr-16'>
-                                <Info />
-                              </div>
-                            </Tooltip>
-                          ) : (
-                            <p
-                              className={`${styles.pTd} ${
-                                isPlus(unrealizedGL)
-                                  ? 'text-[var(--color-text-success)]'
-                                  : 'text-[var(--color-text-danger)]'
-                              } pr-16`}
-                            >
-                              {priceType === 'costBasis'
-                                ? formatPercent(
-                                    (
-                                      (unrealizedGL -
-                                        parseFloatPrice(
-                                          row.gasFee?.[currency]
-                                        )) /
-                                      costBasis
-                                    ).toString()
-                                  )
-                                : formatPercent(
-                                    (
-                                      unrealizedGL /
-                                      (costBasis -
-                                        parseFloatPrice(row.gasFee?.[currency]))
-                                    ).toString()
-                                  )}
-                            </p>
-                          )}
-                        </td>
-                        {/**
+                            )
+                          : formatCurrency(unrealizedGL.toString(), currency)}
+                      </p>
+                    </td>
+                    {/* unrealized ROI */}
+                    <td className='text-right'>
+                      {acquisitionPrice == 0 ? (
+                        <Tooltip
+                          content={UNABLE_TO_CALCULATE_ROI}
+                          className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                        >
+                          <div className='w-full flex justify-end text-[var(--color-icon-subtle)] pr-16'>
+                            <Info />
+                          </div>
+                        </Tooltip>
+                      ) : (
+                        <p
+                          className={`${styles.pTd} ${
+                            isPlus(unrealizedGL)
+                              ? 'text-[var(--color-text-success)]'
+                              : 'text-[var(--color-text-danger)]'
+                          } pr-16`}
+                        >
+                          {priceType === 'costBasis'
+                            ? formatPercent(
+                                (
+                                  (unrealizedGL -
+                                    parseFloatPrice(row.gasFee?.[currency])) /
+                                  costBasis
+                                ).toString()
+                              )
+                            : formatPercent(
+                                (
+                                  unrealizedGL /
+                                  (costBasis -
+                                    parseFloatPrice(row.gasFee?.[currency]))
+                                ).toString()
+                              )}
+                        </p>
+                      )}
+                    </td>
+                    {/**
                    * 
                    * sprint 1
                    * 
@@ -410,15 +422,14 @@ const InventoryCollectionTable = () => {
                     </div>
                   </td>
                   */}
-                      </tr>
-                    );
-                  });
-                })}
-              </tbody>
-            </table>
-            <div ref={ref} />
-          </>
-        )}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <div ref={ref} />
+        </>
+      )}
     </section>
   );
 };

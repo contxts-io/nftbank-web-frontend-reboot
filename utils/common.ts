@@ -12,6 +12,7 @@ export function formatDate(date:  Date): string  {
 }
 export function formatCurrency(amount: string | null, currency: TCurrency): string {
   if (!amount) return '-';
+  if (amount === '-') return '-';
   if (amount === 'infinity')
     return '-';
     // return '∞';
@@ -150,11 +151,11 @@ type MappingTable = {
 }
 export const mappingConstants = (value: string): string => {
   const mappingTable: MappingTable = {
-    'cfloor_price_eth' : 'Floor',
-    'estimated_price_eth' : 'Estimated',
+    'floor_price' : 'Floor',
+    'estimated_price' : 'Estimated',
     'TRAIT_FLOOR_PRICE': 'Trait Floor',
-    'avg30_price_eth':'30d Average',
-    'avg90_price_eth': '90d Average',
+    'avg_30_price':'30d Average',
+    'avg_90_price': '90d Average',
     // 'PREMIUM_ESTIMATED_PRICE': 'Premium Estimated',
   }
   return mappingTable[value] || value;
