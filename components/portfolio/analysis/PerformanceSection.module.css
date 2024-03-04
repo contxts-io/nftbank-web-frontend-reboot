@@ -17,16 +17,16 @@
   @apply text-[var(--color-text-subtle)];
 }
 .title {
-  @apply gap-12 flex items-center;
+  @apply gap-12 md:flex items-center hidden;
 }
 .tableWrapper {
-  @apply flex flex-col w-full min-h-115;
+  @apply flex flex-col min-h-115 w-full overflow-x-scroll;
 }
 .dataSection {
   @apply w-full;
 }
 .table {
-  @apply w-full table-fixed;
+  @apply table-fixed w-[800px] md:w-full;
 }
 .table thead {
   @apply border-b-1 border-[var(--color-border-disabled)];
