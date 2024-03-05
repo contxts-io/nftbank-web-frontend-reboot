@@ -17,7 +17,6 @@ export function useInventoryValue(searchParam: BasicParam | null) {
     },
     {
       keepPreviousData: true,
-      refetchInterval: 10000,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
