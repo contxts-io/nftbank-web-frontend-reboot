@@ -122,7 +122,7 @@ const RealizedGainAndLoss = () => {
     setRequestParams((prev) => {
       return {
         ...prev,
-        page: 0,
+        page: 1,
         year: 'all',
       };
     });
@@ -140,7 +140,7 @@ const RealizedGainAndLoss = () => {
     setRequestParams((prev) => {
       return {
         ...prev,
-        page: 0,
+        page: 1,
         year: selectedYear.find((item) => item.selected)?.value || 'all',
       };
     });
