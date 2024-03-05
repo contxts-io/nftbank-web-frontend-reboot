@@ -30,7 +30,7 @@ const InventoryCollectionSettings = () => {
     (value.length >= 3 || value.length == 0) &&
       setInventoryCollection({
         ...inventoryCollection,
-        page: 0,
+        page: 1,
         searchCollection: e.target.value,
       });
   };

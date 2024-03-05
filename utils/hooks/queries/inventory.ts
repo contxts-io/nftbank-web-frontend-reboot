@@ -133,7 +133,7 @@ export const useInventoryItemInfinite = (requestParam: ItemParam) => {
       return undefined;
     },
     enabled: requestParam.walletAddress !== '',
-    keepPreviousData: true,
+    // keepPreviousData: true,
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,
@@ -164,7 +164,7 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
-    keepPreviousData: true,
+    // keepPreviousData: true,
     enabled: requestParam.walletAddress !== '',
     staleTime: Infinity,
     cacheTime: Infinity,
