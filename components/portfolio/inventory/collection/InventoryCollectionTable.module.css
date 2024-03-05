@@ -1,5 +1,5 @@
 .container {
-  @apply w-full;
+  @apply w-full overflow-x-scroll;
 }
 .table {
   @apply w-full border-y-1 border-[var(--color-border-main)] table-auto;

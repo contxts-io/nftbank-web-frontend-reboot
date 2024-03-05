@@ -159,7 +159,7 @@ const InventoryCollectionTable = () => {
       {status === 'success' && collections && collections.length > 0 && (
         <>
           <table className={`${styles.table} relative`}>
-            <thead className='sticky top-119 bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
+            <thead className='sticky md:top-119  bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
               <tr className='h-fit'>
                 {T_HEADER.map((item, index) => (
                   <th
