@@ -1,5 +1,5 @@
 .container {
-  @apply w-full overflow-x-scroll;
+  @apply w-full overflow-x-scroll md:overflow-visible;
 }
 .table {
   @apply w-full border-y-1 border-[var(--color-border-main)] table-auto;
