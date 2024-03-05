@@ -30,7 +30,7 @@ const InventoryCollectionSettings = () => {
     (value.length >= 3 || value.length == 0) &&
       setInventoryCollection({
         ...inventoryCollection,
-        page: 0,
+        page: 1,
         searchCollection: e.target.value,
       });
   };
@@ -54,49 +54,67 @@ const InventoryCollectionSettings = () => {
 
   return (
     <section className={`${styles.container}`}>
-      <p className='font-subtitle01-medium text-[var(--color-text-main)] my-24'>
-        Collection
-      </p>
-      <div className='flex items-center gap-x-12'>
-        <div
-          className={`${styles.inputContainer} ${
-            isFocused ? styles.focused : ''
-          } `}
-        >
-          <MagnifyingGlass
-            className={`${styles.icon}`}
-            width={16}
-            height={16}
-          />
-          <input
-            type='text'
-            placeholder={'Search collection'}
-            className={`${styles.textInput} font-caption-regular`}
-            onChange={handleInputText}
-            value={searchText}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-          />
-        </div>
-        <div className='flex items-center'>
-          <div className='flex mr-24'>
-            <p className={`font-button03-medium ${styles.pSetting} mr-8`}>
-              Include Gas fee
-            </p>
-            <ToggleButton
-              onClick={handleTogglePriceType}
-              checked={priceType === 'costBasis'}
-              id={'collection_gas_fee_toggle'}
+      <div className='w-full flex items-center'>
+        <p className='font-subtitle01-medium text-[var(--color-text-main)]'>
+          Collection
+        </p>
+        <div className='flex items-center gap-12 ml-auto'>
+          <div
+            className={`${styles.inputContainer} ${
+              isFocused ? styles.focused : ''
+            } hidden md:flex`}
+          >
+            <MagnifyingGlass
+              className={`${styles.icon}`}
+              width={16}
+              height={16}
+            />
+            <input
+              type='text'
+              placeholder={'Search collection'}
+              className={`${styles.textInput} font-caption-regular`}
+              onChange={handleInputText}
+              value={searchText}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
             />
           </div>
-          {/* <Button
+          <div className='flex items-center'>
+            <div className='flex mr-24'>
+              <p className={`font-button03-medium ${styles.pSetting} mr-8`}>
+                Include Gas fee
+              </p>
+              <ToggleButton
+                onClick={handleTogglePriceType}
+                checked={priceType === 'costBasis'}
+                id={'collection_gas_fee_toggle'}
+              />
+            </div>
+            {/* <Button
           id={'/portfolio/inventory/collection/spam'}
           onClick={() => handleModalOpen()}
         >
           <Gear className='mr-4' />
           <p>Spam Settings</p>
         </Button> */}
+          </div>
         </div>
+      </div>
+      <div
+        className={`${styles.inputContainer} ${
+          isFocused ? styles.focused : ''
+        } md:hidden flex mt-17`}
+      >
+        <MagnifyingGlass className={`${styles.icon}`} width={16} height={16} />
+        <input
+          type='text'
+          placeholder={'Search collection'}
+          className={`${styles.textInput} font-caption-regular`}
+          onChange={handleInputText}
+          value={searchText}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+        />
       </div>
       <ReactModal
         isOpen={showModal}

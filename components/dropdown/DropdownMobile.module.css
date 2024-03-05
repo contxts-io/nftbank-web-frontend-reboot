@@ -10,8 +10,11 @@
 .dropdownMenu p {
   @apply text-[var(--color-text-subtle)];
 }
-.dropdownMenu li:first-child {
+.dropdownMenu li {
   @apply border-b-1 border-[var(--color-border-main)] !important;
+}
+.dropdownMenu li:last-child {
+  @apply border-b-0 !important;
 }
 .periodButtons button {
   @apply border-0;

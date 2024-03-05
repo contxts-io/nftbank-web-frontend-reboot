@@ -7,3 +7,8 @@ export type PagingCursor = {
   nextCursor: string | null,
   hasNext: boolean,
 }
+export type FreshnessStatus = 'CURRENT' | 'ALL'
+export type DataFreshness = {
+  status: FreshnessStatus,
+  processedAt: string,
+}

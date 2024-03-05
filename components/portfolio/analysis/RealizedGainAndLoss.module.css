@@ -2,13 +2,16 @@
   @apply mt-20 border-1 border-[var(--color-border-main)] p-20;
 }
 .title {
-  @apply gap-12 flex items-center;
+  @apply gap-12 flex flex-col items-start md:flex-row md:items-center md:justify-between;
 }
 .tableWrapper {
-  @apply mt-20 w-full max-h-[338px] overflow-scroll;
+  @apply mt-20 w-full max-h-[338px] overflow-x-scroll;
 }
 .table {
-  @apply w-full table-auto;
+  @apply table-auto md:w-full min-w-[800px];
+}
+.table p {
+  @apply mr-8;
 }
 .table thead {
   @apply border-t-1 border-b-1 border-[var(--color-border-main)] h-40;

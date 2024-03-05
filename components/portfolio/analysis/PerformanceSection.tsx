@@ -20,7 +20,8 @@ import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
 import Info from '@/public/icon/Info';
 import NoData from '@/components/error/NoData';
 import FailToLoad from '@/components/error/FailToLoad';
-import { useDispatchPerformance } from '@/utils/hooks/queries/dispatch';
+import DropdownMobile from '@/components/dropdown/DropdownMobile';
+
 const THEAD = [
   'Jan',
   'Feb',
@@ -45,7 +46,8 @@ const PerformanceSection = () => {
   const currency = useAtomValue(currencyAtom);
   const networkId = useAtomValue(networkIdAtom);
   const portfolioUser = { ...useAtomValue(portfolioUserAtom), networkId };
-  const [isPolling, setIsPolling] = useState<boolean>(true);
+  const [isOpenType, setIsOpenType] = useState(false);
+  const [isOpenYears, setIsOpenYears] = useState(false);
   const [requestParam, setRequestParam] = useState<{
     year: number;
     gnlChartType: 'Overall' | 'Realized' | 'Unrealized';
@@ -53,38 +55,27 @@ const PerformanceSection = () => {
     year: 2023,
     gnlChartType: 'Overall',
   });
-  const { data: dispatchPerformance, status: dispatchStatus } =
-    useDispatchPerformance(portfolioUser?.walletAddress || '');
+
   const { data: performanceChart, status: statusPerformanceChart } =
-    usePerformanceChart(
-      {
-        ...portfolioUser,
-        ...requestParam,
-        taskId: dispatchPerformance?.taskId,
-        gnlChartType: requestParam.gnlChartType.toLowerCase() as
-          | 'overall'
-          | 'realized'
-          | 'unrealized',
-      },
-      isPolling
-    );
+    usePerformanceChart({
+      ...portfolioUser,
+      ...requestParam,
+      gnlChartType: requestParam.gnlChartType.toLowerCase() as
+        | 'overall'
+        | 'realized'
+        | 'unrealized',
+    });
   const { data: performanceAnnual, status: statusPerformanceAnnual } =
-    usePerformanceChartAnnual(
-      {
-        ...portfolioUser,
-        ...requestParam,
-        taskId: dispatchPerformance?.taskId,
-        gnlChartType: requestParam.gnlChartType.toLowerCase() as
-          | 'overall'
-          | 'realized'
-          | 'unrealized',
-      },
-      isPolling
-    );
+    usePerformanceChartAnnual({
+      ...portfolioUser,
+      ...requestParam,
+      gnlChartType: requestParam.gnlChartType.toLowerCase() as
+        | 'overall'
+        | 'realized'
+        | 'unrealized',
+    });
   const [total, setTotal] = useState(0);
-  useEffect(() => {
-    setIsPolling(true);
-  }, []);
+
   useEffect(() => {
     let _total = 0;
     performanceChart &&
@@ -98,24 +89,13 @@ const PerformanceSection = () => {
       });
     setTotal(_total);
   }, [performanceChart, currency]);
-  useEffect(() => {
-    statusPerformanceChart === 'success' &&
-      performanceChart.data &&
-      setIsPolling(false);
-  }, [statusPerformanceChart, performanceChart]);
-  useEffect(() => {
-    setIsPolling(true);
-  }, [requestParam]);
-  useEffect(() => {
-    console.log('isPolling', isPolling);
-  }, [isPolling]);
+
   return (
     <section className={styles.container}>
       <div className={styles.title}>
         <p className='font-subtitle02-bold text-[var(--color-text-main)]'>
           Performance
         </p>
-
         <Dropdown
           id='performance_chart_type_filter'
           className={styles.dropdown}
@@ -148,6 +128,57 @@ const PerformanceSection = () => {
             })
           }
         />
+      </div>
+      <div className='md:hidden flex items-center gap-12'>
+        <p className='font-subtitle02-bold text-[var(--color-text-main)]'>
+          Performance
+        </p>
+        <div className='ml-auto flex items-center gap-x-12'>
+          <DropdownMobile
+            open={isOpenType}
+            setOpen={setIsOpenType}
+            list={GNL_CHART_TYPE.map((item) => {
+              return {
+                name: item.toString(),
+                value: item.toString(),
+              };
+            })}
+            value={
+              GNL_CHART_TYPE.find(
+                (item) => item === requestParam.gnlChartType
+              ) || 'Overall'
+            }
+            handleClickItem={(item) =>
+              setRequestParam({
+                ...requestParam,
+                gnlChartType: item.value as
+                  | 'Overall'
+                  | 'Realized'
+                  | 'Unrealized',
+              })
+            }
+          />
+          <DropdownMobile
+            open={isOpenYears}
+            setOpen={setIsOpenYears}
+            list={YEARS.map((item) => {
+              return {
+                name: item.toString(),
+                value: item.toString(),
+              };
+            })}
+            value={
+              YEARS.find((item) => item === requestParam.year)?.toString() ||
+              '2023'
+            }
+            handleClickItem={(item) =>
+              setRequestParam({
+                ...requestParam,
+                year: parseInt(item.value),
+              })
+            }
+          />
+        </div>
       </div>
       {performanceChart?.data ? (
         performanceChart?.data.length === 0 ? (

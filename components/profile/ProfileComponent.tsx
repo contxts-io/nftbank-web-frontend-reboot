@@ -49,6 +49,7 @@ const ProfileComponent = () => {
   useEffect(() => {
     setIsClient(true);
   }, []);
+
   useEffect(() => {
     path && setNickname(path.split('nickname/')[1] || null);
     path && setWalletAddress(path.split('walletAddress/')[1] || null);
@@ -213,7 +214,7 @@ const ProfileComponent = () => {
               )}
               className='font-header03-bold mb-4'
             />
-            <div className='font-caption-medium flex'>
+            {/* <div className='font-caption-medium flex'>
               <div
                 className={`px-8 py-4 bg-[var(--color-background-danger)] ${
                   isPlus(inventoryValue?.value[currency].difference.amount || 0)
@@ -244,7 +245,7 @@ const ProfileComponent = () => {
               <div className='px-8 py-4 bg-[var(--color-elevation-surface-raised)]'>
                 <p className='text-[var(--color-text-main)]'>24h</p>
               </div>
-            </div>
+            </div> */}
           </div>
         </section>
       ) : (

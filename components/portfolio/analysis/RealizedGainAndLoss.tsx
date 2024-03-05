@@ -13,7 +13,10 @@ import {
   TStatus,
   TYear,
 } from '@/constants/period';
-import { useInventoryRealizedTokensInfinite } from '@/utils/hooks/queries/inventory';
+import {
+  useInventoryRealizedTokens,
+  useInventoryRealizedTokensInfinite,
+} from '@/utils/hooks/queries/inventory';
 import { useMe } from '@/utils/hooks/queries/auth';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { useAtom, useAtomValue } from 'jotai';
@@ -30,10 +33,14 @@ import {
 import { portfolioUserAtom } from '@/store/portfolio';
 import Info from '@/public/icon/Info';
 import { Tooltip } from '@nextui-org/react';
-import { LATEST_ACQUISITION_DATE } from '@/utils/messages';
+import {
+  LATEST_ACQUISITION_DATE,
+  UNABLE_TO_CALCULATE_ROI,
+} from '@/utils/messages';
 import ToggleButton from '@/components/buttons/ToggleButton';
 import { useInView } from 'react-intersection-observer';
 import NoData from '@/components/error/NoData';
+import DropdownMobile from '@/components/dropdown/DropdownMobile';
 const THEAD = {
   costBasis: [
     { key: 'item', value: 'Item' },
@@ -60,10 +67,12 @@ const THEAD = {
 };
 type _Year = TYear & { selected: boolean };
 type _Period = TPeriod & { selected: boolean };
+const YEARS: (number | string)[] = ['ALL', 2024, 2023];
 const RealizedGainAndLoss = () => {
   const currency = useAtomValue(currencyAtom);
   const portfolioUser = useAtomValue(portfolioUserAtom);
   const [includeGasUsed, setIncludeGasUsed] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { ref, inView } = useInView();
   const [requestParams, setRequestParams] = useAtom(
     analysisGainAndLossParamAtom
@@ -76,6 +85,10 @@ const RealizedGainAndLoss = () => {
     ...portfolioUser,
     ...requestParams,
     page: 0,
+  });
+  const { data: realizedTokenListFresh } = useInventoryRealizedTokens({
+    ...portfolioUser,
+    ...requestParams,
   });
   const [selectedStatus, setSelectedStatus] = useState<_Period[]>(
     PERIOD_LIST.map((item) => ({
@@ -134,29 +147,46 @@ const RealizedGainAndLoss = () => {
   }, [selectedStatus, selectedYear]);
 
   const mergePosts = useMemo(() => {
-    return realizedTokenList?.pages.flatMap((page) => page.data);
+    return (
+      realizedTokenList?.pages
+        .flatMap((page) => page.data)
+        .map((item) => {
+          const _item = realizedTokenListFresh?.data.find(
+            (itemFresh) =>
+              itemFresh.collection.assetContract ===
+                item.collection.assetContract &&
+              itemFresh.token.tokenId === item.token.tokenId &&
+              itemFresh.soldDate === item.soldDate
+          );
+          return { ...item, ..._item };
+        }) || []
+    );
   }, [realizedTokenList?.pages, requestParams, status]);
 
   return (
     <section className={styles.container}>
       <div className={styles.title}>
-        <p className='font-subtitle02-bold text-[var(--color-text-main)]'>
-          Realized Gain & Loss
-        </p>
-        <Dropdown
-          id='realized_gain_loss_period_filter'
-          list={selectedYear.map((item) => item.name)}
-          selected={selectedYear.find((item) => item.selected)?.name || '2023'}
-          onClick={(name) => handleChangeYear(name)}
-          className='w-80'
-        />
+        <div className='flex items-center gap-x-12'>
+          <p className='font-subtitle02-bold text-[var(--color-text-main)]'>
+            Realized Gain & Loss
+          </p>
+          <Dropdown
+            className='w-80 hidden md:flex'
+            id='realized_gain_loss_period_filter'
+            list={selectedYear.map((item) => item.name)}
+            selected={
+              selectedYear.find((item) => item.selected)?.name || '2023'
+            }
+            onClick={(name) => handleChangeYear(name)}
+          />
+        </div>
         {/* <Dropdown
           list={selectedStatus.map((item) => item.name)}
           selected={selectedStatus.find((item) => item.selected)?.name || 'All'}
           onClick={(name) => handleChangeStatus(name)}
           className='w-65'
         /> */}
-        <div className='ml-auto flex px-12'>
+        <div className='flex items-center w-full md:w-fit'>
           <span className='font-button03-medium text-[var(--color-text-subtle)] mr-8'>
             Include Gas fee
           </span>
@@ -165,168 +195,236 @@ const RealizedGainAndLoss = () => {
             checked={includeGasUsed === true}
             id={'realized_gain_loss_gas_fee_toggle'}
           />
+          <div className='md:hidden ml-auto'>
+            <DropdownMobile
+              open={isOpen}
+              setOpen={setIsOpen}
+              list={YEARS.map((item) => {
+                return {
+                  name: item.toString(),
+                  value: item.toString(),
+                };
+              })}
+              value={selectedYear.find((item) => item.selected)?.name || '2023'}
+              handleClickItem={(item) => handleChangeYear(item.name)}
+            />
+          </div>
         </div>
       </div>
       <div className={styles.tableWrapper}>
-        <table className={styles.table}>
-          <thead className='font-caption-regular'>
-            <tr>
-              {THEAD[
-                includeGasUsed === true ? 'costBasis' : 'acquisitionPrice'
-              ].map((item, index) => (
-                <th
-                  key={index}
-                  className={index === 0 ? 'text-left' : 'text-right'}
-                >
-                  {item.tooltip ? (
-                    <div className='w-full flex items-center justify-end text-[var(--color-icon-subtle)]'>
-                      <p className='mr-4'>{item.value}</p>
-                      <Tooltip
-                        key={'realized-tooltip'}
-                        placement={'bottom'}
-                        content={LATEST_ACQUISITION_DATE}
-                        className='cursor-pointer max-w-[228px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
-                      >
-                        <div className='flex justify-center text-[var(--color-icon-subtle)]'>
-                          <Info />
-                        </div>
-                      </Tooltip>
-                    </div>
-                  ) : (
-                    <p>{item.value}</p>
-                  )}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className='font-caption-medium'>
-            {mergePosts &&
-              mergePosts?.map((item, index) => {
-                const acquisitionPrice = parseFloatPrice(
-                  item.acquisitionPrice?.[currency]
-                );
-                const gasFee = parseFloatPrice(item.gasFee?.[currency]);
-                const proceedGasFee = parseFloatPrice(
-                  item.proceedGasFee?.[currency]
-                );
-                const costBasis = acquisitionPrice + gasFee;
-                const proceed = parseFloatPrice(item.proceed[currency]);
-                const realizedGainAndLoss = proceed - acquisitionPrice;
-                const isPlus = realizedGainAndLoss > 0;
-                const isMinus = realizedGainAndLoss < 0;
-                const isZero = realizedGainAndLoss === 0;
-                return (
-                  <tr
-                    key={`realized-${index}`}
-                    className='text-[var(--color-text-subtle)] hover:text-[var(--color-text-main)]'
+        {status === 'loading' && (
+          <SkeletonLoader className='w-full h-[224px]' />
+        )}
+        {status !== 'loading' && (
+          <table className={styles.table}>
+            <thead className='font-caption-regular'>
+              <tr>
+                {THEAD[
+                  includeGasUsed === true ? 'costBasis' : 'acquisitionPrice'
+                ].map((item, index) => (
+                  <th
+                    key={index}
+                    className={index === 0 ? 'text-left' : 'text-right'}
                   >
-                    <td className='text-left'>
-                      <div className='flex items-center gap-x-8'>
-                        <div className='w-32 h-32 flex items-center justify-center border-1 border-[var(--color-border-main)]'>
-                          <Image
-                            src={`${
-                              item.token.imageUrl || '/icon/nftbank_icon.svg'
-                            }`}
-                            width={32}
-                            height={32}
-                            alt={`${item.collection.name}-${item.token.tokenId}`}
-                          />
-                        </div>
-                        <div>
-                          <p className='text-[var(--color-text-main)]'>
-                            {item.token.tokenId}
-                          </p>
-                          <p className='text-[var(--color-text-subtle)]'>
-                            {item.collection.name}
-                          </p>
-                        </div>
+                    {item.tooltip ? (
+                      <div className='w-full flex items-center justify-end text-[var(--color-icon-subtle)]'>
+                        <p className='mr-4'>{item.value}</p>
+                        <Tooltip
+                          key={'realized-tooltip'}
+                          placement={'bottom'}
+                          content={LATEST_ACQUISITION_DATE}
+                          className='cursor-pointer max-w-[228px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                        >
+                          <div className='flex justify-center text-[var(--color-icon-subtle)]'>
+                            <Info />
+                          </div>
+                        </Tooltip>
                       </div>
-                    </td>
-                    <td className='text-right'>
-                      <p className='text-[var(--color-text-main)]'>
-                        {item.amount}
-                      </p>
-                    </td>
-                    <td className='text-right'>
-                      <p className='text-[var(--color-text-main)]'>
-                        {/* {formatCurrency(
+                    ) : (
+                      <p>{item.value}</p>
+                    )}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className='font-caption-medium'>
+              {mergePosts &&
+                mergePosts?.map((item, index) => {
+                  const acquisitionPrice = parseFloatPrice(
+                    item.acquisitionPrice?.[currency]
+                  );
+                  const gasFee = parseFloatPrice(item.gasFee?.[currency]);
+                  const proceedGasFee = parseFloatPrice(
+                    item.proceedGasFee?.[currency]
+                  );
+                  const costBasis = acquisitionPrice + gasFee;
+                  const proceed = parseFloatPrice(item.proceed[currency]);
+                  const realizedGainAndLoss = proceed - acquisitionPrice;
+                  const realizedROI =
+                    acquisitionPrice === 0
+                      ? Infinity
+                      : includeGasUsed
+                      ? ((realizedGainAndLoss - gasFee - proceedGasFee) /
+                          costBasis) *
+                        100
+                      : (realizedGainAndLoss / acquisitionPrice) * 100;
+                  const isPlus = realizedGainAndLoss > 0;
+                  const isMinus = realizedGainAndLoss < 0;
+                  const isZero = realizedGainAndLoss === 0;
+                  return (
+                    <tr
+                      key={`realized-${index}`}
+                      className='text-[var(--color-text-subtle)] hover:text-[var(--color-text-main)]'
+                    >
+                      <td className='text-left'>
+                        <div className='flex items-center gap-x-8'>
+                          <div className='w-32 h-32 flex items-center justify-center border-1 border-[var(--color-border-main)]'>
+                            <Image
+                              src={`${
+                                item.token.imageUrl || '/icon/nftbank_icon.svg'
+                              }`}
+                              width={32}
+                              height={32}
+                              alt={`${item.collection.name}-${item.token.tokenId}`}
+                            />
+                          </div>
+                          <div>
+                            <p className='text-[var(--color-text-main)]'>
+                              {item.token.tokenId}
+                            </p>
+                            <p className='text-[var(--color-text-subtle)]'>
+                              {item.collection.name}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className='text-right'>
+                        <p className='text-[var(--color-text-main)]'>
+                          {item.amount}
+                        </p>
+                      </td>
+                      <td className='text-right'>
+                        <p className='text-[var(--color-text-main)]'>
+                          {/* {formatCurrency(
                           item.costBasis[currency] || '0',
                           currency
                         )} */}
-                        {includeGasUsed
-                          ? formatCurrency(costBasis.toString(), currency)
-                          : formatCurrency(
-                              acquisitionPrice.toString(),
-                              currency
-                            )}
-                      </p>
-                      {includeGasUsed && (
-                        <p className={`text-[var(--color-text-brand)] mt-4`}>
-                          {`+${parseFloatPrice(gasFee.toFixed(3))}`}
+                          {includeGasUsed
+                            ? formatCurrency(costBasis.toString(), currency)
+                            : formatCurrency(
+                                acquisitionPrice.toString(),
+                                currency
+                              )}
                         </p>
-                      )}
-                    </td>
-                    <td className='text-right'>
-                      <p className='text-[var(--color-text-main)]'>
-                        {includeGasUsed
-                          ? formatCurrency(
-                              (proceed - proceedGasFee).toString(),
+                        {includeGasUsed && (
+                          <Tooltip
+                            content={formatCurrencyOriginal(
+                              gasFee.toString(),
                               currency
-                            )
-                          : formatCurrency(proceed.toString(), currency)}
-                      </p>
-                      {includeGasUsed && (
-                        <Tooltip
-                          content={formatCurrencyOriginal(
-                            proceedGasFee.toString(),
-                            currency
-                          )}
-                          placement='bottom-end'
-                          className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                            )}
+                            placement='bottom-end'
+                            className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                          >
+                            <p
+                              className={`text-[var(--color-text-brand)] mt-4`}
+                            >
+                              {formatGasFee(
+                                gasFee.toFixed(3).toString(),
+                                currency
+                              )}
+                            </p>
+                          </Tooltip>
+                        )}
+                      </td>
+                      <td className='text-right'>
+                        <p className='text-[var(--color-text-main)]'>
+                          {includeGasUsed
+                            ? formatCurrency(
+                                (proceed - proceedGasFee).toString(),
+                                currency
+                              )
+                            : formatCurrency(proceed.toString(), currency)}
+                        </p>
+                        {includeGasUsed && (
+                          <Tooltip
+                            content={formatCurrencyOriginal(
+                              proceedGasFee.toString(),
+                              currency
+                            )}
+                            placement='bottom-end'
+                            className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                          >
+                            <p
+                              className={`text-[var(--color-text-brand)] mt-4`}
+                            >
+                              {formatGasFee(
+                                proceedGasFee.toFixed(3).toString(),
+                                currency
+                              )}
+                            </p>
+                          </Tooltip>
+                        )}
+                      </td>
+                      <td className='text-right'>
+                        <p
+                          className={`${
+                            realizedGainAndLoss > 0
+                              ? 'text-[var(--color-text-success)]'
+                              : 'text-[var(--color-text-danger)]'
+                          }`}
                         >
-                          <p className={`text-[var(--color-text-brand)] mt-4`}>
-                            {formatGasFee(
-                              item.proceedGasFee?.[currency],
-                              currency
-                            )}
-                          </p>
-                        </Tooltip>
-                      )}
-                    </td>
-                    <td className='text-right'>
-                      <p
-                        className={`${
-                          realizedGainAndLoss > 0
-                            ? 'text-[var(--color-text-success)]'
-                            : 'text-[var(--color-text-danger)]'
-                        }`}
-                      >
-                        {includeGasUsed
-                          ? formatCurrency(
-                              (
-                                realizedGainAndLoss -
-                                gasFee -
-                                proceedGasFee
-                              ).toString(),
-                              currency
+                          {includeGasUsed
+                            ? formatCurrency(
+                                (
+                                  realizedGainAndLoss -
+                                  gasFee -
+                                  proceedGasFee
+                                ).toString(),
+                                currency
+                              )
+                            : formatCurrency(
+                                realizedGainAndLoss.toString(),
+                                currency
+                              )}
+                        </p>
+                      </td>
+                      <td className='text-right'>
+                        <p
+                          className={`${
+                            isZero
+                              ? 'text-[var(--color-text-main)]'
+                              : isPlus
+                              ? 'text-[var(--color-text-success)]'
+                              : 'text-[var(--color-text-danger)]'
+                          }`}
+                        >
+                          {realizedROI ? (
+                            isNaN(realizedROI) || realizedROI === Infinity ? (
+                              <Tooltip
+                                content={UNABLE_TO_CALCULATE_ROI}
+                                className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                              >
+                                <div className='w-full flex justify-end items-center text-[var(--color-icon-subtle)]'>
+                                  <Info />
+                                </div>
+                              </Tooltip>
+                            ) : (
+                              <p
+                                className={`${
+                                  isZero
+                                    ? 'text-[var(--color-text-main)]'
+                                    : isPlus === true
+                                    ? 'text-[var(--color-text-success)]'
+                                    : 'text-[var(--color-text-danger)]'
+                                }`}
+                              >
+                                {formatPercent(realizedROI.toString())}
+                              </p>
                             )
-                          : formatCurrency(
-                              realizedGainAndLoss.toString(),
-                              currency
-                            )}
-                      </p>
-                    </td>
-                    <td className='text-right'>
-                      <p
-                        className={`${
-                          isZero
-                            ? 'text-[var(--color-text-main)]'
-                            : isPlus
-                            ? 'text-[var(--color-text-success)]'
-                            : 'text-[var(--color-text-danger)]'
-                        }`}
-                      >
-                        {includeGasUsed
+                          ) : (
+                            <p className='text-[var(--color-text-main)]'>-</p>
+                          )}
+                          {/* {includeGasUsed
                           ? formatPercent(
                               (
                                 ((realizedGainAndLoss -
@@ -341,38 +439,38 @@ const RealizedGainAndLoss = () => {
                                 (realizedGainAndLoss / acquisitionPrice) *
                                 100
                               ).toString()
-                            )}
-                      </p>
-                    </td>
-                    <td className='text-right'>
-                      <p className='text-[var(--color-text-main)]'>
-                        {item.acquisitionDate
-                          ? formatDate(new Date(item.acquisitionDate))
-                          : '-'}
-                      </p>
-                    </td>
-                    <td className='text-right'>
-                      <p className='text-[var(--color-text-main)]'>
-                        {formatDate(new Date(item.soldDate))}
-                      </p>
-                    </td>
-                    {/* <td className='text-right'>
+                            )} */}
+                        </p>
+                      </td>
+                      <td className='text-right'>
+                        <p className='text-[var(--color-text-main)]'>
+                          {item.acquisitionDate
+                            ? formatDate(new Date(item.acquisitionDate))
+                            : '-'}
+                        </p>
+                      </td>
+                      <td className='text-right'>
+                        <p className='text-[var(--color-text-main)]'>
+                          {formatDate(new Date(item.soldDate))}
+                        </p>
+                      </td>
+                      {/* <td className='text-right'>
                         <div className='rotate-270 w-16 h-16  ml-auto'>
                           <CaretDown />
                         </div>
                       </td> */}
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        )}
         <div ref={ref} className='h-1' />
-        {!mergePosts ||
-          (mergePosts?.length === 0 && (
-            <div className='flex justify-center items-center h-[184px] p'>
-              <NoData />
-            </div>
-          ))}
+        {status !== 'loading' && (!mergePosts || mergePosts?.length === 0) && (
+          <div className='flex justify-center items-center h-[184px]'>
+            <NoData />
+          </div>
+        )}
       </div>
     </section>
   );

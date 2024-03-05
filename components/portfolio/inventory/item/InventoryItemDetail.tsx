@@ -143,19 +143,23 @@ const InventoryItemDetail = ({ token, walletAddress }: Props) => {
               href={`https://etherscan.io/address/${walletAddress}`}
               id='item_detail_owner'
             />
-            <TextInfo
-              title='Contract Address'
-              value={inventoryItem.assetContract}
-              href={`https://etherscan.io/address/${inventoryItem.assetContract}`}
-              id='item_detail_contract_address'
-            />
-            <TextInfo
-              title='Acq. tx hash'
-              value={inventoryItem.txHash}
-              tooltip='Based on latest acquisition date'
-              href={`https://etherscan.io/tx/${inventoryItem.txHash}`}
-              id='item_detail_acq_tx_hash'
-            />
+            {inventoryItem.assetContract && (
+              <TextInfo
+                title='Contract Address'
+                value={inventoryItem.assetContract}
+                href={`https://etherscan.io/address/${inventoryItem.assetContract}`}
+                id='item_detail_contract_address'
+              />
+            )}
+            {inventoryItem.txHash && (
+              <TextInfo
+                title='Acq. tx hash'
+                value={inventoryItem.txHash}
+                tooltip='Based on latest acquisition date'
+                href={`https://etherscan.io/tx/${inventoryItem.txHash}`}
+                id='item_detail_acq_tx_hash'
+              />
+            )}
           </div>
         )}
         {/**

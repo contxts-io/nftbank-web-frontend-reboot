@@ -12,9 +12,13 @@ export function formatDate(date:  Date): string  {
 }
 export function formatCurrency(amount: string | null, currency: TCurrency): string {
   if (!amount) return '-';
+  if (amount === '-') return '-';
   if (amount === 'infinity')
     return '-';
-    // return '∞';
+  // return '∞';
+  if (isNaN(parseFloat(amount))) {
+    return '-';
+  }
   if (currency === 'usd') {
     // return _formatFiat(parseFloat(amount),currency).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
     return _formatFiat(parseFloat(amount), currency).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
@@ -91,10 +95,10 @@ export function isPlus (value: number | string): boolean | '-' {
     return false;
   }
 };
-export function formatPercent(_percent: string |'infinity'|'Infinity'| null): string {
+export function formatPercent(_percent: string | 'infinity' | 'Infinity' | null, type?:'og'): string {
   if (_percent === null) return '-%';
   if (_percent === 'infinity' || _percent === 'Infinity') return '-%';
-  const percent = parseFloat(_percent);
+  const percent = type && type==='og' ? parseFloat(_percent) * 100 :  parseFloat(_percent);
   if (Math.abs(percent) <= 0.001) return '0%';
   if (Math.abs(percent) < 1 && Math.abs(percent) >= 0.001)
     return (percent / 100).toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 3 });
@@ -150,11 +154,11 @@ type MappingTable = {
 }
 export const mappingConstants = (value: string): string => {
   const mappingTable: MappingTable = {
-    'cfloor_price_eth' : 'Floor',
-    'estimated_price_eth' : 'Estimated',
+    'floor_price' : 'Floor',
+    'estimated_price' : 'Estimated',
     'TRAIT_FLOOR_PRICE': 'Trait Floor',
-    'avg30_price_eth':'30d Average',
-    'avg90_price_eth': '90d Average',
+    'avg_30_price':'30d Average',
+    'avg_90_price': '90d Average',
     // 'PREMIUM_ESTIMATED_PRICE': 'Premium Estimated',
   }
   return mappingTable[value] || value;

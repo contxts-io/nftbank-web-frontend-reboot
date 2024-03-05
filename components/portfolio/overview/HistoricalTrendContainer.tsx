@@ -20,7 +20,6 @@ import {
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { portfolioUserAtom } from '@/store/portfolio';
 import CurrencyComponent from '@/components/p/Currency';
-import { useDispatchDailyNav } from '@/utils/hooks/queries/dispatch';
 import DropdownMobile from '@/components/dropdown/DropdownMobile';
 
 //'1d'| '3d'| '7d'| '30d'| '90d'| 'ytd'| '365d'| 'all'
@@ -65,22 +64,16 @@ const HistoricalTrendContainer = () => {
   const [isPolling, setIsPolling] = useState<boolean>(true);
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
 
-  const { data: dispatchDailyNav } = useDispatchDailyNav(
-    portfolioUser?.walletAddress || ''
-  );
   const { data: inventoryValue, status: statusInventoryValue } =
-    useInventoryValuePolling(portfolioUser);
+    useInventoryValue(portfolioUser);
   const {
     data: inventoryValueHistorical,
     status: statusInventoryValueHistorical,
-  } = useInventoryValueHistorical(
-    {
-      ...historicalValueParam,
-      ...portfolioUser,
-      taskId: dispatchDailyNav?.taskId,
-    },
-    isPolling
-  );
+  } = useInventoryValueHistorical({
+    ...historicalValueParam,
+    ...portfolioUser,
+    // taskId: dispatchDailyNav?.taskId,
+  });
   const handleClickPeriod = (period: { name: string; value: Period }) => {
     console.log('handleClickPeriod', period);
     setSelectedPeriod(period.name);

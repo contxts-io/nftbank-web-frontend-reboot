@@ -1,5 +1,8 @@
 'use client';
-import { useInventoryItemInfinite } from '@/utils/hooks/queries/inventory';
+import {
+  useInventoryItemInfinite,
+  useInventoryItemList,
+} from '@/utils/hooks/queries/inventory';
 import styles from './InventoryItemTable.module.css';
 import { useAtom, useAtomValue } from 'jotai';
 import { inventoryItemListAtom } from '@/store/requestParam';
@@ -52,6 +55,7 @@ const InventoryItemTable = (props: Props) => {
     data: inventoryItemList,
     status,
   } = useInventoryItemInfinite({ ...requestParam, page: 0 });
+  const { data: itemListFresh } = useInventoryItemList(requestParam);
   const [selectedToken, setSelectedToken] = useAtom(selectedTokenAtom);
   const HEADER = [
     {
@@ -111,8 +115,19 @@ const InventoryItemTable = (props: Props) => {
     }));
   }, [priceType]);
   const mergePosts = useMemo(
-    () => inventoryItemList?.pages,
-    [inventoryItemList?.pages, requestParam]
+    () =>
+      inventoryItemList?.pages
+        .flatMap((page) => page.data)
+        .map((item) => {
+          const _item = itemListFresh?.data.find(
+            (itemFresh) =>
+              itemFresh.collection.assetContract ===
+                item.collection.assetContract &&
+              itemFresh.token.tokenId === item.token.tokenId
+          );
+          return { ...item, ..._item };
+        }),
+    [inventoryItemList?.pages, requestParam, itemListFresh]
   );
 
   const handleOpenDetail = (target: Token) => {
@@ -148,245 +163,237 @@ const InventoryItemTable = (props: Props) => {
           <FailToLoad />
         </div>
       )}
-      {status === 'success' && mergePosts?.[0].data.length === 0 && (
+      {status === 'success' && mergePosts?.length === 0 && (
         <div>
           <NoData />
         </div>
       )}
-      {status === 'success' &&
-        mergePosts?.[0].data &&
-        mergePosts?.[0].data.length > 0 && (
-          <table className={`${styles.table}`}>
-            <thead
-              className={`${styles.tableHead} ${
-                props.sticky ? styles.stickyBar : ''
-              }`}
-            >
-              <tr className={`${styles.tableHeadRow}`}>
-                {HEADER.map((item, index) => (
-                  <th
-                    key={index}
-                    className={`font-caption-medium 
+      {status === 'success' && mergePosts && mergePosts.length > 0 && (
+        <table className={`${styles.table}`}>
+          <thead
+            className={`${styles.tableHead} ${
+              props.sticky ? styles.stickyBar : ''
+            }`}
+          >
+            <tr className={`${styles.tableHeadRow}`}>
+              {HEADER.map((item, index) => (
+                <th
+                  key={index}
+                  className={`font-caption-medium 
                 ${index == 0 ? 'text-left' : 'text-right'} 
                 ${item.sort ? 'cursor-pointer' : ''}`}
-                    onClick={() => item.sort && handleSort(item.type)}
-                  >
-                    {item.tooltip ? (
-                      <div className='w-full flex items-center justify-end text-[var(--color-icon-subtle)]'>
-                        <Tooltip
-                          content={LATEST_ACQUISITION_DATE}
-                          className='cursor-pointer w-[230px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
-                        >
-                          <div className='flex justify-center text-[var(--color-icon-subtle)] mr-4'>
-                            <Info />
-                          </div>
-                        </Tooltip>
-                        <span>{item.name}</span>
-                      </div>
-                    ) : (
-                      <p>{item.name}</p>
-                    )}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {mergePosts?.map((page, pageIndex) => {
-                return page.data.map((data, index) => {
-                  const valuationType = selectedValueType(data.valuation);
-                  const itemKey = `${data.collection.assetContract}-${data.token.tokenId}-${index}`;
-                  const isOpen = openedItem.find((item) => item === itemKey)
-                    ? true
-                    : false;
-                  const acquisitionPrice = parseFloatPrice(
-                    data.acquisitionPrice?.[currency]
-                  );
-                  const costBasis =
-                    acquisitionPrice + parseFloatPrice(data.gasFee?.[currency]);
-                  const unrealizedGL =
-                    parseFloatPrice(data.nav[currency].amount) -
-                    parseFloatPrice(acquisitionPrice);
-                  const isPlus = unrealizedGL > 0;
-                  const isMinus = unrealizedGL < 0;
-                  const isZero = unrealizedGL === 0;
-
-                  return (
-                    <React.Fragment key={index}>
-                      <tr
-                        key={index}
-                        className={`font-caption-regular ${
-                          styles.tableBodyRow
-                        } ${isOpen && styles.isOpen}`}
-                        onClick={() => handleOpenDetail(data)}
+                  onClick={() => item.sort && handleSort(item.type)}
+                >
+                  {item.tooltip ? (
+                    <div className='w-full flex items-center justify-end text-[var(--color-icon-subtle)]'>
+                      <Tooltip
+                        content={LATEST_ACQUISITION_DATE}
+                        className='cursor-pointer w-[230px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
                       >
-                        <td className='text-left p-0'>
-                          <div className={`flex items-center my-8`}>
-                            <div
-                              className={`${styles.tokenImage} bg-[--color-elevation-surface-raised] `}
-                            >
-                              {data?.token.imageUrl ? (
-                                <img
-                                  src={data?.token.imageUrl}
-                                  width={32}
-                                  height={32}
-                                  alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
-                                  onError={(e) => defaultImg(e, 12)}
-                                />
-                              ) : (
-                                <div className='w-32 h-32 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center border-1'>
-                                  <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)] ' />
-                                </div>
-                              )}
+                        <div className='flex justify-center text-[var(--color-icon-subtle)] mr-4'>
+                          <Info />
+                        </div>
+                      </Tooltip>
+                      <span>{item.name}</span>
+                    </div>
+                  ) : (
+                    <p>{item.name}</p>
+                  )}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {mergePosts?.map((data, index) => {
+              const valuationType = selectedValueType(data.valuation);
+              const itemKey = `${data.collection.assetContract}-${data.token.tokenId}-${index}`;
+              const isOpen = openedItem.find((item) => item === itemKey)
+                ? true
+                : false;
+              const acquisitionPrice = parseFloatPrice(
+                data.acquisitionPrice?.[currency]
+              );
+              const costBasis =
+                acquisitionPrice + parseFloatPrice(data.gasFee?.[currency]);
+              const unrealizedGL =
+                parseFloatPrice(data.nav[currency].amount) -
+                parseFloatPrice(acquisitionPrice);
+              const isPlus = unrealizedGL > 0;
+              const isMinus = unrealizedGL < 0;
+              const isZero = unrealizedGL === 0;
+
+              return (
+                <React.Fragment key={index}>
+                  <tr
+                    key={index}
+                    className={`font-caption-regular ${styles.tableBodyRow} ${
+                      isOpen && styles.isOpen
+                    }`}
+                    onClick={() => handleOpenDetail(data)}
+                  >
+                    <td className='text-left p-0'>
+                      <div className={`flex items-center my-8`}>
+                        <div
+                          className={`${styles.tokenImage} bg-[--color-elevation-surface-raised] `}
+                        >
+                          {data?.token.imageUrl ? (
+                            <img
+                              src={data?.token.imageUrl}
+                              width={32}
+                              height={32}
+                              alt={`${data.collection.name}-${data.token.name}-${data.token.tokenId}`}
+                              onError={(e) => defaultImg(e, 12)}
+                            />
+                          ) : (
+                            <div className='w-32 h-32 bg-[--color-elevation-surface-raised] border-[var(--color-border-main)] flex items-center justify-center border-1'>
+                              <ImagePlaceholder className='w-12 h-12 fill-[var(--color-background-neutral-bold)] ' />
                             </div>
-                            <div className='font-caption-medium max-w-[230px]  white-space-nowrap overflow-hidden text-ellipsis'>
-                              <p className={`${styles.pMain} mr-0`}>
-                                {data.token.name}
-                              </p>
-                              <p className={`${styles.pSub} truncate mr-0`}>
-                                {data.collection.name ||
-                                  shortenAddress(data.collection.assetContract)}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className='text-right'>
-                          <p>{data.amount}</p>
-                        </td>
-                        <td className='text-right'>
-                          <p>
-                            {priceType === 'costBasis'
-                              ? formatCurrency(costBasis.toString(), currency)
-                              : formatCurrency(
-                                  acquisitionPrice.toString(),
-                                  currency
-                                )}
-                          </p>
-                          {priceType === 'costBasis' && (
-                            <Tooltip
-                              content={formatCurrencyOriginal(
-                                data.gasFee?.[currency] || '0',
-                                currency
-                              )}
-                              placement='bottom-end'
-                              className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
-                            >
-                              <p
-                                className={`${styles.pTd} text-[var(--color-text-brand)]`}
-                              >
-                                {formatGasFee(
-                                  data.gasFee?.[currency] || '',
-                                  currency
-                                )}
-                              </p>
-                            </Tooltip>
                           )}
-                        </td>
-                        <td className='text-right'>
-                          <span>
-                            {/* {data.valuation.length > 0
-                            ? mappingConstants(data.valuation[0].type)
-                            : 'no valuation type'} */}
-                            {valuationType
-                              ? mappingConstants(valuationType.type)
-                              : 'no valuation type'}
-                          </span>
-                        </td>
-                        {/** realtime nav **/}
-                        <td className='text-right'>
-                          <p className='text-[var(--color-text-main)]'>
-                            {formatCurrency(
-                              data.nav[currency].amount || null,
+                        </div>
+                        <div className='font-caption-medium max-w-[230px]  white-space-nowrap overflow-hidden text-ellipsis'>
+                          <p className={`${styles.pMain} mr-0`}>
+                            {data.token.name}
+                          </p>
+                          <p className={`${styles.pSub} truncate mr-0`}>
+                            {data.collection.name ||
+                              shortenAddress(data.collection.assetContract)}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className='text-right'>
+                      <p>{data.amount}</p>
+                    </td>
+                    <td className='text-right'>
+                      <p>
+                        {priceType === 'costBasis'
+                          ? formatCurrency(costBasis.toString(), currency)
+                          : formatCurrency(
+                              acquisitionPrice.toString(),
+                              currency
+                            )}
+                      </p>
+                      {priceType === 'costBasis' && (
+                        <Tooltip
+                          content={formatCurrencyOriginal(
+                            data.gasFee?.[currency] || '0',
+                            currency
+                          )}
+                          placement='bottom-end'
+                          className='font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                        >
+                          <p
+                            className={`${styles.pTd} text-[var(--color-text-brand)]`}
+                          >
+                            {formatGasFee(
+                              data.gasFee?.[currency] || '',
                               currency
                             )}
                           </p>
-                        </td>
-                        <td className='text-right'>
-                          <p
-                            className={`${
-                              isPlus
-                                ? 'text-[var(--color-text-success)]'
-                                : isMinus
-                                ? 'text-[var(--color-text-danger)]'
-                                : 'text-[var(--color-text-main)]'
-                            }`}
-                          >
-                            {priceType === 'acquisitionPrice'
-                              ? formatCurrency(
-                                  (
-                                    parseFloatPrice(data.nav[currency].amount) -
-                                    acquisitionPrice
-                                  ).toString(),
-                                  currency
-                                )
-                              : formatCurrency(
-                                  (
-                                    parseFloatPrice(data.nav[currency].amount) -
-                                    costBasis
-                                  ).toString(),
-                                  currency
-                                )}
-                          </p>
-                        </td>
-                        <td className='text-right'>
-                          {acquisitionPrice == 0 ? (
-                            <Tooltip
-                              content={UNABLE_TO_CALCULATE_ROI}
-                              className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
-                            >
-                              <div className='w-full flex justify-end text-[var(--color-icon-subtle)]'>
-                                <Info />
-                              </div>
-                            </Tooltip>
-                          ) : (
-                            <p
-                              className={`${
-                                isZero
-                                  ? 'text-[var(--color-text-main)]'
-                                  : isPlus
-                                  ? 'text-[var(--color-text-success)]'
-                                  : isMinus
-                                  ? 'text-[var(--color-text-danger)]'
-                                  : 'text-[var(--color-text-main)]'
-                              }`}
-                            >
-                              {priceType === 'acquisitionPrice'
-                                ? formatPercent(
-                                    (
-                                      ((parseFloatPrice(
-                                        data.nav[currency].amount
-                                      ) -
-                                        acquisitionPrice) /
-                                        acquisitionPrice) *
-                                      100
-                                    ).toString()
-                                  )
-                                : formatPercent(
-                                    (
-                                      ((parseFloatPrice(
-                                        data.nav[currency].amount
-                                      ) -
-                                        costBasis) /
-                                        costBasis) *
-                                      100
-                                    ).toString()
-                                  )}
-                            </p>
-                          )}
-                        </td>
-                        <td className='text-right'>
-                          <span>
-                            {data.acquisitionDate &&
-                              formatDate(new Date(data.acquisitionDate))}
-                          </span>
-                        </td>
-                      </tr>
-                    </React.Fragment>
-                  );
-                });
-              })}
-            </tbody>
-          </table>
-        )}
+                        </Tooltip>
+                      )}
+                    </td>
+                    <td className='text-right'>
+                      <span>
+                        {/* {data.valuation.length > 0
+                            ? mappingConstants(data.valuation[0].type)
+                            : 'no valuation type'} */}
+                        {valuationType
+                          ? mappingConstants(valuationType.type)
+                          : 'no valuation type'}
+                      </span>
+                    </td>
+                    {/** realtime nav **/}
+                    <td className='text-right'>
+                      <p className='text-[var(--color-text-main)]'>
+                        {formatCurrency(
+                          data.nav[currency].amount || null,
+                          currency
+                        )}
+                      </p>
+                    </td>
+                    <td className='text-right'>
+                      <p
+                        className={`${
+                          isPlus
+                            ? 'text-[var(--color-text-success)]'
+                            : isMinus
+                            ? 'text-[var(--color-text-danger)]'
+                            : 'text-[var(--color-text-main)]'
+                        }`}
+                      >
+                        {priceType === 'acquisitionPrice'
+                          ? formatCurrency(
+                              (
+                                parseFloatPrice(data.nav[currency].amount) -
+                                acquisitionPrice
+                              ).toString(),
+                              currency
+                            )
+                          : formatCurrency(
+                              (
+                                parseFloatPrice(data.nav[currency].amount) -
+                                costBasis
+                              ).toString(),
+                              currency
+                            )}
+                      </p>
+                    </td>
+                    <td className='text-right'>
+                      {acquisitionPrice == 0 ? (
+                        <Tooltip
+                          content={UNABLE_TO_CALCULATE_ROI}
+                          className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                        >
+                          <div className='w-full flex justify-end text-[var(--color-icon-subtle)]'>
+                            <Info />
+                          </div>
+                        </Tooltip>
+                      ) : (
+                        <p
+                          className={`${
+                            isZero
+                              ? 'text-[var(--color-text-main)]'
+                              : isPlus
+                              ? 'text-[var(--color-text-success)]'
+                              : isMinus
+                              ? 'text-[var(--color-text-danger)]'
+                              : 'text-[var(--color-text-main)]'
+                          }`}
+                        >
+                          {priceType === 'acquisitionPrice'
+                            ? formatPercent(
+                                (
+                                  ((parseFloatPrice(data.nav[currency].amount) -
+                                    acquisitionPrice) /
+                                    acquisitionPrice) *
+                                  100
+                                ).toString()
+                              )
+                            : formatPercent(
+                                (
+                                  ((parseFloatPrice(data.nav[currency].amount) -
+                                    costBasis) /
+                                    costBasis) *
+                                  100
+                                ).toString()
+                              )}
+                        </p>
+                      )}
+                    </td>
+                    <td className='text-right'>
+                      <span>
+                        {data.acquisitionDate &&
+                          formatDate(new Date(data.acquisitionDate))}
+                      </span>
+                    </td>
+                  </tr>
+                </React.Fragment>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
       <div ref={ref} />
     </React.Fragment>
   );
