@@ -266,7 +266,6 @@ export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAn
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
-    keepPreviousData: true,
     enabled: requestParam.walletAddress !== '',
     staleTime: Infinity,
     cacheTime: Infinity,
