@@ -159,7 +159,7 @@ const InventoryCollectionTable = () => {
       {status === 'success' && collections && collections.length > 0 && (
         <>
           <table className={`${styles.table} relative`}>
-            <thead className='sticky md:top-119  bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
+            <thead className='sticky bg-[var(--color-elevation-surface)] h-fit border-b-1 border-[var(--color-border-main)] z-20'>
               <tr className='h-fit'>
                 {T_HEADER.map((item, index) => (
                   <th
@@ -366,14 +366,15 @@ const InventoryCollectionTable = () => {
                           {priceType === 'costBasis'
                             ? formatPercent(
                                 (
-                                  (unrealizedGL -
-                                    parseFloatPrice(row.gasFee?.[currency])) /
+                                  ((unrealizedGL -
+                                    parseFloatPrice(row.gasFee?.[currency])) *
+                                    100) /
                                   costBasis
                                 ).toString()
                               )
                             : formatPercent(
                                 (
-                                  unrealizedGL /
+                                  (unrealizedGL * 100) /
                                   (costBasis -
                                     parseFloatPrice(row.gasFee?.[currency]))
                                 ).toString()

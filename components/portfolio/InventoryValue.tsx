@@ -89,9 +89,12 @@ const InventoryValue = () => {
       {
         type: 'unrealizedRoi',
         name: 'Unrealized ROI',
-        value: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
-        diff: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
-        diffPercent: formatPercent(inventoryUnrealized?.roi[currency] || '0'),
+        value: formatPercent(inventoryUnrealized?.roi[currency] || '0', 'og'),
+        diff: formatPercent(inventoryUnrealized?.roi[currency] || '0', 'og'),
+        diffPercent: formatPercent(
+          inventoryUnrealized?.roi[currency] || '0',
+          'og'
+        ),
         isPlus: parseFloat(inventoryUnrealized?.roi[currency] || '0') > 0,
         status: statusInventoryUnrealized,
         infinity: isNaN(Number(inventoryUnrealized?.roi[currency]))

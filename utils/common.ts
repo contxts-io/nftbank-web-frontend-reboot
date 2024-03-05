@@ -15,7 +15,10 @@ export function formatCurrency(amount: string | null, currency: TCurrency): stri
   if (amount === '-') return '-';
   if (amount === 'infinity')
     return '-';
-    // return '∞';
+  // return '∞';
+  if (isNaN(parseFloat(amount))) {
+    return '-';
+  }
   if (currency === 'usd') {
     // return _formatFiat(parseFloat(amount),currency).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
     return _formatFiat(parseFloat(amount), currency).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
@@ -92,10 +95,10 @@ export function isPlus (value: number | string): boolean | '-' {
     return false;
   }
 };
-export function formatPercent(_percent: string |'infinity'|'Infinity'| null): string {
+export function formatPercent(_percent: string | 'infinity' | 'Infinity' | null, type?:'og'): string {
   if (_percent === null) return '-%';
   if (_percent === 'infinity' || _percent === 'Infinity') return '-%';
-  const percent = parseFloat(_percent);
+  const percent = type && type==='og' ? parseFloat(_percent) * 100 :  parseFloat(_percent);
   if (Math.abs(percent) <= 0.001) return '0%';
   if (Math.abs(percent) < 1 && Math.abs(percent) >= 0.001)
     return (percent / 100).toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 3 });
