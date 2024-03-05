@@ -1,8 +1,8 @@
 .container {
-  @apply w-full flex flex-col  md:flex-row md:items-center justify-between mt-20 mb-12;
+  @apply w-full flex flex-col  md:flex-row md:items-center justify-between my-20;
 }
 .inputContainer {
-  @apply w-[360px] h-36 flex items-center justify-items-start px-12;
+  @apply w-[360px] h-36 items-center justify-items-start px-12;
   @apply border-1 border-[var(--color-border-main)] transition-all duration-200;
 }
 .focused {
