@@ -249,10 +249,10 @@ const InventoryItemDetail = ({ token, walletAddress }: Props) => {
                             <div className='w-full flex justify-between'>
                               <div className='h-full'>
                                 <p className='text-[var(--color-text-subtle)] mb-4'>
-                                  {trait.traitType.replace(
+                                  {trait?.traitType?.replace(
                                     /(?:^|\s)\S/g,
                                     (match) => match.toUpperCase()
-                                  )}
+                                  ) || 'No Data'}
                                 </p>
 
                                 <p className='text-[var(--color-text-main)]'>
