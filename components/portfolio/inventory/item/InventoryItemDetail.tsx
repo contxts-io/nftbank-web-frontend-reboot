@@ -256,8 +256,8 @@ const InventoryItemDetail = ({ token, walletAddress }: Props) => {
                                 </p>
 
                                 <p className='text-[var(--color-text-main)]'>
-                                  {trait.traitValue
-                                    .replace(/_/g, ' ')
+                                  {trait?.traitValue
+                                    ?.replace(/_/g, ' ')
                                     .replace(/(?:^|\s)\S/g, (match) =>
                                       match.toUpperCase()
                                     )}
@@ -268,7 +268,9 @@ const InventoryItemDetail = ({ token, walletAddress }: Props) => {
                                   Rarity score
                                 </p>
                                 <p className='text-[var(--color-text-main)] text-end'>
-                                  {customToFixed(trait.rarityScore, 3)}
+                                  {trait.rarityScore
+                                    ? customToFixed(trait.rarityScore, 3)
+                                    : '-'}
                                 </p>
                               </div>
                             </div>
