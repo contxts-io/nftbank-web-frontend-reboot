@@ -180,7 +180,7 @@ const InventoryItemDetailChart = ({
                 } else {
                   series.noDataIndex.push(index);
                   series.data.push(
-                    prevValue
+                    prevValue && !isNaN(parseFloat(prevValue?.toString()))
                       ? mathSqrt(parseFloat(prevValue?.toString()))
                       : null
                   );
