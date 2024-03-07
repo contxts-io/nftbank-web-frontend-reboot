@@ -34,6 +34,8 @@ import Info from '@/public/icon/Info';
 import { Tooltip } from '@nextui-org/react';
 import { send } from 'process';
 import { sendGTMEvent } from '@next/third-parties/google';
+import CaretDown from '@/public/icon/CaretDown';
+import CaretUpDown from '@/public/icon/CaretUpDown';
 
 type Props = {
   sticky?: boolean;
@@ -65,28 +67,32 @@ const InventoryItemTable = (props: Props) => {
     {
       type: 'amount',
       name: 'Amount',
-      sort: true,
+      sort: 'amount',
     },
     {
-      type: 'costBasis',
+      type: priceType === 'costBasis' ? 'costBasis' : 'acquisitionPrice',
       name: priceType === 'costBasis' ? 'Cost basis' : 'Acq. price',
+      sort: priceType === 'costBasis' ? 'costBasis' : 'acquisitionPrice',
     },
     {
       type: 'valuationType',
       name: 'Valuation Type',
+      sort: 'valuationType',
     },
     {
       type: 'nav',
       name: 'Realtime NAV',
-      sort: true,
+      sort: 'nav',
     },
     {
       type: 'unrealizedG&L',
       name: 'Unrealized G&L',
+      sort: 'unrealizedGL',
     },
     {
       type: 'unrealizedROI',
       name: 'Unrealized ROI',
+      sort: 'unrealizedROI',
     },
     // {
     //   type: 'accuracy',
@@ -96,6 +102,7 @@ const InventoryItemTable = (props: Props) => {
       type: 'acquisitionDate',
       name: 'Acq. date',
       tooltip: LATEST_ACQUISITION_DATE,
+      sort: 'acquisitionDate',
     },
   ];
   useEffect(() => {
@@ -153,7 +160,8 @@ const InventoryItemTable = (props: Props) => {
     setRequestParam((prev) => ({
       ...prev,
       sort: type as 'amount' | 'nav',
-      order: prev.order === 'desc' ? 'asc' : 'desc',
+      // order: prev.order === 'desc' ? 'asc' : 'desc',
+      order: prev.sort === type ? 'asc' : 'desc',
     }));
   };
   return (
@@ -195,9 +203,45 @@ const InventoryItemTable = (props: Props) => {
                         </div>
                       </Tooltip>
                       <span>{item.name}</span>
+                      {item.sort && (
+                        <div
+                          className={`inline-block align-middle ml-4 ${
+                            requestParam.order === 'asc' ? 'rotate-180' : ''
+                          }`}
+                        >
+                          {requestParam.sort === item.sort ? (
+                            <CaretDown />
+                          ) : (
+                            <CaretUpDown />
+                          )}
+                        </div>
+                      )}
                     </div>
                   ) : (
-                    <p>{item.name}</p>
+                    <div
+                      className={`flex items-center hover:text-[var(--color-text-main)] ${
+                        index !== 0 ? 'justify-end ' : ''
+                      } ${
+                        requestParam.sort === item.sort
+                          ? 'text-[var(--color-text-main)]'
+                          : ''
+                      }`}
+                    >
+                      <p>{item.name}</p>
+                      {item.sort && (
+                        <div
+                          className={`inline-block align-middle ml-4 ${
+                            requestParam.order === 'asc' ? 'rotate-180' : ''
+                          }`}
+                        >
+                          {requestParam.sort === item.sort ? (
+                            <CaretDown />
+                          ) : (
+                            <CaretUpDown />
+                          )}
+                        </div>
+                      )}
+                    </div>
                   )}
                 </th>
               ))}

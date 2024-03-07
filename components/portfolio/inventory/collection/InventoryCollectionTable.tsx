@@ -31,6 +31,8 @@ import { Tooltip } from '@nextui-org/react';
 import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
 import Info from '@/public/icon/Info';
 import { sendGTMEvent } from '@next/third-parties/google';
+import CaretUpDown from '@/public/icon/CaretUpDown';
+import CaretDown from '@/public/icon/CaretDown';
 
 const InventoryCollectionTable = () => {
   const priceType = useAtomValue(priceTypeAtom);
@@ -49,6 +51,7 @@ const InventoryCollectionTable = () => {
     {
       name: priceType === 'costBasis' ? 'Cost basis' : 'Acq. price',
       key: 'costBasis',
+      sort: priceType === 'costBasis' ? 'costBasis' : 'acquisitionPrice',
     },
     {
       name: 'Valuation Type',
@@ -59,9 +62,11 @@ const InventoryCollectionTable = () => {
     },
     {
       name: 'Unrealized G&L',
+      sort: 'unrealizedGL',
     },
     {
       name: 'Unrealized ROI',
+      sort: 'unrealizedROI',
     },
   ];
   const currency = useAtomValue(currencyAtom);
@@ -164,17 +169,41 @@ const InventoryCollectionTable = () => {
                 {T_HEADER.map((item, index) => (
                   <th
                     key={index}
-                    className={`font-caption-medium text-[var(--color-text-subtle)] py-12
+                    className={`font-caption-medium text-[var(--color-text-subtle)] py-12 whitespace-nowrap
                 ${index > 0 ? 'text-right' : 'text-left'}
-                ${item.sort && 'cursor-pointer'}
-                ${index === 0 && 'pl-16'}
-                ${index === T_HEADER.length - 1 && 'pr-16'}
+                ${item.sort ? 'cursor-pointer' : ''}
+                ${(index === 0 && 'pl-16') || ''}
+                ${(index === T_HEADER.length - 1 && 'pr-16') || ''}
                 `}
-                    onClick={() =>
-                      item.sort && handleClickSortButton(item.sort as TSort)
-                    }
                   >
-                    <p className={index > 1 ? styles.pTd : ''}>{item.name}</p>
+                    <p
+                      className={`${index > 1 ? styles.pTd : ''} ${
+                        inventoryCollectionRequestParam.sort === item.sort
+                          ? 'text-[var(--color-text-main)]'
+                          : ''
+                      } inline-block align-middle hover:text-[var(--color-text-main)]`}
+                      onClick={() =>
+                        item.sort && handleClickSortButton(item.sort as TSort)
+                      }
+                    >
+                      {item.name}
+                      {item.sort && (
+                        <div
+                          className={`inline-block align-middle ml-4 ${
+                            inventoryCollectionRequestParam.order === 'asc'
+                              ? 'rotate-180'
+                              : ''
+                          }`}
+                        >
+                          {inventoryCollectionRequestParam.sort ===
+                          item.sort ? (
+                            <CaretDown />
+                          ) : (
+                            <CaretUpDown />
+                          )}
+                        </div>
+                      )}
+                    </p>
                   </th>
                 ))}
                 {/* <th className='text-right'>
