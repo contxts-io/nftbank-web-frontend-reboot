@@ -48,6 +48,8 @@ const tooltip = ({
     '30d Avg.': 'No Trade Data',
     '90d Avg.': 'No Trade Data',
   };
+  console.log('w.globals', w.globals);
+  console.log('no data series :', w.globals.initialSeries[0].noDataIndex);
   return (
     <section className={`font-caption-regular ${styles.tooltip}`}>
       <div className={`${styles.header}`}>
@@ -77,7 +79,9 @@ const tooltip = ({
                 <p>{w.globals.seriesNames[index]}</p>
               </div>
               <p className={`text-[var(--color-text-main)]`}>
-                {w.globals.initialSeries[index].noDataIndex.includes(index)
+                {w.globals.initialSeries[index].noDataIndex.includes(
+                  dataPointIndex
+                )
                   ? NULL_MESSAGE[label as keyof typeof NULL_MESSAGE]
                   : formatCurrency(todayValue?.toString() || '0', currency)}
               </p>
@@ -157,14 +161,14 @@ const InventoryItemDetailChart = ({
           key !== 'processedAt' &&
             _seriesData.map((series) => {
               if (key === series.id) {
-                const prevValue =
-                  index > 0
-                    ? historicalData[index - 1]?.[key]?.[currency]
-                    : null;
+                const prevValue = index > 0 ? _seriesData?.[index - 1] : null;
                 const value =
                   item[key]?.[currency] && item[key]?.[currency] !== 'nan'
                     ? item[key]?.[currency]
                     : prevValue?.toString();
+                const prevSeriesValue = series.data[index - 1];
+                const prevSeriesRealValue = series.realData[index - 1];
+
                 if (
                   item[key]?.[currency] &&
                   item[key]?.[currency] !== 'nan' &&
@@ -179,14 +183,8 @@ const InventoryItemDetailChart = ({
                   );
                 } else {
                   series.noDataIndex.push(index);
-                  series.data.push(
-                    prevValue && !isNaN(parseFloat(prevValue?.toString()))
-                      ? mathSqrt(parseFloat(prevValue?.toString()))
-                      : null
-                  );
-                  series.realData.push(
-                    prevValue ? parseFloat(prevValue?.toString()) : null
-                  );
+                  series.data.push(prevSeriesValue || null);
+                  series.realData.push(prevSeriesRealValue || null);
                 }
               }
             });
