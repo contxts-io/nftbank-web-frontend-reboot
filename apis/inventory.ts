@@ -39,6 +39,15 @@ export const getCollectionList = async<T = IInventoryCollectionList>(requestPara
   const { data } = await instance.get<{data:T}>(`/inventory/collection?${query}`);
   return data.data;
 }
+export const downloadCSVCollectionList = async (requestParam: {
+  walletAddress: string;
+  searchCollection: string;
+}) => {
+  const query = jsonToQueryString(requestParam);
+  // const query = jsonToQueryString(requestParam);
+  const result = await instance.get(`/inventory/collection/download?${query}`,{ responseType: 'blob' });
+  return result;
+}
 
 type ItemKey = keyof ItemParam;
 export const getItemList = async<T = IInventoryItemList>(requestParam: ItemParam): Promise<T> => {
@@ -60,6 +69,26 @@ export const getItemList = async<T = IInventoryItemList>(requestParam: ItemParam
   const { data } = await instance.post<{data:T}>(`/inventory/token`,requestParam);
   return data.data;
 }
+export const downloadCSVItemList = async(requestParam: {walletAddress:string, assetContract: string[]}) => {
+  // const query = Object.keys(requestParam)
+  // .filter(function(key) {
+  //     return requestParam[key as ItemKey] && requestParam[key as ItemKey] !== ""; // 값이 있는 속성만 필터링
+  // })
+  //   .map(function (key) {
+  //     const value = requestParam[key as ItemKey];
+  //     if (Array.isArray(value)) {
+  //       // 만약 값이 배열이면 요소를 쉼표로 연결하여 문자열로 변환
+  //       return value.length > 0 ? `${encodeURIComponent(key)}=${value.map((v) => encodeURIComponent(v)).join(",")}`:'';
+  //     } else {
+  //       return `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`;
+  //     }
+  // })
+  //   .join('&');
+  // const { data } = await instance.get<{data:T}>(`/inventory/token?${query.replace('&&','&')}`);
+  const result = await instance.post(`/inventory/token/download`,requestParam, { responseType: 'blob' });
+  return result;
+}
+
 export const getSummaryTotalSpend = async<T = TSummary>(searchParam:BasicParam | null): Promise<T> => {
   const query = jsonToQueryString(searchParam);
   const {data} = await instance.get<{data:T}>(`/inventory/summary/total-spend?${query}`);
@@ -123,23 +152,14 @@ export type ResponseRealizedTokensData = {
 }
 type GainAndLossKey = keyof TAnalysisGainAndLossParam;
 export const getInventoryRealizedTokens = async<T = ResponseRealizedTokensData>(requestParam: TAnalysisGainAndLossParam): Promise<T> => {
-  // const query = Object.keys(requestParam)
-  // .filter(function(key) {
-  //     return requestParam[key as GainAndLossKey] && requestParam[key as GainAndLossKey] !== ""; // 값이 있는 속성만 필터링
-  // })
-  //   .map(function (key) {
-  //     const value = requestParam[key as GainAndLossKey];
-  //     if (Array.isArray(value)) {
-  //       // 만약 값이 배열이면 요소를 쉼표로 연결하여 문자열로 변환
-  //       return value.length > 0 ? `${encodeURIComponent(key)}=${value.map((v) => encodeURIComponent(v)).join(",")}`:'';
-  //     } else {
-  //       return `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`;
-  //     }
-  // })
-  //   .join('&');
   const query = jsonToQueryString(requestParam);
   const { data } = await instance.get<{ data: T }>(`/inventory/realized/token?${query}`);
   return data.data;
+}
+export const downloadCSVInventoryRealizedTokens = async(requestParam: {walletAddress:string, year:number | 'all'}) => {
+  const query = jsonToQueryString(requestParam);
+  const result = await instance.get(`/inventory/realized/token/download?${query}`,{ responseType: 'blob' });
+  return result;
 }
 
 export type ResponseAcquisitionTypesData = {

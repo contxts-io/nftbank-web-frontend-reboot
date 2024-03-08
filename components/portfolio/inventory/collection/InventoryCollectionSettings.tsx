@@ -11,10 +11,21 @@ import ToggleButton from '@/components/buttons/ToggleButton';
 import Button from '@/components/buttons/Button';
 import CloseX from '@/public/icon/CloseX';
 import { sendGTMEvent } from '@next/third-parties/google';
+import DownloadSimple from '@/public/icon/DownloadSimple';
+import { downloadCSVCollectionList } from '@/apis/inventory';
+import {
+  useInventoryCollectionList,
+  useInventoryCollectionsInfinite,
+} from '@/utils/hooks/queries/inventory';
 const InventoryCollectionSettings = () => {
   const [inventoryCollection, setInventoryCollection] = useAtom(
     inventoryCollectionAtom
   );
+  const { data: inventoryCollectionList, status } =
+    useInventoryCollectionsInfinite({
+      ...inventoryCollection,
+      page: 0,
+    });
   const [showModal, setShowModal] = useState(false);
   const [priceType, setPriceType] = useAtom(priceTypeAtom);
   const [searchText, setSearchText] = useState<string>('');
@@ -44,6 +55,26 @@ const InventoryCollectionSettings = () => {
   const handleBlur = () => {
     setIsFocused(false);
   };
+  const downloadCSV = async () => {
+    await downloadCSVCollectionList({
+      walletAddress: inventoryCollection.walletAddress,
+      searchCollection: inventoryCollection.searchCollection,
+    })
+      .then((response) => {
+        // Convert the blob data to a downloadable file
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'collections.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((error) => {
+        console.error('Error fetching CSV data:', error);
+      });
+  };
   useEffect(() => {
     sendGTMEvent({
       event: 'inputTextChanged',
@@ -59,28 +90,8 @@ const InventoryCollectionSettings = () => {
           Collection
         </p>
         <div className='flex items-center gap-12 ml-auto'>
-          <div
-            className={`${styles.inputContainer} ${
-              isFocused ? styles.focused : ''
-            } hidden md:flex`}
-          >
-            <MagnifyingGlass
-              className={`${styles.icon}`}
-              width={16}
-              height={16}
-            />
-            <input
-              type='text'
-              placeholder={'Search collection'}
-              className={`${styles.textInput} font-caption-regular`}
-              onChange={handleInputText}
-              value={searchText}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-            />
-          </div>
-          <div className='flex items-center'>
-            <div className='flex mr-24'>
+          <div className='flex items-center gap-x-12'>
+            <div className='flex mr-12'>
               <p className={`font-button03-medium ${styles.pSetting} mr-8`}>
                 Include Gas fee
               </p>
@@ -90,6 +101,26 @@ const InventoryCollectionSettings = () => {
                 id={'collection_gas_fee_toggle'}
               />
             </div>
+            <div
+              className={`${styles.inputContainer} ${
+                isFocused ? styles.focused : ''
+              } hidden md:flex`}
+            >
+              <MagnifyingGlass
+                className={`${styles.icon}`}
+                width={16}
+                height={16}
+              />
+              <input
+                type='text'
+                placeholder={'Search collection'}
+                className={`${styles.textInput} font-caption-regular`}
+                onChange={handleInputText}
+                value={searchText}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+            </div>
             {/* <Button
           id={'/portfolio/inventory/collection/spam'}
           onClick={() => handleModalOpen()}
@@ -97,6 +128,16 @@ const InventoryCollectionSettings = () => {
           <Gear className='mr-4' />
           <p>Spam Settings</p>
         </Button> */}
+            <Button
+              className='!p-9'
+              onClick={() => downloadCSV()}
+              disabled={
+                !inventoryCollectionList ||
+                inventoryCollectionList?.pages[0].data.length === 0
+              }
+            >
+              <DownloadSimple />
+            </Button>
           </div>
         </div>
       </div>

@@ -1,5 +1,8 @@
 'use client';
-import { useInventoryItemList } from '@/utils/hooks/queries/inventory';
+import {
+  useInventoryItemInfinite,
+  useInventoryItemList,
+} from '@/utils/hooks/queries/inventory';
 import styles from './InventoryItemList.module.css';
 import { useAtom, useAtomValue } from 'jotai';
 import { TSort, inventoryItemListAtom } from '@/store/requestParam';
@@ -18,6 +21,8 @@ import { selectedTokenAtom } from '@/store/portfolio';
 import Button from '@/components/buttons/Button';
 import Image from 'next/image';
 import { sendGTMEvent } from '@next/third-parties/google';
+import DownloadSimple from '@/public/icon/DownloadSimple';
+import { downloadCSVItemList } from '@/apis/inventory';
 type Props = {
   isFilterOpen: boolean;
   handleFilterOpen: (state: boolean) => void;
@@ -32,6 +37,10 @@ const InventoryItemList = (props: Props) => {
   const [priceType, setPriceType] = useAtom(priceTypeAtom);
   const currency = useAtomValue(currencyAtom);
   const [selectedToken, setSelectedToken] = useAtom(selectedTokenAtom);
+  const { data: inventoryItemList, status } = useInventoryItemInfinite({
+    ...requestParam,
+    page: 0,
+  });
   const handleClickSortButton = (sort: TSort) => {
     const order =
       requestParam.sort !== sort
@@ -61,7 +70,26 @@ const InventoryItemList = (props: Props) => {
       parameter: type,
     });
   };
+  const downloadCSV = async () => {
+    await downloadCSVItemList({
+      walletAddress: requestParam.walletAddress as string,
+      assetContract: requestParam.assetContract,
+    })
+      .then((response) => {
+        // Convert the blob data to a downloadable file
 
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `tokens.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((error) => {
+        console.error('Error fetching CSV data:', error);
+      });
+  };
   return (
     <section className={`${styles.container}  ${isFilterOpen ? 'pl-12' : ''}`}>
       <div className='flex py-12 items-center justify-between'>
@@ -75,7 +103,7 @@ const InventoryItemList = (props: Props) => {
             </div>
           )}
         </div>
-        <div className={`flex items-center mr-12`}>
+        <div className={`flex items-center gap-x-12`}>
           <div className='flex px-12 mr-8'>
             <span className='font-button03-medium text-[var(--color-text-subtle)] mr-8'>
               Include Gas fee
@@ -128,6 +156,16 @@ const InventoryItemList = (props: Props) => {
               </div>
             </div>
           </div>
+          <Button
+            className='!p-9'
+            onClick={() => downloadCSV()}
+            disabled={
+              !inventoryItemList ||
+              inventoryItemList?.pages[0].data.length === 0
+            }
+          >
+            <DownloadSimple />
+          </Button>
         </div>
       </div>
       {itemViewType === 'listView' && <InventoryItemTable sticky={true} />}
