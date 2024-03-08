@@ -163,6 +163,7 @@ const InventoryItemList = (props: Props) => {
               !inventoryItemList ||
               inventoryItemList?.pages[0].data.length === 0
             }
+            id='csv_item_inventory'
           >
             <DownloadSimple />
           </Button>

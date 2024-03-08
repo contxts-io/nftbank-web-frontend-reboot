@@ -157,6 +157,11 @@ const InventoryItemTable = (props: Props) => {
     return result;
   };
   const handleSort = (type: TSort) => {
+    sendGTMEvent({
+      event: 'buttonClicked',
+      name: 'item_inventory_sorting',
+      parameter: type,
+    });
     setRequestParam((prev) => ({
       ...prev,
       sortCol: type,
