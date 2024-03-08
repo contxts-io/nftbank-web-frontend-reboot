@@ -54,7 +54,7 @@ const InventoryCollectionTable = () => {
     },
     {
       name: priceType === 'costBasis' ? 'Cost basis' : 'Acq. price',
-      key: 'costBasis',
+      key: 'acquisitionPrice',
       sort: true,
     },
     {
