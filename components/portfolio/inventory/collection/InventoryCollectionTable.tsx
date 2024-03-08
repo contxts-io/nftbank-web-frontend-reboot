@@ -6,7 +6,11 @@ import {
 import styles from './InventoryCollectionTable.module.css';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
-import { TSort, inventoryCollectionAtom } from '@/store/requestParam';
+import {
+  SortOrder,
+  TSort,
+  inventoryCollectionAtom,
+} from '@/store/requestParam';
 import SkeletonLoader from '../../../SkeletonLoader';
 import { Collection, TValuation } from '@/interfaces/collection';
 import { inventoryTypeAtom } from '@/store/settings';
@@ -31,6 +35,8 @@ import { Tooltip } from '@nextui-org/react';
 import { UNABLE_TO_CALCULATE_ROI } from '@/utils/messages';
 import Info from '@/public/icon/Info';
 import { sendGTMEvent } from '@next/third-parties/google';
+import CaretUpDown from '@/public/icon/CaretUpDown';
+import CaretDown from '@/public/icon/CaretDown';
 
 const InventoryCollectionTable = () => {
   const priceType = useAtomValue(priceTypeAtom);
@@ -44,24 +50,28 @@ const InventoryCollectionTable = () => {
     {
       name: 'Amount',
       key: 'amount',
-      sort: 'amount',
+      sort: true,
     },
     {
       name: priceType === 'costBasis' ? 'Cost basis' : 'Acq. price',
-      key: 'costBasis',
+      key: 'acquisitionPrice',
+      sort: true,
     },
     {
       name: 'Valuation Type',
     },
     {
       name: 'Realtime NAV',
-      sort: 'nav',
+      key: 'nav',
+      sort: true,
     },
     {
       name: 'Unrealized G&L',
+      // sort: 'unrealizedGL',
     },
     {
       name: 'Unrealized ROI',
+      // sort: 'unrealizedROI',
     },
   ];
   const currency = useAtomValue(currencyAtom);
@@ -110,15 +120,20 @@ const InventoryCollectionTable = () => {
 
   const handleClickSortButton = (sort: TSort) => {
     const order =
-      inventoryCollectionRequestParam.sort !== sort
-        ? 'desc'
-        : inventoryCollectionRequestParam.order === 'desc'
-        ? 'asc'
-        : 'desc';
+      inventoryCollectionRequestParam.sortCol !== sort
+        ? SortOrder.Desc
+        : inventoryCollectionRequestParam.sortOrder === SortOrder.Desc
+        ? SortOrder.Asc
+        : SortOrder.Desc;
     setInventoryCollectionRequestParam({
       ...inventoryCollectionRequestParam,
-      sort: sort,
-      order: order,
+      sortCol: sort,
+      sortOrder: order,
+    });
+    sendGTMEvent({
+      event: 'buttonClicked',
+      name: 'collection_inventory_sorting',
+      parameter: sort,
     });
   };
   const handleClickCollection = (collection: Collection) => {
@@ -164,17 +179,42 @@ const InventoryCollectionTable = () => {
                 {T_HEADER.map((item, index) => (
                   <th
                     key={index}
-                    className={`font-caption-medium text-[var(--color-text-subtle)] py-12
+                    className={`font-caption-medium text-[var(--color-text-subtle)] py-12 whitespace-nowrap
                 ${index > 0 ? 'text-right' : 'text-left'}
-                ${item.sort && 'cursor-pointer'}
-                ${index === 0 && 'pl-16'}
-                ${index === T_HEADER.length - 1 && 'pr-16'}
+                ${item.sort ? 'cursor-pointer' : ''}
+                ${(index === 0 && 'pl-16') || ''}
+                ${(index === T_HEADER.length - 1 && 'pr-16') || ''}
                 `}
-                    onClick={() =>
-                      item.sort && handleClickSortButton(item.sort as TSort)
-                    }
                   >
-                    <p className={index > 1 ? styles.pTd : ''}>{item.name}</p>
+                    <p
+                      className={`${index > 1 ? styles.pTd : ''} ${
+                        inventoryCollectionRequestParam.sortCol === item.key
+                          ? 'text-[var(--color-text-main)]'
+                          : ''
+                      } inline-block align-middle hover:text-[var(--color-text-main)]`}
+                      onClick={() =>
+                        item.sort && handleClickSortButton(item.key as TSort)
+                      }
+                    >
+                      {item.name}
+                      {item.sort && (
+                        <div
+                          className={`inline-block align-middle ml-4 ${
+                            inventoryCollectionRequestParam.sortOrder ===
+                            SortOrder.Asc
+                              ? 'rotate-180'
+                              : ''
+                          }`}
+                        >
+                          {inventoryCollectionRequestParam.sortCol ===
+                          item.key ? (
+                            <CaretDown />
+                          ) : (
+                            <CaretUpDown />
+                          )}
+                        </div>
+                      )}
+                    </p>
                   </th>
                 ))}
                 {/* <th className='text-right'>

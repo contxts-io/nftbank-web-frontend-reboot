@@ -2,22 +2,13 @@
 import Button from '@/components/buttons/Button';
 import styles from './RealizedGainAndLoss.module.css';
 import Image from 'next/image';
-import CaretDown from '@/public/icon/CaretDown';
-import Export from '@/public/icon/Export';
 import Dropdown from './Dropdown';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  PERIOD_LIST,
-  STATUS_LIST,
-  TPeriod,
-  TStatus,
-  TYear,
-} from '@/constants/period';
+import { PERIOD_LIST, TPeriod, TStatus, TYear } from '@/constants/period';
 import {
   useInventoryRealizedTokens,
   useInventoryRealizedTokensInfinite,
 } from '@/utils/hooks/queries/inventory';
-import { useMe } from '@/utils/hooks/queries/auth';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { useAtom, useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
@@ -41,6 +32,9 @@ import ToggleButton from '@/components/buttons/ToggleButton';
 import { useInView } from 'react-intersection-observer';
 import NoData from '@/components/error/NoData';
 import DropdownMobile from '@/components/dropdown/DropdownMobile';
+import DownloadSimple from '@/public/icon/DownloadSimple';
+import { downloadCSVInventoryRealizedTokens } from '@/apis/inventory';
+import { sendGTMEvent } from '@next/third-parties/google';
 const THEAD = {
   costBasis: [
     { key: 'item', value: 'Item' },
@@ -162,7 +156,29 @@ const RealizedGainAndLoss = () => {
         }) || []
     );
   }, [realizedTokenList?.pages, requestParams, status]);
+  const downloadCSV = async () => {
+    await downloadCSVInventoryRealizedTokens({
+      walletAddress: portfolioUser?.walletAddress as string,
+      year: requestParams.year as number | 'all',
+    })
+      .then((response) => {
+        // Convert the blob data to a downloadable file
 
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute(
+          'download',
+          `realizedTokens_${requestParams.year}.csv`
+        );
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((error) => {
+        console.error('Error fetching CSV data:', error);
+      });
+  };
   return (
     <section className={styles.container}>
       <div className={styles.title}>
@@ -186,8 +202,8 @@ const RealizedGainAndLoss = () => {
           onClick={(name) => handleChangeStatus(name)}
           className='w-65'
         /> */}
-        <div className='flex items-center w-full md:w-fit'>
-          <span className='font-button03-medium text-[var(--color-text-subtle)] mr-8'>
+        <div className='flex items-center w-full md:w-fit gap-x-12'>
+          <span className='font-button03-medium text-[var(--color-text-subtle)]'>
             Include Gas fee
           </span>
           <ToggleButton
@@ -209,6 +225,14 @@ const RealizedGainAndLoss = () => {
               handleClickItem={(item) => handleChangeYear(item.name)}
             />
           </div>
+          <Button
+            className='!p-9'
+            onClick={() => downloadCSV()}
+            disabled={!mergePosts || mergePosts.length === 0}
+            id='csv_realized_gain_loss'
+          >
+            <DownloadSimple />
+          </Button>
         </div>
       </div>
       <div className={styles.tableWrapper}>
