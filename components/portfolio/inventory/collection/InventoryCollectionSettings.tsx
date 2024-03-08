@@ -135,6 +135,7 @@ const InventoryCollectionSettings = () => {
                 !inventoryCollectionList ||
                 inventoryCollectionList?.pages[0].data.length === 0
               }
+              id='csv_collection_inventory'
             >
               <DownloadSimple />
             </Button>

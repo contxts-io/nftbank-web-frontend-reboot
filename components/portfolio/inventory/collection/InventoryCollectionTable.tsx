@@ -130,6 +130,11 @@ const InventoryCollectionTable = () => {
       sortCol: sort,
       sortOrder: order,
     });
+    sendGTMEvent({
+      event: 'buttonClicked',
+      name: 'collection_inventory_sorting',
+      parameter: sort,
+    });
   };
   const handleClickCollection = (collection: Collection) => {
     sendGTMEvent({
