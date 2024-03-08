@@ -7,7 +7,7 @@ import { useInventoryCollectionsInfinite } from '@/utils/hooks/queries/inventory
 import Image from 'next/image';
 import { Collection } from '@/interfaces/collection';
 import { useInView } from 'react-intersection-observer';
-import { TCollectionParam } from '@/store/requestParam';
+import { SortOrder, TCollectionParam } from '@/store/requestParam';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const ActivityCollection = () => {
   const { data: walletList } = useMyWalletList();
@@ -21,8 +21,8 @@ const ActivityCollection = () => {
       walletAddress: '',
       page: 0,
       limit: 3,
-      sort: 'nav',
-      order: 'desc',
+      sortCol: 'nav',
+      sortOrder: SortOrder.Desc,
     });
   const { data, fetchNextPage, status } = useInventoryCollectionsInfinite(
     inventoryCollectionRequestParam

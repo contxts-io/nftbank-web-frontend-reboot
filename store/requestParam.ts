@@ -1,22 +1,26 @@
 import { TCurrency } from "@/interfaces/constants";
 import { BasicParam } from "@/interfaces/request";
 import { atom } from "jotai";
-export type TSortOrder = 'asc' | 'desc'
+export enum SortOrder {
+  Desc = '-1',Asc = '1'
+}
 export type TSort = 'amount' | 'nav' | 'spam'
 
 export type TCollectionParam = {
   walletAddress: string,
   searchCollection: string,
-  sort: TSort,
+  sortCol: 'nav' | 'amount' | 'spam',
+  sortOrder: SortOrder,
   page: number,
   limit: number,
-  order :TSortOrder,
 }
 export type ItemParam = BasicParam & {
   assetContract: string[],
   currency: TCurrency,
-  sort: TSort,
-  order: TSortOrder,
+  // sort: TSort,
+  // order: SortOrder,
+  sortCol: 'nav' | 'amount' | 'spam',
+  sortOrder: SortOrder,
   limit: number,
   page: number,
 }
@@ -45,24 +49,24 @@ export const inventoryCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
   page: 1,
   limit: 30,
-  sort: 'nav',
-  order :'desc',
+  sortCol: 'nav',
+  sortOrder: SortOrder.Desc,
 })
 export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
   walletAddress: '',
   page: 1,
   limit: 30,
-  sort: 'nav',
-  order :'desc',
+  sortCol: 'nav',
+  sortOrder: SortOrder.Desc,
 })
 export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
   searchCollection: '',
   walletAddress: '',
   page: 1,
   limit: 30,
-  sort: 'spam',
-  order: 'desc',
+  sortCol: 'spam',
+  sortOrder: SortOrder.Desc,
   includeSpam: true,
   includeCustomSpam: true,
   includeNonSpam: true,
@@ -75,8 +79,8 @@ export const inventoryItemListAtom = atom<ItemParam & {paging : boolean}>({
   page: 1,
   limit: 30,
   currency: 'eth',
-  sort: 'nav',
-  order: 'desc',
+  sortCol: 'nav',
+  sortOrder: SortOrder.Desc,
   paging: true,
 })
 export const analysisGainAndLossParamAtom = atom<TAnalysisGainAndLossParam>({
