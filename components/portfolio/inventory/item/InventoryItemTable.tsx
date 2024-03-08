@@ -5,7 +5,7 @@ import {
 } from '@/utils/hooks/queries/inventory';
 import styles from './InventoryItemTable.module.css';
 import { useAtom, useAtomValue } from 'jotai';
-import { inventoryItemListAtom } from '@/store/requestParam';
+import { SortOrder, TSort, inventoryItemListAtom } from '@/store/requestParam';
 import { TValuation } from '@/interfaces/collection';
 import { Token } from '@/interfaces/token';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
@@ -65,44 +65,44 @@ const InventoryItemTable = (props: Props) => {
       name: 'Item',
     },
     {
-      type: 'amount',
+      sortCol: 'amount',
       name: 'Amount',
-      sort: 'amount',
+      sort: true,
     },
     {
-      type: priceType === 'costBasis' ? 'costBasis' : 'acquisitionPrice',
+      sortCol: 'acquisitionPrice',
       name: priceType === 'costBasis' ? 'Cost basis' : 'Acq. price',
-      sort: priceType === 'costBasis' ? 'costBasis' : 'acquisitionPrice',
+      sort: true,
     },
     {
-      type: 'valuationType',
+      sortCol: 'valuationType',
       name: 'Valuation Type',
-      sort: 'valuationType',
+      sort: true,
     },
     {
-      type: 'nav',
+      sortCol: 'nav',
       name: 'Realtime NAV',
-      sort: 'nav',
+      sort: true,
     },
     {
-      type: 'unrealizedG&L',
+      sortCol: 'unrealizedG&L',
       name: 'Unrealized G&L',
-      sort: 'unrealizedGL',
+      sort: false,
     },
     {
-      type: 'unrealizedROI',
+      sortCol: 'unrealizedROI',
       name: 'Unrealized ROI',
-      sort: 'unrealizedROI',
+      sort: false,
     },
     // {
-    //   type: 'accuracy',
+    //   sortCol: 'accuracy',
     //   name: 'Accuracy',
     // },
     {
-      type: 'acquisitionDate',
+      sortCol: 'acquisitionDate',
       name: 'Acq. date',
       tooltip: LATEST_ACQUISITION_DATE,
-      sort: 'acquisitionDate',
+      sort: true,
     },
   ];
   useEffect(() => {
@@ -156,12 +156,17 @@ const InventoryItemTable = (props: Props) => {
       valuations.find((val) => val.default);
     return result;
   };
-  const handleSort = (type: string) => {
+  const handleSort = (type: TSort) => {
     setRequestParam((prev) => ({
       ...prev,
-      sort: type as 'amount' | 'nav',
+      sortCol: type,
       // order: prev.order === 'desc' ? 'asc' : 'desc',
-      order: prev.sort === type ? 'asc' : 'desc',
+      sortOrder:
+        prev.sortCol !== type
+          ? SortOrder.Desc
+          : prev.sortOrder === SortOrder.Desc
+          ? SortOrder.Asc
+          : SortOrder.Desc,
     }));
   };
   return (
@@ -190,7 +195,7 @@ const InventoryItemTable = (props: Props) => {
                   className={`font-caption-medium 
                 ${index == 0 ? 'text-left' : 'text-right'} 
                 ${item.sort ? 'cursor-pointer' : ''}`}
-                  onClick={() => item.sort && handleSort(item.type)}
+                  onClick={() => item.sort && handleSort(item.sortCol as TSort)}
                 >
                   {item.tooltip ? (
                     <div className='w-full flex items-center justify-end text-[var(--color-icon-subtle)]'>
@@ -206,10 +211,12 @@ const InventoryItemTable = (props: Props) => {
                       {item.sort && (
                         <div
                           className={`inline-block align-middle ml-4 ${
-                            requestParam.order === 'asc' ? 'rotate-180' : ''
+                            requestParam.sortOrder === SortOrder.Asc
+                              ? 'rotate-180'
+                              : ''
                           }`}
                         >
-                          {requestParam.sort === item.sort ? (
+                          {requestParam.sortCol === item.sortCol ? (
                             <CaretDown />
                           ) : (
                             <CaretUpDown />
@@ -219,10 +226,10 @@ const InventoryItemTable = (props: Props) => {
                     </div>
                   ) : (
                     <div
-                      className={`flex items-center hover:text-[var(--color-text-main)] ${
-                        index !== 0 ? 'justify-end ' : ''
-                      } ${
-                        requestParam.sort === item.sort
+                      className={`flex items-center ${
+                        item.sort ? 'hover:text-[var(--color-text-main)]' : ''
+                      } ${index !== 0 ? 'justify-end ' : ''} ${
+                        requestParam.sortCol === item.sortCol
                           ? 'text-[var(--color-text-main)]'
                           : ''
                       }`}
@@ -231,10 +238,12 @@ const InventoryItemTable = (props: Props) => {
                       {item.sort && (
                         <div
                           className={`inline-block align-middle ml-4 ${
-                            requestParam.order === 'asc' ? 'rotate-180' : ''
+                            requestParam.sortOrder === SortOrder.Asc
+                              ? 'rotate-180'
+                              : ''
                           }`}
                         >
-                          {requestParam.sort === item.sort ? (
+                          {requestParam.sortCol === item.sortCol ? (
                             <CaretDown />
                           ) : (
                             <CaretUpDown />

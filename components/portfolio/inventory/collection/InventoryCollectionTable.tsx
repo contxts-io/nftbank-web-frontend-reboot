@@ -6,7 +6,11 @@ import {
 import styles from './InventoryCollectionTable.module.css';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
-import { TSort, inventoryCollectionAtom } from '@/store/requestParam';
+import {
+  SortOrder,
+  TSort,
+  inventoryCollectionAtom,
+} from '@/store/requestParam';
 import SkeletonLoader from '../../../SkeletonLoader';
 import { Collection, TValuation } from '@/interfaces/collection';
 import { inventoryTypeAtom } from '@/store/settings';
@@ -46,27 +50,28 @@ const InventoryCollectionTable = () => {
     {
       name: 'Amount',
       key: 'amount',
-      sort: 'amount',
+      sort: true,
     },
     {
       name: priceType === 'costBasis' ? 'Cost basis' : 'Acq. price',
       key: 'costBasis',
-      sort: priceType === 'costBasis' ? 'costBasis' : 'acquisitionPrice',
+      sort: true,
     },
     {
       name: 'Valuation Type',
     },
     {
       name: 'Realtime NAV',
-      sort: 'nav',
+      key: 'nav',
+      sort: true,
     },
     {
       name: 'Unrealized G&L',
-      sort: 'unrealizedGL',
+      // sort: 'unrealizedGL',
     },
     {
       name: 'Unrealized ROI',
-      sort: 'unrealizedROI',
+      // sort: 'unrealizedROI',
     },
   ];
   const currency = useAtomValue(currencyAtom);
@@ -115,15 +120,15 @@ const InventoryCollectionTable = () => {
 
   const handleClickSortButton = (sort: TSort) => {
     const order =
-      inventoryCollectionRequestParam.sort !== sort
-        ? 'desc'
-        : inventoryCollectionRequestParam.order === 'desc'
-        ? 'asc'
-        : 'desc';
+      inventoryCollectionRequestParam.sortCol !== sort
+        ? SortOrder.Desc
+        : inventoryCollectionRequestParam.sortOrder === SortOrder.Desc
+        ? SortOrder.Asc
+        : SortOrder.Desc;
     setInventoryCollectionRequestParam({
       ...inventoryCollectionRequestParam,
-      sort: sort,
-      order: order,
+      sortCol: sort,
+      sortOrder: order,
     });
   };
   const handleClickCollection = (collection: Collection) => {
@@ -178,25 +183,26 @@ const InventoryCollectionTable = () => {
                   >
                     <p
                       className={`${index > 1 ? styles.pTd : ''} ${
-                        inventoryCollectionRequestParam.sort === item.sort
+                        inventoryCollectionRequestParam.sortCol === item.key
                           ? 'text-[var(--color-text-main)]'
                           : ''
                       } inline-block align-middle hover:text-[var(--color-text-main)]`}
                       onClick={() =>
-                        item.sort && handleClickSortButton(item.sort as TSort)
+                        item.sort && handleClickSortButton(item.key as TSort)
                       }
                     >
                       {item.name}
                       {item.sort && (
                         <div
                           className={`inline-block align-middle ml-4 ${
-                            inventoryCollectionRequestParam.order === 'asc'
+                            inventoryCollectionRequestParam.sortOrder ===
+                            SortOrder.Asc
                               ? 'rotate-180'
                               : ''
                           }`}
                         >
-                          {inventoryCollectionRequestParam.sort ===
-                          item.sort ? (
+                          {inventoryCollectionRequestParam.sortCol ===
+                          item.key ? (
                             <CaretDown />
                           ) : (
                             <CaretUpDown />

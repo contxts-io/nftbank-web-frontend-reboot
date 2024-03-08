@@ -2,7 +2,7 @@
 import { useInventoryItemList } from '@/utils/hooks/queries/inventory';
 import styles from './InventoryItemList.module.css';
 import { useAtom, useAtomValue } from 'jotai';
-import { TSort, inventoryItemListAtom } from '@/store/requestParam';
+import { SortOrder, TSort, inventoryItemListAtom } from '@/store/requestParam';
 import { currencyAtom, priceTypeAtom } from '@/store/currency';
 import React, { useEffect, useState } from 'react';
 import InventoryItemTable from './InventoryItemTable';
@@ -34,15 +34,15 @@ const InventoryItemList = (props: Props) => {
   const [selectedToken, setSelectedToken] = useAtom(selectedTokenAtom);
   const handleClickSortButton = (sort: TSort) => {
     const order =
-      requestParam.sort !== sort
-        ? 'desc'
-        : requestParam.order === 'desc'
-        ? 'asc'
-        : 'desc';
+      requestParam.sortCol !== sort
+        ? SortOrder.Desc
+        : requestParam.sortOrder === SortOrder.Desc
+        ? SortOrder.Asc
+        : SortOrder.Desc;
     setRequestParam({
       ...requestParam,
-      sort: sort,
-      order: order,
+      sortCol: sort,
+      sortOrder: order,
     });
   };
   useEffect(() => {
