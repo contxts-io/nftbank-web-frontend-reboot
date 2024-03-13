@@ -51,14 +51,19 @@ const ProfileComponent = () => {
   }, []);
 
   useEffect(() => {
-    path && setNickname(path.split('nickname/')[1] || null);
-    path && setWalletAddress(path.split('walletAddress/')[1] || null);
-    path &&
-      !path.split('nickname/')[1] &&
-      !path.split('walletAddress/')[1] &&
-      me?.nickname &&
-      setNickname(me.nickname);
+    // path && setNickname(path.split('nickname/')[1] || null);
+    // path && setWalletAddress(path.split('walletAddress/')[1] || null);
+    // path &&
+    //   !path.split('nickname/')[1] &&
+    //   !path.split('walletAddress/')[1] &&
+    //   me?.nickname &&
+    //   setNickname(me.nickname);
   }, [path, me?.nickname]);
+  useEffect(() => {
+    portfolioUser?.nickname && setNickname(portfolioUser.nickname);
+    portfolioUser?.walletAddress &&
+      setWalletAddress(portfolioUser.walletAddress);
+  }, [portfolioUser]);
   useEffect(() => {
     const handleKeyDown = (e: any) => {
       if (e.key === 'Enter') {
@@ -73,21 +78,21 @@ const ProfileComponent = () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [walletAddress, error]);
-  useEffect(() => {
-    nickname
-      ? setPortfolioUser({
-          nickname: nickname,
-          walletAddress: '',
-          networkId: networkId,
-        })
-      : walletAddress
-      ? setPortfolioUser({
-          nickname: '',
-          walletAddress: walletAddress,
-          networkId: networkId,
-        })
-      : null;
-  }, [nickname, walletAddress]);
+  // useEffect(() => {
+  //   nickname
+  //     ? setPortfolioUser({
+  //         nickname: nickname,
+  //         walletAddress: '',
+  //         networkId: networkId,
+  //       })
+  //     : walletAddress
+  //     ? setPortfolioUser({
+  //         nickname: '',
+  //         walletAddress: walletAddress,
+  //         networkId: networkId,
+  //       })
+  //     : null;
+  // }, [nickname, walletAddress]);
   useEffect(() => {
     if (searchAddress == '') {
       setError(null);

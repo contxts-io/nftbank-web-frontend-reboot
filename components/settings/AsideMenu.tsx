@@ -9,11 +9,10 @@ const AsideMenu = () => {
   const pathName = usePathname();
   const router = useRouter();
   const [cookies, setCookie, removeCookie] = useCookies(['nb_session']);
-  const handleSignOut = async () => {
+  const handleSignOut = () => {
     try {
       removeCookie('nb_session', { path: '/' });
-      console.log('sign out');
-      router.push('/');
+      router.push('/portfolio/overview/sample');
     } catch (e) {
       console.log('e', e);
     }
@@ -45,7 +44,7 @@ const AsideMenu = () => {
         >
           Newsletter
         </Link> */}
-        <Button className={`${styles.li}`} onClick={() => handleSignOut()}>
+        <Button className={styles.li} onClick={() => handleSignOut()}>
           Sign out
         </Button>
       </ul>

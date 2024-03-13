@@ -37,7 +37,7 @@ import {
   ConnectorName,
   useConnectCustom,
 } from '@/utils/hooks/useConnectCustom';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { connectedWalletAddressAtom } from '@/store/account';
 import { useMutationSignInUp } from '@/utils/hooks/mutations/auth';
 import { formatToken } from '@/utils/common';
@@ -48,6 +48,8 @@ import { useMutationInsertWalletBulk } from '@/utils/hooks/mutations/wallet';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { showToastMessage } from '@/utils/toastify';
 import { openModalAtom } from '@/store/settings';
+import { portfolioUserAtom } from '@/store/portfolio';
+import { QueryClient, useQueryClient } from '@tanstack/react-query';
 
 type Props = {
   onClose: () => void;
@@ -58,6 +60,8 @@ type TWallet = {
 };
 const ConnectWallet = (props: Props) => {
   const router = useRouter();
+  const portfolioUser = useAtomValue(portfolioUserAtom);
+  const queryClient = useQueryClient();
   const { data, mutate: signInUp, status } = useMutationSignInUp();
   const { data: walletList, refetch } = useMyWalletList();
   const {
@@ -164,7 +168,12 @@ const ConnectWallet = (props: Props) => {
               onSuccess: async (data) => {
                 // const me = await checkMe();
                 console.log('add success & refetch');
-                refetch();
+                queryClient.invalidateQueries({
+                  queryKey: ['myWalletList'],
+                });
+                queryClient.invalidateQueries({
+                  queryKey: ['walletList'],
+                });
                 setShowModal(null);
               },
               onSettled: () => {

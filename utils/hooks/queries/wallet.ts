@@ -1,7 +1,9 @@
 import { TWalletList, getMyWalletList, getWalletList } from "@/apis/wallet";
-import { validationWalletAddress } from "@/utils/common";
+import { portfolioUserAtom } from "@/store/portfolio";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { useAtomValue } from "jotai";
+import { useMe } from "./auth";
 
 export function useMyWalletList(q?: string) {
   return useQuery<TWalletList,AxiosError>(

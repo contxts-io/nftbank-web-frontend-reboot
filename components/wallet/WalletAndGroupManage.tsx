@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '../buttons/Button';
 import styles from './WalletAndGroupManage.module.css';
 import Wallet from '@/public/icon/Wallet';
@@ -16,6 +16,7 @@ import { BasicParam } from '@/interfaces/request';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { TUser } from '@/interfaces/user';
 import { useRouter } from 'next/navigation';
+import Spinner from '@/public/icon/Spinner';
 type Props = {
   onClose: () => void;
   setPortfolioWallet: (param: BasicParam) => void;
@@ -27,7 +28,9 @@ const WalletAndGroupManage = (props: Props) => {
   const [selected, setSelected] = useState<'wallet' | 'group'>('wallet');
   const [showModal, setShowModal] = useAtom(openModalAtom);
   const router = useRouter();
-  const { data: walletList } = useWalletList({ nickname: props.user.nickname });
+  const { data: walletList, status } = useWalletList({
+    nickname: props.user.nickname,
+  });
   const { data: walletGroupList } = useWalletGroupList(props.user.nickname);
   const handleClickList = (param: BasicParam) => {
     // setMySelectedInformation(param);
@@ -37,6 +40,9 @@ const WalletAndGroupManage = (props: Props) => {
   const copyAddress = (walletAddress: string) => {
     navigator.clipboard.writeText(walletAddress);
   };
+  useEffect(() => {
+    console.log('status', status);
+  }, [status]);
   return (
     <div className={styles.container}>
       <div className='w-full p-16'>
@@ -75,37 +81,45 @@ const WalletAndGroupManage = (props: Props) => {
               <Wallet />
               <p>All Wallet</p>
             </div>
-            <div className={styles.listWrapper}>
-              {walletList?.data.map((wallet, i) => {
-                return (
-                  <div
-                    key={i}
-                    className={styles.list}
-                    onClick={() =>
-                      handleClickList({
-                        walletAddress: wallet.walletAddress,
-                        nickname: '',
-                        networkId: networkId,
-                      })
-                    }
-                  >
-                    <p className='text-[var(--color-text-main)]'>
-                      {shortenAddress(wallet.walletAddress)}
-                    </p>
-                    <Button
-                      id=''
-                      className={`ml-auto ${styles.copyButton}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        copyAddress(wallet.walletAddress);
-                      }}
+            {status === 'loading' ? (
+              <div
+                className={`${styles.listWrapper} flex justify-center pt-20`}
+              >
+                <Spinner />
+              </div>
+            ) : (
+              <div className={styles.listWrapper}>
+                {walletList?.data.map((wallet, i) => {
+                  return (
+                    <div
+                      key={i}
+                      className={styles.list}
+                      onClick={() =>
+                        handleClickList({
+                          walletAddress: wallet.walletAddress,
+                          nickname: '',
+                          networkId: networkId,
+                        })
+                      }
                     >
-                      <Copy className='w-16 h-16 fill-[var(--color-icon-main)]' />
-                    </Button>
-                  </div>
-                );
-              })}
-            </div>
+                      <p className='text-[var(--color-text-main)]'>
+                        {shortenAddress(wallet.walletAddress)}
+                      </p>
+                      <Button
+                        id=''
+                        className={`ml-auto ${styles.copyButton}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copyAddress(wallet.walletAddress);
+                        }}
+                      >
+                        <Copy className='w-16 h-16 fill-[var(--color-icon-main)]' />
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
         {selected === 'group' && (

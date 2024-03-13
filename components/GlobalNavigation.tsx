@@ -170,6 +170,11 @@ const GlobalNavigation = () => {
     console.log('value', text);
     setWalletAddress(text);
   };
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   if (path.includes('/landing') || path.includes('/blog'))
     return (
       // <div className='w-full h-62 sticky top-0 z-10 '>
@@ -195,7 +200,7 @@ const GlobalNavigation = () => {
             </p>
           </div>
         </div>
-        {path !== '/' && (
+        {path !== '/' && !path.includes('/auth') && (
           <>
             <Link
               href={'/portfolio'}
@@ -207,16 +212,18 @@ const GlobalNavigation = () => {
             >
               Portfolio
             </Link>
-            <Link
-              href={'/settings'}
-              className={` ${styles.link} ${
-                path.includes('/settings')
-                  ? 'text-[var(--color-text-main)]'
-                  : ''
-              }`}
-            >
-              Settings
-            </Link>
+            {isClient && me && (
+              <Link
+                href={'/settings'}
+                className={` ${styles.link} ${
+                  path.includes('/settings')
+                    ? 'text-[var(--color-text-main)]'
+                    : ''
+                }`}
+              >
+                Settings
+              </Link>
+            )}
           </>
         )}
         {/* <Link
@@ -300,7 +307,7 @@ const GlobalNavigation = () => {
               </Button>
             </div>
             <>
-              {!me && (
+              {isClient && !me && (
                 <Button
                   className='bg-[var(--color-background-brand-bold)] !h-34'
                   onClick={() => router.push('/auth/signin')}
