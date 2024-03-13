@@ -18,6 +18,7 @@ import {
   useWalletGroupList,
 } from '@/utils/hooks/queries/walletGroup';
 import { useMe } from '@/utils/hooks/queries/auth';
+import InputText from '../input/InputText';
 const ManageGroup = (props: {
   group: TWalletGroup | null;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,6 +28,7 @@ const ManageGroup = (props: {
   const [inputText, setInputText] = useState<string>(props.group?.name || '');
   const [invalidInput, setInvalidInput] = useState<boolean>(false);
   const [inputSearch, setInputSearch] = useState<string>('');
+  const [isSubmitLoading, setIsSubmitLoading] = useState<boolean>(false);
   const { data: walletList, isLoading } = useMyWalletList(inputSearch);
   const { data: walletGroupList, refetch } = useWalletGroupList(
     me?.nickname || ''
@@ -56,6 +58,7 @@ const ManageGroup = (props: {
     });
   };
   const handleSubmit = () => {
+    setIsSubmitLoading(true);
     upsertWalletGroup(
       {
         id: props.group?.id || undefined,
@@ -74,6 +77,10 @@ const ManageGroup = (props: {
             theme: theme === 'light' ? 'light' : 'dark',
             position: 'bottom-right',
           });
+          setIsSubmitLoading(false);
+        },
+        onError: () => {
+          setIsSubmitLoading(false);
         },
       }
     );
@@ -99,8 +106,7 @@ const ManageGroup = (props: {
         <span className='font-caption-regular text-[var(--color-text-subtle)]'>
           Group Name
         </span>
-        <input
-          type='text'
+        <InputText
           className={`${styles.inputText} ${
             invalidInput ? styles.invalid : ''
           }`}
@@ -143,52 +149,54 @@ const ManageGroup = (props: {
           value={inputSearch}
           onChange={(text) => setInputSearch(text)}
         />
-        <table className={`font-caption-regular ${styles.table}`}>
-          <thead>
-            <tr className='pb-12'>
-              <th className='text-left'>
-                <p className='mr-183'>Wallet</p>
-              </th>
-              <th className='text-left'>
-                <p className='mr-[258px]'>Balance</p>
-              </th>
-              <th className='text-right'>
-                <p>Group</p>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {walletList?.data.map((wallet, i) => {
-              const isSelected = selectedWalletIds.some(
-                (id) => id === wallet.id
-              );
-              return (
-                <tr key={i}>
-                  <td className='text-left'>
-                    <div className='flex items-center gap-x-4'>
-                      <p>{shortenAddress(wallet.walletAddress)}</p>
-                      <CheckCircle className='fill-[var(--color-icon-brand)]' />
-                    </div>
-                  </td>
-                  <td className='text-left'>
-                    <p>$11,134</p>
-                  </td>
-                  <td className='text-right'>
-                    <CheckBox
-                      onClick={() => {
-                        handleClickWallet(wallet);
-                      }}
-                      className={`ml-auto ${styles.checkbox} ${
-                        isSelected ? styles.checked : ''
-                      }`}
-                      checked={isSelected}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <div className='w-full h-[720px] overflow-y-scroll'>
+          <table className={`font-caption-regular ${styles.table}`}>
+            <thead>
+              <tr className='pb-12'>
+                <th className='text-left'>
+                  <p>Wallet</p>
+                </th>
+                <th className='text-left'>
+                  <p>Balance</p>
+                </th>
+                <th className='text-right'>
+                  <p>Group</p>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {walletList?.data.map((wallet, i) => {
+                const isSelected = selectedWalletIds.some(
+                  (id) => id === wallet.id
+                );
+                return (
+                  <tr key={i}>
+                    <td className='text-left'>
+                      <div className='flex items-center gap-x-4'>
+                        <p>{shortenAddress(wallet.walletAddress)}</p>
+                        <CheckCircle className='fill-[var(--color-icon-brand)]' />
+                      </div>
+                    </td>
+                    <td className='text-left'>
+                      <p>$11,134</p>
+                    </td>
+                    <td className='text-right'>
+                      <CheckBox
+                        onClick={() => {
+                          handleClickWallet(wallet);
+                        }}
+                        className={`ml-auto ${styles.checkbox} ${
+                          isSelected ? styles.checked : ''
+                        }`}
+                        checked={isSelected}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
         <div className='flex items-center gap-x-8 mt-18'>
           <Button
             id=''
@@ -199,9 +207,10 @@ const ManageGroup = (props: {
           </Button>
           <SubmitButton
             id=''
-            className={styles.button}
+            className={`${styles.button} w-60`}
             onClick={() => handleSubmit()}
             disabled={inputText.length === 0 || selectedWalletIds.length === 0}
+            isLoading={isSubmitLoading}
           >
             Save
           </SubmitButton>

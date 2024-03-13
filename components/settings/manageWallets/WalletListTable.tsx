@@ -11,17 +11,23 @@ import WalletEditOptions from './WalletEditOptions';
 import { TWallet } from '@/interfaces/inventory';
 import MinidentIconImg from '@/components/BlockiesIcon';
 import BlockiesIcon from '@/components/BlockiesIcon';
+import SkeletonLoader from '@/components/SkeletonLoader';
 type Props = {
   onClickWallet: (wallet: TWallet, name: 'edit' | 'delete') => void;
   searchAddress?: string;
 };
 const WalletListTable = (props: Props) => {
-  const { data: walletList } = useMyWalletList(props.searchAddress);
+  const { data: walletList, status } = useMyWalletList(props.searchAddress);
   const currency = useAtomValue(currencyAtom);
   const handleClickList = (wallet: TWallet, name: 'edit' | 'delete') => {
     props.onClickWallet(wallet, name);
   };
-
+  if (status !== 'success')
+    return (
+      <div className='w-full px-25 h-200'>
+        <SkeletonLoader className='w-full h-full' />
+      </div>
+    );
   return (
     <table className={`font-caption-regular ${styles.table}`}>
       <thead>
@@ -51,12 +57,12 @@ const WalletListTable = (props: Props) => {
               </td>
               <td className='text-left'>
                 <p className='mr-111'>
-                  {formatCurrency(wallet.value[currency], currency)}
+                  {formatCurrency(wallet.value?.[currency] || '0', currency)}
                 </p>
               </td>
               <td className='text-left'>
                 <div className='flex gap-8 items-center mr-111'>
-                  {wallet.position.map((position, i) => {
+                  {wallet.position?.map((position, i) => {
                     const totalValue = wallet.position.reduce(
                       (a: number, b) => {
                         return a + parseFloat(b.value[currency].amount || '0');

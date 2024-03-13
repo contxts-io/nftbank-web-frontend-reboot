@@ -20,10 +20,16 @@ import { useAtomValue } from 'jotai';
 import { currencyAtom } from '@/store/currency';
 import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
 import DropdownMobile from '@/components/dropdown/DropdownMobile';
-
-const TotalInventoryValue = () => {
+import { BasicParam } from '@/interfaces/request';
+type Props = {
+  portfolioUser?: BasicParam;
+};
+const TotalInventoryValue = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
-  const portfolioUser = useAtomValue(portfolioUserAtom);
+  const _portfolioUser = useAtomValue(portfolioUserAtom);
+  const [portfolioUser, setPortfolioUser] = useState(
+    props.portfolioUser || _portfolioUser
+  );
   const networkId = useAtomValue(networkIdAtom);
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<'value' | 'amount'>('value');

@@ -2,7 +2,7 @@
   @apply w-full;
 }
 .inputText {
-  @apply w-full mt-4;
+  @apply w-full mt-4 h-40 px-12;
 }
 .invalid {
   @apply border-[var(--color-border-danger)];

@@ -2,7 +2,7 @@
   @apply w-[420px] p-16 border-1 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface)];
 }
 .inputText {
-  @apply w-full mt-16 mb-20;
+  @apply w-full mt-16 mb-20 h-40 px-16;
 }
 .button {
   @apply ml-auto;

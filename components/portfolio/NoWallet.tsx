@@ -25,7 +25,7 @@ const NoWallet = () => {
         <Button
           id=''
           className={`font-body02-medium ${styles.addButton}`}
-          // onClick={() => openModal()}
+          onClick={() => openModal()}
         >
           Add Wallets
         </Button>

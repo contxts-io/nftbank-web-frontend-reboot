@@ -26,11 +26,12 @@ import { getAddress } from 'ethers/lib/utils';
 import SearchInput from './searchInput/SearchInput';
 import { verifyWalletAddress } from '@/apis/wallet';
 import { sendGTMEvent } from '@next/third-parties/google';
+import { useCookies } from 'react-cookie';
 
 const GlobalNavigation = () => {
   const router = useRouter();
   const path = usePathname();
-  const { data: me } = useMe();
+  const { data: me, status: signInStatus } = useMe();
   const { mutate: signOut } = useMutationSignOut();
   const { disconnect: disconnectWagmi } = useDisconnectWagmi();
   const disconnectThirdWeb = useDisconnectThirdWeb();
@@ -56,6 +57,7 @@ const GlobalNavigation = () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+
   useEffect(() => {
     const handleKeyDown = (e: any) => {
       if (e.key === 'Enter') {
@@ -194,16 +196,28 @@ const GlobalNavigation = () => {
           </div>
         </div>
         {path !== '/' && (
-          <></>
-
-          // <Link
-          //   href={'/portfolio'}
-          //   className={` ${styles.link} ${
-          //     path.includes('/portfolio') ? 'text-[var(--color-text-main)]' : ''
-          //   }`}
-          // >
-          //   Portfolio
-          // </Link>
+          <>
+            <Link
+              href={'/portfolio'}
+              className={` ${styles.link} ${
+                path.includes('/portfolio')
+                  ? 'text-[var(--color-text-main)]'
+                  : ''
+              }`}
+            >
+              Portfolio
+            </Link>
+            <Link
+              href={'/settings'}
+              className={` ${styles.link} ${
+                path.includes('/settings')
+                  ? 'text-[var(--color-text-main)]'
+                  : ''
+              }`}
+            >
+              Settings
+            </Link>
+          </>
         )}
         {/* <Link
           href={'/watch'}
@@ -242,7 +256,7 @@ const GlobalNavigation = () => {
         <SearchBar />
         
       </div> */}
-      {path !== '/' && (
+      {path !== '/' && !path.includes('/auth') && (
         <div className='hidden md:block'>
           <SearchInput
             placeholder='Search any Wallet'
@@ -269,7 +283,7 @@ const GlobalNavigation = () => {
           {isGhost ? <Ghost /> : <GhostOn />}
         </Button>*/}
 
-        {path !== '/' && (
+        {path !== '/' && !path.includes('/auth') && (
           <>
             <div className='border-t-1 border-b-1 border-l-1 border-[var(--color-border-main)]'>
               <ThemeSwitcher />
@@ -280,12 +294,23 @@ const GlobalNavigation = () => {
                 onClick={() => changeCurrency()}
                 className='border-l-0'
               >
-                <div className='flex items-center justify-center border-1 border-[var(--color-border-bold)] rounded-full h-20 w-20 mr-8 '>
+                <div className='flex items-center justify-center border-1 border-[var(--color-border-bold)] rounded-full h-20 w-20'>
                   {currency === 'eth' ? <EthereumIcon /> : <Usd />}
                 </div>
-                {currency.toUpperCase()}
               </Button>
             </div>
+            <>
+              {!me && (
+                <Button
+                  className='bg-[var(--color-background-brand-bold)] !h-34'
+                  onClick={() => router.push('/auth/signin')}
+                >
+                  <p className='font-body02-regular text-[var(--color-text-inverse)]'>
+                    Get Started
+                  </p>
+                </Button>
+              )}
+            </>
           </>
         )}
         {/* 내계정 */}

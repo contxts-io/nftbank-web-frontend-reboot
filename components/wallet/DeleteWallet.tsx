@@ -48,7 +48,7 @@ const DeleteWallet = (props: Props) => {
           id=''
           className={styles.deleteButton}
           onClick={() => handleClickDelete()}
-          loading={deleteStatus === 'loading'}
+          isLoading={deleteStatus === 'loading'}
         >
           <p>Delete</p>
         </SubmitButton>

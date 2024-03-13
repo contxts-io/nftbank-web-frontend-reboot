@@ -12,9 +12,9 @@ export type SearchParam = {
   name?: string,
   walletAddress?: string,
 }
-export const getMyWalletList = async<T = TWalletList>(q:string) => {
+export const getMyWalletList = async<T = TWalletList>(q?:string) => {
   // const query = jsonToQueryString(searchParam);
-  const {data} = await instance.get<{data: T}>(`/wallet?q=${q}`);
+  const {data} = await instance.get<{data: T}>(`/wallet${q ? `?q=${q}` : ''}`);
   return data.data;
 }
 export const getWalletList = async<T = TWalletList>(searchParam: { nickname: string }) => {

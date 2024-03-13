@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { SearchParam } from '@/apis/wallet';
 import { useMutationUpdateWallet } from '@/utils/hooks/mutations/wallet';
+import InputText from '../input/InputText';
 type Props = {
   wallet: TWallet;
   onClose: () => void;
@@ -61,9 +62,9 @@ const EditWallet = (props: Props) => {
           <Cancel className='w-16 h-16' />
         </Button>
       </div>
-      <input
+      <InputText
         className='w-full mt-16'
-        placeholder=''
+        placeholder='Wallet Name'
         value={wallet.name}
         onChange={(e) => handleInputText(e.target.value)}
       />

@@ -7,14 +7,14 @@ export function useMyWalletList(q?: string) {
   return useQuery<TWalletList,AxiosError>(
     ['myWalletList',q],
     async () => {
-      const result = await getMyWalletList(q as string);
+      const result = await getMyWalletList(q);
   return result;
     },
     {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      enabled: q == undefined || q == '' || !q.startsWith('0x') ||(q.startsWith('0x') && validationWalletAddress(q)),
+      // enabled: q !== undefined && q !== '' && q.startsWith('0x') || (!q.startsWith('0x') && validationWalletAddress(q)),
     },
   );
 }

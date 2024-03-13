@@ -35,6 +35,10 @@ const nextConfig = {
         source: '/v1/:path*',
         destination: `${API_BASE_URL}/v1/:path*`,
       },
+      {
+        source: '/v1auth/:path*',
+        destination: `https://reboot-auth.onrender.com/v1/:path*`,
+      },
     ];
   },
 };

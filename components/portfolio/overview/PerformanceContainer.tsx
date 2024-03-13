@@ -12,11 +12,18 @@ import { useEffect, useState } from 'react';
 import Dropdown from '@/components/dropdown/Dropdown';
 import { networkIdAtom, portfolioUserAtom } from '@/store/portfolio';
 import DropdownMobile from '@/components/dropdown/DropdownMobile';
+import { BasicParam } from '@/interfaces/request';
 const YEARS: number[] = [2024, 2023];
-const PerformanceContainer = () => {
+type Props = {
+  portfolioUser?: BasicParam;
+};
+const PerformanceContainer = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
   const networkId = useAtomValue(networkIdAtom);
-  const portfolioUser = { ...useAtomValue(portfolioUserAtom), networkId };
+  const _portfolioUser = { ...useAtomValue(portfolioUserAtom), networkId };
+  const [portfolioUser, setPortfolioUser] = useState(
+    props.portfolioUser || _portfolioUser
+  );
   const [isPolling, setIsPolling] = useState<boolean>(true);
 
   const [requestParam, setRequestParam] = useState<{

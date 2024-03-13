@@ -28,7 +28,7 @@ import { getAddress } from 'ethers/lib/utils';
 import { sendGTMEvent } from '@next/third-parties/google';
 import { verifyWalletAddress } from '@/apis/wallet';
 const ProfileComponent = () => {
-  const { data: me } = useMe();
+  const { data: me, status } = useMe();
   const path = usePathname();
   const router = useRouter();
   const currency = useAtomValue(currencyAtom);

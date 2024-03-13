@@ -1,6 +1,6 @@
 'use client';
 import styles from './SummaryValueContainer.module.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   useSummaryGasSpend,
   useSummaryRealized,
@@ -18,9 +18,16 @@ import {
   isPlus,
 } from '@/utils/common';
 import { portfolioUserAtom } from '@/store/portfolio';
-const SummaryValueContainer = () => {
+import { BasicParam } from '@/interfaces/request';
+type Props = {
+  portfolioUser?: BasicParam;
+};
+const SummaryValueContainer = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
-  const portfolioUser = useAtomValue(portfolioUserAtom);
+  const _portfolioUser = useAtomValue(portfolioUserAtom);
+  const [portfolioUser, setPortfolioUser] = useState(
+    props.portfolioUser || _portfolioUser
+  );
   const { data: totalSpend, status: statusTotalSpend } =
     useSummaryTotalSpend(portfolioUser);
   const { data: gasSpend, status: statusGasSpend } =

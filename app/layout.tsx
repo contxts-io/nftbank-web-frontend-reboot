@@ -169,10 +169,7 @@ export default async function RootLayout({
         <meta name='apple-mobile-web-app-capable' content='yes' />
 
         <Providers>
-          {/**
-           * 
-           * sprint1
-           * 
+          {/* * * * sprint1 *
           <AuthProvider>
             <div className='flex flex-col w-screen max-w-[1440] h-screen'>
               <GlobalNavigation />
@@ -180,13 +177,17 @@ export default async function RootLayout({
               <GlobalFooter />
             </div>
           </AuthProvider> */}
-          <Analytics>
-            <div className='flex flex-col w-screen min-h-screen max-w-[1440]'>
-              <GlobalNavigation />
-              <div className='w-full flex-1'>{children}</div>
-              <GlobalFooter />
-            </div>
-          </Analytics>
+          <AuthProvider>
+            <Analytics>
+              <div className='flex flex-col w-screen min-h-screen max-w-[1440]'>
+                <GlobalNavigation />
+                <LoginProvider>
+                  <div className='w-full flex flex-1'>{children}</div>
+                </LoginProvider>
+                <GlobalFooter />
+              </div>
+            </Analytics>
+          </AuthProvider>
         </Providers>
       </body>
       <GoogleAnalytics gaId={GA_TRACKING_ID} />

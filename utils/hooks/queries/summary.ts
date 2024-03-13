@@ -26,7 +26,7 @@ export function useSummaryTotalSpend(searchParam: BasicParam | null) {
 export function useSummaryGasSpend(searchParam:BasicParam | null) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<TSummary,AxiosError>(
-    ['summary','gasSpend',searchParam, dataFreshness?.processedAt],
+    [searchParam, 'summary','gasSpend',dataFreshness?.processedAt],
     async () => {
       const value = await getSummaryGasSpend(searchParam);
       return value;
@@ -44,7 +44,7 @@ export function useSummaryGasSpend(searchParam:BasicParam | null) {
 export function useSummaryTotalSale(searchParam: BasicParam | null) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<TSummary,AxiosError>(
-    ['summary','totalSale',searchParam, dataFreshness?.processedAt],
+    [searchParam, 'summary','totalSale', dataFreshness?.processedAt],
     async () => {
       const value = await getSummaryTotalSale(searchParam);
       return value;
@@ -61,7 +61,7 @@ export function useSummaryTotalSale(searchParam: BasicParam | null) {
 export function useSummaryUnrealized(searchParam: BasicParam | null) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'CURRENT');
   return useQuery<TUnrealized,AxiosError>(
-    ['summary','unrealized', searchParam, dataFreshness?.processedAt],
+    [searchParam, 'summary','unrealized', dataFreshness?.processedAt],
     async () => {
       const value = await getSummaryUnrealized(searchParam);
       return value;
@@ -79,7 +79,7 @@ export function useSummaryUnrealized(searchParam: BasicParam | null) {
 export function useSummaryRealized(searchParam: BasicParam | null) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<TSummary,AxiosError>(
-    ['summary','realized',searchParam,dataFreshness?.processedAt],
+    [searchParam,'summary','realized',dataFreshness?.processedAt],
     async () => {
       const value = await getSummaryRealized(searchParam);
       return value;

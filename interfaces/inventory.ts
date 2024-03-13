@@ -59,7 +59,7 @@ export type PerformanceCollection = {
 }
 export type BasicWallet = {
     name?: string,
-    networkName: 'evm',
+    networkName: 'evm' | 'ethereum',
     walletAddress: string,
     provider: string,
 }

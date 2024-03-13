@@ -9,7 +9,7 @@ import { BasicParam } from '@/interfaces/request';
 import { useAtom, useSetAtom } from 'jotai';
 import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
 
-const OverviewPage = ({ params }: { params: { slug: string[] } }) => {
+const SampleOverviewPage = ({ params }: { params: { slug: string[] } }) => {
   const { slug } = params;
   const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
   const setPortfolioNicknameAtom = useSetAtom(portfolioNicknameAtom);
@@ -29,7 +29,7 @@ const OverviewPage = ({ params }: { params: { slug: string[] } }) => {
     <section className='pt-20 px-24 pb-40'>
       <SummaryValueContainer
         portfolioUser={{
-          [slug[0]]: slug[1],
+          nickname: 'nftbank',
           networkId: 'ethereum',
         }}
       />
@@ -41,30 +41,15 @@ const OverviewPage = ({ params }: { params: { slug: string[] } }) => {
         <RecentActivityContainer />
       </div> */}
       <div className='w-full'>
-        <HistoricalTrendContainer
-          portfolioUser={{
-            [slug[0]]: slug[1],
-            networkId: 'ethereum',
-          }}
-        />
+        <HistoricalTrendContainer />
         {/* <div className='w-full grid grid-cols-1 lg:grid-cols-2 gap-x-[20px]'> */}
         <div className='w-full grid gap-x-[20px] grid-cols-1 md:grid-cols-2'>
-          <TotalInventoryValue
-            portfolioUser={{
-              [slug[0]]: slug[1],
-              networkId: 'ethereum',
-            }}
-          />
-          <PerformanceContainer
-            portfolioUser={{
-              [slug[0]]: slug[1],
-              networkId: 'ethereum',
-            }}
-          />
+          <TotalInventoryValue />
+          <PerformanceContainer />
         </div>
         {/* <RecentActivityContainer /> */}
       </div>
     </section>
   );
 };
-export default OverviewPage;
+export default SampleOverviewPage;

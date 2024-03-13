@@ -92,7 +92,7 @@ const ConnectWallet = (props: Props) => {
     try {
       if (wallet.name === 'Metamask') {
         handleCustom('metamask');
-        console.log('connected to ', wallet);
+        console.log('metamask connected to ', wallet);
       } else if (wallet.name === 'WalletConnect') {
         handleCustom('wc');
       } else if (wallet.name === 'Trust') {
@@ -117,10 +117,10 @@ const ConnectWallet = (props: Props) => {
       setConnectedWalletAddress(null);
     };
   }, []);
-  useEffect(() => {
-    console.log('me', me);
-    me && router.push('/portfolio');
-  }, [me]);
+  // useEffect(() => {
+  //   console.log('me', me);
+  //   me && router.push('/portfolio');
+  // }, [me]);
 
   useEffect(() => {
     console.log('address ::::: ', address);
@@ -140,7 +140,7 @@ const ConnectWallet = (props: Props) => {
       const token = formatToken({
         walletAddress: connectedWalletAddress.address,
         provider: connectedWalletAddress.provider,
-        type: 'evm',
+        type: 'ethereum',
       });
       me
         ? insertWallet(
@@ -149,7 +149,7 @@ const ConnectWallet = (props: Props) => {
                 name: connectedWalletAddress.address,
                 walletAddress: connectedWalletAddress.address,
                 provider: connectedWalletAddress.provider,
-                networkName: 'evm',
+                networkName: 'ethereum',
               },
             ],
             {

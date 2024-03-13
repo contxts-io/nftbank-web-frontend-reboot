@@ -5,6 +5,7 @@ import SubmitButton from './buttons/SubmitButton';
 import { useMutationUpdateMe } from '@/utils/hooks/mutations/auth';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import { useMeManual } from '@/utils/hooks/queries/auth';
+import InputText from './input/InputText';
 const NicknameSetting = () => {
   const [inputText, setInputText] = useState<string>('');
   const { data: me, refetch } = useMeManual();
@@ -29,12 +30,15 @@ const NicknameSetting = () => {
       <p className='font-subtitle02-medium text-[var(--color-text-main)]'>
         Nickname Setting
       </p>
-      <input
-        type='text'
-        className={styles.inputText}
+      <p className='text-[var(--color-text-subtle)] mt-8 mb-20'>
+        {`We've come up with some cool nicknames for you! You can change your
+        nickname anytime😀`}
+      </p>
+      <InputText
         placeholder='Nickname'
         value={inputText}
         onChange={handleInputText}
+        className='mb-20'
       />
       <SubmitButton
         id=''
