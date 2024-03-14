@@ -6,7 +6,10 @@ import { useMutationUpdateMe } from '@/utils/hooks/mutations/auth';
 import ReactQueryClient from '@/utils/ReactQueryClient';
 import { useMeManual } from '@/utils/hooks/queries/auth';
 import InputText from './input/InputText';
-const NicknameSetting = () => {
+type Props = {
+  onClose: () => void;
+};
+const NicknameSetting = (props: Props) => {
   const [inputText, setInputText] = useState<string>('');
   const { data: me, refetch } = useMeManual();
   const { mutate: updateNickname, status: updateStatus } =
@@ -21,6 +24,7 @@ const NicknameSetting = () => {
       {
         onSuccess: () => {
           refetch();
+          props.onClose();
         },
       }
     );
@@ -45,7 +49,7 @@ const NicknameSetting = () => {
         className={styles.button}
         disabled={inputText.length == 0}
         onClick={handleSubmit}
-        loading={updateStatus === 'loading'}
+        isLoading={updateStatus === 'loading' ? true : false}
       >
         <p>Done</p>
       </SubmitButton>

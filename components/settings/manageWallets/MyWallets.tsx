@@ -54,6 +54,7 @@ const MyWallets = () => {
               placeholder='Wallet Address, Wallet Name'
               value={searchAddress}
               onChange={handleChangeInput}
+              handleClose={() => handleChangeInput('')}
             />
           </div>
           <SubmitButton

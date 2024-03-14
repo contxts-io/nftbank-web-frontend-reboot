@@ -1,7 +1,7 @@
 .container {
 }
 .body {
-  @apply border-1 border-[var(--color-border-main)] w-[448px] h-[440px] py-40 px-20 mb-16;
+  @apply border-1 border-[var(--color-border-main)] max-w-[448px] md:w-[448px] h-[440px] py-40 px-20 mb-16;
 }
 .title {
   @apply text-[var(--color-text-main)] text-center;

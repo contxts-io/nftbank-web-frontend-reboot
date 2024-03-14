@@ -64,7 +64,7 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
         overlayClassName={'overlayBackground'}
       >
         <div className='relative w-full h-full'>
-          <NicknameSetting />
+          <NicknameSetting onClose={() => setShowModal(false)} />
         </div>
       </ReactModal>
     </>

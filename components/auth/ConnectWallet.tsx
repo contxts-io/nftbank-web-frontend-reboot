@@ -257,7 +257,13 @@ const ConnectWallet = (props: Props) => {
             onClick={() => handleClickButton(wallet)}
             key={index}
           >
-            <Image src={wallet.icon} width='16' height='16' alt='' />{' '}
+            <img
+              src={wallet.icon}
+              width='16'
+              height='16'
+              alt=''
+              className='!border-transparent'
+            />{' '}
             <p>{wallet.name}</p>
           </Button>
         ))}

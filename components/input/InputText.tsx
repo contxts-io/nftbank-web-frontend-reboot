@@ -39,6 +39,7 @@ type InputBaseProps = {
   placeholder?: string;
   style?: CSSProperties;
   value?: string;
+  disabled?: boolean;
 };
 const InputText = (props: InputBaseProps) => {
   return (

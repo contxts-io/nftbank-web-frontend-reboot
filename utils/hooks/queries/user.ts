@@ -15,6 +15,7 @@ export function useUser(nickname:string | null) {
       cacheTime: Infinity,
       useErrorBoundary: false,
       enabled: !!nickname,
+      retry: 1,
     },
   );
 }

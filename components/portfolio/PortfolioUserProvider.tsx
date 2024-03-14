@@ -1,56 +1,96 @@
 'use client';
 
-import { portfolioUserAtom } from '@/store/portfolio';
+import { portfolioProfileAtom, portfolioUserAtom } from '@/store/portfolio';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useWalletList } from '@/utils/hooks/queries/wallet';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import ProfileComponent from '../profile/ProfileComponent';
 import PortfolioTabNavigation from './PortfolioTabNavigation';
 import NoWallet from './NoWallet';
+import { useUser } from '@/utils/hooks/queries/user';
+import { myDefaultPortfolioAtom } from '@/store/settings';
 
 const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: me } = useMe();
   const router = useRouter();
   const path = usePathname();
+  const [nickname, setNickname] = useState('');
   const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
+  const [portfolioProfile, setPortfolioProfile] = useAtom(portfolioProfileAtom);
   const {
     data: walletList,
     status,
     error,
-  } = useWalletList({ nickname: portfolioUser?.nickname || '' });
+  } = useWalletList({ nickname: nickname });
+  const myDefaultPortfolio = useAtomValue(myDefaultPortfolioAtom);
+  const { data: user, status: userStatus } = useUser(nickname);
   useEffect(() => {
-    console.log('path : ', path);
-    console.log('me?.nickname : ', me?.nickname);
+    return () => {
+      setPortfolioProfile(null);
+      setPortfolioUser(null);
+    };
+  }, []);
+  // useEffect(() => {
+  //   console.log('path : ', path);
+  //   console.log('me?.nickname : ', me?.nickname);
+  //   if (path.split('/').length === 3) {
+  //     me
+  //       ? setPortfolioUser({
+  //           nickname: me.nickname,
+  //           networkId: 'ethereum',
+  //         })
+  //       : router.push('/portfolio/overview/sample');
+  //   } else {
+  //     const paths = path.split('/');
+  //     paths.length === 5 &&
+  //       setPortfolioUser({
+  //         [paths[3] as string]: paths[4],
+  //         networkId: 'ethereum',
+  //       });
+  //     path.includes('/sample') &&
+  //       setPortfolioUser((prev) => {
+  //         return {
+  //           nickname: 'sample',
+  //           networkId: 'ethereum',
+  //         };
+  //       });
+  //     console.log('path', path.includes('/sample'));
+  //     console.log('porftoliouser ::: ', portfolioUser);
+  //   }
+  // }, [path, me?.nickname]);
+  useEffect(() => {
     if (path.split('/').length === 3) {
       me
-        ? setPortfolioUser({
-            nickname: me.nickname || 'Welcome',
-            networkId: 'ethereum',
-          })
+        ? (setPortfolioProfile(me),
+          myDefaultPortfolio && setPortfolioUser(myDefaultPortfolio))
         : router.push('/portfolio/overview/sample');
+    } else if (path.includes('/sample')) {
+      setNickname('sample');
     } else {
       const paths = path.split('/');
       paths.length === 5 &&
+        path.includes('/nickname') &&
+        (setNickname(paths[4]),
         setPortfolioUser({
-          [paths[3] as string]: paths[4],
+          nickname: paths[4],
+          networkId: 'ethereum',
+        }));
+      paths.length === 5 &&
+        path.includes('/walletAddress') &&
+        setPortfolioUser({
+          walletAddress: paths[4],
           networkId: 'ethereum',
         });
-      path.includes('/sample') &&
-        setPortfolioUser((prev) => {
-          return {
-            nickname: 'sample',
-            networkId: 'ethereum',
-          };
-        });
-      console.log('path', path.includes('/sample'));
-      console.log('porftoliouser ::: ', portfolioUser);
     }
-  }, [path, me?.nickname]);
+  }, [path, myDefaultPortfolio]);
   useEffect(() => {
-    console.log('changed : ', portfolioUser);
-  }, [portfolioUser]);
+    console.log('changed portfolioUser ::', portfolioUser);
+    console.log('changed userStatus :', userStatus);
+    console.log('changed user :: ', user);
+    user && setPortfolioProfile(user);
+  }, [user]);
   return (
     <>
       <ProfileComponent />
@@ -58,7 +98,7 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
       {portfolioUser?.walletAddress && (
         <>
           <PortfolioTabNavigation />
-          {children}
+          {/* {children} */}
         </>
       )}
       {status === 'success' && (
@@ -66,11 +106,11 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
           {walletList?.data.length > 0 ? (
             <>
               <PortfolioTabNavigation />
-              {children}
+              {/* {children} */}
             </>
           ) : (
             <div className='w-full h-[calc(100vh-197px)] flex items-center justify-center'>
-              {me?.nickname === portfolioUser?.nickname ? (
+              {me?.nickname === portfolioProfile?.nickname ? (
                 <NoWallet />
               ) : (
                 <p className='font-body02-regular text-[var(--color-text-subtle)]'>

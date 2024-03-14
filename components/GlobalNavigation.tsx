@@ -27,6 +27,7 @@ import SearchInput from './searchInput/SearchInput';
 import { verifyWalletAddress } from '@/apis/wallet';
 import { sendGTMEvent } from '@next/third-parties/google';
 import { useCookies } from 'react-cookie';
+import { BasicParam } from '@/interfaces/request';
 
 const GlobalNavigation = () => {
   const router = useRouter();
@@ -38,7 +39,7 @@ const GlobalNavigation = () => {
   const [connectedWalletAddress, setConnectedWalletAddress] = useAtom(
     connectedWalletAddressAtom
   );
-  const [mySelectedInformation, setMySelectedInformation] = useAtom(
+  const [myDefaultPortfolio, setMyDefaultPortfolio] = useAtom(
     myDefaultPortfolioAtom
   );
   const [currency, setCurrency] = useAtom(currencyAtom);
@@ -172,6 +173,23 @@ const GlobalNavigation = () => {
   };
   const [isClient, setIsClient] = useState(false);
 
+  const handleClickRow = (row: BasicParam) => {
+    Boolean(row.nickname && row.nickname !== '') &&
+      setMyDefaultPortfolio({
+        nickname: row.nickname,
+        networkId: 'ethereum',
+      });
+    Boolean(row.walletGroupId && row.walletGroupId !== '') &&
+      setMyDefaultPortfolio({
+        walletGroupId: row.walletGroupId,
+        networkId: 'ethereum',
+      });
+    Boolean(row.walletAddress && row.walletAddress !== '') &&
+      setMyDefaultPortfolio({
+        walletAddress: row.walletAddress,
+        networkId: 'ethereum',
+      });
+  };
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -321,12 +339,14 @@ const GlobalNavigation = () => {
           </>
         )}
         {/* 내계정 */}
-        {me && mySelectedInformation && (
-          <PortfolioSelector
-            user={me}
-            portfolioParam={mySelectedInformation}
-            setPortfolioParam={setMySelectedInformation}
-          />
+        {me && myDefaultPortfolio && (
+          <div className='border-[var(--color-border-main)] border-1 border-l-0'>
+            <PortfolioSelector
+              user={me}
+              portfolioParam={myDefaultPortfolio}
+              setPortfolioParam={(param) => handleClickRow(param)}
+            />
+          </div>
         )}
       </div>
     </nav>

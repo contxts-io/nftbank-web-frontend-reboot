@@ -87,6 +87,7 @@ const ManageGroup = (props: {
   };
   const handleClickCancel = () => {
     setSelectedWalletIds([]);
+    props.onClose(false);
   };
   return (
     <section className={styles.container}>

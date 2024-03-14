@@ -48,14 +48,14 @@ const GroupListTable = (props: Props) => {
             </td>
             <td className='text-left'>
               <p className='mr-111'>
-                {formatCurrency(group.value[currency], currency)}
+                {formatCurrency(group.value?.[currency] || '0', currency)}
               </p>
             </td>
             <td className='text-left'>
               <div className='flex gap-8 items-center mr-111'>
-                {group.position.map((position, i) => {
+                {group.position?.map((position, i) => {
                   const totalValue = group.position.reduce((a: number, b) => {
-                    return a + parseFloat(b.value[currency].amount || '0');
+                    return a + parseFloat(b.value?.[currency].amount || '0');
                   }, 0);
                   console.log('totalValue', totalValue);
                   return (
@@ -75,7 +75,7 @@ const GroupListTable = (props: Props) => {
                           ? formatPercent(
                               (
                                 (parseFloat(
-                                  position.value[currency].amount || '0'
+                                  position.value?.[currency].amount || '0'
                                 ) /
                                   totalValue) *
                                 100

@@ -43,10 +43,7 @@ const PortfolioSelector = (props: Props) => {
   }, [props.portfolioParam]);
   const listRef = useRef<HTMLDivElement>(null);
   return (
-    <div
-      className='relative border-1 border-[var(--color-border-main)] border-l-0'
-      ref={listRef}
-    >
+    <div className='relative' ref={listRef}>
       <Button
         id=''
         onClick={() => toggleOpen()}

@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const nextConfig = {
+  transpilePackages: ['jotai-devtools'],
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },

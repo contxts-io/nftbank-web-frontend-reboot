@@ -22,9 +22,9 @@ export function useMyWalletList(q?: string) {
 }
 export function useWalletList(param:{nickname:string}) {
   return useQuery<TWalletList,AxiosError>(
-    ['walletList',param],
+    ['walletList',param.nickname],
     async () => {
-      const result = await getWalletList(param);
+      const result = await getWalletList(param.nickname);
   return result;
     },
     {
