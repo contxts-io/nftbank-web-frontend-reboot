@@ -98,15 +98,19 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
       {portfolioUser?.walletAddress && (
         <>
           <PortfolioTabNavigation />
-          {/* {children} */}
+          {children}
         </>
       )}
-      {status === 'success' && (
+      <>
+        <PortfolioTabNavigation />
+        {children}
+      </>
+      {/* {status === 'success' && (
         <>
           {walletList?.data.length > 0 ? (
             <>
               <PortfolioTabNavigation />
-              {/* {children} */}
+              {children}
             </>
           ) : (
             <div className='w-full h-[calc(100vh-197px)] flex items-center justify-center'>
@@ -120,7 +124,7 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
             </div>
           )}
         </>
-      )}
+      )} */}
     </>
   );
 };
