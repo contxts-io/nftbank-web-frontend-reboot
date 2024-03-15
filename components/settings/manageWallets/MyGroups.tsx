@@ -32,6 +32,13 @@ const MyGroups = () => {
   const handleInputText = (text: string) => {
     setSearchInput(text);
   };
+  const handleCloseDrawer = () => {
+    setDrawerOpen(false);
+    setTimeout(() => {
+      setShowGroupDetailModal(false);
+      setSelectedGroup(null);
+    }, 200);
+  };
   return (
     <section className={styles.container}>
       <div className='w-full flex justify-between mt-26 px-24'>
@@ -51,13 +58,7 @@ const MyGroups = () => {
         isOpen={showGroupDetailModal}
         contentLabel='Group Detail'
         className='w-full max-w-[1036px] absolute top-0 right-0'
-        onRequestClose={() => {
-          setDrawerOpen(false);
-          setTimeout(() => {
-            setShowGroupDetailModal(false);
-            setSelectedGroup(null);
-          }, 200);
-        }}
+        onRequestClose={() => handleCloseDrawer()}
         ariaHideApp={false}
         shouldCloseOnOverlayClick={true}
         overlayClassName={'overlayBackground'}
@@ -70,6 +71,7 @@ const MyGroups = () => {
             <GroupDetail
               group={selectedGroup}
               openManageGroup={() => handleOpenManageGroup()}
+              onClose={() => handleCloseDrawer()}
             />
           )}
         </div>

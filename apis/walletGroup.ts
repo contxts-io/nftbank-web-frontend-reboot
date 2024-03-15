@@ -19,3 +19,7 @@ export const updateMyWalletGroup = async(postData: UpsertWalletGroup & {id:strin
   const result = await instance.put(`/wallet-group/${postData.id}`,postData);
   return result.data;
 }
+export const deleteMyWalletGroup = async(postData: {id:string}) => {
+  const result = await instance.delete(`/wallet-group/${postData.id}`);
+  return result.data;
+}
