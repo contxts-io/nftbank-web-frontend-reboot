@@ -23,7 +23,7 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
     data: walletList,
     status,
     error,
-  } = useWalletList({ nickname: nickname });
+  } = useWalletList({ nickname: portfolioProfile?.nickname || '' });
   const myDefaultPortfolio = useAtomValue(myDefaultPortfolioAtom);
   const { data: user, status: userStatus } = useUser(nickname);
   useEffect(() => {

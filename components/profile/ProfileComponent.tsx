@@ -258,7 +258,7 @@ const ProfileComponent = () => {
           </div>
         </section>
       ) : (
-        <section></section>
+        <section />
       )}
     </>
   );

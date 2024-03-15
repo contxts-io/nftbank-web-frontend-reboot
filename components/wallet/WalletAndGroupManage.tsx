@@ -27,9 +27,10 @@ const WalletAndGroupManage = (props: Props) => {
   const networkId = useAtomValue(networkIdAtom);
   const [selected, setSelected] = useState<'wallet' | 'group'>('wallet');
   const [showModal, setShowModal] = useAtom(openModalAtom);
+  const [nickname, setNickname] = useState(props.user.nickname);
   const router = useRouter();
   const { data: walletList, status } = useWalletList({
-    nickname: props.user.nickname,
+    nickname: nickname,
   });
   const { data: walletGroupList } = useWalletGroupList(props.user.nickname);
   const handleClickList = (param: BasicParam) => {
@@ -42,7 +43,12 @@ const WalletAndGroupManage = (props: Props) => {
   };
   useEffect(() => {
     console.log('status', status);
-  }, [status]);
+    console.log('walletList wrapper', walletList?.data);
+  }, [status, walletList]);
+  useEffect(() => {
+    console.log('props.user : ', props.user);
+    props.user?.nickname && setNickname(props.user.nickname);
+  }, [props.user]);
   return (
     <div className={styles.container}>
       <div className='w-full p-16'>

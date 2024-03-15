@@ -5,7 +5,7 @@ import instance from "@/utils/axiosInterceptor";
 import { jsonToQueryString } from "@/utils/common";
 
 export type TWalletList = {
-  data: TWallet[],
+data: TWallet[],
   paging: Paging,
 }
 export type SearchParam = {
@@ -21,7 +21,7 @@ export const getWalletList = async<T = TWalletList>(nickname: string) => {
   // const query = jsonToQueryString(searchParam);
   // const {data} = await instance.get<{data: T}>(`/wallet?${query}`);
   console.log('searchParam?.nickname', nickname); 
-  const {data} = await instance.get<{data: T}>(`/wallet${nickname && nickname !== '' ? `?q=${nickname}`:''}`);
+  const {data} = await instance.get<{data: T}>(`/wallet${nickname && nickname !== '' ? `?q=${nickname}&limit=100&page=1`:''}`);
   return data.data;
 }
 export const updateMyWallet = async<T = { data: TWallet }>(data: {walletId:string,name:string}) => {
