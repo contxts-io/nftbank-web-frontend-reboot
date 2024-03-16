@@ -27,6 +27,11 @@ const nextConfig = {
         destination: '/portfolio/overview',
         permanent: true,
       },
+      {
+        source: '/settings',
+        destination: '/settings/account',
+        permanent: true,
+      },
     ];
   },
 

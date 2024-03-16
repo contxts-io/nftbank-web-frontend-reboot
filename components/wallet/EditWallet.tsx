@@ -17,9 +17,10 @@ type Props = {
 const EditWallet = (props: Props) => {
   const [wallet, setWallet] = useState<TWallet>(props.wallet);
   const [searchParam, setSearchParam] = useState<SearchParam>({});
-  const { data, error, isLoading, refetch } = useMyWalletList(
-    props.searchAddress
-  );
+  const { data, error, isLoading, refetch } = useMyWalletList({
+    search: props.searchAddress,
+    networkId: 'ethereum',
+  });
   const { mutate: updateWalletName, status } = useMutationUpdateWallet();
   const handleInputText = (value: string) => {
     setSearchParam((prev) => {

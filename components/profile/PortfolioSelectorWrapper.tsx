@@ -2,7 +2,7 @@
 import { useUser } from '@/utils/hooks/queries/user';
 import styles from './ProfileComponent.module.css';
 import { useEffect, useRef, useState } from 'react';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { portfolioProfileAtom, portfolioUserAtom } from '@/store/portfolio';
 import PortfolioSelector from '../PortfolioSelector';
 import Wallet from '@/public/icon/Wallet';
@@ -11,7 +11,10 @@ import Button from '../buttons/Button';
 import Folder from '@/public/icon/Folder';
 import { useWalletList } from '@/utils/hooks/queries/wallet';
 import { TWallet } from '@/interfaces/inventory';
-import { useMyWalletGroup } from '@/utils/hooks/queries/walletGroup';
+import {
+  useWalletGroup,
+  useWalletGroupList,
+} from '@/utils/hooks/queries/walletGroup';
 import { BasicParam } from '@/interfaces/request';
 import { shortenAddress } from '@/utils/common';
 import BlockiesIcon from '../BlockiesIcon';
@@ -19,7 +22,7 @@ import BlockiesIcon from '../BlockiesIcon';
 const PortfolioSelectorWrapper = () => {
   const [nickname, setNickname] = useState<string | null>(null);
   const { data: user, status: userStatus } = useUser(nickname);
-  const [portfolioProfile, setPortfolioProfile] = useAtom(portfolioProfileAtom);
+  const portfolioProfile = useAtomValue(portfolioProfileAtom);
   const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
   const [option, setOption] = useState<{
     type: 'all' | 'group' | 'wallet';
@@ -27,9 +30,15 @@ const PortfolioSelectorWrapper = () => {
   }>({ type: 'all', value: '' });
   const { data: walletList } = useWalletList({
     nickname: portfolioProfile?.nickname || '',
+    networkId: 'ethereum',
   });
-  const { data: groupWalletList } = useMyWalletGroup(option.value);
-  const [selectedWallets, setSelectedWallets] = useState<TWallet[]>([]);
+  const { data: walletGroupList } = useWalletGroupList(
+    portfolioProfile?.nickname || null
+  );
+  const { data: walletGroup } = useWalletGroup({
+    id: option.value,
+    nickname: nickname || '',
+  });
   const [isOpen, setIsOpen] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -40,10 +49,6 @@ const PortfolioSelectorWrapper = () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
-  useEffect(() => {
-    option.type === 'all' && setSelectedWallets(walletList?.data || []);
-    option.type === 'group' && setSelectedWallets(walletList?.data || []);
-  }, [option]);
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
       setIsOpen(false);
@@ -104,6 +109,12 @@ const PortfolioSelectorWrapper = () => {
     //   networkId: 'ethereum',
     // }));
   };
+  useEffect(() => {
+    console.log('change : walletList : ', walletList);
+  }, [walletList]);
+  useEffect(() => {
+    console.log('option : ', option);
+  }, [option]);
   return (
     <div className='relative' ref={listRef}>
       <div className='font-caption-regular flex items-center gap-x-4'>
@@ -113,11 +124,16 @@ const PortfolioSelectorWrapper = () => {
         >
           <Folder className={`mr-4`} />
           {option.type === 'all' && <p>All Wallets</p>}
-          {option.type === 'group' && <p>Group</p>}
+          {option.type === 'group' && (
+            <p>
+              {walletGroupList?.data.find((group) => group.id === option.value)
+                ?.name || walletGroup?.name}
+            </p>
+          )}
           {option.type === 'wallet' && <p>Wallet</p>}
         </Button>
         {option.type === 'all' &&
-          walletList?.data.splice(0, 5).map((wallet, index) => {
+          walletList?.data.map((wallet, index) => {
             return (
               <div
                 key={index}
@@ -134,7 +150,7 @@ const PortfolioSelectorWrapper = () => {
           </div>
         )}
         {option.type === 'group' &&
-          groupWalletList?.wallets?.data.map((wallet, index) => {
+          walletGroup?.wallets?.data.map((wallet, index) => {
             return (
               <div
                 key={index}

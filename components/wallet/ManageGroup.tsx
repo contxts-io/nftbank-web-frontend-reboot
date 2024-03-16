@@ -14,7 +14,7 @@ import CheckCircle from '@/public/icon/CheckCircle';
 import Button from '../buttons/Button';
 import Cancel from '@/public/icon/Cancel';
 import {
-  useMyWalletGroup,
+  useWalletGroup,
   useWalletGroupList,
 } from '@/utils/hooks/queries/walletGroup';
 import { useMe } from '@/utils/hooks/queries/auth';
@@ -29,13 +29,17 @@ const ManageGroup = (props: {
   const [invalidInput, setInvalidInput] = useState<boolean>(false);
   const [inputSearch, setInputSearch] = useState<string>('');
   const [isSubmitLoading, setIsSubmitLoading] = useState<boolean>(false);
-  const { data: walletList, isLoading } = useMyWalletList(inputSearch);
+  const { data: walletList, isLoading } = useMyWalletList({
+    nickname: me?.nickname,
+    networkId: 'ethereum',
+  });
   const { data: walletGroupList, refetch } = useWalletGroupList(
     me?.nickname || ''
   );
-  const { data: walletGroup, refetch: refetchWalletGroup } = useMyWalletGroup(
-    props.group?.id || ''
-  );
+  const { data: walletGroup, refetch: refetchWalletGroup } = useWalletGroup({
+    id: props.group?.id || '',
+    nickname: me?.nickname || '',
+  });
   const [selectedWalletIds, setSelectedWalletIds] = useState<string[]>(
     props.group?.walletIds || []
   );

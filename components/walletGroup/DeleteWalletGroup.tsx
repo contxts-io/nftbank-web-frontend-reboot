@@ -6,7 +6,7 @@ import { TWallet, TWalletGroup } from '@/interfaces/inventory';
 import { useMutationDeleteWallet } from '@/utils/hooks/mutations/wallet';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { useQueryClient } from '@tanstack/react-query';
-import { useMyWalletGroup } from '@/utils/hooks/queries/walletGroup';
+import { useWalletGroup } from '@/utils/hooks/queries/walletGroup';
 import { deleteMyWalletGroup } from '@/apis/walletGroup';
 import { useMutationDeleteWalletGroup } from '@/utils/hooks/mutations/walletGroup';
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
 };
 const DeleteWalletGroup = (props: Props) => {
   const queryClient = useQueryClient();
-  // const { data: walletList, refetch } = useMyWalletGroup();
+  // const { data: walletList, refetch } = useWalletGroup();
   const { mutate: deleteWallet, status: deleteStatus } =
     useMutationDeleteWalletGroup();
   // const handleClickDelete = () => {

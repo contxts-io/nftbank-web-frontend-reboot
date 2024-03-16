@@ -12,12 +12,18 @@ import { TWallet } from '@/interfaces/inventory';
 import MinidentIconImg from '@/components/BlockiesIcon';
 import BlockiesIcon from '@/components/BlockiesIcon';
 import SkeletonLoader from '@/components/SkeletonLoader';
+import { useMe } from '@/utils/hooks/queries/auth';
 type Props = {
   onClickWallet: (wallet: TWallet, name: 'edit' | 'delete') => void;
   searchAddress?: string;
 };
 const WalletListTable = (props: Props) => {
-  const { data: walletList, status } = useMyWalletList(props.searchAddress);
+  const { data: me } = useMe();
+  const { data: walletList, status } = useMyWalletList({
+    nickname: me?.nickname,
+    networkId: 'ethereum',
+    // search:props.searchAddress,
+  });
   const currency = useAtomValue(currencyAtom);
   const handleClickList = (wallet: TWallet, name: 'edit' | 'delete') => {
     props.onClickWallet(wallet, name);

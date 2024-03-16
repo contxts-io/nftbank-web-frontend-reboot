@@ -31,6 +31,7 @@ const WalletAndGroupManage = (props: Props) => {
   const router = useRouter();
   const { data: walletList, status } = useWalletList({
     nickname: nickname,
+    networkId: 'ethereum',
   });
   const { data: walletGroupList } = useWalletGroupList(props.user.nickname);
   const handleClickList = (param: BasicParam) => {
@@ -44,7 +45,8 @@ const WalletAndGroupManage = (props: Props) => {
   useEffect(() => {
     console.log('status', status);
     console.log('walletList wrapper', walletList?.data);
-  }, [status, walletList]);
+    console.log('nickname', nickname);
+  }, [status, walletList, nickname]);
   useEffect(() => {
     console.log('props.user : ', props.user);
     props.user?.nickname && setNickname(props.user.nickname);

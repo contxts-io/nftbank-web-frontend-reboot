@@ -13,7 +13,10 @@ type Props = {
 };
 const DeleteWallet = (props: Props) => {
   const queryClient = useQueryClient();
-  const { data: walletList, refetch } = useMyWalletList(props.searchAddress);
+  const { data: walletList, refetch } = useMyWalletList({
+    search: props.searchAddress || '',
+    networkId: 'ethereum',
+  });
   const { mutate: deleteWallet, status: deleteStatus } =
     useMutationDeleteWallet();
   const handleClickDelete = () => {

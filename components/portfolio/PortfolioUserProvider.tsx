@@ -23,7 +23,10 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
     data: walletList,
     status,
     error,
-  } = useWalletList({ nickname: portfolioProfile?.nickname || '' });
+  } = useWalletList({
+    nickname: portfolioProfile?.nickname || '',
+    networkId: 'ethereum',
+  });
   const myDefaultPortfolio = useAtomValue(myDefaultPortfolioAtom);
   const { data: user, status: userStatus } = useUser(nickname);
   useEffect(() => {
@@ -95,31 +98,32 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
     <>
       <ProfileComponent />
       {/* <PortfolioTabNavigation /> */}
-      {portfolioUser?.walletAddress && (
+      {portfolioUser?.walletAddress ? (
         <>
           <PortfolioTabNavigation />
           {/* {children} */}
         </>
-      )}
-      {status === 'success' && (
-        <>
-          {walletList?.data.length > 0 ? (
-            <>
-              <PortfolioTabNavigation />
-              {/* {children} */}
-            </>
-          ) : (
-            <div className='w-full h-[calc(100vh-197px)] flex items-center justify-center'>
-              {me?.nickname === portfolioProfile?.nickname ? (
-                <NoWallet />
-              ) : (
-                <p className='font-body02-regular text-[var(--color-text-subtle)]'>
-                  This user has no wallets.
-                </p>
-              )}
-            </div>
-          )}
-        </>
+      ) : (
+        status === 'success' && (
+          <>
+            {walletList?.data.length > 0 ? (
+              <>
+                <PortfolioTabNavigation />
+                {/* {children} */}
+              </>
+            ) : (
+              <div className='w-full h-[calc(100vh-197px)] flex items-center justify-center'>
+                {me?.nickname === portfolioProfile?.nickname ? (
+                  <NoWallet />
+                ) : (
+                  <p className='font-body02-regular text-[var(--color-text-subtle)]'>
+                    This user has no wallets.
+                  </p>
+                )}
+              </div>
+            )}
+          </>
+        )
       )}
     </>
   );

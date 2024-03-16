@@ -2,21 +2,26 @@ import Folder from '@/public/icon/Folder';
 import styles from './GroupDetail.module.css';
 import Button from '@/components/buttons/Button';
 import { TWalletGroup } from '@/interfaces/inventory';
-import { useMyWalletGroup } from '@/utils/hooks/queries/walletGroup';
+import { useWalletGroup } from '@/utils/hooks/queries/walletGroup';
 import SubmitButton from '@/components/buttons/SubmitButton';
 import { useEffect, useState } from 'react';
 import BlockiesIcon from '@/components/BlockiesIcon';
 import ReactModal from 'react-modal';
 import DeleteWalletGroup from '@/components/walletGroup/DeleteWalletGroup';
+import { useMe } from '@/utils/hooks/queries/auth';
 type Props = {
   group: TWalletGroup;
   openManageGroup: () => void;
   onClose: () => void;
 };
 const GroupDetail = (props: Props) => {
+  const { data: me } = useMe();
   const { group } = props;
   console.log('group', group);
-  const { data: walletGroup, status } = useMyWalletGroup(group.id);
+  const { data: walletGroup, status } = useWalletGroup({
+    id: group.id,
+    nickname: me?.nickname || '',
+  });
   const [showModal, setShowModal] = useState(false);
   const handleOpenGroupManage = () => {
     props.openManageGroup();

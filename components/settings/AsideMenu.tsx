@@ -21,7 +21,7 @@ const AsideMenu = () => {
     <aside className={styles.container}>
       <ul className={`font-body02-medium ${styles.menuWrapper}`}>
         <Link
-          href={''}
+          href={'/settings/account'}
           className={`${styles.li} ${
             pathName.includes('account') ? styles.active : ''
           }`}

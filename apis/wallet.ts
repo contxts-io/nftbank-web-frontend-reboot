@@ -1,4 +1,5 @@
 import { BasicWallet, TWallet } from "@/interfaces/inventory";
+import { BasicParam } from "@/interfaces/request";
 import { TSpam } from "@/interfaces/spam";
 import { Paging } from "@/interfaces/utils";
 import instance from "@/utils/axiosInterceptor";
@@ -12,19 +13,20 @@ export type SearchParam = {
   name?: string,
   walletAddress?: string,
 }
-export const getMyWalletList = async<T = TWalletList>(q?:string) => {
-  // const query = jsonToQueryString(searchParam);
-  const {data} = await instance.get<{data: T}>(`/wallet${q ? `?q=${q}` : ''}`);
+export const getMyWalletList = async<T = TWalletList>(searchParam: BasicParam) => {
+  const query = jsonToQueryString(searchParam);
+  const {data} = await instance.get<{data: T}>(`/wallet?${query}`);
   return data.data;
 }
-export const getWalletList = async<T = TWalletList>(nickname: string) => {
-  // const query = jsonToQueryString(searchParam);
-  // const {data} = await instance.get<{data: T}>(`/wallet?${query}`);
-  console.log('searchParam?.nickname', nickname); 
-  const {data} = await instance.get<{data: T}>(`/wallet${nickname && nickname !== '' ? `?q=${nickname}&limit=100&page=1`:''}`);
+export const getWalletList = async<T = TWalletList>(searchParam: BasicParam) => {
+  const query = jsonToQueryString(searchParam);
+  // const { data } = await instance.get<{ data: T }>(`/wallet${query ? `?${query}&page=1&limit=100` : ''}`);
+  const { data } = await instance.get<{ data: T }>(`/wallet${query ? `?${query}&page=1&limit=100` : ''}`);
+  console.log('get WAllet liist', query, data);
   return data.data;
 }
-export const updateMyWallet = async<T = { data: TWallet }>(data: {walletId:string,name:string}) => {
+export const updateMyWallet = async<T = { data: TWallet }>(data: { walletId: string, name: string }) => {
+  console.log("param", data);
   const result = await instance.put<{ data: T }>(`/wallet/${data.walletId}`, {name:data.name});
   return result.data;
 }
