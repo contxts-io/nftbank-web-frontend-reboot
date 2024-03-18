@@ -154,6 +154,7 @@ const ManageGroup = (props: {
           placeholder='Wallet Address, Wallet Name'
           value={inputSearch}
           onChange={(text) => setInputSearch(text)}
+          handleClose={() => setInputSearch('')}
         />
         <div className='w-full max-h-[352px] overflow-y-scroll'>
           <table className={`font-caption-regular ${styles.table}`}>
@@ -180,6 +181,21 @@ const ManageGroup = (props: {
                     ? shortenAddress(wallet.name)
                     : wallet.name
                   : shortenAddress(wallet.walletAddress);
+                // if (inputSearch.length > 0) {
+                //   if (
+                //     !walletName
+                //       .toLowerCase()
+                //       .includes(inputSearch.toLowerCase())
+                //   )
+                //     return null;
+                //   if (
+                //     !walletName
+                //       .toLowerCase()
+                //       .includes(inputSearch.toLowerCase())
+                //   )
+                //     return null;
+                // }
+
                 return (
                   <tr key={i}>
                     <td className='text-left'>

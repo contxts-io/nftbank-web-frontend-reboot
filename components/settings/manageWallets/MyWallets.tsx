@@ -89,7 +89,6 @@ const MyWallets = () => {
           )}
           {showModal === 'delete' && selectedWallet && (
             <DeleteWallet
-              searchAddress={searchAddress}
               onClose={() => setShowModal(null)}
               wallet={selectedWallet}
             />
