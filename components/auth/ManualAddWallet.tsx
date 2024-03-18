@@ -30,12 +30,17 @@ const InputText = (props: InputTextProps) => {
     setValue(value);
   };
   useEffect(() => {
+    console.log('my wallet list : ', walletList);
     if (!walletList) {
+      console.log('no wallet list');
       setValid(undefined);
       return;
     }
-    if (walletList.data.length === 0) setValid(true);
-    else if (walletList.data.length > 0) setValid(false);
+    walletList.data.find(
+      (wallet) => wallet.walletAddress === props.wallet.walletAddress
+    )
+      ? setValid(false)
+      : setValid(true);
   }, [walletList]);
   useEffect(() => {
     props.addWallet({ ...props.wallet, walletAddress: value, isValid: valid });
@@ -95,7 +100,7 @@ const ManualWalletAdd = (props: Props) => {
       validWalletList.map((wallet) => {
         return {
           name: wallet.walletAddress,
-          networkName: 'evm',
+          networkName: 'ethereum',
           walletAddress: wallet.walletAddress,
           provider: 'manual',
         };

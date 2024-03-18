@@ -110,12 +110,14 @@ const WalletAndGroupManage = (props: Props) => {
                         })
                       }
                     >
-                      <p className='text-[var(--color-text-main)]'>
-                        {shortenAddress(wallet.walletAddress)}
-                      </p>
+                      <div className='h-full flex-1 flex items-center hover:bg-[var(--color-elevation-sunken)] pl-8'>
+                        <p className='text-[var(--color-text-main)]'>
+                          {shortenAddress(wallet.walletAddress)}
+                        </p>
+                      </div>
                       <Button
                         id=''
-                        className={`ml-auto ${styles.copyButton}`}
+                        className={`ml-auto ${styles.copyButton} hover:bg-[var(--color-elevation-sunken)]`}
                         onClick={(e) => {
                           e.stopPropagation();
                           copyAddress(wallet.walletAddress);

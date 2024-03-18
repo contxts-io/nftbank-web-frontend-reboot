@@ -18,7 +18,9 @@ import {
 import { BasicParam } from '@/interfaces/request';
 import { shortenAddress } from '@/utils/common';
 import BlockiesIcon from '../BlockiesIcon';
+import { Spinner } from '@nextui-org/react';
 
+const LIMIT = 5;
 const PortfolioSelectorWrapper = () => {
   const [nickname, setNickname] = useState<string | null>(null);
   const { data: user, status: userStatus } = useUser(nickname);
@@ -121,6 +123,8 @@ const PortfolioSelectorWrapper = () => {
         <Button
           className={`font-button03-medium ${styles.selectorButton}`}
           onClick={() => toggleOpen()}
+          isLoading={userStatus === 'loading'}
+          disabled={!user}
         >
           <Folder className={`mr-4`} />
           {option.type === 'all' && <p>All Wallets</p>}
@@ -134,33 +138,47 @@ const PortfolioSelectorWrapper = () => {
         </Button>
         {option.type === 'all' &&
           walletList?.data.map((wallet, index) => {
-            return (
-              <div
-                key={index}
-                className='rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)]'
-              >
-                <BlockiesIcon walletAddress={wallet.walletAddress} size={16} />
-                {shortenAddress(wallet.walletAddress)}
-              </div>
-            );
+            if (index < LIMIT)
+              return (
+                <div
+                  key={index}
+                  className='rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)]'
+                >
+                  <BlockiesIcon
+                    walletAddress={wallet.walletAddress}
+                    size={16}
+                  />
+                  {shortenAddress(wallet.walletAddress)}
+                </div>
+              );
           })}
-        {walletList?.data && walletList?.paging.total - 5 > 0 && (
+        {walletList?.data && walletList?.paging.total - LIMIT > 0 && (
           <div className='rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)]'>
             {`+ ${walletList.paging.total - 5}`}
           </div>
         )}
         {option.type === 'group' &&
           walletGroup?.wallets?.data.map((wallet, index) => {
-            return (
-              <div
-                key={index}
-                className='rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)]'
-              >
-                <BlockiesIcon walletAddress={wallet.walletAddress} size={16} />
-                {shortenAddress(wallet.walletAddress)}
-              </div>
-            );
+            if (index < LIMIT)
+              return (
+                <div
+                  key={index}
+                  className='rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)]'
+                >
+                  <BlockiesIcon
+                    walletAddress={wallet.walletAddress}
+                    size={16}
+                  />
+                  {shortenAddress(wallet.walletAddress)}
+                </div>
+              );
           })}
+        {walletGroup?.wallets?.data &&
+          walletGroup?.wallets?.paging.total - LIMIT > 0 && (
+            <div className='rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)]'>
+              {`+ ${walletGroup?.wallets.paging.total - LIMIT}`}
+            </div>
+          )}
         {option.type === 'wallet' && (
           <div className='rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)]'>
             <BlockiesIcon walletAddress={option.value} size={16} />

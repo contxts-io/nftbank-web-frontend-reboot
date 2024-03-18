@@ -4,15 +4,23 @@ import styles from './AsideMenu.module.css';
 import Link from 'next/link';
 import { Cookies, useCookies } from 'react-cookie';
 import { Button } from '@nextui-org/react';
+import { useQueryClient } from '@tanstack/react-query';
 
 const AsideMenu = () => {
+  const queryClient = useQueryClient();
   const pathName = usePathname();
   const router = useRouter();
   const [cookies, setCookie, removeCookie] = useCookies(['nb_session']);
   const handleSignOut = () => {
     try {
       removeCookie('nb_session', { path: '/' });
-      router.push('/portfolio/overview/sample');
+      queryClient.invalidateQueries({
+        queryKey: ['myWalletList'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['me'],
+      });
+      router.push('/auth/signin');
     } catch (e) {
       console.log('e', e);
     }

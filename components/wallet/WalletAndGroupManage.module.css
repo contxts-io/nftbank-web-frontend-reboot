@@ -13,16 +13,13 @@
   @apply bg-[var(--color-background-brand-bold)] text-[var(--color-text-main)] !important;
 }
 .body {
-  @apply w-full flex flex-col items-center mt-12;
+  @apply w-full flex flex-col items-center mt-12 flex-1;
 }
 .listWrapper {
   @apply w-full max-h-[252px] min-h-[252px]  overflow-y-scroll;
 }
 .list {
-  @apply flex items-center h-36 w-full pl-8 gap-x-8 cursor-pointer;
-}
-.list:hover {
-  @apply bg-[var(--color-elevation-sunken)];
+  @apply flex items-center h-36 w-full cursor-pointer;
 }
 .copyButton {
   @apply border-transparent p-0 w-36 h-36 flex items-center justify-center !important;

@@ -9,26 +9,17 @@ import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { SearchParam } from '@/apis/wallet';
 import { useMutationUpdateWallet } from '@/utils/hooks/mutations/wallet';
 import InputText from '../input/InputText';
+import { useQueryClient } from '@tanstack/react-query';
 type Props = {
   wallet: TWallet;
   onClose: () => void;
-  searchAddress?: string;
 };
 const EditWallet = (props: Props) => {
+  const queryClient = useQueryClient();
   const [wallet, setWallet] = useState<TWallet>(props.wallet);
-  const [searchParam, setSearchParam] = useState<SearchParam>({});
-  const { data, error, isLoading, refetch } = useMyWalletList({
-    search: props.searchAddress,
-    networkId: 'ethereum',
-  });
+
   const { mutate: updateWalletName, status } = useMutationUpdateWallet();
   const handleInputText = (value: string) => {
-    setSearchParam((prev) => {
-      return {
-        ...prev,
-        name: value,
-      };
-    });
     setWallet((prev) => {
       return {
         ...prev,
@@ -44,15 +35,15 @@ const EditWallet = (props: Props) => {
       },
       {
         onSuccess: () => {
-          refetch();
+          queryClient.invalidateQueries({
+            queryKey: ['myWalletList'],
+          });
           props.onClose();
         },
       }
     );
   };
-  useEffect(() => {
-    console.log('data', data);
-  }, [data]);
+
   return (
     <div className={styles.container}>
       <div className='w-full flex justify-between'>
@@ -70,7 +61,12 @@ const EditWallet = (props: Props) => {
         onChange={(e) => handleInputText(e.target.value)}
       />
       <div className='mt-auto flex'>
-        <SubmitButton id='' className='ml-auto' onClick={() => handleSubmit()}>
+        <SubmitButton
+          id=''
+          className='ml-auto'
+          onClick={() => handleSubmit()}
+          isLoading={status === 'loading'}
+        >
           <p>Done</p>
         </SubmitButton>
       </div>

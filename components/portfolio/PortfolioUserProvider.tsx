@@ -109,7 +109,7 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
             {walletList?.data.length > 0 ? (
               <>
                 <PortfolioTabNavigation />
-                {/* {children} */}
+                {children}
               </>
             ) : (
               <div className='w-full h-[calc(100vh-197px)] flex items-center justify-center'>

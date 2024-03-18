@@ -42,6 +42,9 @@ const MyGroups = () => {
       setSelectedGroup(null);
     }, 200);
   };
+  useEffect(() => {
+    console.log('walletGroup walletGroup : ', walletGroup);
+  }, [walletGroup]);
   return (
     <section className={styles.container}>
       <div className='w-full flex justify-between mt-26 px-24'>

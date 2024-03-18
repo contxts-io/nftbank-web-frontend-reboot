@@ -51,9 +51,9 @@ const GroupDetail = (props: Props) => {
               Delete
             </Button>
             <Button id='' onClick={() => handleOpenGroupManage()}>
-              Edit Group Name
+              Group Setting
             </Button>
-            <Button id=''>Group Setting</Button>
+            {/* <Button id=''>Group Setting</Button> */}
           </div>
         </div>
         <div className='bg-[var(--color-elevation-sunken)] h-26 flex items-center w-fit px-8 mt-8'>

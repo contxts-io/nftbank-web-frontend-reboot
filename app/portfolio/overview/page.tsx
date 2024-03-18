@@ -23,7 +23,7 @@ const OverviewPage = () => {
   const setPortfolioUserAtom = useSetAtom(portfolioUserAtom);
   const router = useRouter();
   useEffect(() => {
-    !me && router.push('/overview/sample');
+    !me && router.push('/portfolio/overview/sample');
     me?.nickname && setPortfolioNicknameAtom(me.nickname);
   }, [me]);
   // useEffect(() => {
@@ -58,7 +58,7 @@ const OverviewPage = () => {
       <div className='w-full grid gap-x-[20px] grid-cols-1 md:grid-cols-2'>
         <TotalInventoryValue />
         <PerformanceContainer />
-        <RecentActivityContainer />
+        {/* <RecentActivityContainer /> */}
       </div>
     </section>
   );

@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './ManageGroup.module.css';
 import SubmitButton from '../buttons/SubmitButton';
 import { useMutationUpsertWalletGroup } from '@/utils/hooks/mutations/walletGroup';
@@ -19,6 +19,7 @@ import {
 } from '@/utils/hooks/queries/walletGroup';
 import { useMe } from '@/utils/hooks/queries/auth';
 import InputText from '../input/InputText';
+import { useInView } from 'react-intersection-observer';
 const ManageGroup = (props: {
   group: TWalletGroup | null;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -75,7 +76,7 @@ const ManageGroup = (props: {
           refetchWalletGroup();
           props.onClose(false);
           showToastMessage({
-            message: 'Group Added',
+            message: 'Group Updated',
             code: 'success',
             toastId: 'group-add',
             theme: theme === 'light' ? 'light' : 'dark',
@@ -154,7 +155,7 @@ const ManageGroup = (props: {
           value={inputSearch}
           onChange={(text) => setInputSearch(text)}
         />
-        <div className='w-full h-[720px] overflow-y-scroll'>
+        <div className='w-full max-h-[352px] overflow-y-scroll'>
           <table className={`font-caption-regular ${styles.table}`}>
             <thead>
               <tr className='pb-12'>
@@ -174,17 +175,22 @@ const ManageGroup = (props: {
                 const isSelected = selectedWalletIds.some(
                   (id) => id === wallet.id
                 );
+                const walletName = wallet.name
+                  ? wallet.name.startsWith('0x')
+                    ? shortenAddress(wallet.name)
+                    : wallet.name
+                  : shortenAddress(wallet.walletAddress);
                 return (
                   <tr key={i}>
                     <td className='text-left'>
                       <div className='flex items-center gap-x-4'>
-                        <p>{shortenAddress(wallet.walletAddress)}</p>
-                        <CheckCircle className='fill-[var(--color-icon-brand)]' />
+                        <p>{walletName}</p>
+                        {wallet.provider !== 'manual' && (
+                          <CheckCircle className='fill-[var(--color-icon-brand)]' />
+                        )}
                       </div>
                     </td>
-                    <td className='text-left'>
-                      <p>$11,134</p>
-                    </td>
+                    <td className='text-left'>{/* <p>$11,134</p> */}</td>
                     <td className='text-right'>
                       <CheckBox
                         onClick={() => {
@@ -201,6 +207,7 @@ const ManageGroup = (props: {
               })}
             </tbody>
           </table>
+          <div />
         </div>
         <div className='flex items-center gap-x-8 mt-18'>
           <Button

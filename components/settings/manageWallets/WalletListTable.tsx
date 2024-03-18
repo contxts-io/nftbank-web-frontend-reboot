@@ -9,7 +9,6 @@ import FolderFilled from '@/public/icon/FolderFilled';
 import CheckCircle from '@/public/icon/CheckCircle';
 import WalletEditOptions from './WalletEditOptions';
 import { TWallet } from '@/interfaces/inventory';
-import MinidentIconImg from '@/components/BlockiesIcon';
 import BlockiesIcon from '@/components/BlockiesIcon';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import { useMe } from '@/utils/hooks/queries/auth';
@@ -22,7 +21,7 @@ const WalletListTable = (props: Props) => {
   const { data: walletList, status } = useMyWalletList({
     nickname: me?.nickname,
     networkId: 'ethereum',
-    // search:props.searchAddress,
+    search: props.searchAddress,
   });
   const currency = useAtomValue(currencyAtom);
   const handleClickList = (wallet: TWallet, name: 'edit' | 'delete') => {
@@ -56,9 +55,11 @@ const WalletListTable = (props: Props) => {
                     className={`${styles.blockIcon} mr-4`}
                   />
                   <p className='ml-8'>{wallet.name || wallet.walletAddress}</p>
-                  <div className='ml-4 text-[var(--color-border-brand)]'>
-                    <CheckCircle />
-                  </div>
+                  {wallet.provider !== 'manual' && (
+                    <div className='ml-4 text-[var(--color-border-brand)]'>
+                      <CheckCircle />
+                    </div>
+                  )}
                 </div>
               </td>
               <td className='text-left'>

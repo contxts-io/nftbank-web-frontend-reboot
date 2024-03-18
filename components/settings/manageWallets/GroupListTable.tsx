@@ -38,9 +38,9 @@ const GroupListTable = (props: Props) => {
               <div className='flex items-center mr-111'>
                 <Folder />
                 <p className='ml-8'>{group.name}</p>
-                <div className='ml-4 text-[var(--color-border-brand)]'>
+                {/* <div className='ml-4 text-[var(--color-border-brand)]'>
                   <CheckCircle />
-                </div>
+                </div> */}
               </div>
             </td>
             <td className='text-left'>

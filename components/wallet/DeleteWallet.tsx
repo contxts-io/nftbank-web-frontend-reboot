@@ -9,14 +9,10 @@ import { useQueryClient } from '@tanstack/react-query';
 type Props = {
   wallet: TWallet;
   onClose: () => void;
-  searchAddress?: string;
 };
 const DeleteWallet = (props: Props) => {
   const queryClient = useQueryClient();
-  const { data: walletList, refetch } = useMyWalletList({
-    search: props.searchAddress || '',
-    networkId: 'ethereum',
-  });
+
   const { mutate: deleteWallet, status: deleteStatus } =
     useMutationDeleteWallet();
   const handleClickDelete = () => {

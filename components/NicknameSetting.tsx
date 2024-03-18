@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './NicknameSetting.module.css';
 import SubmitButton from './buttons/SubmitButton';
 import { useMutationUpdateMe } from '@/utils/hooks/mutations/auth';
@@ -10,6 +10,7 @@ type Props = {
   onClose: () => void;
 };
 const NicknameSetting = (props: Props) => {
+  const randomInt = Math.floor(Math.random() * 10000);
   const [inputText, setInputText] = useState<string>('');
   const { data: me, refetch } = useMeManual();
   const { mutate: updateNickname, status: updateStatus } =
@@ -29,6 +30,11 @@ const NicknameSetting = (props: Props) => {
       }
     );
   };
+  useEffect(() => {
+    setInputText(
+      me?.nickname || `${me?.email.split('@')?.[0]}_${randomInt}` || ''
+    );
+  }, [me]);
   return (
     <section className={styles.container}>
       <p className='font-subtitle02-medium text-[var(--color-text-main)]'>

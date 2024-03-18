@@ -174,6 +174,10 @@ const ConnectWallet = (props: Props) => {
                 queryClient.invalidateQueries({
                   queryKey: ['walletList'],
                 });
+                me &&
+                  queryClient.invalidateQueries({
+                    queryKey: [me.nickname],
+                  });
                 setShowModal(null);
               },
               onSettled: () => {

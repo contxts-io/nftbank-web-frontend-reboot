@@ -83,7 +83,6 @@ const MyWallets = () => {
         <div className='relative w-full h-full'>
           {showModal === 'edit' && selectedWallet && (
             <EditWallet
-              searchAddress={searchAddress}
               onClose={() => setShowModal(null)}
               wallet={selectedWallet}
             />

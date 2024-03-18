@@ -10,7 +10,7 @@ import { useAtomValue } from 'jotai';
 export function useInventoryValue(searchParam: BasicParam | null) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<InventoryValueNested,AxiosError>(
-    ['inventoryValue', searchParam, dataFreshness?.processedAt],
+    [searchParam?.nickname || '', 'inventoryValue', searchParam, dataFreshness?.processedAt],
     async () => {
       const inventoryValue = await getInventoryValue(searchParam);
       return inventoryValue;

@@ -14,7 +14,10 @@ import EthereumIcon from '@/public/icon/EthereumIcon';
 import Usd from '@/public/icon/Usd';
 import Button from './buttons/Button';
 import { useMe } from '@/utils/hooks/queries/auth';
-import { useMutationSignOut } from '@/utils/hooks/mutations/auth';
+import {
+  useMutationSignOut,
+  useMutationUpdateMe,
+} from '@/utils/hooks/mutations/auth';
 import { useDisconnect as useDisconnectWagmi } from 'wagmi';
 import { useDisconnect as useDisconnectThirdWeb } from '@thirdweb-dev/react';
 import { connectedWalletAddressAtom } from '@/store/account';
@@ -28,6 +31,7 @@ import { verifyWalletAddress } from '@/apis/wallet';
 import { sendGTMEvent } from '@next/third-parties/google';
 import { useCookies } from 'react-cookie';
 import { BasicParam } from '@/interfaces/request';
+import { TCurrency } from '@/interfaces/constants';
 
 const GlobalNavigation = () => {
   const router = useRouter();
@@ -50,6 +54,7 @@ const GlobalNavigation = () => {
   const [verify, setVerify] = useState<Boolean>(false);
   const [isChecking, setIsChecking] = useState<boolean>(false);
   const [searchAddress, setSearchAddress] = useState<string | null>(null);
+  const { mutate: updateMe, status: updateMeStatus } = useMutationUpdateMe();
   const listRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     setError(null);
@@ -58,6 +63,9 @@ const GlobalNavigation = () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+  useEffect(() => {
+    me && setCurrency(me.config.currency);
+  }, [me]);
 
   useEffect(() => {
     const handleKeyDown = (e: any) => {
@@ -73,6 +81,10 @@ const GlobalNavigation = () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [walletAddress, error]);
+
+  useEffect(() => {
+    // updateMe({ currency: currency });
+  }, [currency]);
   useEffect(() => {
     setWalletAddress('');
     setError(null);
@@ -151,7 +163,8 @@ const GlobalNavigation = () => {
   const toggleOpen = () => {
     setIsOpen(!isOpen);
   };
-  const changeCurrency = () => {
+  const changeCurrency = (currency: TCurrency) => {
+    updateMe({ currency: currency === 'eth' ? 'usd' : 'eth' });
     setCurrency((prev) => {
       return prev === 'eth' ? 'usd' : 'eth';
     });
@@ -316,7 +329,7 @@ const GlobalNavigation = () => {
             <div className='border-1 border-[var(--color-border-main)]'>
               <Button
                 id={'/global/currency'}
-                onClick={() => changeCurrency()}
+                onClick={() => changeCurrency(currency)}
                 className='border-l-0'
               >
                 <div className='flex items-center justify-center border-1 border-[var(--color-border-bold)] rounded-full h-20 w-20'>
