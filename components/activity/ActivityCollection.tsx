@@ -16,7 +16,6 @@ const ActivityCollection = () => {
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
     useState<TCollectionParam>({
       searchCollection: '',
-      walletAddress: '',
       page: 0,
       limit: 3,
       sortCol: 'nav',

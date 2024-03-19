@@ -39,10 +39,7 @@ export const getCollectionList = async<T = IInventoryCollectionList>(requestPara
   const { data } = await instance.get<{data:T}>(`/inventory/collection?${query}`);
   return data.data;
 }
-export const downloadCSVCollectionList = async (requestParam: {
-  walletAddress: string;
-  searchCollection: string;
-}) => {
+export const downloadCSVCollectionList = async (requestParam: BasicParam & {searchCollection: string;}) => {
   const query = jsonToQueryString(requestParam);
   // const query = jsonToQueryString(requestParam);
   const result = await instance.get(`/inventory/collection/download?${query}`,{ responseType: 'blob' });
