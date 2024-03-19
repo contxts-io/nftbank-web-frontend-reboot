@@ -65,16 +65,23 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
   // }, [path, me?.nickname]);
   useEffect(() => {
     if (path.split('/').length === 3) {
-      me
-        ? (setPortfolioProfile(me),
-          myDefaultPortfolio && setPortfolioUser(myDefaultPortfolio))
-        : router.push('/portfolio/overview/sample');
+      // me
+      //   ? (setPortfolioProfile(me),
+      //     myDefaultPortfolio && setPortfolioUser(myDefaultPortfolio))
+      //   : router.push('/portfolio/overview/sample');
+      me && setPortfolioProfile(me);
+      console.log(
+        'PortfolioUserProvider myDefaultPortfolio',
+        myDefaultPortfolio
+      );
+      myDefaultPortfolio && setPortfolioUser(myDefaultPortfolio);
     } else if (path.includes('/sample')) {
       setNickname('sample');
     } else {
       const paths = path.split('/');
       paths.length === 5 &&
         path.includes('/nickname') &&
+        portfolioProfile?.nickname !== paths[4] &&
         (setNickname(paths[4]),
         setPortfolioUser({
           nickname: paths[4],

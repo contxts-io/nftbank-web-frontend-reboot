@@ -7,6 +7,8 @@ import styles from './PortfolioSelector.module.css';
 import WalletAndGroupManage from './wallet/WalletAndGroupManage';
 import { TUser } from '@/interfaces/user';
 import { BasicParam } from '@/interfaces/request';
+import { useMe } from '@/utils/hooks/queries/auth';
+import { useWalletGroupList } from '@/utils/hooks/queries/walletGroup';
 type Props = {
   className?: string;
   position?: string;
@@ -15,6 +17,7 @@ type Props = {
   setPortfolioParam: (param: BasicParam) => void;
 };
 const PortfolioSelector = (props: Props) => {
+  const { data: walletGroupList } = useWalletGroupList(props.user.nickname);
   useEffect(() => {
     document.addEventListener('click', handleClickOutside);
     document.addEventListener('keydown', handleKeyDown);
@@ -76,7 +79,14 @@ const PortfolioSelector = (props: Props) => {
         {props.portfolioParam?.walletGroupId && (
           <div className='flex items-center text-[var(--color-text-subtle)]'>
             <Folder className={`${styles.blockIcon} mr-4`} />
-            <p>{props.portfolioParam.walletGroupId}</p>
+            <p>
+              {
+                walletGroupList?.data.find(
+                  (walletGroup) =>
+                    walletGroup.id === props.portfolioParam.walletGroupId
+                )?.name
+              }
+            </p>
           </div>
         )}
       </Button>

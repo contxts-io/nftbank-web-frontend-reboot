@@ -107,54 +107,53 @@ const InventoryValue = () => {
   return (
     <section className={`${styles.container}`}>
       {/* {statusInventoryValue === 'loading' && <div>Loading...</div>} */}
-      {inventoryValue &&
-        values.map((item, index) => {
-          return (
-            <article key={index} className={`${styles.articleBox}`}>
-              <div className='w-fit'>
-                <p
-                  className={`font-caption-medium mb-4 text-[var(--color-text-subtle)] w-fit`}
-                >
-                  {item.name}
-                </p>
-                <div className='border-t-1 border-dashed border-[var(--color-border-accent-gray)]' />
-              </div>
-              <div className={styles.valueRow}>
-                {item.status === 'loading' && (
-                  <SkeletonLoader className='h-22 w-100' />
-                )}
-                {item.status === 'success' && (
-                  <div className='mr-8 items-end'>
-                    {item.infinity ? (
-                      <Tooltip
-                        content={UNABLE_TO_CALCULATE_ROI}
-                        className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
-                      >
-                        <div className='mt-20 w-full flex justify-center text-[var(--color-icon-subtle)]'>
-                          <Info />
-                        </div>
-                      </Tooltip>
-                    ) : (
-                      <p
-                        className={`font-subtitle02-bold ${
-                          item.type == `inventoryValue`
-                            ? styles.pMain
-                            : item.isPlus
-                            ? 'text-[var(--color-text-success)]'
-                            : 'text-[var(--color-text-danger)]'
-                        }`}
-                      >
-                        {item.value && item.value}
-                      </p>
-                    )}
-                  </div>
-                )}
-                {/* {item.type === 'inventoryValue' &&
+      {values.map((item, index) => {
+        return (
+          <article key={index} className={`${styles.articleBox}`}>
+            <div className='w-fit'>
+              <p
+                className={`font-caption-medium mb-4 text-[var(--color-text-subtle)] w-fit`}
+              >
+                {item.name}
+              </p>
+              <div className='border-t-1 border-dashed border-[var(--color-border-accent-gray)]' />
+            </div>
+            <div className={styles.valueRow}>
+              {item.status === 'loading' && (
+                <SkeletonLoader className='h-22 w-100' />
+              )}
+              {item.status === 'success' && (
+                <div className='mr-8 items-end'>
+                  {item.infinity ? (
+                    <Tooltip
+                      content={UNABLE_TO_CALCULATE_ROI}
+                      className='max-w-[220px] font-caption-regular text-[var(--color-text-main)] bg-[var(--color-elevation-surface)] border-1 border-[var(--color-border-bold)] p-6'
+                    >
+                      <div className='mt-20 w-full flex justify-center text-[var(--color-icon-subtle)]'>
+                        <Info />
+                      </div>
+                    </Tooltip>
+                  ) : (
+                    <p
+                      className={`font-subtitle02-bold ${
+                        item.type == `inventoryValue`
+                          ? styles.pMain
+                          : item.isPlus
+                          ? 'text-[var(--color-text-success)]'
+                          : 'text-[var(--color-text-danger)]'
+                      }`}
+                    >
+                      {item.value && item.value}
+                    </p>
+                  )}
+                </div>
+              )}
+              {/* {item.type === 'inventoryValue' &&
                   item.value &&
                   statusPerformance !== 'success' && (
                     <SkeletonLoader className='h-22 w-100' />
                   )} */}
-                {/* {item.type === 'inventoryValue' && item.value && (
+              {/* {item.type === 'inventoryValue' && item.value && (
                   <>
                     <div
                       className={
@@ -176,10 +175,10 @@ const InventoryValue = () => {
                     </div>
                   </>
                 )} */}
-              </div>
-            </article>
-          );
-        })}
+            </div>
+          </article>
+        );
+      })}
 
       {/* <article className='ml-16 py-16 h-92 flex flex-col justify-between'>
         <div className='w-fit'>

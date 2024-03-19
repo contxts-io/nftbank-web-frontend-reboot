@@ -59,7 +59,10 @@ const MyGroups = () => {
           Add Group
         </SubmitButton>
       </div>
-      <GroupListTable handleClickGroup={handleClickGroup} />
+      <GroupListTable
+        handleClickGroup={handleClickGroup}
+        search={searchInput}
+      />
       <ReactModal
         isOpen={showGroupDetailModal}
         contentLabel='Group Detail'

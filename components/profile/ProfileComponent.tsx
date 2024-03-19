@@ -15,7 +15,6 @@ import {
 } from '@/store/portfolio';
 import { useUser } from '@/utils/hooks/queries/user';
 import BlockiesIcon from '../BlockiesIcon';
-import { myDefaultPortfolioAtom } from '@/store/settings';
 import Wallet from '@/public/icon/Wallet';
 import { BasicParam } from '@/interfaces/request';
 import { TUser } from '@/interfaces/user';

@@ -19,7 +19,7 @@ import {
 } from '@/utils/hooks/queries/walletGroup';
 import { useMe } from '@/utils/hooks/queries/auth';
 import InputText from '../input/InputText';
-import { useInView } from 'react-intersection-observer';
+
 const ManageGroup = (props: {
   group: TWalletGroup | null;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -172,55 +172,62 @@ const ManageGroup = (props: {
               </tr>
             </thead>
             <tbody>
-              {walletList?.data.map((wallet, i) => {
-                const isSelected = selectedWalletIds.some(
-                  (id) => id === wallet.id
-                );
-                const walletName = wallet.name
-                  ? wallet.name.startsWith('0x')
-                    ? shortenAddress(wallet.name)
-                    : wallet.name
-                  : shortenAddress(wallet.walletAddress);
-                // if (inputSearch.length > 0) {
-                //   if (
-                //     !walletName
-                //       .toLowerCase()
-                //       .includes(inputSearch.toLowerCase())
-                //   )
-                //     return null;
-                //   if (
-                //     !walletName
-                //       .toLowerCase()
-                //       .includes(inputSearch.toLowerCase())
-                //   )
-                //     return null;
-                // }
+              {walletList?.data
+                .filter((wallet) => {
+                  return inputSearch && inputSearch.length > 0
+                    ? wallet.walletAddress.includes(inputSearch) ||
+                        wallet.name?.includes(inputSearch)
+                    : wallet;
+                })
+                .map((wallet, i) => {
+                  const isSelected = selectedWalletIds.some(
+                    (id) => id === wallet.id
+                  );
+                  const walletName = wallet.name
+                    ? wallet.name.startsWith('0x')
+                      ? shortenAddress(wallet.name)
+                      : wallet.name
+                    : shortenAddress(wallet.walletAddress);
+                  // if (inputSearch.length > 0) {
+                  //   if (
+                  //     !walletName
+                  //       .toLowerCase()
+                  //       .includes(inputSearch.toLowerCase())
+                  //   )
+                  //     return null;
+                  //   if (
+                  //     !walletName
+                  //       .toLowerCase()
+                  //       .includes(inputSearch.toLowerCase())
+                  //   )
+                  //     return null;
+                  // }
 
-                return (
-                  <tr key={i}>
-                    <td className='text-left'>
-                      <div className='flex items-center gap-x-4'>
-                        <p>{walletName}</p>
-                        {wallet.provider !== 'manual' && (
-                          <CheckCircle className='fill-[var(--color-icon-brand)]' />
-                        )}
-                      </div>
-                    </td>
-                    <td className='text-left'>{/* <p>$11,134</p> */}</td>
-                    <td className='text-right'>
-                      <CheckBox
-                        onClick={() => {
-                          handleClickWallet(wallet);
-                        }}
-                        className={`ml-auto ${styles.checkbox} ${
-                          isSelected ? styles.checked : ''
-                        }`}
-                        checked={isSelected}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
+                  return (
+                    <tr key={i}>
+                      <td className='text-left'>
+                        <div className='flex items-center gap-x-4'>
+                          <p>{walletName}</p>
+                          {wallet.provider !== 'manual' && (
+                            <CheckCircle className='fill-[var(--color-icon-brand)]' />
+                          )}
+                        </div>
+                      </td>
+                      <td className='text-left'>{/* <p>$11,134</p> */}</td>
+                      <td className='text-right'>
+                        <CheckBox
+                          onClick={() => {
+                            handleClickWallet(wallet);
+                          }}
+                          className={`ml-auto ${styles.checkbox} ${
+                            isSelected ? styles.checked : ''
+                          }`}
+                          checked={isSelected}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
           <div />

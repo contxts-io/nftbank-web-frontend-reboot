@@ -2,7 +2,7 @@
 import { useUser } from '@/utils/hooks/queries/user';
 import styles from './ProfileComponent.module.css';
 import { useEffect, useRef, useState } from 'react';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { portfolioProfileAtom, portfolioUserAtom } from '@/store/portfolio';
 import PortfolioSelector from '../PortfolioSelector';
 import Wallet from '@/public/icon/Wallet';
@@ -19,13 +19,17 @@ import { BasicParam } from '@/interfaces/request';
 import { shortenAddress } from '@/utils/common';
 import BlockiesIcon from '../BlockiesIcon';
 import { Spinner } from '@nextui-org/react';
+import { useMe } from '@/utils/hooks/queries/auth';
+import { myDefaultPortfolioAtom } from '@/store/settings';
 
 const LIMIT = 5;
 const PortfolioSelectorWrapper = () => {
+  const { data: me } = useMe();
   const [nickname, setNickname] = useState<string | null>(null);
   const { data: user, status: userStatus } = useUser(nickname);
   const portfolioProfile = useAtomValue(portfolioProfileAtom);
   const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
+  const setMyDefaultPortfolio = useSetAtom(myDefaultPortfolioAtom);
   const [option, setOption] = useState<{
     type: 'all' | 'group' | 'wallet';
     value: string;
@@ -116,6 +120,7 @@ const PortfolioSelectorWrapper = () => {
   };
   useEffect(() => {
     console.log('portfolioUser changed ? ', portfolioUser);
+    portfolioProfile === me && setMyDefaultPortfolio(portfolioUser);
   }, [portfolioUser]);
 
   return (

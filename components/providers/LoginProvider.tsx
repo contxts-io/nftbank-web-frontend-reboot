@@ -41,7 +41,8 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
       //     networkId: 'ethereum',
       //   });
       me.nickname
-        ? setMySelectedInformation({
+        ? mySelectedInformation === null &&
+          setMySelectedInformation({
             nickname: me.nickname,
             networkId: 'ethereum',
           })
