@@ -79,13 +79,6 @@ const WalletListTable = (props: Props) => {
                 <td className='text-left'>
                   <div className='flex gap-8 items-center mr-111'>
                     {wallet.position?.map((position, i) => {
-                      const totalValue = wallet.position.reduce(
-                        (a: number, b) => {
-                          return a + parseFloat(b.valuation?.[currency] || '0');
-                        },
-                        0
-                      );
-                      console.log('totalValue', totalValue);
                       return (
                         <div
                           key={i}

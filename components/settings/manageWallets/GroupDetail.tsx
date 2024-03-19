@@ -9,6 +9,9 @@ import BlockiesIcon from '@/components/BlockiesIcon';
 import ReactModal from 'react-modal';
 import DeleteWalletGroup from '@/components/walletGroup/DeleteWalletGroup';
 import { useMe } from '@/utils/hooks/queries/auth';
+import { formatCurrency } from '@/utils/common';
+import { useAtomValue } from 'jotai';
+import { currencyAtom } from '@/store/currency';
 type Props = {
   group: TWalletGroup;
   openManageGroup: () => void;
@@ -17,7 +20,7 @@ type Props = {
 const GroupDetail = (props: Props) => {
   const { data: me } = useMe();
   const { group } = props;
-  console.log('group', group);
+  const currency = useAtomValue(currencyAtom);
   const { data: walletGroup, status } = useWalletGroup({
     id: group.id,
     nickname: me?.nickname || '',
@@ -85,8 +88,37 @@ const GroupDetail = (props: Props) => {
                         {wallet.name || wallet.walletAddress}
                       </div>
                     </td>
-                    <td className='text-left  mr-120'>Balance</td>
-                    <td className='text-left'>Top Collections</td>
+                    <td className='text-left  mr-120'>
+                      {formatCurrency(
+                        wallet.value?.[currency] || '0',
+                        currency
+                      )}
+                    </td>
+                    <td className='text-left'>
+                      <div className='flex gap-8 items-center'>
+                        {wallet.position?.map((position, i) => {
+                          return (
+                            <div
+                              key={i}
+                              className='h-32 flex bg-[var(--color-elevation-sunken)] px-8 items-center'
+                            >
+                              <img
+                                width={20}
+                                height={20}
+                                src={position.collection}
+                                className='rounded-full mr-8'
+                              />
+                              <p>
+                                {formatCurrency(
+                                  position.valuation[currency] || '0',
+                                  currency
+                                )}
+                              </p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </td>
                     <td />
                   </tr>
                 );
