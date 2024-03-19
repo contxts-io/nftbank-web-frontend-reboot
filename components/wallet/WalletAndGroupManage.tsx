@@ -81,6 +81,8 @@ const WalletAndGroupManage = (props: Props) => {
               onClick={() =>
                 handleClickList({
                   nickname: props.user?.nickname,
+                  walletAddress: '',
+                  walletGroupId: '',
                   networkId: networkId,
                 })
               }
@@ -103,6 +105,8 @@ const WalletAndGroupManage = (props: Props) => {
                       className={styles.list}
                       onClick={() =>
                         handleClickList({
+                          nickname: '',
+                          walletGroupId: '',
                           walletAddress: wallet.walletAddress,
                           networkId: networkId,
                         })
@@ -140,6 +144,8 @@ const WalletAndGroupManage = (props: Props) => {
                     className={`${styles.list} text-[var(--color-text-main)]`}
                     onClick={() =>
                       handleClickList({
+                        nickname: '',
+                        walletAddress: '',
                         walletGroupId: walletGroup.id,
                         networkId: networkId,
                       })

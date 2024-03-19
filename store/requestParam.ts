@@ -1,13 +1,13 @@
 import { TCurrency } from "@/interfaces/constants";
 import { BasicParam } from "@/interfaces/request";
 import { atom } from "jotai";
+const PREFIX = 'REQUEST_PARAM'
 export enum SortOrder {
   Desc = '-1',Asc = '1'
 }
 export type TSort = 'amount' | 'nav' | 'spam'
 
 export type TCollectionParam = {
-  walletAddress: string,
   searchCollection: string,
   sortCol: 'nav' | 'amount' | 'spam',
   sortOrder: SortOrder,
@@ -45,16 +45,15 @@ type SpamParam = {
   includeNonSpam:boolean,
 }
 export const inventoryCollectionAtom = atom<TCollectionParam>({
-  walletAddress: '',
   searchCollection: '',
   page: 1,
   limit: 30,
   sortCol: 'nav',
   sortOrder: SortOrder.Desc,
 })
+inventoryCollectionAtom.debugLabel = `${PREFIX}_inventoryCollectionAtom`;
 export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
   searchCollection: '',
-  walletAddress: '',
   page: 1,
   limit: 30,
   sortCol: 'nav',
@@ -62,7 +61,6 @@ export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
 })
 export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
   searchCollection: '',
-  walletAddress: '',
   page: 1,
   limit: 30,
   sortCol: 'spam',
@@ -73,7 +71,6 @@ export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
 })
 // export const inventoryItemCollectionAtom = atom<TCollectionParam>({})
 export const inventoryItemListAtom = atom<ItemParam & {paging : boolean}>({
-  walletAddress: '',
   networkId: 'ethereum',
   assetContract: [],
   page: 1,
@@ -83,6 +80,7 @@ export const inventoryItemListAtom = atom<ItemParam & {paging : boolean}>({
   sortOrder: SortOrder.Desc,
   paging: true,
 })
+inventoryItemListAtom.debugLabel = `${PREFIX}_inventoryItemListAtom`;
 export const analysisGainAndLossParamAtom = atom<TAnalysisGainAndLossParam>({
   limit: 10,
   page: 1,
