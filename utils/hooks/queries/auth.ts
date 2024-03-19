@@ -23,8 +23,9 @@ export function useMe() {
   );
 }
 export function useMeManual() {
+  const [cookies, _] = useCookies(['nb_session']);
   return useQuery<TMe,AxiosError>(
-    ['me'],
+    ['me',cookies.nb_session],
     async () => {
       const { data } = await getMe();
       return data.data;

@@ -5,13 +5,14 @@ import SubmitButton from '../buttons/SubmitButton';
 import { TWallet } from '@/interfaces/inventory';
 import { useMutationDeleteWallet } from '@/utils/hooks/mutations/wallet';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { useQueryClient } from '@tanstack/react-query';
 type Props = {
   wallet: TWallet;
   onClose: () => void;
-  searchAddress?: string;
 };
 const DeleteWallet = (props: Props) => {
-  const { data: walletList, refetch } = useMyWalletList(props.searchAddress);
+  const queryClient = useQueryClient();
+
   const { mutate: deleteWallet, status: deleteStatus } =
     useMutationDeleteWallet();
   const handleClickDelete = () => {
@@ -19,7 +20,12 @@ const DeleteWallet = (props: Props) => {
       { walletId: props.wallet.id },
       {
         onSuccess: () => {
-          refetch();
+          queryClient.invalidateQueries({
+            queryKey: ['myWalletList'],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['walletList'],
+          });
           props.onClose();
         },
       }
@@ -48,7 +54,7 @@ const DeleteWallet = (props: Props) => {
           id=''
           className={styles.deleteButton}
           onClick={() => handleClickDelete()}
-          loading={deleteStatus === 'loading'}
+          isLoading={deleteStatus === 'loading'}
         >
           <p>Delete</p>
         </SubmitButton>

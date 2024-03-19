@@ -25,19 +25,22 @@ type InputTextProps = {
 const InputText = (props: InputTextProps) => {
   const [value, setValue] = useState<string>('');
   const [valid, setValid] = useState<boolean | undefined>(undefined);
-  const { data: walletList, status } = useMyWalletList(
-    validationWalletAddress(value) ? value : ''
-  );
+  const { data: walletList, status } = useMyWalletList();
   const handleChangeInput = async (value: string) => {
     setValue(value);
   };
   useEffect(() => {
+    console.log('my wallet list : ', walletList);
     if (!walletList) {
+      console.log('no wallet list');
       setValid(undefined);
       return;
     }
-    if (walletList.data.length === 0) setValid(true);
-    else if (walletList.data.length > 0) setValid(false);
+    walletList.data.find(
+      (wallet) => wallet.walletAddress === props.wallet.walletAddress
+    )
+      ? setValid(false)
+      : setValid(true);
   }, [walletList]);
   useEffect(() => {
     props.addWallet({ ...props.wallet, walletAddress: value, isValid: valid });
@@ -76,7 +79,7 @@ type Props = {
   onClose: () => void;
 };
 const ManualWalletAdd = (props: Props) => {
-  const { data: walletListData, refetch } = useMyWalletList('');
+  const { data: walletListData, refetch } = useMyWalletList();
   const { mutate: insertMyWalletBulk } = useMutationInsertWalletBulk();
   const [walletList, setWalletList] = useState<
     { walletAddress: string; isValid: boolean | undefined; index: number }[]
@@ -97,7 +100,7 @@ const ManualWalletAdd = (props: Props) => {
       validWalletList.map((wallet) => {
         return {
           name: wallet.walletAddress,
-          networkName: 'evm',
+          networkName: 'ethereum',
           walletAddress: wallet.walletAddress,
           provider: 'manual',
         };

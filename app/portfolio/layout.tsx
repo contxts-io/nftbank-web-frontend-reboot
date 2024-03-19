@@ -1,53 +1,27 @@
 import NoWallet from '@/components/portfolio/NoWallet';
 import PortfolioTabNavigation from '@/components/portfolio/PortfolioTabNavigation';
+import PortfolioUserProvider from '@/components/portfolio/PortfolioUserProvider';
+import PortfolioUserSelector from '@/components/portfolio/PortfolioUserProvider';
 import ProfileComponent from '@/components/profile/ProfileComponent';
+import { portfolioUserAtom } from '@/store/portfolio';
+import { useMe } from '@/utils/hooks/queries/auth';
+import { useWalletList } from '@/utils/hooks/queries/wallet';
+import { useAtom } from 'jotai';
 import { Metadata } from 'next';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-export const metadata: Metadata = {
-  title: 'Portfolio | NFTBank',
-  description: 'NFTBank.ai - Portfolio',
-};
-
-const PortfolioLayout = ({ children }: { children: React.ReactNode }) => {
+const PortfolioLayout = ({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: { slug: string[] };
+}) => {
   //** sprint 1 */
-  // const { data: me } = useMe();
-  // const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
-  // const {
-  //   data: walletList,
-  //   status,
-  //   error,
-  // } = useWalletList({ nickname: portfolioUser?.nickname || '' });
-
   return (
     <section className='w-full h-full'>
-      <ProfileComponent />
-      <PortfolioTabNavigation />
-      {children}
-      {/**
-       * 
-       * 
-       * 
-       *  //sprint 1
-      {status === 'success' && (
-        <>
-          {walletList?.data.length > 0 ? (
-            <>
-              <PortfolioTabNavigation />
-              {children}
-            </>
-          ) : (
-            <div className='w-full h-[calc(100vh-197px)] flex items-center justify-center'>
-              {me?.nickname === portfolioUser?.nickname ? (
-                <NoWallet />
-              ) : (
-                <p className='font-body02-regular text-[var(--color-text-subtle)]'>
-                  This user has no wallets.
-                </p>
-              )}
-            </div>
-          )}
-        </>
-      )} */}
+      <PortfolioUserProvider>{children}</PortfolioUserProvider>
     </section>
   );
 };

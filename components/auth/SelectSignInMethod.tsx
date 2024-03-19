@@ -63,14 +63,18 @@ const SelectSignInMethod = () => {
             Connect your wallet to get started
           </h2>
           <div className={`font-button03-medium ${styles.methodContainer}`}>
-            <Button
-              id=''
-              className={styles.button}
-              onClick={() => setShowModal(true)}
-            >
-              <Wallet className={styles.icon} />
-              <p>Continue with Wallet</p>
-            </Button>
+            {
+              <div className='hidden md:flex'>
+                <Button
+                  id=''
+                  className={styles.button}
+                  onClick={() => setShowModal(true)}
+                >
+                  <Wallet className={styles.icon} />
+                  <p>Continue with Wallet</p>
+                </Button>
+              </div>
+            }
             <Button
               id=''
               className={styles.button}

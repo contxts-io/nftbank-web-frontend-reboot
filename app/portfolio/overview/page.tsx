@@ -11,15 +11,19 @@ import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
 import { useMe } from '@/utils/hooks/queries/auth';
 import ChainList from '@/components/portfolio/ChainList';
 import { useRouter } from 'next/navigation';
+import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import NoWallet from '@/components/portfolio/NoWallet';
 
 const OverviewPage = () => {
   // const myPortfolio = useAtomValue(myDefaultPortfolioAtom);
   const { data: me } = useMe();
+  const { data: walletList } = useMyWalletList();
   const myPortfolio = useAtomValue(myDefaultPortfolioAtom);
   const setPortfolioNicknameAtom = useSetAtom(portfolioNicknameAtom);
   const setPortfolioUserAtom = useSetAtom(portfolioUserAtom);
   const router = useRouter();
   useEffect(() => {
+    // !me && router.push('/portfolio/overview/sample');
     me?.nickname && setPortfolioNicknameAtom(me.nickname);
   }, [me]);
   // useEffect(() => {
@@ -30,22 +34,32 @@ const OverviewPage = () => {
   //     });
   // }, [myPortfolio]);
 
+  // if (!walletList || walletList.data.length === 0)
+  //   return (
+  //     <section className='pt-20 px-24 pb-40 flex items-center justify-center'>
+  //       {/* {me?.nickname === portfolioUser?.nickname ? ( */}
+  //       <div className='pt-192'>
+  //         <NoWallet />
+  //       </div>
+  //       {/* ) : (
+  //               <p className='font-body02-regular text-[var(--color-text-subtle)]'>
+  //                 This user has no wallets.
+  //               </p>
+  //             )} */}
+  //     </section>
+  //   );
   return (
-    <section className='pt-24 px-24 pb-40'>
-      {/* <ChainList />
+    <section className='pt-20 px-24 pb-40'>
+      {/* <ChainList />*/}
       <SummaryValueContainer />
-      <div className='w-full grid grid-cols-2 gap-x-[20px]'>
-        <HistoricalTrendContainer />
-        <PerformanceContainer />
-        <TotalInventoryValue />
-        <RecentActivityContainer />
-      </div>
       <div className='w-full'>
         <HistoricalTrendContainer />
-        <PerformanceContainer />
+      </div>
+      <div className='w-full grid gap-x-[20px] grid-cols-1 md:grid-cols-2'>
         <TotalInventoryValue />
-        <RecentActivityContainer />
-      </div> */}
+        <PerformanceContainer />
+        {/* <RecentActivityContainer /> */}
+      </div>
     </section>
   );
 };

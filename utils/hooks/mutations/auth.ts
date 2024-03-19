@@ -1,5 +1,6 @@
 import { TSendEmailVerificationCode, TSignInUp, TVerifyEmailByVerificationCode, UpdateMeType, sendEmailVerificationCode, sign, signOut, updateMe, verifyEmailByVerificationCode } from "@/apis/auth";
 import { userStatusAtom } from "@/store/account";
+import { currencyAtom } from "@/store/currency";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useAtom } from "jotai";
@@ -21,10 +22,16 @@ export function useMutationSignInUp() {
   );
 }
 export function useMutationUpdateMe() {
-  return useMutation<any,AxiosError,UpdateMeType>(
+  const [currency, setCurrency] = useAtom(currencyAtom);
+  return useMutation<any, AxiosError, UpdateMeType>(
     (data) => updateMe(data),
     {
       useErrorBoundary: false,
+      onSuccess: (data) => {
+        console.log('mutation updateMe success : ', data.data.data.config.currency);
+        // setCurrency(data?.data?.data?.config?.currency ? data.data.data.config.currency : currency);
+      }
+      
     },
   );
 }

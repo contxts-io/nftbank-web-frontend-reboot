@@ -24,22 +24,29 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
     setIsClient(true);
   }, []);
   useEffect(() => {
-    if (isClient) {
-      if (!me) {
-        !(
-          path.includes('/auth') ||
-          path.includes('/landing') ||
-          path.includes('/blog')
-        ) && router.push('/auth/signin');
-      } else if (me.nickname === null) {
-        setShowModal(true);
-      }
-      me?.nickname && setShowModal(false);
-      me?.nickname &&
-        setMySelectedInformation({
-          nickname: me.nickname,
-          networkId: 'ethereum',
-        });
+    if (isClient && me) {
+      // if (!me) {
+      //   !(
+      //     path.includes('/auth') ||
+      //     path.includes('/landing') ||
+      //     path.includes('/blog')
+      //   ) && router.push('/auth/signin');
+      // } else if (me.nickname === null) {
+      //   setShowModal(true);
+      // }
+      // me?.nickname && setShowModal(false);
+      // me?.nickname &&
+      //   setMySelectedInformation({
+      //     nickname: me.nickname,
+      //     networkId: 'ethereum',
+      //   });
+      me.nickname
+        ? mySelectedInformation === null &&
+          setMySelectedInformation({
+            nickname: me.nickname,
+            networkId: 'ethereum',
+          })
+        : setShowModal(true);
     }
   }, [me, path, isClient]);
   //
@@ -55,10 +62,11 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
         }}
         ariaHideApp={false}
         shouldCloseOnOverlayClick={false}
+        shouldCloseOnEsc={false}
         overlayClassName={'overlayBackground'}
       >
         <div className='relative w-full h-full'>
-          <NicknameSetting />
+          <NicknameSetting onClose={() => setShowModal(false)} />
         </div>
       </ReactModal>
     </>

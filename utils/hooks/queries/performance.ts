@@ -32,8 +32,6 @@ export function usePerformanceChart(requestParam: PerformanceParam & BasicParam)
     },
     {
       keepPreviousData: true,
-      enabled: requestParam.walletAddress !== '',
-        // && !!requestParam.taskId && !!polling,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -55,7 +53,6 @@ export function usePerformanceChartAnnual(requestParam: PerformanceParam & Basic
     },
     {
       keepPreviousData: true,
-      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,

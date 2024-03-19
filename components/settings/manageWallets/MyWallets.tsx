@@ -54,6 +54,7 @@ const MyWallets = () => {
               placeholder='Wallet Address, Wallet Name'
               value={searchAddress}
               onChange={handleChangeInput}
+              handleClose={() => handleChangeInput('')}
             />
           </div>
           <SubmitButton
@@ -82,14 +83,12 @@ const MyWallets = () => {
         <div className='relative w-full h-full'>
           {showModal === 'edit' && selectedWallet && (
             <EditWallet
-              searchAddress={searchAddress}
               onClose={() => setShowModal(null)}
               wallet={selectedWallet}
             />
           )}
           {showModal === 'delete' && selectedWallet && (
             <DeleteWallet
-              searchAddress={searchAddress}
               onClose={() => setShowModal(null)}
               wallet={selectedWallet}
             />

@@ -10,11 +10,11 @@ import { useAtom, useAtomValue } from 'jotai';
 import {
   networkIdAtom,
   portfolioNicknameAtom,
+  portfolioProfileAtom,
   portfolioUserAtom,
 } from '@/store/portfolio';
 import { useUser } from '@/utils/hooks/queries/user';
 import BlockiesIcon from '../BlockiesIcon';
-import { myDefaultPortfolioAtom } from '@/store/settings';
 import Wallet from '@/public/icon/Wallet';
 import { BasicParam } from '@/interfaces/request';
 import { TUser } from '@/interfaces/user';
@@ -27,8 +27,10 @@ import SearchInput from '../searchInput/SearchInput';
 import { getAddress } from 'ethers/lib/utils';
 import { sendGTMEvent } from '@next/third-parties/google';
 import { verifyWalletAddress } from '@/apis/wallet';
+import PortfolioSelectorWrapper from './PortfolioSelectorWrapper';
 const ProfileComponent = () => {
-  const { data: me } = useMe();
+  const { data: me, status } = useMe();
+  const [portfolioProfile, setPortfolioProfile] = useAtom(portfolioProfileAtom);
   const path = usePathname();
   const router = useRouter();
   const currency = useAtomValue(currencyAtom);
@@ -41,7 +43,9 @@ const ProfileComponent = () => {
   // const [user, setUser] = useState<TUser | null>(null);
   const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
   // const { data: me, status } = useMe();
-  const { data: user, status: userStatus } = useUser(nickname);
+  const { data: user, status: userStatus } = useUser(
+    portfolioProfile?.nickname || ''
+  );
   const [error, setError] = useState<string | null>(null);
   const [isChecking, setIsChecking] = useState<boolean>(false);
   const { data: inventoryValue, status: statusInventoryValue } =
@@ -51,6 +55,10 @@ const ProfileComponent = () => {
   }, []);
 
   useEffect(() => {
+    if (path.includes('/sample')) {
+      setNickname('sample');
+      return;
+    }
     path && setNickname(path.split('nickname/')[1] || null);
     path && setWalletAddress(path.split('walletAddress/')[1] || null);
     path &&
@@ -59,6 +67,11 @@ const ProfileComponent = () => {
       me?.nickname &&
       setNickname(me.nickname);
   }, [path, me?.nickname]);
+  // useEffect(() => {
+  //   portfolioUser?.nickname && setNickname(portfolioUser.nickname);
+  //   portfolioUser?.walletAddress &&
+  //     setWalletAddress(portfolioUser.walletAddress);
+  // }, [portfolioUser]);
   useEffect(() => {
     const handleKeyDown = (e: any) => {
       if (e.key === 'Enter') {
@@ -73,21 +86,21 @@ const ProfileComponent = () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [walletAddress, error]);
-  useEffect(() => {
-    nickname
-      ? setPortfolioUser({
-          nickname: nickname,
-          walletAddress: '',
-          networkId: networkId,
-        })
-      : walletAddress
-      ? setPortfolioUser({
-          nickname: '',
-          walletAddress: walletAddress,
-          networkId: networkId,
-        })
-      : null;
-  }, [nickname, walletAddress]);
+  // useEffect(() => {
+  //   nickname
+  //     ? setPortfolioUser({
+  //         nickname: nickname,
+  //         walletAddress: '',
+  //         networkId: networkId,
+  //       })
+  //     : walletAddress
+  //     ? setPortfolioUser({
+  //         nickname: '',
+  //         walletAddress: walletAddress,
+  //         networkId: networkId,
+  //       })
+  //     : null;
+  // }, [nickname, walletAddress]);
   useEffect(() => {
     if (searchAddress == '') {
       setError(null);
@@ -135,7 +148,8 @@ const ProfileComponent = () => {
   return (
     <>
       {isClient ? (
-        <section className='w-full px-24 pt-24 pb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-y-20'>
+        <section className='w-full px-24 pt-34 pb-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-y-20'>
+          {/* 모바일 전용 */}
           <div className='block md:hidden h-40 w-full'>
             <SearchInput
               placeholder='Search any Wallet'
@@ -147,60 +161,54 @@ const ProfileComponent = () => {
               handleClose={() => setSearchAddress('')}
             />
           </div>
-          <div className='flex items-center'>
-            {user?.image ? (
-              <Image
-                src={`${user.image || '/icon/nftbank_icon.svg'}`}
-                width={56}
-                height={56}
-                alt='nftbank logo'
-                className={`w-56 h-56 mr-20 rounded-full border-1 border-border-main dark:border-border-main-dark overflow-hidden`}
-              />
-            ) : (
-              <div className='flex mr-20  items-center text-[var(--color-text-subtle)] rounded-full border-1 border-border-main dark:border-border-main-dark overflow-hidden'>
-                <BlockiesIcon
-                  walletAddress={`${nickname || walletAddress}`}
-                  size={56}
+          <div>
+            <div className='flex items-center'>
+              {user?.image ? (
+                <Image
+                  src={`${user.image || '/icon/nftbank_icon.svg'}`}
+                  width={56}
+                  height={56}
+                  alt='nftbank logo'
+                  className={`w-56 h-56 mr-20 rounded-full border-1 border-border-main dark:border-border-main-dark overflow-hidden`}
                 />
-              </div>
-            )}
-            <div className='my-1 flex flex-col justify-between items-center h-full'>
-              <div className='flex items-center'>
-                <h2
-                  className={`font-subtitle01-bold mr-16 text-text-main dark:text-text-main-dark`}
-                >
-                  {walletAddress?.substring(0, 8) || nickname || 'Welcome'}
-                </h2>
-                {/**
+              ) : (
+                <div className='flex mr-20  items-center text-[var(--color-text-subtle)] rounded-full border-1 border-[var(--color-border-main)] overflow-hidden'>
+                  <BlockiesIcon
+                    walletAddress={`${nickname || walletAddress}`}
+                    size={56}
+                  />
+                </div>
+              )}
+              <h2
+                className={`font-subtitle01-bold mr-16 text-text-main dark:text-text-main-dark`}
+              >
+                {walletAddress?.substring(0, 8) || nickname || 'Welcome'}
+              </h2>
+              {/**
                  * 
                  * 
                  * sprint 1
                  * 
                  * <ShareNetwork className='mr-12 fill-[var(--color-icon-subtle)]' />
                 <Eye className=' fill-[var(--color-icon-subtle)]' /> */}
-              </div>
-              {/**
-               * 
-               * 
-               * sprint
-               * 
-               * <div className='mt-8'>
-                {user && portfolioUser ? (
-                  //누군가의 계정
-                  <PortfolioSelector
-                    className={styles.selectorButton}
-                    position='left-0 top-36'
-                    user={user}
-                    portfolioParam={portfolioUser}
-                    setPortfolioParam={(param) => setPortfolioUser(param)}
-                  />
-                ) : (
-                  <div className='font-caption-regular text-[var(--color-text-subtle)] bg-[var(--color-elevation-sunken)] w-fit px-8 h-24 flex items-center justify-center gap-x-8'>
-                    <Wallet />
-                    <p>All Wallet</p>
-                  </div>
-                )}
-              </div> */}
+            </div>
+            <div className='mt-12'>
+              {/* {user && portfolioUser ? (
+                //누군가의 계정
+                <PortfolioSelector
+                  className={`${styles.selectorButton} font-button03-medium`}
+                  position='left-0 top-36'
+                  user={user}
+                  portfolioParam={portfolioUser}
+                  setPortfolioParam={(param) => setPortfolioUser(param)}
+                />
+              ) : (
+                <div className='font-caption-regular text-[var(--color-text-subtle)] bg-[var(--color-elevation-sunken)] w-fit px-8 h-24 flex items-center justify-center gap-x-8'>
+                  <Wallet />
+                  <p>All Wallet</p>
+                </div>
+              )} */}
+              <PortfolioSelectorWrapper />
             </div>
           </div>
           <div className='flex flex-col md:items-end'>
@@ -249,7 +257,7 @@ const ProfileComponent = () => {
           </div>
         </section>
       ) : (
-        <section></section>
+        <section />
       )}
     </>
   );

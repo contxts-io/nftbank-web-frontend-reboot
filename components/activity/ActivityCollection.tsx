@@ -10,8 +10,6 @@ import { useInView } from 'react-intersection-observer';
 import { SortOrder, TCollectionParam } from '@/store/requestParam';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 const ActivityCollection = () => {
-  const { data: walletList } = useMyWalletList();
-
   const { ref, inView } = useInView();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [checkedItemList, setCheckedItemList] = useState<Collection[]>([]);
