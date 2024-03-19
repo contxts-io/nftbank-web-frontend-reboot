@@ -94,6 +94,9 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
     console.log('changed user :: ', user);
     user && setPortfolioProfile(user);
   }, [user]);
+  useEffect(() => {
+    console.log('status', status);
+  }, [status]);
   return (
     <>
       <ProfileComponent />
@@ -101,12 +104,12 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
       {portfolioUser?.walletAddress ? (
         <>
           <PortfolioTabNavigation />
-          {/* {children} */}
+          {children}
         </>
       ) : (
-        status === 'success' && (
+        (status === 'success' || status === 'error') && (
           <>
-            {walletList?.data.length > 0 ? (
+            {walletList?.data.length && walletList.data.length > 0 ? (
               <>
                 <PortfolioTabNavigation />
                 {children}

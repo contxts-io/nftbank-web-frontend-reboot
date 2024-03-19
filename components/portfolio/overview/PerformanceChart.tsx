@@ -169,7 +169,6 @@ const PerformanceChart = (props: Props) => {
       performanceChart.data.length == 0
     )
       return [];
-    console.log('performanceChart.data', performanceChart.data);
     return [
       {
         name: 'positive',
@@ -188,11 +187,9 @@ const PerformanceChart = (props: Props) => {
             const value =
               performanceChart.data?.find((item) => {
                 const date = new Date(item.processedAt);
-                console.log('date.getMonth()', date.getMonth() + 1);
                 const _value = date.getMonth() + 1 === month ? item : null;
                 return _value;
               })?.roi?.[currency] || '0';
-            console.log('typeof parseFloat(value)', parseFloat(value));
             return typeof parseFloat(value) === 'number' &&
               parseFloat(value) > 0
               ? parseFloat(value)

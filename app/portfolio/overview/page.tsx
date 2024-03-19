@@ -23,7 +23,7 @@ const OverviewPage = () => {
   const setPortfolioUserAtom = useSetAtom(portfolioUserAtom);
   const router = useRouter();
   useEffect(() => {
-    !me && router.push('/portfolio/overview/sample');
+    // !me && router.push('/portfolio/overview/sample');
     me?.nickname && setPortfolioNicknameAtom(me.nickname);
   }, [me]);
   // useEffect(() => {

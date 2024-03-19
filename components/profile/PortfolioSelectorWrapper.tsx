@@ -57,6 +57,7 @@ const PortfolioSelectorWrapper = () => {
     }
   };
   useEffect(() => {
+    console.log('portfolioProfile : ', portfolioProfile);
     portfolioProfile?.nickname && setNickname(portfolioProfile.nickname);
   }, [portfolioProfile]);
   useEffect(() => {
@@ -111,19 +112,14 @@ const PortfolioSelectorWrapper = () => {
     //   networkId: 'ethereum',
     // }));
   };
-  useEffect(() => {
-    console.log('change : walletList : ', walletList);
-  }, [walletList]);
-  useEffect(() => {
-    console.log('option : ', option);
-  }, [option]);
+
   return (
     <div className='relative' ref={listRef}>
       <div className='font-caption-regular flex items-center gap-x-4'>
         <Button
           className={`font-button03-medium ${styles.selectorButton}`}
           onClick={() => toggleOpen()}
-          isLoading={userStatus === 'loading'}
+          isLoading={Boolean(nickname) && userStatus === 'loading'}
           disabled={!user}
         >
           <Folder className={`mr-4`} />
