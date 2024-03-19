@@ -24,10 +24,10 @@ type Props = {
 };
 const SummaryValueContainer = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
-  const _portfolioUser = useAtomValue(portfolioUserAtom);
-  const [portfolioUser, setPortfolioUser] = useState(
-    props.portfolioUser || _portfolioUser
-  );
+  const portfolioUser = useAtomValue(portfolioUserAtom);
+  // const [portfolioUser, setPortfolioUser] = useState(
+  //   props.portfolioUser || _portfolioUser
+  // );
   const { data: totalSpend, status: statusTotalSpend } =
     useSummaryTotalSpend(portfolioUser);
   const { data: gasSpend, status: statusGasSpend } =
@@ -38,7 +38,9 @@ const SummaryValueContainer = (props: Props) => {
     useSummaryUnrealized(portfolioUser);
   const { data: realized, status: statusRealized } =
     useSummaryRealized(portfolioUser);
-
+  // useEffect(() => {
+  //   setPortfolioUser(_portfolioUser);
+  // }, [_portfolioUser]);
   return (
     <section className={`font-caption-medium ${styles.container}`}>
       <article className={styles.valueRect}>

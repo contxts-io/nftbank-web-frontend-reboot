@@ -38,7 +38,7 @@ const PortfolioSelectorWrapper = () => {
     portfolioProfile?.nickname || null
   );
   const { data: walletGroup } = useWalletGroup({
-    id: option.value,
+    id: option.type === 'group' ? option.value : '',
     nickname: nickname || '',
   });
   const [isOpen, setIsOpen] = useState(false);
@@ -61,6 +61,7 @@ const PortfolioSelectorWrapper = () => {
     portfolioProfile?.nickname && setNickname(portfolioProfile.nickname);
   }, [portfolioProfile]);
   useEffect(() => {
+    console.log('wrapper portfolioUser', portfolioUser);
     portfolioUser && handleChangeOption(portfolioUser);
   }, [portfolioUser]);
   const toggleOpen = () => {
@@ -72,6 +73,7 @@ const PortfolioSelectorWrapper = () => {
     }
   };
   const handleChangeOption = (row: BasicParam) => {
+    console.log('row : ', row);
     Boolean(row.nickname && row.nickname !== '') &&
       // (setOption({
       //   type: 'all',
@@ -112,6 +114,9 @@ const PortfolioSelectorWrapper = () => {
     //   networkId: 'ethereum',
     // }));
   };
+  useEffect(() => {
+    console.log('portfolioUser changed ? ', portfolioUser);
+  }, [portfolioUser]);
 
   return (
     <div className='relative' ref={listRef}>

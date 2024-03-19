@@ -54,34 +54,22 @@ const GroupListTable = (props: Props) => {
             <td className='text-left'>
               <div className='flex gap-8 items-center mr-111'>
                 {group.position?.map((position, i) => {
-                  const totalValue = group.position.reduce((a: number, b) => {
-                    return a + parseFloat(b.value?.[currency].amount || '0');
-                  }, 0);
-                  console.log('totalValue', totalValue);
                   return (
                     <div
                       key={i}
                       className='h-32 flex bg-[var(--color-elevation-sunken)] px-8 items-center'
                     >
-                      <Image
+                      <img
                         width={20}
                         height={20}
-                        src={position.collection.imageUrl}
-                        alt={position.collection.name}
+                        src={position.collection}
                         className='rounded-full mr-8'
                       />
                       <p>
-                        {totalValue > 0
-                          ? formatPercent(
-                              (
-                                (parseFloat(
-                                  position.value?.[currency].amount || '0'
-                                ) /
-                                  totalValue) *
-                                100
-                              ).toString()
-                            )
-                          : '-'}
+                        {formatCurrency(
+                          position.valuation?.[currency] || '0',
+                          currency
+                        )}
                       </p>
                     </div>
                   );

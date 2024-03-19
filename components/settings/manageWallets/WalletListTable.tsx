@@ -72,7 +72,7 @@ const WalletListTable = (props: Props) => {
                   {wallet.position?.map((position, i) => {
                     const totalValue = wallet.position.reduce(
                       (a: number, b) => {
-                        return a + parseFloat(b.value[currency].amount || '0');
+                        return a + parseFloat(b.valuation?.[currency] || '0');
                       },
                       0
                     );
@@ -82,25 +82,17 @@ const WalletListTable = (props: Props) => {
                         key={i}
                         className='h-32 flex bg-[var(--color-elevation-sunken)] px-8 items-center'
                       >
-                        <Image
+                        <img
                           width={20}
                           height={20}
-                          src={position.collection.imageUrl}
-                          alt={position.collection.name}
+                          src={position.collection}
                           className='rounded-full mr-8'
                         />
                         <p>
-                          {totalValue > 0
-                            ? formatPercent(
-                                (
-                                  (parseFloat(
-                                    position.value[currency].amount || '0'
-                                  ) /
-                                    totalValue) *
-                                  100
-                                ).toString()
-                              )
-                            : '-'}
+                          {formatCurrency(
+                            position.valuation[currency] || '0',
+                            currency
+                          )}
                         </p>
                       </div>
                     );

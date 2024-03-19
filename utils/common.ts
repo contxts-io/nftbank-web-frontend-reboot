@@ -263,7 +263,7 @@ export function jsonToQueryString(searchParam: any) {
     if (typeof searchParam[key] === 'string')
       return `${key}=${searchParam[key]}`;
     else return `${key}=${searchParam[key]}`;
-  }).join('&').replace(/^&/, '');
+  }).join('&').replace(/^&/, '').replace(/&+/g, '&');
 }
 export const CATEGORY = [
   {

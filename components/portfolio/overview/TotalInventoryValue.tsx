@@ -26,10 +26,10 @@ type Props = {
 };
 const TotalInventoryValue = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
-  const _portfolioUser = useAtomValue(portfolioUserAtom);
-  const [portfolioUser, setPortfolioUser] = useState(
-    props.portfolioUser || _portfolioUser
-  );
+  const portfolioUser = useAtomValue(portfolioUserAtom);
+  // const [portfolioUser, setPortfolioUser] = useState(
+  //   props.portfolioUser || _portfolioUser
+  // );
   const networkId = useAtomValue(networkIdAtom);
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState<'value' | 'amount'>('value');

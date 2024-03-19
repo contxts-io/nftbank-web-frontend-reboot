@@ -20,10 +20,10 @@ type Props = {
 const PerformanceContainer = (props: Props) => {
   const currency = useAtomValue(currencyAtom);
   const networkId = useAtomValue(networkIdAtom);
-  const _portfolioUser = { ...useAtomValue(portfolioUserAtom), networkId };
-  const [portfolioUser, setPortfolioUser] = useState(
-    props.portfolioUser || _portfolioUser
-  );
+  const portfolioUser = { ...useAtomValue(portfolioUserAtom), networkId };
+  // const [portfolioUser, setPortfolioUser] = useState(
+  //   props.portfolioUser || _portfolioUser
+  // );
   const [isPolling, setIsPolling] = useState<boolean>(true);
 
   const [requestParam, setRequestParam] = useState<{

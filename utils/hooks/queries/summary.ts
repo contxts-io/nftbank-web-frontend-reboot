@@ -9,7 +9,7 @@ import { useAtomValue } from "jotai";
 export function useSummaryTotalSpend(searchParam: BasicParam | null) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<TSummary,AxiosError>(
-    [searchParam?.nickname || '','summary','totalSpend', dataFreshness?.processedAt],
+    [searchParam?.nickname || '','summary','totalSpend', searchParam, dataFreshness?.processedAt],
     async () => {
       const value = await getSummaryTotalSpend(searchParam);
       return value;
@@ -26,7 +26,7 @@ export function useSummaryTotalSpend(searchParam: BasicParam | null) {
 export function useSummaryGasSpend(searchParam:BasicParam | null) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<TSummary,AxiosError>(
-    [searchParam?.nickname || '', 'summary','gasSpend',dataFreshness?.processedAt],
+    [searchParam?.nickname || '', 'summary','gasSpend', searchParam, dataFreshness?.processedAt],
     async () => {
       const value = await getSummaryGasSpend(searchParam);
       return value;
@@ -44,7 +44,7 @@ export function useSummaryGasSpend(searchParam:BasicParam | null) {
 export function useSummaryTotalSale(searchParam: BasicParam | null) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<TSummary,AxiosError>(
-    [searchParam?.nickname || '', 'summary','totalSale', dataFreshness?.processedAt],
+    [searchParam?.nickname || '', 'summary','totalSale', searchParam, dataFreshness?.processedAt],
     async () => {
       const value = await getSummaryTotalSale(searchParam);
       return value;
@@ -61,7 +61,7 @@ export function useSummaryTotalSale(searchParam: BasicParam | null) {
 export function useSummaryUnrealized(searchParam: BasicParam | null) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'CURRENT');
   return useQuery<TUnrealized,AxiosError>(
-    [searchParam?.nickname || '', 'summary','unrealized', dataFreshness?.processedAt],
+    [searchParam?.nickname || '', 'summary','unrealized', searchParam, dataFreshness?.processedAt],
     async () => {
       const value = await getSummaryUnrealized(searchParam);
       return value;
@@ -79,7 +79,7 @@ export function useSummaryUnrealized(searchParam: BasicParam | null) {
 export function useSummaryRealized(searchParam: BasicParam | null) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<TSummary,AxiosError>(
-    [searchParam?.nickname || '','summary','realized',dataFreshness?.processedAt],
+    [searchParam?.nickname || '','summary','realized', searchParam, dataFreshness?.processedAt],
     async () => {
       const value = await getSummaryRealized(searchParam);
       return value;

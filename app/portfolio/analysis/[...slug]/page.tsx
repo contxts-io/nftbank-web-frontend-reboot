@@ -9,8 +9,8 @@ import { useEffect } from 'react';
 
 const AnalysisPage = ({ params }: { params: { slug: string[] } }) => {
   const { slug } = params;
-  const setPortfolioUser = useSetAtom(portfolioUserAtom);
-  const setPortfolioNicknameAtom = useSetAtom(portfolioNicknameAtom);
+  // const setPortfolioUser = useSetAtom(portfolioUserAtom);
+  // const setPortfolioNicknameAtom = useSetAtom(portfolioNicknameAtom);
   // useEffect(() => {
   //   if (slug && Array.isArray(slug) && slug.length === 2) {
   //     const queryParam: BasicParam = {

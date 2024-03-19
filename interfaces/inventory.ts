@@ -47,6 +47,12 @@ export type PositionCollection = {
   value: ValueNested,
   valuation: TValuation | null,
 }
+export type WalletPositionCollection = {
+  collection: string,
+  value: number,
+  // valuation: TValuation | null,
+  valuation: Value,
+}
 export type PositionCollectionAmount = {
   collection: ICollection,
   amount: number,
@@ -66,7 +72,7 @@ export type BasicWallet = {
 export type TWallet = {
   id: string,
   value: Value,
-  position: PositionCollection[],
+  position: WalletPositionCollection[],
 } & BasicWallet
 export type TGroups = {
   id: string,
@@ -77,7 +83,7 @@ export type TWalletGroup = {
   name: string,
   walletsCount: number,
   value: Value,
-  position: PositionCollection[],
+  position: WalletPositionCollection[],
   walletIds: string[],
   wallets: {
     data: TWallet[],

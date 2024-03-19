@@ -8,8 +8,8 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 
 const AnalysisPage = () => {
-  const myPortfolio = useAtomValue(myDefaultPortfolioAtom);
-  const setPortfolioUser = useSetAtom(portfolioUserAtom);
+  // const myPortfolio = useAtomValue(myDefaultPortfolioAtom);
+  // const setPortfolioUser = useSetAtom(portfolioUserAtom);
   // useEffect(() => {
   //   setPortfolioUser({
   //     networkId: 'ethereum',

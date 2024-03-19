@@ -57,10 +57,10 @@ type Props = {
 const HistoricalTrendContainer = (props: Props) => {
   const [selectedPeriod, setSelectedPeriod] = useState('1W');
 
-  const _portfolioUser = useAtomValue(portfolioUserAtom);
-  const [portfolioUser, setPortfolioUser] = useState(
-    props.portfolioUser || _portfolioUser
-  );
+  const portfolioUser = useAtomValue(portfolioUserAtom);
+  // const [portfolioUser, setPortfolioUser] = useState(
+  //   props.portfolioUser || _portfolioUser
+  // );
 
   const currency = useAtomValue(currencyAtom);
 
