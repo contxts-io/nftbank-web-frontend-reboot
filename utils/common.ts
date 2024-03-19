@@ -265,6 +265,17 @@ export function jsonToQueryString(searchParam: any) {
     else return `${key}=${searchParam[key]}`;
   }).join('&').replace(/^&/, '').replace(/&+/g, '&');
 }
+export function removeEmptyValues(jsonObj: Record<string, any>): Record<string, any> {
+  for (const key in jsonObj) {
+    if (jsonObj.hasOwnProperty(key)) {
+      if (jsonObj[key] === "" || jsonObj[key] === null || jsonObj[key] === undefined) {
+        delete jsonObj[key];
+      }
+    }
+  }
+  return jsonObj;
+  
+}
 export const CATEGORY = [
   {
     key: 'nftvaluation',
