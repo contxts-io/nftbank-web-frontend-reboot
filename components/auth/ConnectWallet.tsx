@@ -265,7 +265,6 @@ const ConnectWallet = (props: Props) => {
             className={styles.button}
             onClick={() => handleClickButton(wallet)}
             key={index}
-            parameter={wallet.name}
           >
             <img
               src={wallet.icon}
