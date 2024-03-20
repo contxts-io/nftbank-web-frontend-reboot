@@ -1,6 +1,6 @@
 import { DataFreshness } from "@/interfaces/utils";
 import { atom } from "jotai";
-
+const PREFIX = 'FRESHNESS'
 export const freshnessAtom = atom<DataFreshness[]>([
   {
     status: 'ALL',
@@ -11,3 +11,4 @@ export const freshnessAtom = atom<DataFreshness[]>([
     processedAt: '',
   },
 ]);
+freshnessAtom.debugLabel = `${PREFIX}_freshnessAtom`;
