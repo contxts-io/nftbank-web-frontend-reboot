@@ -94,7 +94,7 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
           networkId: 'ethereum',
         });
     }
-  }, [path, myDefaultPortfolio]);
+  }, [path, myDefaultPortfolio, me]);
   useEffect(() => {
     console.log('changed portfolioUser ::', portfolioUser);
     console.log('changed userStatus :', userStatus);
