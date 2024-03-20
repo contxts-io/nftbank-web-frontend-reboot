@@ -37,11 +37,12 @@ const InputText = (props: InputTextProps) => {
       setValid(undefined);
       return;
     }
-    walletList.data.find(
-      (wallet) => wallet.walletAddress === props.wallet.walletAddress
-    )
-      ? setValid(false)
-      : setValid(true);
+    value !== '' &&
+      (walletList.data.find(
+        (wallet) => wallet.walletAddress === props.wallet.walletAddress
+      )
+        ? setValid(false)
+        : setValid(true));
   }, [walletList]);
   useEffect(() => {
     props.addWallet({ ...props.wallet, walletAddress: value, isValid: valid });
@@ -164,14 +165,12 @@ const ManualWalletAdd = (props: Props) => {
           className={styles.addRowButton}
           onClick={() => handleClickAddButton()}
           disabled={
-            walletList.length >= 10 ||
+            walletList.find((wallet) => wallet.walletAddress === '') !==
+              undefined ||
             walletList.find((wallet) => wallet.isValid === false) !== undefined
           }
         >
-          <Plus className='w-16 h-16 fill-[var(--color-icon-selected)] mr-8' />
-          <p className='font-body02-medium text-[var(--color-text-main)]'>
-            Can add <span>{10 - walletList.length}</span> more
-          </p>
+          <Plus className='w-16 h-16 fill-[var(--color-icon-selected)]' />
         </Button>
       </div>
       <Button

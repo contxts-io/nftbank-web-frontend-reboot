@@ -88,6 +88,8 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
         }}
         ariaHideApp={false}
         overlayClassName={'overlayBackground'}
+        shouldCloseOnOverlayClick={false}
+        shouldCloseOnEsc={false}
       >
         <div className='relative w-full h-full'>
           <NicknameSetting onClose={() => setShowModalNickname(false)} />
