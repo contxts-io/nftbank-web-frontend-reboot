@@ -41,7 +41,7 @@ const EmailForm = () => {
         console.log('email token: ', token);
         await sign({ token, provider: 'email' }).then(async () => {
           console.log('email sign-up success  ');
-          (await refetch()).data && router.push('/portfolio');
+          (await refetch()).data && router.push('/portfolio/overview');
         });
       } else {
         console.log('token is null');

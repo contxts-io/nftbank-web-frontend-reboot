@@ -127,7 +127,6 @@ const ConnectWallet = (props: Props) => {
   // }, [me]);
 
   useEffect(() => {
-    console.log('address ::::: ', address);
     address?.startsWith('0x') &&
       walletInstance?.walletId &&
       setConnectedWalletAddress({
@@ -136,10 +135,6 @@ const ConnectWallet = (props: Props) => {
       });
   }, [address, walletInstance]);
   useEffect(() => {
-    console.log('connectedWalletAddress', connectedWalletAddress);
-    console.log('chain', chain);
-    console.log('walletInstance', walletInstance);
-
     if (connectedWalletAddress) {
       const token = formatToken({
         walletAddress: connectedWalletAddress.address,
@@ -194,9 +189,10 @@ const ConnectWallet = (props: Props) => {
             {
               onSuccess: async (data) => {
                 // const me = await checkMe();
-                refetch();
-                console.log('sign success & refetch');
-                router.push('/portfolio');
+                console.log('sign success & refetch wallet ~!@@');
+                (await refetch()).data && router.push(`/portfolio/overview`);
+                // console.log('sign success & refetch');
+                // router.push('/portfolio/overview');
               },
             }
           );

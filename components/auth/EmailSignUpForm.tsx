@@ -47,7 +47,7 @@ const EmailSignUpForm = () => {
         },
         {
           onSuccess: () => {
-            router.push('/portfolio');
+            router.push('/portfolio/overview');
           },
         }
       );
