@@ -78,7 +78,7 @@ const EmailForm = () => {
           </div>
           <div className={`font-body02-medium ${styles.footer}`}>
             <SubmitButton
-              id=''
+              id='email_address_input'
               className={`w-full`}
               disabled={
                 !validationEmail(email[0]) ||
@@ -105,7 +105,7 @@ const EmailForm = () => {
           </div>
           <div className={`w-full flex flex-col items-center ${styles.footer}`}>
             <Button
-              id=''
+              id='email_sign_in'
               className={styles.submitButton}
               disabled={!isVerifiedPassword}
               onClick={() => handleSignInEmail()}

@@ -32,6 +32,7 @@ const MakeYourPortfolio = (props: Props) => {
       <Button
         className='w-full bg-[var(--color-background-brand-bold)] rounded-[4px] mt-40 flex justify-center items-center'
         onClick={handleClickButton}
+        id='get_started_toast'
       >
         <p className='font-caption-regular text-[var(--color-text-inverse)]'>
           Get Started

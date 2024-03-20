@@ -17,6 +17,8 @@ import { useMe } from '@/utils/hooks/queries/auth';
 import { TUser } from '@/interfaces/user';
 import { useRouter } from 'next/navigation';
 import Spinner from '@/public/icon/Spinner';
+import { sendGTMEvent } from '@next/third-parties/google';
+import { TWallet, TWalletGroup } from '@/interfaces/inventory';
 type Props = {
   onClose: () => void;
   setPortfolioWallet: (param: BasicParam) => void;
@@ -38,6 +40,32 @@ const WalletAndGroupManage = (props: Props) => {
     // setMySelectedInformation(param);
     props.setPortfolioWallet(param);
     props.onClose();
+  };
+  const handleClickWallet = (wallet: TWallet) => {
+    sendGTMEvent({
+      event: 'buttonClicked',
+      name: 'portfolio_wallet_view_select',
+      parameter: wallet.name,
+    });
+    handleClickList({
+      nickname: '',
+      walletGroupId: '',
+      walletAddress: wallet.walletAddress,
+      networkId: networkId,
+    });
+  };
+  const handleClickGroup = (walletGroup: TWalletGroup) => {
+    sendGTMEvent({
+      event: 'buttonClicked',
+      name: 'portfolio_wallet_group_view_select',
+      parameter: walletGroup.name,
+    });
+    handleClickList({
+      nickname: '',
+      walletAddress: '',
+      walletGroupId: walletGroup.id,
+      networkId: networkId,
+    });
   };
   const copyAddress = (walletAddress: string) => {
     navigator.clipboard.writeText(walletAddress);
@@ -103,14 +131,7 @@ const WalletAndGroupManage = (props: Props) => {
                     <div
                       key={i}
                       className={styles.list}
-                      onClick={() =>
-                        handleClickList({
-                          nickname: '',
-                          walletGroupId: '',
-                          walletAddress: wallet.walletAddress,
-                          networkId: networkId,
-                        })
-                      }
+                      onClick={() => handleClickWallet(wallet)}
                     >
                       <div className='h-full flex-1 flex items-center hover:bg-[var(--color-elevation-sunken)] pl-8'>
                         <p className='text-[var(--color-text-main)]'>
@@ -142,14 +163,7 @@ const WalletAndGroupManage = (props: Props) => {
                   <div
                     key={i}
                     className={`${styles.list} text-[var(--color-text-main)]`}
-                    onClick={() =>
-                      handleClickList({
-                        nickname: '',
-                        walletAddress: '',
-                        walletGroupId: walletGroup.id,
-                        networkId: networkId,
-                      })
-                    }
+                    onClick={() => handleClickGroup(walletGroup)}
                   >
                     <Folder />
                     <p>{walletGroup.name}</p>

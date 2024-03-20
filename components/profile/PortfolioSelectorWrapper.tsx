@@ -203,6 +203,7 @@ const PortfolioSelectorWrapper = () => {
           <Button
             className='!rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-background-brand-bold)] border-0'
             onClick={() => handleClickAddWallet()}
+            id='add_my_wallet_sample'
           >
             + Add My Wallet
           </Button>

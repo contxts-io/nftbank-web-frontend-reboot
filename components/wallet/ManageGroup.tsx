@@ -19,6 +19,7 @@ import {
 } from '@/utils/hooks/queries/walletGroup';
 import { useMe } from '@/utils/hooks/queries/auth';
 import InputText from '../input/InputText';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 const ManageGroup = (props: {
   group: TWalletGroup | null;
@@ -72,6 +73,10 @@ const ManageGroup = (props: {
       },
       {
         onSuccess: () => {
+          sendGTMEvent({
+            event: 'buttonClicked',
+            name: 'wallet_group_add_success',
+          });
           refetch();
           refetchWalletGroup();
           props.onClose(false);

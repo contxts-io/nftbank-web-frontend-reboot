@@ -50,6 +50,7 @@ import { showToastMessage } from '@/utils/toastify';
 import { openModalAtom } from '@/store/settings';
 import { portfolioUserAtom } from '@/store/portfolio';
 import { QueryClient, useQueryClient } from '@tanstack/react-query';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 type Props = {
   onClose: () => void;
@@ -163,6 +164,10 @@ const ConnectWallet = (props: Props) => {
               onSuccess: async (data) => {
                 // const me = await checkMe();
                 console.log('add success & refetch');
+                sendGTMEvent({
+                  event: 'buttonClicked',
+                  name: 'verified_wallet_add_success',
+                });
                 queryClient.invalidateQueries({
                   queryKey: ['myWalletList'],
                 });
@@ -189,6 +194,10 @@ const ConnectWallet = (props: Props) => {
             {
               onSuccess: async (data) => {
                 // const me = await checkMe();
+                sendGTMEvent({
+                  event: 'buttonClicked',
+                  name: 'verified_wallet_add_success',
+                });
                 console.log('sign success & refetch wallet ~!@@');
                 (await refetch()).data && router.push(`/portfolio/overview`);
                 // console.log('sign success & refetch');
@@ -256,6 +265,7 @@ const ConnectWallet = (props: Props) => {
             className={styles.button}
             onClick={() => handleClickButton(wallet)}
             key={index}
+            parameter={wallet.name}
           >
             <img
               src={wallet.icon}

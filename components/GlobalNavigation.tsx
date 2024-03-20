@@ -342,6 +342,7 @@ const GlobalNavigation = () => {
                 <Button
                   className='bg-[var(--color-background-brand-bold)] !h-34'
                   onClick={() => router.push('/auth/signin')}
+                  id='get_started_top_nav'
                 >
                   <p className='font-body02-regular text-[var(--color-text-inverse)]'>
                     Get Started
