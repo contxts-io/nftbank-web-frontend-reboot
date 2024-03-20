@@ -120,12 +120,12 @@ const AccountContainer = () => {
               </DropdownMenu>
             </Dropdown>
           </li>
-          <li className='border-b-1 border-[var(--color-border-main)] py-12'>
+          {/* <li className='border-b-1 border-[var(--color-border-main)] py-12'>
             <p className='font-body02-regular text-[var(--color-text-main)] '>
               Theme
             </p>
             <p className='text-[var(--color-text-subtle)]'></p>
-          </li>
+          </li> */}
         </ul>
         <ReactModal
           isOpen={showModal}

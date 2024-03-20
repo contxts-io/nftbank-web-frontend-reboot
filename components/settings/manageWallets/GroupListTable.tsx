@@ -27,9 +27,9 @@ const GroupListTable = (props: Props) => {
         <tr>
           <th className='text-left px-24'>Group</th>
           <th className='text-left'>Addresses</th>
-          <th className='text-left'>Balance</th>
+          {/* <th className='text-left'>Balance</th>
           <th className='text-left'>Top Collections</th>
-          <th className='text-right pr-24'></th>
+          <th className='text-right pr-24'></th> */}
         </tr>
       </thead>
       <tbody>
@@ -53,9 +53,9 @@ const GroupListTable = (props: Props) => {
                 </div>
               </td>
               <td className='text-left'>
-                <p className='mr-111'>{group.walletsCount}</p>
+                <p className='mr-111'>{group.walletsCount} Addresses</p>
               </td>
-              <td className='text-left'>
+              {/* <td className='text-left'>
                 <p className='mr-111'>
                   {formatCurrency(group.value?.[currency] || '0', currency)}
                 </p>
@@ -87,7 +87,7 @@ const GroupListTable = (props: Props) => {
               </td>
               <td className='text-right pr-24 w-16'>
                 <DotsThree width={16} />
-              </td>
+              </td> */}
             </tr>
           ))}
       </tbody>
