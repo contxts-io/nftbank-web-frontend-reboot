@@ -27,7 +27,7 @@ const InputEMail = (props: Props) => {
         await sign({ token, provider: 'google.com' }).then(async () => {
           // const me = await checkMe();
           // me && router.push('/portfolio');
-          (await refetch()).data && router.push('/portfolio');
+          (await refetch()).data && router.push('/portfolio/overview');
         });
       } else {
         console.log('token is null');

@@ -25,9 +25,9 @@ const AsideMenu = () => {
       queryClient.invalidateQueries({
         queryKey: ['me'],
       });
-      queryClient.invalidateQueries({
-        queryKey: ['user'],
-      });
+      // queryClient.invalidateQueries({
+      //   queryKey: ['user'],
+      // });
       setMyDefaultPortfolio(null);
       router.push('/portfolio/overview/sample');
     } catch (e) {
