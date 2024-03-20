@@ -31,6 +31,8 @@ import PortfolioSelectorWrapper from './PortfolioSelectorWrapper';
 const ProfileComponent = () => {
   const { data: me, status } = useMe();
   const portfolioProfile = useAtomValue(portfolioProfileAtom);
+
+  const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
   const path = usePathname();
   const router = useRouter();
   const currency = useAtomValue(currencyAtom);
@@ -41,7 +43,6 @@ const ProfileComponent = () => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [searchAddress, setSearchAddress] = useState<string>('');
   // const [user, setUser] = useState<TUser | null>(null);
-  const portfolioUser = useAtomValue(portfolioUserAtom);
   // const { data: me, status } = useMe();
   const { data: user, status: userStatus } = useUser(
     portfolioProfile?.nickname || ''
@@ -56,7 +57,11 @@ const ProfileComponent = () => {
 
   useEffect(() => {
     if (path.includes('/sample')) {
-      setNickname('sample');
+      setNickname('Welcome to NFTBank.ai');
+      setPortfolioUser({
+        nickname: 'Welcome to NFTBank.ai',
+        networkId: 'ethereum',
+      });
       return;
     }
     path && setNickname(path.split('nickname/')[1] || null);
