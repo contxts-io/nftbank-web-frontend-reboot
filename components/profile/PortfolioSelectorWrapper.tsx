@@ -158,11 +158,13 @@ const PortfolioSelectorWrapper = () => {
                 </div>
               );
           })}
-        {walletList?.data && walletList?.paging.total - LIMIT > 0 && (
-          <div className='rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)]'>
-            {`+ ${walletList.paging.total - 5}`}
-          </div>
-        )}
+        {option.type === 'all' &&
+          walletList?.data &&
+          walletList?.paging.total - LIMIT > 0 && (
+            <div className='rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)]'>
+              {`+ ${walletList.paging.total - 5}`}
+            </div>
+          )}
         {option.type === 'group' &&
           walletGroup?.wallets?.data.map((wallet, index) => {
             if (index < LIMIT)
@@ -179,7 +181,8 @@ const PortfolioSelectorWrapper = () => {
                 </div>
               );
           })}
-        {walletGroup?.wallets?.data &&
+        {option.type === 'group' &&
+          walletGroup?.wallets?.data &&
           walletGroup?.wallets?.paging.total - LIMIT > 0 && (
             <div className='rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)]'>
               {`+ ${walletGroup?.wallets.paging.total - LIMIT}`}

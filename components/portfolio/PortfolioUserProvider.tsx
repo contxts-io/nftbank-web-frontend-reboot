@@ -75,8 +75,13 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
         myDefaultPortfolio
       );
       myDefaultPortfolio && setPortfolioUser(myDefaultPortfolio);
+      !me && router.push('/portfolio/overview/sample');
     } else if (path.includes('/sample')) {
-      setNickname('sample');
+      setNickname('Welcome to NFTBank.ai');
+      setPortfolioUser({
+        nickname: 'Welcome to NFTBank.ai',
+        networkId: 'ethereum',
+      });
     } else {
       const paths = path.split('/');
       paths.length === 5 &&

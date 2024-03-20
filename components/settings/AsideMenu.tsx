@@ -29,7 +29,7 @@ const AsideMenu = () => {
         queryKey: ['user'],
       });
       setMyDefaultPortfolio(null);
-      router.push('/auth/signin');
+      router.push('/portfolio/overview/sample');
     } catch (e) {
       console.log('e', e);
     }
