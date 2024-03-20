@@ -30,7 +30,7 @@ import { verifyWalletAddress } from '@/apis/wallet';
 import PortfolioSelectorWrapper from './PortfolioSelectorWrapper';
 const ProfileComponent = () => {
   const { data: me, status } = useMe();
-  const [portfolioProfile, setPortfolioProfile] = useAtom(portfolioProfileAtom);
+  const portfolioProfile = useAtomValue(portfolioProfileAtom);
   const path = usePathname();
   const router = useRouter();
   const currency = useAtomValue(currencyAtom);
@@ -41,7 +41,7 @@ const ProfileComponent = () => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [searchAddress, setSearchAddress] = useState<string>('');
   // const [user, setUser] = useState<TUser | null>(null);
-  const [portfolioUser, setPortfolioUser] = useAtom(portfolioUserAtom);
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   // const { data: me, status } = useMe();
   const { data: user, status: userStatus } = useUser(
     portfolioProfile?.nickname || ''

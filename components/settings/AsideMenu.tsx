@@ -5,12 +5,17 @@ import Link from 'next/link';
 import { Cookies, useCookies } from 'react-cookie';
 import { Button } from '@nextui-org/react';
 import { useQueryClient } from '@tanstack/react-query';
+import { myDefaultPortfolioAtom } from '@/store/settings';
+import { useAtom } from 'jotai';
 
 const AsideMenu = () => {
   const queryClient = useQueryClient();
   const pathName = usePathname();
   const router = useRouter();
   const [cookies, setCookie, removeCookie] = useCookies(['nb_session']);
+  const [myDefaultPortfolio, setMyDefaultPortfolio] = useAtom(
+    myDefaultPortfolioAtom
+  );
   const handleSignOut = () => {
     try {
       removeCookie('nb_session', { path: '/' });
@@ -23,6 +28,7 @@ const AsideMenu = () => {
       queryClient.invalidateQueries({
         queryKey: ['user'],
       });
+      setMyDefaultPortfolio(null);
       router.push('/auth/signin');
     } catch (e) {
       console.log('e', e);
