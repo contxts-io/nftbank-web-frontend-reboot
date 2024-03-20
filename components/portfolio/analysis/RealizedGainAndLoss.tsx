@@ -158,8 +158,9 @@ const RealizedGainAndLoss = () => {
   }, [realizedTokenList?.pages, requestParams, status]);
   const downloadCSV = async () => {
     await downloadCSVInventoryRealizedTokens({
-      walletAddress: portfolioUser?.walletAddress as string,
+      ...portfolioUser,
       year: requestParams.year as number | 'all',
+      networkId: 'ethereum',
     })
       .then((response) => {
         // Convert the blob data to a downloadable file

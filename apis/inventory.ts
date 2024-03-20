@@ -39,9 +39,11 @@ export const getCollectionList = async<T = IInventoryCollectionList>(requestPara
   const { data } = await instance.get<{data:T}>(`/inventory/collection?${query}`);
   return data.data;
 }
-export const downloadCSVCollectionList = async (requestParam: BasicParam & {searchCollection: string;}) => {
+export const downloadCSVCollectionList = async (requestParam: BasicParam & { searchCollection: string; }) => {
+  console.log('downloadCSVCollectionList requestParam', requestParam);
   const query = jsonToQueryString(requestParam);
   // const query = jsonToQueryString(requestParam);
+  console.log('downloadCSVCollectionList query', query);
   const result = await instance.get(`/inventory/collection/download?${query}`,{ responseType: 'blob' });
   return result;
 }
@@ -52,7 +54,7 @@ export const getItemList = async<T = IInventoryItemList>(requestParam: ItemParam
   const { data } = await instance.post<{data:T}>(`/inventory/token`,requestBody);
   return data.data;
 }
-export const downloadCSVItemList = async(requestParam: {walletAddress:string, assetContract: string[]}) => {
+export const downloadCSVItemList = async(requestParam: BasicParam & {assetContract: string[]}) => {
   // const query = Object.keys(requestParam)
   // .filter(function(key) {
   //     return requestParam[key as ItemKey] && requestParam[key as ItemKey] !== ""; // 값이 있는 속성만 필터링
@@ -68,7 +70,8 @@ export const downloadCSVItemList = async(requestParam: {walletAddress:string, as
   // })
   //   .join('&');
   // const { data } = await instance.get<{data:T}>(`/inventory/token?${query.replace('&&','&')}`);
-  const result = await instance.post(`/inventory/token/download`,requestParam, { responseType: 'blob' });
+  const requestBody = removeEmptyValues(requestParam);
+  const result = await instance.post(`/inventory/token/download`,requestBody, { responseType: 'blob' });
   return result;
 }
 
@@ -139,7 +142,7 @@ export const getInventoryRealizedTokens = async<T = ResponseRealizedTokensData>(
   const { data } = await instance.get<{ data: T }>(`/inventory/realized/token?${query}`);
   return data.data;
 }
-export const downloadCSVInventoryRealizedTokens = async(requestParam: {walletAddress:string, year:number | 'all'}) => {
+export const downloadCSVInventoryRealizedTokens = async(requestParam:  BasicParam & {year:number | 'all'}) => {
   const query = jsonToQueryString(requestParam);
   const result = await instance.get(`/inventory/realized/token/download?${query}`,{ responseType: 'blob' });
   return result;
