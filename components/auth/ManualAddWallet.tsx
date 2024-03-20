@@ -11,6 +11,8 @@ import Spinner from '@/public/icon/Spinner';
 import { validationWalletAddress } from '@/utils/common';
 import { useMutationInsertWalletBulk } from '@/utils/hooks/mutations/wallet';
 import { sendGTMEvent } from '@next/third-parties/google';
+import { useQueryClient } from '@tanstack/react-query';
+import { useMe } from '@/utils/hooks/queries/auth';
 type InputTextProps = {
   wallet: {
     walletAddress: string;
@@ -81,6 +83,8 @@ type Props = {
   onClose: () => void;
 };
 const ManualWalletAdd = (props: Props) => {
+  const queryClient = useQueryClient();
+  const { data: me } = useMe();
   const { data: walletListData, refetch } = useMyWalletList();
   const { mutate: insertMyWalletBulk } = useMutationInsertWalletBulk();
   const [walletList, setWalletList] = useState<
@@ -113,6 +117,16 @@ const ManualWalletAdd = (props: Props) => {
             event: 'buttonClicked',
             name: 'manual_wallet_add_success',
           });
+          queryClient.invalidateQueries({
+            queryKey: ['myWalletList'],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['walletList'],
+          });
+          me &&
+            queryClient.invalidateQueries({
+              queryKey: [me.nickname],
+            });
           refetch();
           props.onClose();
         },
