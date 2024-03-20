@@ -10,6 +10,7 @@ import Check from '@/public/icon/Check';
 import Spinner from '@/public/icon/Spinner';
 import { validationWalletAddress } from '@/utils/common';
 import { useMutationInsertWalletBulk } from '@/utils/hooks/mutations/wallet';
+import { sendGTMEvent } from '@next/third-parties/google';
 type InputTextProps = {
   wallet: {
     walletAddress: string;
@@ -107,6 +108,10 @@ const ManualWalletAdd = (props: Props) => {
       }),
       {
         onSuccess: () => {
+          sendGTMEvent({
+            event: 'buttonClicked',
+            name: 'manual_wallet_add_success',
+          });
           refetch();
           props.onClose();
         },

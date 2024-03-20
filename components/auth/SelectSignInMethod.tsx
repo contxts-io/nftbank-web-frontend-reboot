@@ -66,7 +66,7 @@ const SelectSignInMethod = () => {
             {
               <div className='hidden md:flex'>
                 <Button
-                  id=''
+                  id='continue_with_wallet'
                   className={styles.button}
                   onClick={() => setShowModal(true)}
                 >
@@ -76,7 +76,7 @@ const SelectSignInMethod = () => {
               </div>
             }
             <Button
-              id=''
+              id='continue_with_google'
               className={styles.button}
               onClick={() => handleClickGoogle()}
             >
@@ -84,7 +84,7 @@ const SelectSignInMethod = () => {
               <p>Continue with Google</p>
             </Button>
             <Button
-              id=''
+              id='continue_with_email'
               className={styles.button}
               onClick={() => handleClickEmail()}
             >

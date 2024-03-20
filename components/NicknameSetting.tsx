@@ -51,7 +51,7 @@ const NicknameSetting = (props: Props) => {
         className='mb-20'
       />
       <SubmitButton
-        id=''
+        id='nickname_setting_done'
         className={styles.button}
         disabled={inputText.length == 0}
         onClick={handleSubmit}
