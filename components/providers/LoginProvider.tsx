@@ -57,7 +57,7 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
       path.includes('/auth') && handleResetModal();
       const newTimer = setTimeout(() => {
         !path.includes('/auth') && setShowModalRequestSignIn(true); // 1분 30초 후에 모달을 띄웁니다.
-      }, 10000); // 1분 30초는 90000밀리초입니다.
+      }, 90000); // 1분 30초는 90000밀리초입니다.
       setTimer(newTimer);
       return () => {
         clearTimeout(newTimer);
