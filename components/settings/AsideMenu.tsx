@@ -20,6 +20,9 @@ const AsideMenu = () => {
       queryClient.invalidateQueries({
         queryKey: ['me'],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['user'],
+      });
       router.push('/auth/signin');
     } catch (e) {
       console.log('e', e);
