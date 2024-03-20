@@ -53,6 +53,8 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
       timer && clearTimeout(timer);
       setTimer(null);
     } else {
+      console.log('path includes auth', path.includes('/auth'));
+      path.includes('/auth') && handleResetModal();
       const newTimer = setTimeout(() => {
         !path.includes('/auth') && setShowModalRequestSignIn(true); // 1분 30초 후에 모달을 띄웁니다.
       }, 10000); // 1분 30초는 90000밀리초입니다.
@@ -70,7 +72,7 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
   const handleResetModal = () => {
     const newTimer = setTimeout(() => {
       !path.includes('/auth') && setShowModalRequestSignIn(true); // 1분 30초 후에 모달을 띄웁니다.
-    }, 10000); // 1분 30초는 90000밀리초입니다.
+    }, 90000); // 1분 30초는 90000밀리초입니다.
     setTimer(newTimer);
     setShowModalRequestSignIn(false);
   };
