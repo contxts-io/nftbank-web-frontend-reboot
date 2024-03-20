@@ -21,10 +21,13 @@ import BlockiesIcon from '../BlockiesIcon';
 import { Spinner } from '@nextui-org/react';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { myDefaultPortfolioAtom } from '@/store/settings';
+import { usePathname, useRouter } from 'next/navigation';
 
 const LIMIT = 5;
 const PortfolioSelectorWrapper = () => {
   const { data: me } = useMe();
+  const path = usePathname();
+  const router = useRouter();
   const [nickname, setNickname] = useState<string | null>(null);
   const { data: user, status: userStatus } = useUser(nickname);
   const portfolioProfile = useAtomValue(portfolioProfileAtom);
@@ -122,7 +125,9 @@ const PortfolioSelectorWrapper = () => {
     console.log('portfolioUser changed ? ', portfolioUser);
     portfolioProfile === me && setMyDefaultPortfolio(portfolioUser);
   }, [portfolioUser]);
-
+  const handleClickAddWallet = () => {
+    router.push('/auth/signin');
+  };
   return (
     <div className='relative' ref={listRef}>
       <div className='font-caption-regular flex items-center gap-x-4'>
@@ -193,6 +198,14 @@ const PortfolioSelectorWrapper = () => {
             <BlockiesIcon walletAddress={option.value} size={16} />
             {shortenAddress(option.value)}
           </div>
+        )}
+        {path.includes('/sample') && (
+          <Button
+            className='!rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-background-brand-bold)] border-0'
+            onClick={() => handleClickAddWallet()}
+          >
+            + Add My Wallet
+          </Button>
         )}
       </div>
       {isOpen && (
