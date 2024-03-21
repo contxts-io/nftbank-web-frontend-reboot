@@ -13,6 +13,7 @@ import { useMutationInsertWalletBulk } from '@/utils/hooks/mutations/wallet';
 import { sendGTMEvent } from '@next/third-parties/google';
 import { useQueryClient } from '@tanstack/react-query';
 import { useMe } from '@/utils/hooks/queries/auth';
+import { getAddress } from 'ethers/lib/utils';
 type InputTextProps = {
   wallet: {
     walletAddress: string;
@@ -47,14 +48,52 @@ const InputText = (props: InputTextProps) => {
         : setValid(true));
   }, [walletList]);
   useEffect(() => {
-    props.addWallet({ ...props.wallet, walletAddress: value, isValid: valid });
-  }, [value, valid]);
+    console.log(
+      'walletList',
+      Boolean(
+        !walletList?.data.find(
+          (wallet) => wallet.walletAddress === props.wallet.walletAddress
+        )
+      )
+    );
+    try {
+      Boolean(
+        value !== '' &&
+          !walletList?.data.find(
+            (wallet) => wallet.walletAddress === props.wallet.walletAddress
+          )
+      ) && getAddress(value);
+      if (value !== '') {
+        setValid(true);
+        props.addWallet({
+          ...props.wallet,
+          walletAddress: value,
+          isValid: true,
+        });
+      } else {
+        props.addWallet({
+          ...props.wallet,
+          walletAddress: value,
+          isValid: false,
+        });
+        setValid(false);
+      }
+    } catch (e) {
+      console.error(e);
+      props.addWallet({
+        ...props.wallet,
+        walletAddress: value,
+        isValid: false,
+      });
+      setValid(false);
+    }
+  }, [value]);
   return (
     <div className='w-full flex flex-col'>
       <div className='w-full relative flex items-center'>
         <input
           className={`font-caption-regular ${styles.textInput} ${
-            valid === false ? styles.invalid : ''
+            Boolean(valid === false) ? styles.invalid : ''
           }`}
           placeholder='Wallet Address'
           value={value}
@@ -71,9 +110,9 @@ const InputText = (props: InputTextProps) => {
           </div>
         )}
       </div>
-      {value !== '' && valid === false && (
+      {/* {value !== '' && valid === false && (
         <p className='text-[var(--color-text-danger)]'>invalid</p>
-      )}
+      )} */}
     </div>
   );
 };
@@ -144,6 +183,9 @@ const ManualWalletAdd = (props: Props) => {
       return newList;
     });
   };
+  useEffect(() => {
+    console.log('walletList', walletList);
+  }, [walletList]);
   return (
     <section className={styles.container}>
       <div className={styles.title}>
@@ -190,10 +232,7 @@ const ManualWalletAdd = (props: Props) => {
       <Button
         id=''
         className={styles.registerButton}
-        disabled={
-          walletList.length === 0 ||
-          walletList.filter((wallet) => wallet.isValid !== true).length > 0
-        }
+        disabled={Boolean(walletList.find((wallet) => wallet.isValid !== true))}
         onClick={() => onSubmit()}
       >
         <p>Register</p>
