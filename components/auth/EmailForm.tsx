@@ -86,7 +86,7 @@ const EmailForm = () => {
                 providers?.includes('google.com')
               }
               onClick={() => handleCheckProvider()}
-              isLoading={status === 'loading'}
+              // isLoading={status === 'loading'}
             >
               <span className='text-[var(--color-text-main)]'>
                 Continue with Email
