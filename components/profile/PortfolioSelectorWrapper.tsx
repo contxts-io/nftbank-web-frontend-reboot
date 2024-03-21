@@ -123,8 +123,10 @@ const PortfolioSelectorWrapper = () => {
   };
   useEffect(() => {
     console.log('portfolioUser changed ? ', portfolioUser);
-    portfolioProfile === me && setMyDefaultPortfolio(portfolioUser);
-  }, [portfolioUser]);
+    portfolioProfile === me &&
+      path.split('/').length === 3 &&
+      setMyDefaultPortfolio(portfolioUser);
+  }, [portfolioProfile, portfolioUser]);
   const handleClickAddWallet = () => {
     router.push('/auth/signin');
   };
@@ -135,7 +137,7 @@ const PortfolioSelectorWrapper = () => {
           className={`font-button03-medium ${styles.selectorButton}`}
           onClick={() => toggleOpen()}
           isLoading={Boolean(nickname) && userStatus === 'loading'}
-          disabled={!user}
+          disabled={!user || path.includes('/walletAddress')}
         >
           <Folder className={`mr-4`} />
           {option.type === 'all' && <p>All Wallets</p>}

@@ -92,7 +92,6 @@ const HistoricalTrendContainer = (props: Props) => {
     setIsPolling(true);
   };
   const handleHoverValue = (value: number | null) => {
-    console.log('handleHoverValue', value);
     setHoverValue(value);
   };
   const total = useMemo(() => {

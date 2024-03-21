@@ -84,16 +84,19 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
       });
     } else {
       const paths = path.split('/');
+      console.log('portfolioUser provider', portfolioUser, paths.length);
       paths.length === 5 &&
         path.includes('/nickname') &&
         portfolioProfile?.nickname !== paths[4] &&
         (setNickname(paths[4]),
-        setPortfolioUser({
-          nickname: paths[4],
-          networkId: 'ethereum',
-        }));
+        portfolioUser?.nickname !== paths[4] &&
+          setPortfolioUser({
+            nickname: paths[4],
+            networkId: 'ethereum',
+          }));
       paths.length === 5 &&
         path.includes('/walletAddress') &&
+        portfolioUser?.walletAddress !== paths[4] &&
         setPortfolioUser({
           walletAddress: paths[4],
           networkId: 'ethereum',
@@ -109,6 +112,9 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     console.log('status', status);
   }, [status]);
+  useEffect(() => {
+    console.log('portfolioUser @@@ ', portfolioUser);
+  }, [portfolioUser]);
   return (
     <>
       <ProfileComponent />

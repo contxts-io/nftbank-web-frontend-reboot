@@ -44,22 +44,24 @@ type SpamParam = {
   includeCustomSpam:boolean,
   includeNonSpam:boolean,
 }
-export const inventoryCollectionAtom = atom<TCollectionParam>({
+export const inventoryCollectionAtom = atom<TCollectionParam & BasicParam>({
   searchCollection: '',
   page: 1,
   limit: 30,
   sortCol: 'nav',
   sortOrder: SortOrder.Desc,
+  networkId: 'ethereum',
 })
 inventoryCollectionAtom.debugLabel = `${PREFIX}_inventoryCollectionAtom`;
-export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
+export const inventoryItemFilterCollectionAtom = atom<TCollectionParam  & BasicParam>({
   searchCollection: '',
   page: 1,
   limit: 30,
   sortCol: 'nav',
   sortOrder: SortOrder.Desc,
+  networkId: 'ethereum',
 })
-export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
+export const inventorySpamCollectionAtom = atom<TCollectionParam & BasicParam & SpamParam>({
   searchCollection: '',
   page: 1,
   limit: 30,
@@ -68,9 +70,10 @@ export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
   includeSpam: true,
   includeCustomSpam: true,
   includeNonSpam: true,
+  networkId: 'ethereum',
 })
 // export const inventoryItemCollectionAtom = atom<TCollectionParam>({})
-export const inventoryItemListAtom = atom<ItemParam & {paging : boolean}>({
+export const inventoryItemListAtom = atom<ItemParam & BasicParam & {paging : boolean}>({
   networkId: 'ethereum',
   assetContract: [],
   page: 1,

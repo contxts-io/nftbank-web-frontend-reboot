@@ -42,19 +42,31 @@ const InventoryContainer = () => {
   useEffect(() => {
     setInventoryCollection({
       ...inventoryCollection,
-      ...portfolioUser,
+      nickname: portfolioUser?.nickname || null,
+      walletAddress: portfolioUser?.walletAddress || null,
+      walletGroupId: portfolioUser?.walletGroupId || null,
+      networkId: portfolioUser?.networkId || 'ethereum',
     });
     setInventoryCollectionFilter({
       ...inventoryCollectionFilter,
-      ...portfolioUser,
+      nickname: portfolioUser?.nickname || null,
+      walletAddress: portfolioUser?.walletAddress || null,
+      walletGroupId: portfolioUser?.walletGroupId || null,
+      networkId: portfolioUser?.networkId || 'ethereum',
     });
     setInventoryItem({
       ...inventoryItem,
-      ...portfolioUser,
+      nickname: portfolioUser?.nickname || null,
+      walletAddress: portfolioUser?.walletAddress || null,
+      walletGroupId: portfolioUser?.walletGroupId || null,
+      networkId: portfolioUser?.networkId || 'ethereum',
     });
     setInventoryCollectionRequestParam({
       ...inventoryCollectionRequestParam,
-      ...portfolioUser,
+      nickname: portfolioUser?.nickname || null,
+      walletAddress: portfolioUser?.walletAddress || null,
+      walletGroupId: portfolioUser?.walletGroupId || null,
+      networkId: portfolioUser?.networkId || 'ethereum',
     });
   }, [walletAddress, portfolioUser]);
 
