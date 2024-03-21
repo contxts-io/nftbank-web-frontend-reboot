@@ -26,6 +26,12 @@ const DeleteWallet = (props: Props) => {
           queryClient.invalidateQueries({
             queryKey: ['walletList'],
           });
+          queryClient.invalidateQueries({
+            queryKey: ['groupList'],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['group'],
+          });
           props.onClose();
         },
       }

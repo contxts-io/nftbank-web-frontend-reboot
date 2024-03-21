@@ -133,7 +133,9 @@ const GroupDetail = (props: Props) => {
               <p className='font-body02-regular text-[var(--color-text-subtle)] mb-40'>
                 No Wallets have been added to this group yet
               </p>
-              <SubmitButton id=''>Group Setting</SubmitButton>
+              <SubmitButton id='' onClick={() => handleOpenGroupManage()}>
+                Group Setting
+              </SubmitButton>
             </div>
           )}
         </div>
