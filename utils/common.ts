@@ -223,7 +223,7 @@ export function formatToken (data: WalletData) {
     let walletJwt = jwt.sign(
       {
         networkName: data.type || 'evm',
-        address: data.walletAddress.toLocaleLowerCase(),
+        address: data.walletAddress,
         provider: data.provider,
       },SECRET
     );
