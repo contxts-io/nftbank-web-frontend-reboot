@@ -5,12 +5,14 @@ import { portfolioUserAtom } from '@/store/portfolio';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useFreshnessAndUpdatePolling } from '@/utils/hooks/queries/freshness';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
 
 const DataFreshnessProvider = ({ children }: { children: React.ReactNode }) => {
   const { data: me } = useMe();
   const portfolioUser = useAtomValue(portfolioUserAtom);
+  const queryClient = useQueryClient();
   const [dataFreshness, setDataFreshness] = useAtom(freshnessAtom);
   const { data: walletList, status } = useMyWalletList({
     nickname: me?.nickname,
@@ -34,6 +36,10 @@ const DataFreshnessProvider = ({ children }: { children: React.ReactNode }) => {
     setDataFreshness((prev) =>
       prev.map((f) => ({ ...f, processedAt: new Date().toISOString() }))
     );
+
+    queryClient.invalidateQueries({
+      queryKey: ['inventoryRealizedTokens'],
+    });
   }, [walletList]);
 
   return <>{children}</>;

@@ -155,7 +155,13 @@ const RealizedGainAndLoss = () => {
           return { ...item, ..._item };
         }) || []
     );
-  }, [realizedTokenList?.pages, requestParams, status]);
+  }, [realizedTokenList?.pages, realizedTokenListFresh, requestParams, status]);
+  useEffect(() => {
+    console.log(
+      'changed realizedTokenList?.pages : ',
+      realizedTokenList?.pages
+    );
+  }, [realizedTokenList?.pages]);
   const downloadCSV = async () => {
     await downloadCSVInventoryRealizedTokens({
       ...portfolioUser,
