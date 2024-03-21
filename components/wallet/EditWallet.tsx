@@ -5,7 +5,6 @@ import Button from '../buttons/Button';
 import SubmitButton from '../buttons/SubmitButton';
 import { TWallet } from '@/interfaces/inventory';
 import { useEffect, useState } from 'react';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { SearchParam } from '@/apis/wallet';
 import { useMutationUpdateWallet } from '@/utils/hooks/mutations/wallet';
 import InputText from '../input/InputText';

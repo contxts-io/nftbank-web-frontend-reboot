@@ -11,13 +11,10 @@ import { portfolioNicknameAtom, portfolioUserAtom } from '@/store/portfolio';
 import { useMe } from '@/utils/hooks/queries/auth';
 import ChainList from '@/components/portfolio/ChainList';
 import { useRouter } from 'next/navigation';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
-import NoWallet from '@/components/portfolio/NoWallet';
 
 const OverviewPage = () => {
   // const myPortfolio = useAtomValue(myDefaultPortfolioAtom);
   const { data: me } = useMe();
-  const { data: walletList } = useMyWalletList();
   const myPortfolio = useAtomValue(myDefaultPortfolioAtom);
   const setPortfolioNicknameAtom = useSetAtom(portfolioNicknameAtom);
   const setPortfolioUserAtom = useSetAtom(portfolioUserAtom);

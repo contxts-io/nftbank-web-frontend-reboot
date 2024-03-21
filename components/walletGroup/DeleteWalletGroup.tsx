@@ -3,11 +3,7 @@ import Button from '../buttons/Button';
 import styles from './DeleteWalletGroup.module.css';
 import SubmitButton from '../buttons/SubmitButton';
 import { TWallet, TWalletGroup } from '@/interfaces/inventory';
-import { useMutationDeleteWallet } from '@/utils/hooks/mutations/wallet';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { useQueryClient } from '@tanstack/react-query';
-import { useWalletGroup } from '@/utils/hooks/queries/walletGroup';
-import { deleteMyWalletGroup } from '@/apis/walletGroup';
 import { useMutationDeleteWalletGroup } from '@/utils/hooks/mutations/walletGroup';
 type Props = {
   walletGroup: TWalletGroup;

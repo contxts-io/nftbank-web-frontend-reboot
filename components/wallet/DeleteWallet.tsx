@@ -4,7 +4,6 @@ import styles from './DeleteWallet.module.css';
 import SubmitButton from '../buttons/SubmitButton';
 import { TWallet } from '@/interfaces/inventory';
 import { useMutationDeleteWallet } from '@/utils/hooks/mutations/wallet';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { useQueryClient } from '@tanstack/react-query';
 import { shortenAddress } from '@/utils/common';
 type Props = {
