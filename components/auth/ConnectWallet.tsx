@@ -64,13 +64,12 @@ const ConnectWallet = (props: Props) => {
   const portfolioUser = useAtomValue(portfolioUserAtom);
   const queryClient = useQueryClient();
   const { data, mutate: signInUp, status } = useMutationSignInUp();
-  const { data: walletList, refetch } = useMyWalletList();
   const {
     data: insertData,
     mutate: insertWallet,
     status: insertStatus,
   } = useMutationInsertWalletBulk();
-  const { data: me } = useMe();
+  const { data: me, refetch } = useMe();
   const [step, setStep] = useState<'walletConnect' | 'manual'>('walletConnect');
   const [connectedWalletAddress, setConnectedWalletAddress] = useAtom(
     connectedWalletAddressAtom

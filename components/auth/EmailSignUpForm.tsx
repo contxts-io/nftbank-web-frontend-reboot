@@ -11,7 +11,9 @@ import { createFirebaseWithEmail } from '@/apis/firebase';
 import SubmitButton from '../buttons/SubmitButton';
 import { useAtomValue } from 'jotai';
 import { emailAtom } from '@/store/account';
+import { useMe } from '@/utils/hooks/queries/auth';
 const EmailSignUpForm = () => {
+  const { data: me, refetch } = useMe();
   const emailAtomValue = useAtomValue(emailAtom);
   const { mutate: signInUp, status: signInUpStatus } = useMutationSignInUp();
   const router = useRouter();
@@ -46,8 +48,8 @@ const EmailSignUpForm = () => {
           provider: 'email',
         },
         {
-          onSuccess: () => {
-            router.push('/portfolio/overview');
+          onSuccess: async () => {
+            (await refetch()).data && router.push(`/portfolio/overview`);
           },
         }
       );
