@@ -7,8 +7,11 @@ import { Button } from '@nextui-org/react';
 import { useQueryClient } from '@tanstack/react-query';
 import { myDefaultPortfolioAtom } from '@/store/settings';
 import { useAtom } from 'jotai';
+import { useEffect } from 'react';
+import { useMe } from '@/utils/hooks/queries/auth';
 
 const AsideMenu = () => {
+  const { data: me } = useMe();
   const queryClient = useQueryClient();
   const pathName = usePathname();
   const router = useRouter();
@@ -34,6 +37,9 @@ const AsideMenu = () => {
       console.log('e', e);
     }
   };
+  useEffect(() => {
+    !me && router.push('/portfolio/overview/sample');
+  }, [me]);
   return (
     <aside className={styles.container}>
       <ul className={`font-body02-medium ${styles.menuWrapper}`}>
