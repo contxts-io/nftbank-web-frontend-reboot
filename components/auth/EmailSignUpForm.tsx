@@ -12,6 +12,8 @@ import SubmitButton from '../buttons/SubmitButton';
 import { useAtomValue } from 'jotai';
 import { emailAtom } from '@/store/account';
 import { useMe } from '@/utils/hooks/queries/auth';
+import { send } from 'process';
+import { sendGTMEvent } from '@next/third-parties/google';
 const EmailSignUpForm = () => {
   const { data: me, refetch } = useMe();
   const emailAtomValue = useAtomValue(emailAtom);
@@ -49,6 +51,10 @@ const EmailSignUpForm = () => {
         },
         {
           onSuccess: async () => {
+            sendGTMEvent({
+              event: 'buttonClicked',
+              id: 'email_sign_up',
+            });
             (await refetch()).data && router.push(`/portfolio/overview`);
           },
         }
