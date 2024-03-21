@@ -7,11 +7,16 @@ const SubmitButton = ({
   id,
   children,
   className,
-  loading,
+  isLoading,
   ...props
-}: { id: string; loading?: boolean } & ButtonProps) => {
+}: { id: string; isLoading?: boolean } & ButtonProps) => {
   return (
-    <Button {...props} id={id} className={`${styles.button} ${className}`}>
+    <Button
+      {...props}
+      id={id}
+      isLoading={isLoading}
+      className={`${styles.button} ${className}`}
+    >
       {children}
     </Button>
   );

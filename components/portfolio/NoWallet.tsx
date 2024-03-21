@@ -23,9 +23,9 @@ const NoWallet = () => {
           Connect your wallet and check your portfolio!
         </p>
         <Button
-          id=''
+          id='add_wallets'
           className={`font-body02-medium ${styles.addButton}`}
-          // onClick={() => openModal()}
+          onClick={() => openModal()}
         >
           Add Wallets
         </Button>

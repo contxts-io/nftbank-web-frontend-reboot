@@ -77,7 +77,7 @@ const InputPassword = (props: InputPasswordProps) => {
       </div>
       {inputText.length > 0 && !isPasswordValid && (
         <p className='font-caption-regular text-[var(--color-text-danger)] mt-4'>
-          Must have at least 6 to 20 characters.
+          You must use uppercase, lowercase, and numeric characters 🔒
         </p>
       )}
     </div>

@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const nextConfig = {
+  transpilePackages: ['jotai-devtools'],
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
@@ -22,8 +23,18 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/',
+        destination: '/portfolio/overview',
+        permanent: true,
+      },
+      {
         source: '/portfolio',
         destination: '/portfolio/overview',
+        permanent: true,
+      },
+      {
+        source: '/settings',
+        destination: '/settings/account',
         permanent: true,
       },
     ];
@@ -34,6 +45,10 @@ const nextConfig = {
       {
         source: '/v1/:path*',
         destination: `${API_BASE_URL}/v1/:path*`,
+      },
+      {
+        source: '/v1auth/:path*',
+        destination: `https://reboot-auth.onrender.com/v1/:path*`,
       },
     ];
   },

@@ -76,7 +76,7 @@ const InputVerifyCode = (props: Props) => {
       { email: props.email as `${string}@${string}`, code: verifyCode },
       {
         onSuccess: (data) => {
-          data.statusText === 'OK'
+          data.data.message === 'OK'
             ? (setIsSendCodeLoading(false),
               props.setIsVerified(true),
               showToastMessage({

@@ -215,7 +215,7 @@ export function inverseMathSqrt(value: number) {
 }
 
 
-type WalletData = {walletAddress: `0x${string}`, provider:string, type : 'evm'}
+type WalletData = {walletAddress: `0x${string}`, provider:string, type : 'evm' | 'ethereum'}
 export function formatToken (data: WalletData) {
   let walletJwt = '';
   const SECRET = process.env.NEXT_PUBLIC_AUTH_JWT_SECRET || '';
@@ -223,7 +223,7 @@ export function formatToken (data: WalletData) {
     let walletJwt = jwt.sign(
       {
         networkName: data.type || 'evm',
-        address: data.walletAddress,
+        address: data.walletAddress.toLocaleLowerCase(),
         provider: data.provider,
       },SECRET
     );
@@ -263,7 +263,18 @@ export function jsonToQueryString(searchParam: any) {
     if (typeof searchParam[key] === 'string')
       return `${key}=${searchParam[key]}`;
     else return `${key}=${searchParam[key]}`;
-  }).join('&').replace(/^&/, '');
+  }).join('&').replace(/^&/, '').replace(/&+/g, '&');
+}
+export function removeEmptyValues(jsonObj: Record<string, any>): Record<string, any> {
+  for (const key in jsonObj) {
+    if (jsonObj.hasOwnProperty(key)) {
+      if (jsonObj[key] === "" || jsonObj[key] === null || jsonObj[key] === undefined) {
+        delete jsonObj[key];
+      }
+    }
+  }
+  return jsonObj;
+  
 }
 export const CATEGORY = [
   {

@@ -37,7 +37,7 @@ import {
   ConnectorName,
   useConnectCustom,
 } from '@/utils/hooks/useConnectCustom';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { connectedWalletAddressAtom } from '@/store/account';
 import { useMutationSignInUp } from '@/utils/hooks/mutations/auth';
 import { formatToken } from '@/utils/common';
@@ -48,6 +48,9 @@ import { useMutationInsertWalletBulk } from '@/utils/hooks/mutations/wallet';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
 import { showToastMessage } from '@/utils/toastify';
 import { openModalAtom } from '@/store/settings';
+import { portfolioUserAtom } from '@/store/portfolio';
+import { QueryClient, useQueryClient } from '@tanstack/react-query';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 type Props = {
   onClose: () => void;
@@ -58,14 +61,15 @@ type TWallet = {
 };
 const ConnectWallet = (props: Props) => {
   const router = useRouter();
+  const portfolioUser = useAtomValue(portfolioUserAtom);
+  const queryClient = useQueryClient();
   const { data, mutate: signInUp, status } = useMutationSignInUp();
-  const { data: walletList, refetch } = useMyWalletList();
   const {
     data: insertData,
     mutate: insertWallet,
     status: insertStatus,
   } = useMutationInsertWalletBulk();
-  const { data: me } = useMe();
+  const { data: me, refetch } = useMe();
   const [step, setStep] = useState<'walletConnect' | 'manual'>('walletConnect');
   const [connectedWalletAddress, setConnectedWalletAddress] = useAtom(
     connectedWalletAddressAtom
@@ -92,7 +96,7 @@ const ConnectWallet = (props: Props) => {
     try {
       if (wallet.name === 'Metamask') {
         handleCustom('metamask');
-        console.log('connected to ', wallet);
+        console.log('metamask connected to ', wallet);
       } else if (wallet.name === 'WalletConnect') {
         handleCustom('wc');
       } else if (wallet.name === 'Trust') {
@@ -117,13 +121,12 @@ const ConnectWallet = (props: Props) => {
       setConnectedWalletAddress(null);
     };
   }, []);
-  useEffect(() => {
-    console.log('me', me);
-    me && router.push('/portfolio');
-  }, [me]);
+  // useEffect(() => {
+  //   console.log('me', me);
+  //   me && router.push('/portfolio');
+  // }, [me]);
 
   useEffect(() => {
-    console.log('address ::::: ', address);
     address?.startsWith('0x') &&
       walletInstance?.walletId &&
       setConnectedWalletAddress({
@@ -132,15 +135,11 @@ const ConnectWallet = (props: Props) => {
       });
   }, [address, walletInstance]);
   useEffect(() => {
-    console.log('connectedWalletAddress', connectedWalletAddress);
-    console.log('chain', chain);
-    console.log('walletInstance', walletInstance);
-
     if (connectedWalletAddress) {
       const token = formatToken({
         walletAddress: connectedWalletAddress.address,
         provider: connectedWalletAddress.provider,
-        type: 'evm',
+        type: 'ethereum',
       });
       me
         ? insertWallet(
@@ -149,7 +148,7 @@ const ConnectWallet = (props: Props) => {
                 name: connectedWalletAddress.address,
                 walletAddress: connectedWalletAddress.address,
                 provider: connectedWalletAddress.provider,
-                networkName: 'evm',
+                networkName: 'ethereum',
               },
             ],
             {
@@ -164,7 +163,20 @@ const ConnectWallet = (props: Props) => {
               onSuccess: async (data) => {
                 // const me = await checkMe();
                 console.log('add success & refetch');
-                refetch();
+                sendGTMEvent({
+                  event: 'buttonClicked',
+                  name: 'verified_wallet_add_success',
+                });
+                queryClient.invalidateQueries({
+                  queryKey: ['myWalletList'],
+                });
+                queryClient.invalidateQueries({
+                  queryKey: ['walletList'],
+                });
+                me &&
+                  queryClient.invalidateQueries({
+                    queryKey: [me.nickname],
+                  });
                 setShowModal(null);
               },
               onSettled: () => {
@@ -181,9 +193,14 @@ const ConnectWallet = (props: Props) => {
             {
               onSuccess: async (data) => {
                 // const me = await checkMe();
-                refetch();
-                console.log('sign success & refetch');
-                router.push('/portfolio');
+                sendGTMEvent({
+                  event: 'buttonClicked',
+                  name: 'verified_wallet_add_success',
+                });
+                console.log('sign success & refetch wallet ~!@@');
+                (await refetch()).data && router.push(`/portfolio/overview`);
+                // console.log('sign success & refetch');
+                // router.push('/portfolio/overview');
               },
             }
           );
@@ -248,7 +265,13 @@ const ConnectWallet = (props: Props) => {
             onClick={() => handleClickButton(wallet)}
             key={index}
           >
-            <Image src={wallet.icon} width='16' height='16' alt='' />{' '}
+            <img
+              src={wallet.icon}
+              width='16'
+              height='16'
+              alt=''
+              className='!border-transparent'
+            />{' '}
             <p>{wallet.name}</p>
           </Button>
         ))}

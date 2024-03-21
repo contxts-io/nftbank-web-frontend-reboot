@@ -10,7 +10,7 @@ import { useAtomValue } from 'jotai';
 export function useInventoryValue(searchParam: BasicParam | null) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
   return useQuery<InventoryValueNested,AxiosError>(
-    ['inventoryValue', searchParam, dataFreshness?.processedAt],
+    [searchParam?.nickname || '', 'inventoryValue', searchParam, dataFreshness?.processedAt],
     async () => {
       const inventoryValue = await getInventoryValue(searchParam);
       return inventoryValue;
@@ -105,7 +105,6 @@ export function useInventoryItemList(requestParam: ItemParam) {
       return inventoryItemList;
     },
     {
-      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -132,7 +131,6 @@ export const useInventoryItemInfinite = (requestParam: ItemParam) => {
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
-    enabled: requestParam.walletAddress !== '',
     // keepPreviousData: true,
     staleTime: Infinity,
     cacheTime: Infinity,
@@ -165,7 +163,6 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
       return undefined;
     },
     // keepPreviousData: true,
-    enabled: requestParam.walletAddress !== '',
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,
@@ -185,7 +182,6 @@ export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalVal
       return inventoryValueHistorical;
     },
     {
-      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -206,7 +202,6 @@ export const useInventoryCollectionPositionValue = (requestParam: BasicParam) =>
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      enabled: !!requestParam.walletAddress,
     },
   );
 }
@@ -223,7 +218,6 @@ export const useInventoryCollectionPositionAmount = (requestParam: BasicParam) =
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      enabled: !!requestParam.walletAddress,
     },
   );
 }
@@ -241,7 +235,6 @@ export const useInventoryRealizedTokens = (requestParam: TAnalysisGainAndLossPar
       return result;
     },
     {
-      enabled: requestParam.walletAddress !== '',
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -266,7 +259,6 @@ export const useInventoryRealizedTokensInfinite = (requestParam: TAnalysisGainAn
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
-    enabled: requestParam.walletAddress !== '',
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,

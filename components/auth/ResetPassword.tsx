@@ -77,7 +77,7 @@ const ResetPassword = (props: Props) => {
         <>
           <InputEMail email={email} isVerifiedEmail={false} />
           <SubmitButton
-            id=''
+            id='email_password_reset_request'
             className={styles.submitButton}
             onClick={() => handleRequestReset()}
             disabled={!validationEmail(email[0])}

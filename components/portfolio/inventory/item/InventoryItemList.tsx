@@ -17,7 +17,7 @@ import InventoryItemCardGrid from './InventoryItemCardGrid';
 import Filter from '@/public/icon/Filter';
 import ReactModal from 'react-modal';
 import InventoryItemDetail from './InventoryItemDetail';
-import { selectedTokenAtom } from '@/store/portfolio';
+import { portfolioUserAtom, selectedTokenAtom } from '@/store/portfolio';
 import Button from '@/components/buttons/Button';
 import Image from 'next/image';
 import { sendGTMEvent } from '@next/third-parties/google';
@@ -29,6 +29,7 @@ type Props = {
 };
 const InventoryItemList = (props: Props) => {
   const { isFilterOpen, handleFilterOpen } = props;
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   const [requestParam, setRequestParam] = useAtom(inventoryItemListAtom);
   const [itemViewType, setItemViewType] = useAtom(inventoryItemViewTypeAtom);
   const [openedItem, setOpenedItem] = useState<string[]>([]);
@@ -72,8 +73,9 @@ const InventoryItemList = (props: Props) => {
   };
   const downloadCSV = async () => {
     await downloadCSVItemList({
-      walletAddress: requestParam.walletAddress as string,
+      ...portfolioUser,
       assetContract: requestParam.assetContract,
+      networkId: 'ethereum',
     })
       .then((response) => {
         // Convert the blob data to a downloadable file

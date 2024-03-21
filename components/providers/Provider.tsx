@@ -27,7 +27,7 @@ import {
 import { CookiesProvider } from 'react-cookie';
 import ModalProvider from './ModalProvider';
 import DataFreshnessProvider from './DataFreshnessProvider';
-
+import { DevTools as JotaiDevTools, useAtomsDebugValue } from 'jotai-devtools';
 const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '';
 const ALCHEMY_ID = process.env.NEXT_PUBLIC_ALCHEMY_ID || '';
 const { chains, publicClient, webSocketPublicClient } = configureChains(
@@ -102,7 +102,14 @@ const contextClass = {
   dark: 'bg-white-600 font-gray-300',
 };
 const THIRD_WEB_API_KEY = process.env.NEXT_PUBLIC_THIRD_WEB_API_KEY || '';
+const isDevelopment = process.env.NODE_ENV !== 'production';
 type Key = 'success' | 'error' | 'info' | 'warning' | 'default' | 'dark';
+
+const DebugAtoms = () => {
+  useAtomsDebugValue();
+  return null;
+};
+
 function Providers({ children }: React.PropsWithChildren) {
   const [client] = React.useState(ReactQueryClient);
   const { setTheme, theme } = useTheme();
@@ -126,6 +133,12 @@ function Providers({ children }: React.PropsWithChildren) {
                   defaultTheme='system'
                   enableSystem
                 >
+                  {isDevelopment && (
+                    <>
+                      <JotaiDevTools />
+                      <DebugAtoms />
+                    </>
+                  )}
                   <NextUIProvider>
                     <ModalProvider>
                       <ToastContainer />

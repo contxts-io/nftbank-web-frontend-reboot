@@ -17,7 +17,6 @@ export const useFreshnessAndUpdatePolling = (requestParam:BasicParam | null, for
       staleTime: 0,
       cacheTime: 0,
       useErrorBoundary: false,
-      enabled: requestParam?.walletAddress !== ''
     },
   );
 }

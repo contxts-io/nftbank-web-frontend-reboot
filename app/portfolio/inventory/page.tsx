@@ -14,13 +14,15 @@ import { useRouter } from 'next/navigation';
 
 const InventoryPage = () => {
   return (
-    <section className={styles.container}>
+    <section className='pb-43'>
       {/**
        *
        * sprint 1
        *
        *  <InventoryValue /> */}
       {/* <InventoryContainer /> */}
+      <InventoryValue />
+      <InventoryContainer />
     </section>
   );
 };

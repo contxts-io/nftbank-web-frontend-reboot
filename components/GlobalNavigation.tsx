@@ -14,7 +14,10 @@ import EthereumIcon from '@/public/icon/EthereumIcon';
 import Usd from '@/public/icon/Usd';
 import Button from './buttons/Button';
 import { useMe } from '@/utils/hooks/queries/auth';
-import { useMutationSignOut } from '@/utils/hooks/mutations/auth';
+import {
+  useMutationSignOut,
+  useMutationUpdateMe,
+} from '@/utils/hooks/mutations/auth';
 import { useDisconnect as useDisconnectWagmi } from 'wagmi';
 import { useDisconnect as useDisconnectThirdWeb } from '@thirdweb-dev/react';
 import { connectedWalletAddressAtom } from '@/store/account';
@@ -26,18 +29,21 @@ import { getAddress } from 'ethers/lib/utils';
 import SearchInput from './searchInput/SearchInput';
 import { verifyWalletAddress } from '@/apis/wallet';
 import { sendGTMEvent } from '@next/third-parties/google';
+import { useCookies } from 'react-cookie';
+import { BasicParam } from '@/interfaces/request';
+import { TCurrency } from '@/interfaces/constants';
 
 const GlobalNavigation = () => {
   const router = useRouter();
   const path = usePathname();
-  const { data: me } = useMe();
+  const { data: me, status: signInStatus } = useMe();
   const { mutate: signOut } = useMutationSignOut();
   const { disconnect: disconnectWagmi } = useDisconnectWagmi();
   const disconnectThirdWeb = useDisconnectThirdWeb();
   const [connectedWalletAddress, setConnectedWalletAddress] = useAtom(
     connectedWalletAddressAtom
   );
-  const [mySelectedInformation, setMySelectedInformation] = useAtom(
+  const [myDefaultPortfolio, setMyDefaultPortfolio] = useAtom(
     myDefaultPortfolioAtom
   );
   const [currency, setCurrency] = useAtom(currencyAtom);
@@ -48,6 +54,7 @@ const GlobalNavigation = () => {
   const [verify, setVerify] = useState<Boolean>(false);
   const [isChecking, setIsChecking] = useState<boolean>(false);
   const [searchAddress, setSearchAddress] = useState<string | null>(null);
+  const { mutate: updateMe, status: updateMeStatus } = useMutationUpdateMe();
   const listRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     setError(null);
@@ -56,6 +63,10 @@ const GlobalNavigation = () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+  useEffect(() => {
+    me && setCurrency(me.config.currency);
+  }, [me]);
+
   useEffect(() => {
     const handleKeyDown = (e: any) => {
       if (e.key === 'Enter') {
@@ -70,6 +81,10 @@ const GlobalNavigation = () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [walletAddress, error]);
+
+  useEffect(() => {
+    // updateMe({ currency: currency });
+  }, [currency]);
   useEffect(() => {
     setWalletAddress('');
     setError(null);
@@ -148,7 +163,8 @@ const GlobalNavigation = () => {
   const toggleOpen = () => {
     setIsOpen(!isOpen);
   };
-  const changeCurrency = () => {
+  const changeCurrency = (currency: TCurrency) => {
+    updateMe({ currency: currency === 'eth' ? 'usd' : 'eth' });
     setCurrency((prev) => {
       return prev === 'eth' ? 'usd' : 'eth';
     });
@@ -168,6 +184,28 @@ const GlobalNavigation = () => {
     console.log('value', text);
     setWalletAddress(text);
   };
+  const [isClient, setIsClient] = useState(false);
+
+  const handleClickRow = (row: BasicParam) => {
+    Boolean(row.nickname && row.nickname !== '') &&
+      setMyDefaultPortfolio({
+        nickname: row.nickname,
+        networkId: 'ethereum',
+      });
+    Boolean(row.walletGroupId && row.walletGroupId !== '') &&
+      setMyDefaultPortfolio({
+        walletGroupId: row.walletGroupId,
+        networkId: 'ethereum',
+      });
+    Boolean(row.walletAddress && row.walletAddress !== '') &&
+      setMyDefaultPortfolio({
+        walletAddress: row.walletAddress,
+        networkId: 'ethereum',
+      });
+  };
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   if (path.includes('/landing') || path.includes('/blog'))
     return (
       // <div className='w-full h-62 sticky top-0 z-10 '>
@@ -193,17 +231,31 @@ const GlobalNavigation = () => {
             </p>
           </div>
         </div>
-        {path !== '/' && (
-          <></>
-
-          // <Link
-          //   href={'/portfolio'}
-          //   className={` ${styles.link} ${
-          //     path.includes('/portfolio') ? 'text-[var(--color-text-main)]' : ''
-          //   }`}
-          // >
-          //   Portfolio
-          // </Link>
+        {path !== '/' && !path.includes('/auth') && (
+          <>
+            <Link
+              href={'/portfolio'}
+              className={` ${styles.link} ${
+                path.includes('/portfolio')
+                  ? 'text-[var(--color-text-main)]'
+                  : ''
+              }`}
+            >
+              Portfolio
+            </Link>
+            {isClient && me && (
+              <Link
+                href={'/settings'}
+                className={` ${styles.link} ${
+                  path.includes('/settings')
+                    ? 'text-[var(--color-text-main)]'
+                    : ''
+                }`}
+              >
+                Settings
+              </Link>
+            )}
+          </>
         )}
         {/* <Link
           href={'/watch'}
@@ -242,7 +294,7 @@ const GlobalNavigation = () => {
         <SearchBar />
         
       </div> */}
-      {path !== '/' && (
+      {path !== '/' && !path.includes('/auth') && (
         <div className='hidden md:block'>
           <SearchInput
             placeholder='Search any Wallet'
@@ -269,7 +321,7 @@ const GlobalNavigation = () => {
           {isGhost ? <Ghost /> : <GhostOn />}
         </Button>*/}
 
-        {path !== '/' && (
+        {path !== '/' && !path.includes('/auth') && (
           <>
             <div className='border-t-1 border-b-1 border-l-1 border-[var(--color-border-main)]'>
               <ThemeSwitcher />
@@ -277,24 +329,38 @@ const GlobalNavigation = () => {
             <div className='border-1 border-[var(--color-border-main)]'>
               <Button
                 id={'/global/currency'}
-                onClick={() => changeCurrency()}
+                onClick={() => changeCurrency(currency)}
                 className='border-l-0'
               >
-                <div className='flex items-center justify-center border-1 border-[var(--color-border-bold)] rounded-full h-20 w-20 mr-8 '>
+                <div className='flex items-center justify-center border-1 border-[var(--color-border-bold)] rounded-full h-20 w-20'>
                   {currency === 'eth' ? <EthereumIcon /> : <Usd />}
                 </div>
-                {currency.toUpperCase()}
               </Button>
             </div>
+            <>
+              {isClient && !me && (
+                <Button
+                  className='bg-[var(--color-background-brand-bold)] !h-34'
+                  onClick={() => router.push('/auth/signin')}
+                  id='get_started_top_nav'
+                >
+                  <p className='font-body02-regular text-[var(--color-text-inverse)]'>
+                    Get Started
+                  </p>
+                </Button>
+              )}
+            </>
           </>
         )}
         {/* 내계정 */}
-        {me && mySelectedInformation && (
-          <PortfolioSelector
-            user={me}
-            portfolioParam={mySelectedInformation}
-            setPortfolioParam={setMySelectedInformation}
-          />
+        {me && myDefaultPortfolio && (
+          <div className='border-[var(--color-border-main)] border-1 border-l-0'>
+            <PortfolioSelector
+              user={me}
+              portfolioParam={myDefaultPortfolio}
+              setPortfolioParam={(param) => handleClickRow(param)}
+            />
+          </div>
         )}
       </div>
     </nav>

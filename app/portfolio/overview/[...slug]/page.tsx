@@ -27,7 +27,12 @@ const OverviewPage = ({ params }: { params: { slug: string[] } }) => {
   // }, [slug]);
   return (
     <section className='pt-20 px-24 pb-40'>
-      <SummaryValueContainer />
+      <SummaryValueContainer
+        portfolioUser={{
+          [slug[0]]: slug[1],
+          networkId: 'ethereum',
+        }}
+      />
 
       {/* <div className='w-full grid grid-cols-2 gap-x-[20px]'>
         <HistoricalTrendContainer />
@@ -36,11 +41,26 @@ const OverviewPage = ({ params }: { params: { slug: string[] } }) => {
         <RecentActivityContainer />
       </div> */}
       <div className='w-full'>
-        <HistoricalTrendContainer />
+        <HistoricalTrendContainer
+          portfolioUser={{
+            [slug[0]]: slug[1],
+            networkId: 'ethereum',
+          }}
+        />
         {/* <div className='w-full grid grid-cols-1 lg:grid-cols-2 gap-x-[20px]'> */}
         <div className='w-full grid gap-x-[20px] grid-cols-1 md:grid-cols-2'>
-          <TotalInventoryValue />
-          <PerformanceContainer />
+          <TotalInventoryValue
+            portfolioUser={{
+              [slug[0]]: slug[1],
+              networkId: 'ethereum',
+            }}
+          />
+          <PerformanceContainer
+            portfolioUser={{
+              [slug[0]]: slug[1],
+              networkId: 'ethereum',
+            }}
+          />
         </div>
         {/* <RecentActivityContainer /> */}
       </div>

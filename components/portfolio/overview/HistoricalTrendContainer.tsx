@@ -21,6 +21,7 @@ import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
 import { portfolioUserAtom } from '@/store/portfolio';
 import CurrencyComponent from '@/components/p/Currency';
 import DropdownMobile from '@/components/dropdown/DropdownMobile';
+import { BasicParam } from '@/interfaces/request';
 
 //'1d'| '3d'| '7d'| '30d'| '90d'| 'ytd'| '365d'| 'all'
 const PERIOD: { name: string; value: Period }[] = [
@@ -50,10 +51,17 @@ const PERIOD: { name: string; value: Period }[] = [
   // },
 ];
 type Period = '1d' | '3d' | '7d' | '30d' | '90d' | 'ytd' | '365d' | 'all';
-const HistoricalTrendContainer = () => {
+type Props = {
+  portfolioUser?: BasicParam;
+};
+const HistoricalTrendContainer = (props: Props) => {
   const [selectedPeriod, setSelectedPeriod] = useState('1W');
 
   const portfolioUser = useAtomValue(portfolioUserAtom);
+  // const [portfolioUser, setPortfolioUser] = useState(
+  //   props.portfolioUser || _portfolioUser
+  // );
+
   const currency = useAtomValue(currencyAtom);
 
   const [historicalValueParam, setHistoricalValueParam] = useAtom(
@@ -84,7 +92,6 @@ const HistoricalTrendContainer = () => {
     setIsPolling(true);
   };
   const handleHoverValue = (value: number | null) => {
-    console.log('handleHoverValue', value);
     setHoverValue(value);
   };
   const total = useMemo(() => {

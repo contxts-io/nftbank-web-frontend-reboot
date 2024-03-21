@@ -6,6 +6,6 @@ export const metadata: Metadata = {
   description: 'NFTBank.ai - Portfolio/Inventory',
 };
 const InventoryLayout = ({ children }: { children: React.ReactNode }) => {
-  return <div className={styles.container}>{children}</div>;
+  return <div className='w-full px-24'>{children}</div>;
 };
 export default InventoryLayout;

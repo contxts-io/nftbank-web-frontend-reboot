@@ -4,14 +4,15 @@ import styles from './DeleteWallet.module.css';
 import SubmitButton from '../buttons/SubmitButton';
 import { TWallet } from '@/interfaces/inventory';
 import { useMutationDeleteWallet } from '@/utils/hooks/mutations/wallet';
-import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { useQueryClient } from '@tanstack/react-query';
+import { shortenAddress } from '@/utils/common';
 type Props = {
   wallet: TWallet;
   onClose: () => void;
-  searchAddress?: string;
 };
 const DeleteWallet = (props: Props) => {
-  const { data: walletList, refetch } = useMyWalletList(props.searchAddress);
+  const queryClient = useQueryClient();
+
   const { mutate: deleteWallet, status: deleteStatus } =
     useMutationDeleteWallet();
   const handleClickDelete = () => {
@@ -19,12 +20,28 @@ const DeleteWallet = (props: Props) => {
       { walletId: props.wallet.id },
       {
         onSuccess: () => {
-          refetch();
+          queryClient.invalidateQueries({
+            queryKey: ['myWalletList'],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['walletList'],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['groupList'],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['group'],
+          });
           props.onClose();
         },
       }
     );
   };
+  const walletName = props.wallet.name
+    ? props.wallet.name.startsWith('0x')
+      ? shortenAddress(props.wallet.name)
+      : props.wallet.name
+    : shortenAddress(props.wallet.walletAddress);
   return (
     <div className={styles.container}>
       <div className='w-full flex justify-between mb-16'>
@@ -37,7 +54,7 @@ const DeleteWallet = (props: Props) => {
       </div>
       <p className='font-button03-regular text-[var(--color-text-subtle)]'>
         Are you sure you want to delete{' '}
-        <span className='text-[var(--color-text-main)]'>PFP Wallet</span>? The
+        <span className='text-[var(--color-text-main)]'>{walletName}</span>? The
         deleted wallet is excluded from the Group
       </p>
       <div className='mt-auto flex justify-end gap-x-8'>
@@ -48,7 +65,7 @@ const DeleteWallet = (props: Props) => {
           id=''
           className={styles.deleteButton}
           onClick={() => handleClickDelete()}
-          loading={deleteStatus === 'loading'}
+          isLoading={deleteStatus === 'loading'}
         >
           <p>Delete</p>
         </SubmitButton>

@@ -41,7 +41,7 @@ const EmailForm = () => {
         console.log('email token: ', token);
         await sign({ token, provider: 'email' }).then(async () => {
           console.log('email sign-up success  ');
-          (await refetch()).data && router.push('/portfolio');
+          (await refetch()).data && router.push('/portfolio/overview');
         });
       } else {
         console.log('token is null');
@@ -78,7 +78,7 @@ const EmailForm = () => {
           </div>
           <div className={`font-body02-medium ${styles.footer}`}>
             <SubmitButton
-              id=''
+              id='email_address_input'
               className={`w-full`}
               disabled={
                 !validationEmail(email[0]) ||
@@ -86,7 +86,7 @@ const EmailForm = () => {
                 providers?.includes('google.com')
               }
               onClick={() => handleCheckProvider()}
-              loading={status === 'loading'}
+              // isLoading={status === 'loading'}
             >
               <span className='text-[var(--color-text-main)]'>
                 Continue with Email
@@ -105,7 +105,7 @@ const EmailForm = () => {
           </div>
           <div className={`w-full flex flex-col items-center ${styles.footer}`}>
             <Button
-              id=''
+              id='email_sign_in'
               className={styles.submitButton}
               disabled={!isVerifiedPassword}
               onClick={() => handleSignInEmail()}

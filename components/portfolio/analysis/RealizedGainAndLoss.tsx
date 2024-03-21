@@ -155,11 +155,18 @@ const RealizedGainAndLoss = () => {
           return { ...item, ..._item };
         }) || []
     );
-  }, [realizedTokenList?.pages, requestParams, status]);
+  }, [realizedTokenList?.pages, realizedTokenListFresh, requestParams, status]);
+  useEffect(() => {
+    console.log(
+      'changed realizedTokenList?.pages : ',
+      realizedTokenList?.pages
+    );
+  }, [realizedTokenList?.pages]);
   const downloadCSV = async () => {
     await downloadCSVInventoryRealizedTokens({
-      walletAddress: portfolioUser?.walletAddress as string,
+      ...portfolioUser,
       year: requestParams.year as number | 'all',
+      networkId: 'ethereum',
     })
       .then((response) => {
         // Convert the blob data to a downloadable file

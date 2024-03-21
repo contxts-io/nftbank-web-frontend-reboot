@@ -42,7 +42,13 @@ const Button = ({
   return (
     <button
       {...props}
-      className={twMerge(`${styles.button} ${className}`)}
+      className={twMerge(
+        `${styles.button} ${className} ${
+          isLoading
+            ? 'cursor-auto !hover:border-[var(--color-border-main)] !hover:text-[var(--color-text-subtle)]'
+            : ''
+        }`
+      )}
       id={id}
       onClick={handleClick}
     >

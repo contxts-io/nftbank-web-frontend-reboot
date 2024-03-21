@@ -10,6 +10,10 @@ import Check from '@/public/icon/Check';
 import Spinner from '@/public/icon/Spinner';
 import { validationWalletAddress } from '@/utils/common';
 import { useMutationInsertWalletBulk } from '@/utils/hooks/mutations/wallet';
+import { sendGTMEvent } from '@next/third-parties/google';
+import { useQueryClient } from '@tanstack/react-query';
+import { useMe } from '@/utils/hooks/queries/auth';
+import { getAddress } from 'ethers/lib/utils';
 type InputTextProps = {
   wallet: {
     walletAddress: string;
@@ -25,29 +29,71 @@ type InputTextProps = {
 const InputText = (props: InputTextProps) => {
   const [value, setValue] = useState<string>('');
   const [valid, setValid] = useState<boolean | undefined>(undefined);
-  const { data: walletList, status } = useMyWalletList(
-    validationWalletAddress(value) ? value : ''
-  );
+  const { data: walletList, status } = useMyWalletList();
   const handleChangeInput = async (value: string) => {
     setValue(value);
   };
   useEffect(() => {
+    console.log('my wallet list : ', walletList);
     if (!walletList) {
+      console.log('no wallet list');
       setValid(undefined);
       return;
     }
-    if (walletList.data.length === 0) setValid(true);
-    else if (walletList.data.length > 0) setValid(false);
+    value !== '' &&
+      (walletList.data.find(
+        (wallet) => wallet.walletAddress === props.wallet.walletAddress
+      )
+        ? setValid(false)
+        : setValid(true));
   }, [walletList]);
   useEffect(() => {
-    props.addWallet({ ...props.wallet, walletAddress: value, isValid: valid });
-  }, [value, valid]);
+    console.log(
+      'walletList',
+      Boolean(
+        !walletList?.data.find(
+          (wallet) => wallet.walletAddress === props.wallet.walletAddress
+        )
+      )
+    );
+    try {
+      Boolean(
+        value !== '' &&
+          !walletList?.data.find(
+            (wallet) => wallet.walletAddress === props.wallet.walletAddress
+          )
+      ) && getAddress(value);
+      if (value !== '') {
+        setValid(true);
+        props.addWallet({
+          ...props.wallet,
+          walletAddress: value,
+          isValid: true,
+        });
+      } else {
+        props.addWallet({
+          ...props.wallet,
+          walletAddress: value,
+          isValid: false,
+        });
+        setValid(false);
+      }
+    } catch (e) {
+      console.error(e);
+      props.addWallet({
+        ...props.wallet,
+        walletAddress: value,
+        isValid: false,
+      });
+      setValid(false);
+    }
+  }, [value]);
   return (
     <div className='w-full flex flex-col'>
       <div className='w-full relative flex items-center'>
         <input
           className={`font-caption-regular ${styles.textInput} ${
-            valid === false ? styles.invalid : ''
+            Boolean(valid === false) ? styles.invalid : ''
           }`}
           placeholder='Wallet Address'
           value={value}
@@ -64,9 +110,9 @@ const InputText = (props: InputTextProps) => {
           </div>
         )}
       </div>
-      {value !== '' && valid === false && (
+      {/* {value !== '' && valid === false && (
         <p className='text-[var(--color-text-danger)]'>invalid</p>
-      )}
+      )} */}
     </div>
   );
 };
@@ -76,7 +122,9 @@ type Props = {
   onClose: () => void;
 };
 const ManualWalletAdd = (props: Props) => {
-  const { data: walletListData, refetch } = useMyWalletList('');
+  const queryClient = useQueryClient();
+  const { data: me } = useMe();
+  const { data: walletListData, refetch } = useMyWalletList();
   const { mutate: insertMyWalletBulk } = useMutationInsertWalletBulk();
   const [walletList, setWalletList] = useState<
     { walletAddress: string; isValid: boolean | undefined; index: number }[]
@@ -97,13 +145,27 @@ const ManualWalletAdd = (props: Props) => {
       validWalletList.map((wallet) => {
         return {
           name: wallet.walletAddress,
-          networkName: 'evm',
+          networkName: 'ethereum',
           walletAddress: wallet.walletAddress,
           provider: 'manual',
         };
       }),
       {
         onSuccess: () => {
+          sendGTMEvent({
+            event: 'buttonClicked',
+            name: 'manual_wallet_add_success',
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['myWalletList'],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ['walletList'],
+          });
+          me &&
+            queryClient.invalidateQueries({
+              queryKey: [me.nickname],
+            });
           refetch();
           props.onClose();
         },
@@ -121,6 +183,9 @@ const ManualWalletAdd = (props: Props) => {
       return newList;
     });
   };
+  useEffect(() => {
+    console.log('walletList', walletList);
+  }, [walletList]);
   return (
     <section className={styles.container}>
       <div className={styles.title}>
@@ -156,23 +221,18 @@ const ManualWalletAdd = (props: Props) => {
           className={styles.addRowButton}
           onClick={() => handleClickAddButton()}
           disabled={
-            walletList.length >= 10 ||
+            walletList.find((wallet) => wallet.walletAddress === '') !==
+              undefined ||
             walletList.find((wallet) => wallet.isValid === false) !== undefined
           }
         >
-          <Plus className='w-16 h-16 fill-[var(--color-icon-selected)] mr-8' />
-          <p className='font-body02-medium text-[var(--color-text-main)]'>
-            Can add <span>{10 - walletList.length}</span> more
-          </p>
+          <Plus className='w-16 h-16 fill-[var(--color-icon-selected)]' />
         </Button>
       </div>
       <Button
         id=''
         className={styles.registerButton}
-        disabled={
-          walletList.length === 0 ||
-          walletList.filter((wallet) => wallet.isValid !== true).length > 0
-        }
+        disabled={Boolean(walletList.find((wallet) => wallet.isValid !== true))}
         onClick={() => onSubmit()}
       >
         <p>Register</p>

@@ -1,13 +1,13 @@
 import { TCurrency } from "@/interfaces/constants";
 import { BasicParam } from "@/interfaces/request";
 import { atom } from "jotai";
+const PREFIX = 'REQUEST_PARAM'
 export enum SortOrder {
   Desc = '-1',Asc = '1'
 }
 export type TSort = 'amount' | 'nav' | 'spam'
 
 export type TCollectionParam = {
-  walletAddress: string,
   searchCollection: string,
   sortCol: 'nav' | 'amount' | 'spam',
   sortOrder: SortOrder,
@@ -44,25 +44,25 @@ type SpamParam = {
   includeCustomSpam:boolean,
   includeNonSpam:boolean,
 }
-export const inventoryCollectionAtom = atom<TCollectionParam>({
-  walletAddress: '',
+export const inventoryCollectionAtom = atom<TCollectionParam & BasicParam>({
   searchCollection: '',
   page: 1,
   limit: 30,
   sortCol: 'nav',
   sortOrder: SortOrder.Desc,
+  networkId: 'ethereum',
 })
-export const inventoryItemFilterCollectionAtom = atom<TCollectionParam>({
+inventoryCollectionAtom.debugLabel = `${PREFIX}_inventoryCollectionAtom`;
+export const inventoryItemFilterCollectionAtom = atom<TCollectionParam  & BasicParam>({
   searchCollection: '',
-  walletAddress: '',
   page: 1,
   limit: 30,
   sortCol: 'nav',
   sortOrder: SortOrder.Desc,
+  networkId: 'ethereum',
 })
-export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
+export const inventorySpamCollectionAtom = atom<TCollectionParam & BasicParam & SpamParam>({
   searchCollection: '',
-  walletAddress: '',
   page: 1,
   limit: 30,
   sortCol: 'spam',
@@ -70,10 +70,10 @@ export const inventorySpamCollectionAtom = atom<TCollectionParam & SpamParam>({
   includeSpam: true,
   includeCustomSpam: true,
   includeNonSpam: true,
+  networkId: 'ethereum',
 })
 // export const inventoryItemCollectionAtom = atom<TCollectionParam>({})
-export const inventoryItemListAtom = atom<ItemParam & {paging : boolean}>({
-  walletAddress: '',
+export const inventoryItemListAtom = atom<ItemParam & BasicParam & {paging : boolean}>({
   networkId: 'ethereum',
   assetContract: [],
   page: 1,
@@ -83,6 +83,7 @@ export const inventoryItemListAtom = atom<ItemParam & {paging : boolean}>({
   sortOrder: SortOrder.Desc,
   paging: true,
 })
+inventoryItemListAtom.debugLabel = `${PREFIX}_inventoryItemListAtom`;
 export const analysisGainAndLossParamAtom = atom<TAnalysisGainAndLossParam>({
   limit: 10,
   page: 1,

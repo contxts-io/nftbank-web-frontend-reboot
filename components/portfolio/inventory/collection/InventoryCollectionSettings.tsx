@@ -1,7 +1,7 @@
 'use client';
 import MagnifyingGlass from '@/public/icon/MagnifyingGlass';
 import styles from './InventoryCollectionSettings.module.css';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { inventoryCollectionAtom } from '@/store/requestParam';
 import { priceTypeAtom } from '@/store/currency';
@@ -17,7 +17,9 @@ import {
   useInventoryCollectionList,
   useInventoryCollectionsInfinite,
 } from '@/utils/hooks/queries/inventory';
+import { portfolioUserAtom } from '@/store/portfolio';
 const InventoryCollectionSettings = () => {
+  const portfolioUser = useAtomValue(portfolioUserAtom);
   const [inventoryCollection, setInventoryCollection] = useAtom(
     inventoryCollectionAtom
   );
@@ -57,8 +59,9 @@ const InventoryCollectionSettings = () => {
   };
   const downloadCSV = async () => {
     await downloadCSVCollectionList({
-      walletAddress: inventoryCollection.walletAddress,
+      ...portfolioUser,
       searchCollection: inventoryCollection.searchCollection,
+      networkId: 'ethereum',
     })
       .then((response) => {
         // Convert the blob data to a downloadable file

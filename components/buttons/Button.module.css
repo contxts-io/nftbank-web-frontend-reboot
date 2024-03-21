@@ -3,7 +3,7 @@
   @apply border-[var(--color-border-main)] text-[var(--color-text-subtle)];
 }
 .button:hover {
-  @apply hover:text-[var(--color-text-main)] border-[var(--color-border-selected)];
+  @apply hover:text-[var(--color-text-main)] hover:border-[var(--color-border-selected)];
 }
 .button:disabled {
   @apply text-[var(--color-text-disabled)] border-[var(--color-border-disabled)];

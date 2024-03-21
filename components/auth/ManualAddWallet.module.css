@@ -14,7 +14,7 @@
   @apply flex flex-1 flex-col items-center mt-20 gap-y-12 overflow-scroll pb-12;
 }
 .textInput {
-  @apply w-full h-40;
+  @apply w-full h-40 px-12;
 }
 .invalid {
   @apply border-[var(--color-border-danger)] !important;
@@ -24,5 +24,5 @@
 }
 
 .registerButton {
-  @apply w-full h-38 flex items-center justify-center mt-auto;
+  @apply w-full h-38 flex items-center justify-center mt-auto bg-[var(--color-background-brand-bold)];
 }

@@ -19,6 +19,7 @@
     "component:headless": "cypress run --component"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
     "@next/third-parties": "^14.1.0",
     "@nextui-org/react": "^2.2.9",
     "@rainbow-me/rainbowkit": "^1",
@@ -44,6 +45,7 @@
     "firebase": "^10.3.1",
     "framer-motion": "^10.16.16",
     "jotai": "^2.4.0",
+    "jotai-devtools": "^0.8.0",
     "jsonwebtoken": "^8.5",
     "lokijs": "1.x",
     "next": "13.4.19",
