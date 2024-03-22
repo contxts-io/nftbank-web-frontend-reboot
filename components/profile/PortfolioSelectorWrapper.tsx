@@ -184,7 +184,10 @@ const PortfolioSelectorWrapper = () => {
         {option.type === 'all' &&
           walletList?.data &&
           walletList?.paging.total - LIMIT > 0 && (
-            <Button className={styles.walletAddressButton}>
+            <Button
+              className={styles.walletAddressButton}
+              onClick={() => setIsOpen((prev) => !prev)}
+            >
               {`+ ${walletList.paging.total - 5}`}
             </Button>
           )}
@@ -192,30 +195,51 @@ const PortfolioSelectorWrapper = () => {
           walletGroup?.wallets?.data.map((wallet, index) => {
             if (index < LIMIT)
               return (
-                <div
+                <Button
                   key={index}
-                  className='rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)]'
+                  className={styles.walletAddressButton}
+                  onClick={() =>
+                    handleClickWallet({
+                      nickname: '',
+                      walletGroupId: '',
+                      walletAddress: wallet.walletAddress,
+                      networkId: networkId,
+                    })
+                  }
                 >
                   <BlockiesIcon
                     walletAddress={wallet.walletAddress}
                     size={16}
                   />
                   {shortenAddress(wallet.walletAddress)}
-                </div>
+                </Button>
               );
           })}
         {option.type === 'group' &&
           walletGroup?.wallets?.data &&
           walletGroup?.wallets?.paging.total - LIMIT > 0 && (
-            <div className='rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)]'>
+            <Button
+              className={styles.walletAddressButton}
+              onClick={() => setIsOpen((prev) => !prev)}
+            >
               {`+ ${walletGroup?.wallets.paging.total - LIMIT}`}
-            </div>
+            </Button>
           )}
         {option.type === 'wallet' && (
-          <div className='rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)]'>
+          <Button
+            className={styles.walletAddressButton}
+            onClick={() =>
+              handleClickWallet({
+                nickname: '',
+                walletGroupId: '',
+                walletAddress: option.value,
+                networkId: networkId,
+              })
+            }
+          >
             <BlockiesIcon walletAddress={option.value} size={16} />
             {shortenAddress(option.value)}
-          </div>
+          </Button>
         )}
         {path.includes('/sample') && (
           <Button

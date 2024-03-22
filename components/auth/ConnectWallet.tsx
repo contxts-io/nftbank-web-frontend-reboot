@@ -244,7 +244,7 @@ const ConnectWallet = (props: Props) => {
     },
     {
       name: 'Ledger',
-      icon: '/logo/Zerion.svg',
+      icon: '/logo/Ledger.svg',
     },
   ];
   const disconnectWallet = async () => {
