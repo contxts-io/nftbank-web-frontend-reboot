@@ -135,6 +135,7 @@ const ConnectWallet = (props: Props) => {
       });
   }, [address, walletInstance]);
   useEffect(() => {
+    console.log('connectedWalletAddress', connectedWalletAddress);
     if (connectedWalletAddress) {
       const token = formatToken({
         walletAddress: connectedWalletAddress.address,
@@ -159,6 +160,8 @@ const ConnectWallet = (props: Props) => {
                   code: 'error',
                   toastId: 'insertWalletError',
                 });
+                disconnectWallet();
+                setConnectedWalletAddress(null);
               },
               onSuccess: async (data) => {
                 // const me = await checkMe();
@@ -178,6 +181,8 @@ const ConnectWallet = (props: Props) => {
                     queryKey: [me.nickname],
                   });
                 setShowModal(null);
+                disconnectWallet();
+                setConnectedWalletAddress(null);
               },
               onSettled: () => {
                 disconnectWallet();
@@ -201,6 +206,11 @@ const ConnectWallet = (props: Props) => {
                 (await refetch()).data && router.push(`/portfolio/overview`);
                 // console.log('sign success & refetch');
                 // router.push('/portfolio/overview');
+              },
+              onError: (error) => {
+                console.error('error', error);
+                disconnectWallet();
+                setConnectedWalletAddress(null);
               },
             }
           );
@@ -234,15 +244,14 @@ const ConnectWallet = (props: Props) => {
     },
     {
       name: 'Ledger',
-      icon: '/logo/Zerion.svg',
+      icon: '/logo/Ledger.svg',
     },
   ];
   const disconnectWallet = async () => {
-    await disconnect()
-      .then(() => console.log('disconnected thirdweb'))
-      .finally(() => {
-        _useDisconnectWagmi.disconnect();
-      });
+    console.log('disconnect wallet @@');
+    await disconnect().then(() => console.log('disconnected thirdweb'));
+    await _useDisconnectWagmi.disconnect();
+    console.log('disconnected wagmi');
   };
   return step === 'walletConnect' ? (
     <div className={styles.container}>

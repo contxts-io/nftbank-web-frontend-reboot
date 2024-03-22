@@ -13,6 +13,7 @@ import { sign } from '@/apis/auth';
 import { useMe } from '@/utils/hooks/queries/auth';
 import { useDisconnect as useDisconnectThirdWeb } from '@thirdweb-dev/react';
 import { useDisconnect as useDisconnectWagmi } from 'wagmi';
+import CaretDown from '@/public/icon/CaretDown';
 
 const SelectSignInMethod = () => {
   const router = useRouter();
@@ -56,8 +57,16 @@ const SelectSignInMethod = () => {
   };
   return (
     <>
-      <section className={styles.container}>
-        <div className={styles.body}>
+      <section className={`${styles.container}`}>
+        <div className={`${styles.body} relative`}>
+          <Button
+            className='absolute top-[30px] left-[8px] !border-transparent'
+            onClick={() => router.push('/portfolio/overview')}
+          >
+            <div className='rotate-90'>
+              <CaretDown />
+            </div>
+          </Button>
           <h2 className={`font-body01-regular ${styles.title}`}>
             Welcome to NFTBank! <br />
             Connect your wallet to get started

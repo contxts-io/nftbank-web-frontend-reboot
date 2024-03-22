@@ -216,7 +216,10 @@ const GlobalNavigation = () => {
   return (
     <nav className={`${styles.navigation}`}>
       <div className='flex items-center'>
-        <div className='font-body02-medium flex items-center mr-26'>
+        <div
+          className='font-body02-medium flex items-center mr-26 cursor-pointer'
+          onClick={() => router.push('/portfolio/overview')}
+        >
           <Image
             src={'/icon/nftbank_icon.svg'}
             width={20}
@@ -225,37 +228,30 @@ const GlobalNavigation = () => {
             className='border-0'
           />
           <NFTBankLogo className={`fill-[var(--color-icon-main)]`} />
-          <div className='ml-6 rounded-full px-8 flex items-center justify-center bg-[var(--color-background-brand-bold)] '>
+          <div className='ml-6 rounded-full px-8 h-16 flex items-center justify-center bg-[var(--color-background-brand-bold)] '>
             <p className='font-caption-medium text-[var(--color-text-inverse)]'>
-              V2
+              V2 Beta
             </p>
           </div>
         </div>
-        {path !== '/' && !path.includes('/auth') && (
-          <>
-            <Link
-              href={'/portfolio'}
-              className={` ${styles.link} ${
-                path.includes('/portfolio')
-                  ? 'text-[var(--color-text-main)]'
-                  : ''
-              }`}
-            >
-              Portfolio
-            </Link>
-            {isClient && me && (
-              <Link
-                href={'/settings'}
-                className={` ${styles.link} ${
-                  path.includes('/settings')
-                    ? 'text-[var(--color-text-main)]'
-                    : ''
-                }`}
-              >
-                Settings
-              </Link>
-            )}
-          </>
+
+        <Link
+          href={'/portfolio'}
+          className={` ${styles.link} ${
+            path.includes('/portfolio') ? 'text-[var(--color-text-main)]' : ''
+          }`}
+        >
+          {isClient && me ? 'My Portfolio' : 'Portfolio'}
+        </Link>
+        {isClient && me && (
+          <Link
+            href={'/settings'}
+            className={` ${styles.link} ${
+              path.includes('/settings') ? 'text-[var(--color-text-main)]' : ''
+            }`}
+          >
+            Settings
+          </Link>
         )}
         {/* <Link
           href={'/watch'}
@@ -294,34 +290,32 @@ const GlobalNavigation = () => {
         <SearchBar />
         
       </div> */}
-      {path !== '/' && !path.includes('/auth') && (
-        <div className='hidden md:block'>
-          <SearchInput
-            placeholder='Search any Wallet'
-            value={walletAddress}
-            onChange={(text) => handleChangeInput(text)}
-            isError={error ? true : false}
-            className={styles.searchInput}
-            isLoading={isChecking}
-            handleClose={() => setWalletAddress('')}
-          />
-        </div>
-      )}
 
-      <div className={`${styles.buttonBox}`}>
-        <div className='border-1 border-[var(--color-border-main)] mr-12 hidden md:inline'>
-          <Button onClick={() => window.open('https://nftbank.ai')} id=''>
-            Back to V1
-          </Button>
-        </div>
-        {/* <Button id={'/global/wallet'}>
+      <div className='hidden md:block fixed left-[50%] transform translate-x-[-50%] '>
+        <SearchInput
+          placeholder='Search any Wallet'
+          value={walletAddress}
+          onChange={(text) => handleChangeInput(text)}
+          isError={error ? true : false}
+          className={styles.searchInput}
+          isLoading={isChecking}
+          handleClose={() => setWalletAddress('')}
+        />
+      </div>
+
+      {!path.includes('/auth') && (
+        <div className={`${styles.buttonBox}`}>
+          <div className='border-1 border-[var(--color-border-main)] mr-12 hidden md:inline'>
+            <Button onClick={() => window.open('https://nftbank.ai')} id=''>
+              Back to V1
+            </Button>
+          </div>
+          {/* <Button id={'/global/wallet'}>
           <Wallet />
         </Button> 
         <Button id={'/global/ghost'} onClick={() => handleGhostMode()}>
           {isGhost ? <Ghost /> : <GhostOn />}
         </Button>*/}
-
-        {path !== '/' && !path.includes('/auth') && (
           <>
             <div className='border-t-1 border-b-1 border-l-1 border-[var(--color-border-main)]'>
               <ThemeSwitcher />
@@ -351,18 +345,18 @@ const GlobalNavigation = () => {
               )}
             </>
           </>
-        )}
-        {/* 내계정 */}
-        {me && myDefaultPortfolio && (
-          <div className='border-[var(--color-border-main)] border-1 border-l-0'>
-            <PortfolioSelector
-              user={me}
-              portfolioParam={myDefaultPortfolio}
-              setPortfolioParam={(param) => handleClickRow(param)}
-            />
-          </div>
-        )}
-      </div>
+          {/* 내계정 */}
+          {me && myDefaultPortfolio && (
+            <div className='border-[var(--color-border-main)] border-1 border-l-0'>
+              <PortfolioSelector
+                user={me}
+                portfolioParam={myDefaultPortfolio}
+                setPortfolioParam={(param) => handleClickRow(param)}
+              />
+            </div>
+          )}
+        </div>
+      )}
     </nav>
   );
 };

@@ -1,3 +1,9 @@
 .selectorButton {
   @apply rounded-[4px] h-28 !important;
 }
+.walletAddressButton {
+  @apply rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-elevation-sunken)] border-1 border-[var(--color-border-main)] text-[var(--color-text-main)] !important;
+}
+.walletAddressButton:hover {
+  @apply hover:bg-[var(--color-elevation-surface-raised)] hover:border-[var(--color-border-bold)] !important;
+}
