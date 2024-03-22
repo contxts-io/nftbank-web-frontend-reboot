@@ -44,14 +44,6 @@ const AsideMenu = () => {
     <aside className={styles.container}>
       <ul className={`font-body02-medium ${styles.menuWrapper}`}>
         <Link
-          href={'/settings/account'}
-          className={`${styles.li} ${
-            pathName.includes('account') ? styles.active : ''
-          }`}
-        >
-          Account
-        </Link>
-        <Link
           className={`${styles.li} ${
             pathName.includes('manageWallets') ? styles.active : ''
           }`}
@@ -59,6 +51,15 @@ const AsideMenu = () => {
         >
           Manage Wallets
         </Link>
+        <Link
+          href={'/settings/account'}
+          className={`${styles.li} ${
+            pathName.includes('account') ? styles.active : ''
+          }`}
+        >
+          Account
+        </Link>
+
         {/* <Link
           href={''}
           className={`${styles.li} ${

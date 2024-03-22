@@ -51,9 +51,10 @@ const EmailSignUpForm = () => {
         },
         {
           onSuccess: async () => {
+            console.log('emailsignupform onSuccess');
             sendGTMEvent({
               event: 'buttonClicked',
-              id: 'email_sign_up',
+              name: 'email_sign_up',
             });
             (await refetch()).data && router.push(`/portfolio/overview`);
           },

@@ -34,7 +34,7 @@ const nextConfig = {
       },
       {
         source: '/settings',
-        destination: '/settings/account',
+        destination: '/settings/manageWallets',
         permanent: true,
       },
     ];
