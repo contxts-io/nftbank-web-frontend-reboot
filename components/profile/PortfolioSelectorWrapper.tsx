@@ -185,7 +185,7 @@ const PortfolioSelectorWrapper = () => {
           walletList?.data &&
           walletList?.paging.total - LIMIT > 0 && (
             <Button
-              className={`${styles.walletAddressButton} hidden md:flex`}
+              className={`${styles.walletAddressButton} !hidden !md:flex`}
               onClick={() => setIsOpen((prev) => !prev)}
             >
               {`+ ${walletList.paging.total - 5}`}
@@ -197,7 +197,7 @@ const PortfolioSelectorWrapper = () => {
               return (
                 <Button
                   key={index}
-                  className={styles.walletAddressButton}
+                  className={`${styles.walletAddressButton} !hidden !md:flex`}
                   onClick={() =>
                     handleClickWallet({
                       nickname: '',
@@ -219,7 +219,7 @@ const PortfolioSelectorWrapper = () => {
           walletGroup?.wallets?.data &&
           walletGroup?.wallets?.paging.total - LIMIT > 0 && (
             <Button
-              className={styles.walletAddressButton}
+              className={`${styles.walletAddressButton} !hidden !md:flex`}
               onClick={() => setIsOpen((prev) => !prev)}
             >
               {`+ ${walletGroup?.wallets.paging.total - LIMIT}`}
