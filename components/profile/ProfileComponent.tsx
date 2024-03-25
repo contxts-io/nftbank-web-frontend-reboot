@@ -177,7 +177,7 @@ const ProfileComponent = () => {
                   className={`w-56 h-56 mr-20 rounded-full border-1 border-border-main dark:border-border-main-dark overflow-hidden`}
                 />
               ) : (
-                <div className='flex mr-20  items-center text-[var(--color-text-subtle)] rounded-full border-1 border-[var(--color-border-main)] overflow-hidden'>
+                <div className='flex mr-20 items-center text-[var(--color-text-subtle)] rounded-full border-1 border-[var(--color-border-main)] overflow-hidden'>
                   <BlockiesIcon
                     walletAddress={`${nickname || walletAddress}`}
                     size={56}
@@ -185,7 +185,7 @@ const ProfileComponent = () => {
                 </div>
               )}
               <h2
-                className={`font-subtitle01-bold mr-16 text-text-main dark:text-text-main-dark`}
+                className={`font-subtitle01-bold md:text-24 text-14 mr-16 text-text-main dark:text-text-main-dark`}
               >
                 {walletAddress?.substring(0, 8) || nickname || 'Welcome'}
               </h2>

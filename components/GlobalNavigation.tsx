@@ -222,7 +222,7 @@ const GlobalNavigation = () => {
         >
           <Image
             src={'/icon/nftbank_icon.svg'}
-            width={20}
+            width={22}
             height={20}
             alt='nftbank logo'
             className='border-0'
