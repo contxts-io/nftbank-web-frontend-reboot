@@ -107,7 +107,7 @@ const LoginProvider = ({ children }: { children: React.ReactNode }) => {
         className='!bg-transparent !border-0'
         overlayClassName={'!bg-transparent'}
       >
-        <div className='fixed top-[100%] right-[0%] transform translate-x-[-10%] translate-y-[-130%] border-1 border-[var(--color-border-bold)] rounded-[12px] z-50'>
+        <div className='fixed top-[100%] right-[0%] transform md:translate-x-[-10%] translate-y-[-100%] md:translate-y-[-130%] border-1 border-[var(--color-border-bold)] rounded-t-[12px] md:rounded-[12px] z-50'>
           <MakeYourPortfolio onClose={() => handleResetModal()} />
         </div>
       </ReactModal>

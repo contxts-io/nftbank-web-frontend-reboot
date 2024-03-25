@@ -227,8 +227,10 @@ const GlobalNavigation = () => {
             alt='nftbank logo'
             className='border-0'
           />
-          <NFTBankLogo className={`fill-[var(--color-icon-main)]`} />
-          <div className='ml-6 rounded-full px-8 h-16 flex items-center justify-center bg-[var(--color-background-brand-bold)] '>
+          <NFTBankLogo
+            className={`fill-[var(--color-icon-main)] hidden md:flex`}
+          />
+          <div className='ml-6 rounded-full px-8 h-16 items-center justify-center bg-[var(--color-background-brand-bold)] hidden md:flex'>
             <p className='font-caption-medium text-[var(--color-text-inverse)]'>
               V2 Beta
             </p>
@@ -237,7 +239,7 @@ const GlobalNavigation = () => {
 
         <Link
           href={'/portfolio'}
-          className={` ${styles.link} ${
+          className={`hidden md:flex ${styles.link} ${
             path.includes('/portfolio') ? 'text-[var(--color-text-main)]' : ''
           }`}
         >
@@ -246,7 +248,7 @@ const GlobalNavigation = () => {
         {isClient && me && (
           <Link
             href={'/settings'}
-            className={` ${styles.link} ${
+            className={`hidden md:flex  ${styles.link} ${
               path.includes('/settings') ? 'text-[var(--color-text-main)]' : ''
             }`}
           >

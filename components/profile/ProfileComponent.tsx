@@ -153,7 +153,7 @@ const ProfileComponent = () => {
   return (
     <>
       {isClient ? (
-        <section className='w-full px-24 pt-34 pb-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-y-20'>
+        <section className='w-full px-24 pt-20 md:pt-34 pb-16 flex flex-col md:flex-row items-start md:items-center justify-between gap-y-20'>
           {/* 모바일 전용 */}
           <div className='block md:hidden h-40 w-full'>
             <SearchInput
