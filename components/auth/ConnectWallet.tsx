@@ -271,7 +271,7 @@ const ConnectWallet = (props: Props) => {
           <Button
             id=''
             className={`${styles.button} ${
-              wallet.name !== 'WalletConnect' ? `!hidden !md:flex` : ''
+              wallet.name === 'WalletConnect' && styles.mobileConnectButton
             }`}
             onClick={() => handleClickButton(wallet)}
             key={index}
