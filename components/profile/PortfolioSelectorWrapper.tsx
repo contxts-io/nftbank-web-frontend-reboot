@@ -163,7 +163,7 @@ const PortfolioSelectorWrapper = () => {
               return (
                 <Button
                   key={index}
-                  className={`${styles.walletAddressButton} hidden md:flex`}
+                  className={`${styles.walletAddressButton} !hidden !md:flex`}
                   onClick={() =>
                     handleClickWallet({
                       nickname: '',
