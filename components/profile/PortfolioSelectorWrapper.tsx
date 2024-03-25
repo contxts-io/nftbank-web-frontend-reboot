@@ -247,7 +247,7 @@ const PortfolioSelectorWrapper = () => {
             onClick={() => handleClickAddWallet()}
             id='add_my_wallet_sample'
           >
-            + Add My Wallet
+            + Add Wallet
           </Button>
         )}
       </div>
