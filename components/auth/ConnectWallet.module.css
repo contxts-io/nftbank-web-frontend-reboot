@@ -15,7 +15,12 @@
   @apply my-20 flex flex-col items-center;
 }
 .button {
-  @apply mb-8 w-full h-40 flex items-center px-12;
+  @apply hidden md:flex !important;
+  @apply mb-8 w-full h-40 items-center px-12;
+}
+.mobileConnectButton {
+  @apply flex !important;
+  @apply mb-8 w-full h-40 items-center px-12;
 }
 .button img {
   @apply mr-8;
