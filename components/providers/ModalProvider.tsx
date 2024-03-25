@@ -18,7 +18,7 @@ const ModalProvider = ({ children }: { children: React.ReactNode }) => {
       <ReactModal
         isOpen={showModal !== null}
         contentLabel='Minimal Modal Example'
-        className='w-fit absolute top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%]'
+        className='w-fit absolute md:top-[50%] top-[10%] left-[50%] transform translate-x-[-50%] md:translate-y-[-50%]'
         onRequestClose={() => {
           setShowModal(null);
         }}

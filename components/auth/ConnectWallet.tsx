@@ -270,7 +270,9 @@ const ConnectWallet = (props: Props) => {
         {WALLETS.map((wallet, index) => (
           <Button
             id=''
-            className={styles.button}
+            className={`${styles.button} ${
+              wallet.name !== 'WalletConnect' ? `!hidden !md:flex` : ''
+            }`}
             onClick={() => handleClickButton(wallet)}
             key={index}
           >
