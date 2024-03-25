@@ -163,7 +163,7 @@ const PortfolioSelectorWrapper = () => {
               return (
                 <Button
                   key={index}
-                  className={styles.walletAddressButton}
+                  className={`${styles.walletAddressButton} hidden md:flex`}
                   onClick={() =>
                     handleClickWallet({
                       nickname: '',
@@ -185,7 +185,7 @@ const PortfolioSelectorWrapper = () => {
           walletList?.data &&
           walletList?.paging.total - LIMIT > 0 && (
             <Button
-              className={styles.walletAddressButton}
+              className={`${styles.walletAddressButton} hidden md:flex`}
               onClick={() => setIsOpen((prev) => !prev)}
             >
               {`+ ${walletList.paging.total - 5}`}
@@ -227,7 +227,7 @@ const PortfolioSelectorWrapper = () => {
           )}
         {option.type === 'wallet' && (
           <Button
-            className={styles.walletAddressButton}
+            className={`${styles.walletAddressButton}`}
             onClick={() =>
               handleClickWallet({
                 nickname: '',
@@ -243,7 +243,7 @@ const PortfolioSelectorWrapper = () => {
         )}
         {path.includes('/sample') && (
           <Button
-            className='!rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-background-brand-bold)] border-0'
+            className='!rounded-[4px] h-28 p-4 gap-x-4 flex items-center bg-[var(--color-background-brand-bold)] border-0 !text-[var(--color-text-inverse)]'
             onClick={() => handleClickAddWallet()}
             id='add_my_wallet_sample'
           >
