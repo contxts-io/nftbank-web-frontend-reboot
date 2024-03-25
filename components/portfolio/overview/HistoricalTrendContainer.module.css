@@ -8,7 +8,7 @@
   @apply w-full flex justify-between items-center;
 }
 .rowEnd {
-  @apply flex items-end mt-12 h-40;
+  @apply flex items-end mt-12 md:h-40 h-62;
 }
 .periodButtons {
   @apply md:flex items-center h-36 hidden;
