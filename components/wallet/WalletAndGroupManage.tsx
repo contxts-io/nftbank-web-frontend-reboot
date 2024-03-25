@@ -19,6 +19,7 @@ import { useRouter } from 'next/navigation';
 import Spinner from '@/public/icon/Spinner';
 import { sendGTMEvent } from '@next/third-parties/google';
 import { TWallet, TWalletGroup } from '@/interfaces/inventory';
+import BlockiesIcon from '../BlockiesIcon';
 type Props = {
   onClose: () => void;
   setPortfolioWallet: (param: BasicParam) => void;
@@ -133,7 +134,11 @@ const WalletAndGroupManage = (props: Props) => {
                       className={styles.list}
                       onClick={() => handleClickWallet(wallet)}
                     >
-                      <div className='h-full flex-1 flex items-center hover:bg-[var(--color-elevation-sunken)] pl-8'>
+                      <div className='h-full flex-1 flex items-center gap-x-4 hover:bg-[var(--color-elevation-sunken)] pl-8'>
+                        <BlockiesIcon
+                          walletAddress={wallet.walletAddress}
+                          size={16}
+                        />
                         <p className='text-[var(--color-text-main)]'>
                           {shortenAddress(wallet.walletAddress)}
                         </p>
