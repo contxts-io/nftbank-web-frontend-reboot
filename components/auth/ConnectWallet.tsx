@@ -294,7 +294,7 @@ const ConnectWallet = (props: Props) => {
             </span>
             <Button
               id=''
-              className={styles.button}
+              className={`${styles.button} ${styles.mobileConnectButton}`}
               onClick={() => setStep('manual')}
             >
               Register as Wallet Address
