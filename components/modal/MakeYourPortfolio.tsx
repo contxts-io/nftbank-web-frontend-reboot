@@ -11,11 +11,12 @@ const MakeYourPortfolio = (props: Props) => {
     props.onClose();
   };
   return (
-    <article className='w-[320px] rounded-[12px] py-30 px-20 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface-overlay)] flex flex-col'>
+    <article className='md:w-[320px] w-full rounded-[12px] py-30 px-20 border-[var(--color-border-bold)] bg-[var(--color-elevation-surface-overlay)] flex flex-col'>
       <div className='w-full flex flex-col gap-y-16'>
         <div className='w-full flex items-start'>
-          <p className='font-button02-medium text-[var(--color-text-main)] flex-1'>
-            📊 Make your portfolio in NFTBank!
+          <p className='font-button02-medium text-[var(--color-text-main)] flex-1 whitespace-pre-line'>
+            {`📊 Make your portfolio in 
+            NFTBank!`}
           </p>
           <Button
             id=''

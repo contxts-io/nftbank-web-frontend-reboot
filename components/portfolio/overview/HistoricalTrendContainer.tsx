@@ -233,25 +233,30 @@ const HistoricalTrendContainer = (props: Props) => {
             }`}
           />
         </div>
-        <CurrencyComponent value={total} className='font-header03-bold mr-12' />
-        {differenceValue && (
-          <p
-            className={`font-body01-medium ${
-              differenceValue && differenceValue > 0
-                ? styles.plus
-                : styles.minus
-            }`}
-          >
-            {`${difference(differenceValue.toString(), currency)} (${
-              initialValue && initialValue > 0
-                ? difference(
-                    ((differenceValue / initialValue) * 100).toString(),
-                    'percent'
-                  )
-                : '-'
-            })`}
-          </p>
-        )}
+        <div className='flex md:items-end flex-col md:flex-row gap-y-4'>
+          <CurrencyComponent
+            value={total}
+            className='font-header03-bold mr-12'
+          />
+          {differenceValue && (
+            <p
+              className={`font-body01-medium ${
+                differenceValue && differenceValue > 0
+                  ? styles.plus
+                  : styles.minus
+              }`}
+            >
+              {`${difference(differenceValue.toString(), currency)} (${
+                initialValue && initialValue > 0
+                  ? difference(
+                      ((differenceValue / initialValue) * 100).toString(),
+                      'percent'
+                    )
+                  : '-'
+              })`}
+            </p>
+          )}
+        </div>
       </div>
       <HistoricalTrendChart
         setHoverValue={handleHoverValue}
