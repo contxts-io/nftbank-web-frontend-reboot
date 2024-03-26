@@ -17,7 +17,6 @@ export const getActivityItem = async<T = ActivityItem>(param: Param): Promise<T>
       return encodeURIComponent(key) + '=' + encodeURIComponent(param[key as Key]);
   })
     .join('&');
-  console.log('getActivityItem query',query);
   const { data } = await instance.get<{data: T}>(`/activity${query ? `?${query}` : ''}`);
 
   return data.data;

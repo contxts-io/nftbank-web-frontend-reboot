@@ -85,7 +85,6 @@ const PortfolioSelectorWrapper = () => {
     }
   };
   const handleChangeOption = (row: BasicParam) => {
-    console.log('row : ', row);
     Boolean(row.nickname && row.nickname !== '') &&
       // (setOption({
       //   type: 'all',
@@ -163,7 +162,7 @@ const PortfolioSelectorWrapper = () => {
               return (
                 <Button
                   key={index}
-                  className={`${styles.walletAddressButton} !hidden !md:flex`}
+                  className={`${styles.walletAddressButton} ${styles.walletAddressMobile}`}
                   onClick={() =>
                     handleClickWallet({
                       nickname: '',
@@ -185,7 +184,7 @@ const PortfolioSelectorWrapper = () => {
           walletList?.data &&
           walletList?.paging.total - LIMIT > 0 && (
             <Button
-              className={`${styles.walletAddressButton} !hidden !md:flex`}
+              className={`${styles.walletAddressButton} ${styles.walletAddressMobile}`}
               onClick={() => setIsOpen((prev) => !prev)}
             >
               {`+ ${walletList.paging.total - 5}`}
@@ -197,7 +196,7 @@ const PortfolioSelectorWrapper = () => {
               return (
                 <Button
                   key={index}
-                  className={`${styles.walletAddressButton} !hidden !md:flex`}
+                  className={`${styles.walletAddressButton} ${styles.walletAddressMobile}`}
                   onClick={() =>
                     handleClickWallet({
                       nickname: '',
@@ -219,7 +218,7 @@ const PortfolioSelectorWrapper = () => {
           walletGroup?.wallets?.data &&
           walletGroup?.wallets?.paging.total - LIMIT > 0 && (
             <Button
-              className={`${styles.walletAddressButton} !hidden !md:flex`}
+              className={`${styles.walletAddressButton} ${styles.walletAddressMobile}`}
               onClick={() => setIsOpen((prev) => !prev)}
             >
               {`+ ${walletGroup?.wallets.paging.total - LIMIT}`}
@@ -258,6 +257,7 @@ const PortfolioSelectorWrapper = () => {
               user={user}
               onClose={() => setIsOpen(false)}
               setPortfolioWallet={(param) => setPortfolioUser(param)}
+              portfolioParam={portfolioUser}
             />
           )}
         </div>

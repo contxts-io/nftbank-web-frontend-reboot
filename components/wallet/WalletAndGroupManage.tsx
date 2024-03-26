@@ -23,12 +23,15 @@ import BlockiesIcon from '../BlockiesIcon';
 type Props = {
   onClose: () => void;
   setPortfolioWallet: (param: BasicParam) => void;
+  portfolioParam: BasicParam | null;
   user: TUser;
 };
 const WalletAndGroupManage = (props: Props) => {
   const { data: me } = useMe();
   const networkId = useAtomValue(networkIdAtom);
-  const [selected, setSelected] = useState<'wallet' | 'group'>('wallet');
+  const [selected, setSelected] = useState<'wallet' | 'group'>(
+    props.portfolioParam?.walletGroupId ? 'group' : 'wallet'
+  );
   const [showModal, setShowModal] = useAtom(openModalAtom);
   const [nickname, setNickname] = useState(props.user.nickname);
   const router = useRouter();
@@ -37,7 +40,7 @@ const WalletAndGroupManage = (props: Props) => {
     networkId: 'ethereum',
   });
   const { data: walletGroupList } = useWalletGroupList(props.user.nickname);
-  const handleClickList = (param: BasicParam) => {
+  const handleClickEvent = (param: BasicParam) => {
     // setMySelectedInformation(param);
     props.setPortfolioWallet(param);
     props.onClose();
@@ -48,7 +51,7 @@ const WalletAndGroupManage = (props: Props) => {
       name: 'portfolio_wallet_view_select',
       parameter: wallet.name,
     });
-    handleClickList({
+    handleClickEvent({
       nickname: '',
       walletGroupId: '',
       walletAddress: wallet.walletAddress,
@@ -61,7 +64,7 @@ const WalletAndGroupManage = (props: Props) => {
       name: 'portfolio_wallet_group_view_select',
       parameter: walletGroup.name,
     });
-    handleClickList({
+    handleClickEvent({
       nickname: '',
       walletAddress: '',
       walletGroupId: walletGroup.id,
@@ -80,6 +83,12 @@ const WalletAndGroupManage = (props: Props) => {
     console.log('props.user : ', props.user);
     props.user?.nickname && setNickname(props.user.nickname);
   }, [props.user]);
+  useEffect(() => {
+    console.log('props.portfolioParam : ', props.portfolioParam);
+    props.portfolioParam?.walletGroupId
+      ? setSelected('group')
+      : setSelected('wallet');
+  }, [props.portfolioParam]);
   return (
     <div className={styles.container}>
       <div className='w-full p-16'>
@@ -105,36 +114,48 @@ const WalletAndGroupManage = (props: Props) => {
         </div>
         {selected === 'wallet' && (
           <div className={`font-caption-regular ${styles.body}`}>
-            <div
-              className='h-40 flex items-center px-10 w-full gap-x-8 bg-[var(--color-elevation-sunken)] text-[var(--color-text-main)] cursor-pointer'
-              onClick={() =>
-                handleClickList({
-                  nickname: props.user?.nickname,
-                  walletAddress: '',
-                  walletGroupId: '',
-                  networkId: networkId,
-                })
-              }
-            >
-              <Wallet />
-              <p>All Wallet</p>
-            </div>
-            {status === 'loading' ? (
+            <div className={styles.listWrapper}>
               <div
-                className={`${styles.listWrapper} flex justify-center pt-20`}
+                className={`${styles.list} ${
+                  props.portfolioParam?.nickname &&
+                  props.portfolioParam.nickname !== ''
+                    ? 'bg-[var(--color-elevation-sunken)]'
+                    : ''
+                } flex items-center gap-x-4 hover:bg-[var(--color-elevation-sunken)] pl-8`}
+                onClick={() =>
+                  handleClickEvent({
+                    nickname: props.user?.nickname,
+                    walletAddress: '',
+                    walletGroupId: '',
+                    networkId: networkId,
+                  })
+                }
               >
-                <Spinner />
+                <Wallet />
+                <p>All Wallet</p>
               </div>
-            ) : (
-              <div className={styles.listWrapper}>
-                {walletList?.data.map((wallet, i) => {
+              {status === 'loading' ? (
+                <div
+                  className={`${styles.listWrapper} flex justify-center pt-20`}
+                >
+                  <Spinner />
+                </div>
+              ) : (
+                walletList?.data.map((wallet, i) => {
+                  const isSelect =
+                    props.portfolioParam?.walletAddress ===
+                    wallet.walletAddress;
                   return (
                     <div
                       key={i}
                       className={styles.list}
                       onClick={() => handleClickWallet(wallet)}
                     >
-                      <div className='h-full flex-1 flex items-center gap-x-4 hover:bg-[var(--color-elevation-sunken)] pl-8'>
+                      <div
+                        className={`h-full flex-1 flex items-center gap-x-4 hover:bg-[var(--color-elevation-sunken)] pl-8 ${
+                          isSelect ? 'bg-[var(--color-elevation-sunken)]' : ''
+                        }`}
+                      >
                         <BlockiesIcon
                           walletAddress={wallet.walletAddress}
                           size={16}
@@ -155,19 +176,24 @@ const WalletAndGroupManage = (props: Props) => {
                       </Button>
                     </div>
                   );
-                })}
-              </div>
-            )}
+                })
+              )}
+            </div>
           </div>
         )}
         {selected === 'group' && (
           <div className={`font-caption-regular ${styles.body}`}>
             <div className={styles.listWrapper}>
               {walletGroupList?.data.map((walletGroup, i) => {
+                const isSelect =
+                  props.portfolioParam?.walletGroupId === walletGroup.id;
                 return (
                   <div
                     key={i}
-                    className={`${styles.list} text-[var(--color-text-main)]`}
+                    className={`${styles.list}
+                    ${
+                      isSelect ? 'bg-[var(--color-elevation-sunken)]' : ''
+                    } flex items-center gap-x-4 hover:bg-[var(--color-elevation-sunken)] pl-8 text-[var(--color-text-main)]`}
                     onClick={() => handleClickGroup(walletGroup)}
                   >
                     <Folder />
