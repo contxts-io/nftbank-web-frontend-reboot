@@ -1,0 +1,9 @@
+.li {
+  @apply w-full h-42 px-24 flex items-center justify-start text-[var(--color-text-subtle)];
+}
+.li:hover {
+  @apply bg-[var(--color-elevation-sunken)] text-[var(--color-text-main)];
+}
+.active {
+  @apply bg-[var(--color-elevation-sunken)] text-[var(--color-text-main)] !important;
+}
