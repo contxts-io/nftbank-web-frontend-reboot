@@ -43,7 +43,6 @@ const TotalInventoryValue = (props: Props) => {
       const total = totalInventoryPositionValue.reduce((a: number, b) => {
         return a + parseFloat(b.value[currency].amount || '0');
       }, 0);
-      console.log('total', total);
       // setPercent(
       //   totalInventoryPositionValue.map((item) =>
       //     formatPercent(item.value[currency].amount / total || 0)

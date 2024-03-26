@@ -11,7 +11,6 @@ export const signIn = async (token: string) => {
     idToken: token,
   }
   const result = await instance.post('/auth/signin', postData);
-  console.log('signIn', result);
   return result;
 }
 export type TSignInUp = {
@@ -20,7 +19,6 @@ export type TSignInUp = {
 }
 export const sign = async (postData:TSignInUp) => {
   const result = await instance.post('/auth/sign', postData);
-  console.log('sign', result);
   return result;
 }
 export const getMe = async<T = TMe>() => {
@@ -41,17 +39,14 @@ export const signUp = async ({token,nickname}:{token:string,nickname:string}) =>
     nickname: nickname,
   }
   const result = await instance.post('/auth/signup', postData);
-  console.log('signUp', result);
   return result;
 }
 export const signOut = async () => {
   const result = await instance.post('/auth/signout');
-  console.log('signOut', result);
   return result;
 }
 export type TSendEmailVerificationCode = { email: `${string}@${string}` };
 export const sendEmailVerificationCode = async (postData: TSendEmailVerificationCode) => {
-  console.log('sendEmailVerificationCode postData', postData)
   const result = await instance.post('/auth/email/verify/code',postData);
   return result;
 }
