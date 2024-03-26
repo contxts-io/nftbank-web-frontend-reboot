@@ -32,6 +32,8 @@ import { sendGTMEvent } from '@next/third-parties/google';
 import { useCookies } from 'react-cookie';
 import { BasicParam } from '@/interfaces/request';
 import { TCurrency } from '@/interfaces/constants';
+import Hamburger from '@/public/icon/Hamburger';
+import MobileSideMenu from './drawer/MobileSideMenu';
 
 const GlobalNavigation = () => {
   const router = useRouter();
@@ -49,6 +51,7 @@ const GlobalNavigation = () => {
   const [currency, setCurrency] = useAtom(currencyAtom);
   const [isGhost, setIsGhost] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [sideMenuOpen, setSideMenuOpen] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [verify, setVerify] = useState<Boolean>(false);
@@ -163,6 +166,9 @@ const GlobalNavigation = () => {
   const toggleOpen = () => {
     setIsOpen(!isOpen);
   };
+  const toggleSideMenu = () => {
+    setSideMenuOpen(!sideMenuOpen);
+  };
   const changeCurrency = (currency: TCurrency) => {
     updateMe({ currency: currency === 'eth' ? 'usd' : 'eth' });
     setCurrency((prev) => {
@@ -216,8 +222,13 @@ const GlobalNavigation = () => {
   return (
     <nav className={`${styles.navigation}`}>
       <div className='flex items-center'>
+        <div className='font-body02-medium flex md:hidden items-center mr-26 cursor-pointer'>
+          <Button onClick={toggleSideMenu} className='!p-0 !border-transparent'>
+            <Hamburger />
+          </Button>
+        </div>
         <div
-          className='font-body02-medium flex items-center mr-26 cursor-pointer'
+          className='font-body02-medium hidden md:flex items-center mr-26 cursor-pointer'
           onClick={() => router.push('/portfolio/overview')}
         >
           <Image
@@ -227,10 +238,8 @@ const GlobalNavigation = () => {
             alt='nftbank logo'
             className='border-0'
           />
-          <NFTBankLogo
-            className={`fill-[var(--color-icon-main)] hidden md:flex`}
-          />
-          <div className='ml-6 rounded-full px-8 h-16 items-center justify-center bg-[var(--color-background-brand-bold)] hidden md:flex'>
+          <NFTBankLogo className={`fill-[var(--color-icon-main)]`} />
+          <div className='ml-6 rounded-full px-8 h-16 items-center justify-center bg-[var(--color-background-brand-bold)]'>
             <p className='font-caption-medium text-[var(--color-text-inverse)]'>
               V2 Beta
             </p>
@@ -359,6 +368,7 @@ const GlobalNavigation = () => {
           )}
         </div>
       )}
+      <MobileSideMenu isOpen={sideMenuOpen} setIsOpen={setSideMenuOpen} />
     </nav>
   );
 };
