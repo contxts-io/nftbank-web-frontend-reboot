@@ -223,9 +223,27 @@ const GlobalNavigation = () => {
     <nav className={`${styles.navigation}`}>
       <div className='flex items-center'>
         <div className='font-body02-medium flex md:hidden items-center mr-26 cursor-pointer'>
-          <Button onClick={toggleSideMenu} className='!p-0 !border-transparent'>
-            <Hamburger />
-          </Button>
+          {me ? (
+            <Button
+              onClick={toggleSideMenu}
+              className='!p-0 !border-transparent'
+            >
+              <Hamburger className='w-24 h-24' />
+            </Button>
+          ) : (
+            <Button
+              onClick={() => router.push('/portfolio/overview')}
+              className='!p-0 !border-transparent'
+            >
+              <Image
+                src={'/icon/nftbank_icon.svg'}
+                width={22}
+                height={20}
+                alt='nftbank logo'
+                className='border-0'
+              />
+            </Button>
+          )}
         </div>
         <div
           className='font-body02-medium hidden md:flex items-center mr-26 cursor-pointer'

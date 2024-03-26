@@ -31,7 +31,12 @@ const MobileSideMenu = (props: Props) => {
     >
       <div className={`${styles.sidebar} ${drawerOpen ? styles.open : ''}`}>
         <aside className='bg-[var(--color-elevation-surface)] h-full w-[240px] border-r-1 border-[var(--color-border-bold)]'>
-          <div className='w-full flex items-center p-20 cursor-pointer'>
+          <div
+            className='w-full flex items-center p-20 cursor-pointer'
+            onClick={() => {
+              router.push('/portfolio'), handleClose();
+            }}
+          >
             <Image
               src={'/icon/nftbank_icon.svg'}
               width={22}
