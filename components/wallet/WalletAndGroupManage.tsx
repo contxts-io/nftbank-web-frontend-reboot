@@ -37,7 +37,7 @@ const WalletAndGroupManage = (props: Props) => {
     networkId: 'ethereum',
   });
   const { data: walletGroupList } = useWalletGroupList(props.user.nickname);
-  const handleClickList = (param: BasicParam) => {
+  const handleClickEvent = (param: BasicParam) => {
     // setMySelectedInformation(param);
     props.setPortfolioWallet(param);
     props.onClose();
@@ -48,7 +48,7 @@ const WalletAndGroupManage = (props: Props) => {
       name: 'portfolio_wallet_view_select',
       parameter: wallet.name,
     });
-    handleClickList({
+    handleClickEvent({
       nickname: '',
       walletGroupId: '',
       walletAddress: wallet.walletAddress,
@@ -61,7 +61,7 @@ const WalletAndGroupManage = (props: Props) => {
       name: 'portfolio_wallet_group_view_select',
       parameter: walletGroup.name,
     });
-    handleClickList({
+    handleClickEvent({
       nickname: '',
       walletAddress: '',
       walletGroupId: walletGroup.id,
@@ -108,7 +108,7 @@ const WalletAndGroupManage = (props: Props) => {
             <div
               className='h-40 flex items-center px-10 w-full gap-x-8 bg-[var(--color-elevation-sunken)] text-[var(--color-text-main)] cursor-pointer'
               onClick={() =>
-                handleClickList({
+                handleClickEvent({
                   nickname: props.user?.nickname,
                   walletAddress: '',
                   walletGroupId: '',
