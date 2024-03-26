@@ -208,6 +208,7 @@ const GlobalNavigation = () => {
         walletAddress: row.walletAddress,
         networkId: 'ethereum',
       });
+    router.push('/portfolio');
   };
   useEffect(() => {
     setIsClient(true);
@@ -223,7 +224,7 @@ const GlobalNavigation = () => {
     <nav className={`${styles.navigation}`}>
       <div className='flex items-center'>
         <div className='font-body02-medium flex md:hidden items-center mr-26 cursor-pointer'>
-          {me ? (
+          {isClient && me ? (
             <Button
               onClick={toggleSideMenu}
               className='!p-0 !border-transparent'

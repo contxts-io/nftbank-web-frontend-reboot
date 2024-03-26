@@ -60,6 +60,5 @@ export const getPerformanceChartAnnual = async<T = { data: PerformanceCollection
   //   .join('&');
   const query = jsonToQueryString(requestParam);
   const result = await instance.get<T>(`/performance/chart/annual?${query}`);
-  console.log('annual query',result);
 return result.data;
 }

@@ -33,7 +33,6 @@ const AccountContainer = () => {
     me && setCurrency(me.config.currency);
   }, [me]);
   const handleUpdateMe = async (currency: TCurrency) => {
-    console.log('currency', currency);
     setCurrency(currency);
     await updateMe({ currency: currency });
     // reactQueryClient.setQueryData(['me', TOKEN.value], user);

@@ -57,7 +57,6 @@ const TotalInventoryChart = (props: {
   const [series, setSeries] = useState<number[]>([]);
   const [option, setOption] = useState<ApexOptions | null>(null);
   useEffect(() => {
-    console.log('currency', currency);
     selected === 'value' &&
       totalInventoryPositionValue &&
       (setLabels(

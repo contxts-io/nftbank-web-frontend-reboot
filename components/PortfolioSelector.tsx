@@ -96,6 +96,7 @@ const PortfolioSelector = (props: Props) => {
             user={props.user}
             onClose={() => setIsOpen(false)}
             setPortfolioWallet={(param) => props.setPortfolioParam(param)}
+            portfolioParam={props.portfolioParam}
           />
         </div>
       )}
