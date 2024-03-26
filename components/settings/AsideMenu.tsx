@@ -1,7 +1,6 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import styles from './AsideMenu.module.css';
-import Link from 'next/link';
 import { Cookies, useCookies } from 'react-cookie';
 import { Button } from '@nextui-org/react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -9,6 +8,7 @@ import { myDefaultPortfolioAtom } from '@/store/settings';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 import { useMe } from '@/utils/hooks/queries/auth';
+import MenuList from '../li/MenuLIst';
 
 const AsideMenu = () => {
   const { data: me } = useMe();
@@ -43,22 +43,26 @@ const AsideMenu = () => {
   return (
     <aside className={styles.container}>
       <ul className={`font-body02-medium ${styles.menuWrapper}`}>
-        <Link
+        {/* <Link
           className={`${styles.li} ${
             pathName.includes('manageWallets') ? styles.active : ''
           }`}
           href='/settings/manageWallets'
         >
           Manage Wallets
-        </Link>
-        <Link
+        </Link> */}
+        <MenuList
+          isActive={pathName.includes('manageWallets')}
+          href='/settings/manageWallets'
+        >
+          Manage Wallets
+        </MenuList>
+        <MenuList
           href={'/settings/account'}
-          className={`${styles.li} ${
-            pathName.includes('account') ? styles.active : ''
-          }`}
+          isActive={pathName.includes('account')}
         >
           Account
-        </Link>
+        </MenuList>
 
         {/* <Link
           href={''}
