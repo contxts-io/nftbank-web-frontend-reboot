@@ -9,17 +9,19 @@ import { Collection } from '@/interfaces/collection';
 import { useInView } from 'react-intersection-observer';
 import { SortOrder, TCollectionParam } from '@/store/requestParam';
 import { useMyWalletList } from '@/utils/hooks/queries/wallet';
+import { BasicParam } from '@/interfaces/request';
 const ActivityCollection = () => {
   const { ref, inView } = useInView();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [checkedItemList, setCheckedItemList] = useState<Collection[]>([]);
   const [inventoryCollectionRequestParam, setInventoryCollectionRequestParam] =
-    useState<TCollectionParam>({
+    useState<TCollectionParam & BasicParam>({
       searchCollection: '',
       page: 0,
       limit: 3,
       sortCol: 'nav',
       sortOrder: SortOrder.Desc,
+      networkId: 'ethereum',
     });
   const { data, fetchNextPage, status } = useInventoryCollectionsInfinite(
     inventoryCollectionRequestParam
