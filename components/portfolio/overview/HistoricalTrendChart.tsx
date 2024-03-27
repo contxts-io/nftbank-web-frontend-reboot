@@ -1,4 +1,3 @@
-import SkeletonLoader from '@/components/SkeletonLoader';
 import { currencyAtom } from '@/store/currency';
 import { portfolioUserAtom } from '@/store/portfolio';
 import { overviewHistoricalValueParamAtom } from '@/store/requestParam';
@@ -11,6 +10,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
 import { useEffect, useMemo, useState } from 'react';
 import { renderToString } from 'react-dom/server';
+import HistoricalTrendChartSkeleton from './HistoricalTrendChartSkeleton';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 const tooltip = ({
@@ -321,7 +321,7 @@ const HistoricalTrendChart = (props: Props) => {
   };
   return (
     <section className='w-full relative'>
-      {isLoading === true && <SkeletonLoader className='w-full h-200' />}
+      {isLoading === true && <HistoricalTrendChartSkeleton />}
       {isLoading !== true && statusInventoryValueHistorical === 'success' && (
         // statusInventoryValue === 'success' &&
         <>

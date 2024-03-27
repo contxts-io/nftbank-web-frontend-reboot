@@ -1,0 +1,13 @@
+.skeleton {
+  color-scheme: inherit;
+}
+
+.gradient-highlight {
+  stop-color: var(--color-chart-skeleton-highlight);
+  stroke: var(--color-chart-skeleton-highlight);
+}
+
+.gradient-base {
+  stroke: var(--color-chart-skeleton);
+  stop-color: var(--color-chart-skeleton);
+}
