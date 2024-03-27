@@ -1,10 +1,8 @@
 'use client';
-import Entrance from '@/components/Entrance';
-import { use } from 'chai';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
-const Home = () => {
+export default function Page() {
   const [mounted, setMounted] = useState(false);
   const { setTheme, theme } = useTheme();
   useEffect(() => {
@@ -16,12 +14,12 @@ const Home = () => {
     document.body.setAttribute('data-theme', 'dark');
     setMounted(true);
   }, []);
+
   return (
     <main className='w-full h-full'>
       <div className='flex w-full justify-center h-full'>
-        {mounted && <Entrance />}
+        {/* {mounted && <Entrance />} */}
       </div>
     </main>
   );
-};
-export default Home;
+}
