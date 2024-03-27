@@ -11,6 +11,10 @@ import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google';
 import { Analytics } from '@/components/common/Analytics';
 import Script from 'next/script';
 
+const TITLE = 'NFTBank.ai v2 - Make NFT portfolio management smart';
+const DESCRIPTION =
+  'You can gather and manage NFTs scattered across multiple wallets in one place!';
+const SAMPLE_IMAGE = '/image/sample_portfolio.png';
 const iosevkaCustom = localFont({
   src: [
     {
@@ -77,8 +81,20 @@ const iosevkaCustom = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'NFTBank.ai reboot',
-  description: 'NFTBank reboot',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    type: 'website',
+    url: 'https://v2.nftabank.ai',
+    images: SAMPLE_IMAGE,
+  },
+  twitter: {
+    title: TITLE,
+    description: DESCRIPTION,
+    images: SAMPLE_IMAGE,
+  },
 };
 
 export default async function RootLayout({
