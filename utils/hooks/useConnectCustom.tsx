@@ -87,8 +87,9 @@ export const useConnectCustom = ({
   const connect = async (connectorName: ConnectorName) => {
     switch (connectorName) {
       case 'metamask':
-        const metamaskConfig = metamaskWallet();
-        await connectThirdWeb(metamaskConfig);
+        // const metamaskConfig = metamaskWallet();
+        // await connectThirdWeb(metamaskConfig);
+        connectMetamask();
         break;
       case 'coinbase':
         connectCoinbaseConnect();
