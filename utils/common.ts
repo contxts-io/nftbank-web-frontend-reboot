@@ -3,6 +3,7 @@ import { TCurrency } from "@/interfaces/constants";
 import jwt from 'jsonwebtoken';
 import { ARTICLE_CATEGORY } from "./articlesCategory";
 import { SyntheticEvent } from "react";
+import { BasicParam } from "@/interfaces/request";
 
 export function formatDate(date:  Date): string  {
   const year = date.getFullYear();
@@ -346,3 +347,10 @@ export const defaultImg = (e: SyntheticEvent<HTMLImageElement, Event>, size?: nu
     'fill-[var(--color-background-neutral-bold)]'
   );
 };
+export function isValidParam(param: BasicParam): boolean {
+  return (
+    param.nickname !== null && param.nickname !== undefined && param.nickname !== '' ||
+    param.walletAddress !== null && param.walletAddress !== undefined && param.walletAddress !== '' ||
+    param.walletGroupId !== null && param.walletGroupId !== undefined  && param.walletGroupId !== ''
+  );
+} 

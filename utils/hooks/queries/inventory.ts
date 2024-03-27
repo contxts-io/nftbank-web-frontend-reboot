@@ -3,6 +3,7 @@ import { IInventoryCollectionList, IInventoryItemList, InventoryValue, Inventory
 import { BasicParam } from '@/interfaces/request';
 import { freshnessAtom, keepPreviousDataAtom } from '@/store/freshness';
 import { ItemParam, TAcquisitionParam, TAnalysisGainAndLossParam, TCollectionParam, TOverviewHistoricalValueParam } from '@/store/requestParam';
+import { isValidParam } from '@/utils/common';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useAtomValue } from 'jotai';
@@ -55,7 +56,7 @@ export function useItemCount(searchParam: BasicParam | null) {
   );
 }
 
-export function useInventoryCollectionList(requestParam: TCollectionParam) {
+export function useInventoryCollectionList(requestParam: TCollectionParam & BasicParam) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f) => f.status === 'CURRENT');
   const keepPreviousData = useAtomValue(keepPreviousDataAtom);
   const dataParam: TCollectionParam = {
@@ -74,6 +75,7 @@ export function useInventoryCollectionList(requestParam: TCollectionParam) {
       cacheTime: Infinity,
       useErrorBoundary: false,
       keepPreviousData: keepPreviousData,
+      enabled: isValidParam(requestParam),
     },
   );
 }
@@ -146,7 +148,7 @@ export const useInventoryItemInfinite = (requestParam: ItemParam) => {
 
   return query;
 };
-export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) => {
+export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam & BasicParam) => {
   const fetchData = async ({ pageParam = 1 }) => {
     const result = await getCollectionList({...requestParam, page: pageParam});
     const isLast = (result.paging.total / result.paging.limit) <= result.paging.page ? true : false;
@@ -166,6 +168,7 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
       return undefined;
     },
     // keepPreviousData: keepPreviousData,
+    enabled: isValidParam(requestParam),
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,

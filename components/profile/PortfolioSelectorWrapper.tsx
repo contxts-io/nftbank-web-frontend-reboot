@@ -118,7 +118,10 @@ const PortfolioSelectorWrapper = () => {
         <Button
           className={`font-button03-medium ${styles.selectorButton}`}
           onClick={() => toggleOpen()}
-          isLoading={Boolean(nickname) && userStatus === 'loading'}
+          isLoading={
+            Boolean(nickname && !nickname.startsWith('0x')) &&
+            userStatus === 'loading'
+          }
           disabled={!user || path.includes('/walletAddress')}
         >
           <Folder className={`mr-4`} />

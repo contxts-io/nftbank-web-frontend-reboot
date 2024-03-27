@@ -40,56 +40,58 @@ const PortfolioUserProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
   useEffect(() => {
-    if (path.split('/').length === 3) {
-      // portfolioProfile?.nickname !== me?.nickname &&
-      me &&
-        portfolioProfile?.nickname !== myDefaultPortfolio?.nickname &&
-        (setPortfolioProfile(me),
-        myDefaultPortfolio && setPortfolioUser(myDefaultPortfolio));
-      !me && router.push('/portfolio/overview/sample');
-    } else if (path.includes('/sample')) {
+    if (path.includes('/sample')) {
       // setNickname('Welcome to NFTBank.ai');
-      portfolioProfile?.id !== 'sample' &&
+      portfolioProfile?.nickname !== 'Welcome to NFTBank.ai' &&
         (setPortfolioProfile({
-          id: 'sample',
           nickname: 'Welcome to NFTBank.ai',
-          image: '',
-          config: {
-            ghostmode: false,
-            currency: 'usd',
-          },
         }),
         setPortfolioUser({
           nickname: 'Welcome to NFTBank.ai',
           networkId: 'ethereum',
         }));
+    }
+    const paths = path.split('/');
+    if (paths.length === 3) {
+      me &&
+        portfolioProfile?.nickname !== myDefaultPortfolio?.nickname &&
+        (setPortfolioProfile(me),
+        myDefaultPortfolio && setPortfolioUser(myDefaultPortfolio));
+      !me && router.push('/portfolio/overview/sample');
     } else {
-      const paths = path.split('/');
-      console.log('portfolioUser provider', portfolioUser, paths.length);
-      paths.length === 5 &&
+      if (
+        paths.length === 5 &&
         path.includes('/nickname') &&
-        portfolioProfile?.nickname !== paths[4] &&
-        (setNickname(paths[4]),
-        portfolioUser?.nickname !== paths[4] &&
-          portfolioProfile?.nickname !== paths[4] &&
-          setPortfolioUser({
-            nickname: paths[4],
-            networkId: 'ethereum',
-          }));
-      paths.length === 5 &&
+        portfolioProfile?.nickname !== paths[4]
+      ) {
+        setPortfolioProfile({
+          nickname: paths[4],
+        });
+        setPortfolioUser({
+          nickname: paths[4],
+          networkId: 'ethereum',
+        });
+      }
+      if (
+        paths.length === 5 &&
         path.includes('/walletAddress') &&
-        portfolioUser?.walletAddress !== paths[4] &&
+        portfolioProfile?.nickname !== paths[4]
+      ) {
         setPortfolioUser({
           walletAddress: paths[4],
           networkId: 'ethereum',
-        });
+        }),
+          setPortfolioProfile({
+            nickname: paths[4],
+          });
+      }
     }
   }, [path, myDefaultPortfolio, me]);
   useEffect(() => {
     console.log('changed portfolioUser ::', portfolioUser);
     console.log('changed userStatus :', userStatus);
     console.log('changed user :: ', user);
-    user && setPortfolioProfile(user);
+    // setPortfolioProfile(user || null);
   }, [user]);
   useEffect(() => {
     console.log('status', status);
