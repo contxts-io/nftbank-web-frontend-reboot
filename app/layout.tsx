@@ -11,9 +11,9 @@ import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google';
 import { Analytics } from '@/components/common/Analytics';
 import Script from 'next/script';
 
-const TITLE = 'NFTBank.ai v2 - Make NFT portfolio management smart';
+const TITLE = 'NFTBank | Make NFT Portfolio Management Smart';
 const DESCRIPTION =
-  'You can gather and manage NFTs scattered across multiple wallets in one place!';
+  'Check out the most accurate realized and unrealized P&L for your NFT assets spread across multiple wallets.';
 const SAMPLE_IMAGE = '/image/sample_portfolio.png';
 const iosevkaCustom = localFont({
   src: [
