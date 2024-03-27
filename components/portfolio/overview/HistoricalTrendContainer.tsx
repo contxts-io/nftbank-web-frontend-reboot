@@ -22,6 +22,7 @@ import { portfolioUserAtom } from '@/store/portfolio';
 import CurrencyComponent from '@/components/p/Currency';
 import DropdownMobile from '@/components/dropdown/DropdownMobile';
 import { BasicParam } from '@/interfaces/request';
+import SkeletonLoader from '@/components/SkeletonLoader';
 
 //'1d'| '3d'| '7d'| '30d'| '90d'| 'ytd'| '365d'| 'all'
 const PERIOD: { name: string; value: Period }[] = [
@@ -58,9 +59,6 @@ const HistoricalTrendContainer = (props: Props) => {
   const [selectedPeriod, setSelectedPeriod] = useState('1W');
 
   const portfolioUser = useAtomValue(portfolioUserAtom);
-  // const [portfolioUser, setPortfolioUser] = useState(
-  //   props.portfolioUser || _portfolioUser
-  // );
 
   const currency = useAtomValue(currencyAtom);
 
@@ -223,7 +221,7 @@ const HistoricalTrendContainer = (props: Props) => {
           </Dropdown>
         </div> */}
       </div>
-      <div className={styles.rowEnd}>
+      <div className={`${styles.rowEnd} mb-4`}>
         <div className='flex flex-col items-start h-full'>
           <div
             className={`rounded-full animateBlink w-6 h-6 mr-4 ${
@@ -234,10 +232,14 @@ const HistoricalTrendContainer = (props: Props) => {
           />
         </div>
         <div className='flex md:items-end flex-col md:flex-row gap-y-4'>
-          <CurrencyComponent
-            value={total}
-            className='font-header03-bold mr-12'
-          />
+          {statusInventoryValue === 'loading' ? (
+            <SkeletonLoader className='w-200 h-40' />
+          ) : (
+            <CurrencyComponent
+              value={total}
+              className='font-header03-bold mr-12'
+            />
+          )}
           {differenceValue && (
             <p
               className={`font-body01-medium ${

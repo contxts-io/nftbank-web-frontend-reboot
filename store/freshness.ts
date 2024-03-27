@@ -12,3 +12,6 @@ export const freshnessAtom = atom<DataFreshness[]>([
   },
 ]);
 freshnessAtom.debugLabel = `${PREFIX}_freshnessAtom`;
+
+export const keepPreviousDataAtom = atom<boolean>(true);
+keepPreviousDataAtom.debugLabel = `${PREFIX}_keepPreviousDataAtom`;

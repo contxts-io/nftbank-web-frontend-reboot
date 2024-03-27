@@ -1,7 +1,7 @@
 import { ResponseAcquisitionTypesData, TResponseInventoryValueHistory, getCollectionList, getCollectionValuableCount, getInventoryAcquisitionType, getInventoryCollectionPositionAmount, getInventoryCollectionPositionValue, getInventoryRealizedTokens, getInventoryValue, getInventoryValueHistory, getItemList, getItemValuableCount } from '@/apis/inventory';
 import { IInventoryCollectionList, IInventoryItemList, InventoryValue, InventoryValueNested, IStat, PositionCollection, PositionCollectionAmount } from '@/interfaces/inventory';
 import { BasicParam } from '@/interfaces/request';
-import { freshnessAtom } from '@/store/freshness';
+import { freshnessAtom, keepPreviousDataAtom } from '@/store/freshness';
 import { ItemParam, TAcquisitionParam, TAnalysisGainAndLossParam, TCollectionParam, TOverviewHistoricalValueParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -9,14 +9,15 @@ import { useAtomValue } from 'jotai';
 
 export function useInventoryValue(searchParam: BasicParam | null) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
+  const keepPreviousData = useAtomValue(keepPreviousDataAtom);
   return useQuery<InventoryValueNested,AxiosError>(
-    [searchParam?.nickname || '', 'inventoryValue', searchParam, dataFreshness?.processedAt],
+    ['portfolio','inventoryValue', searchParam, dataFreshness?.processedAt],
     async () => {
       const inventoryValue = await getInventoryValue(searchParam);
       return inventoryValue;
     },
     {
-      keepPreviousData: true,
+      keepPreviousData: keepPreviousData,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -56,13 +57,14 @@ export function useItemCount(searchParam: BasicParam | null) {
 
 export function useInventoryCollectionList(requestParam: TCollectionParam) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f) => f.status === 'CURRENT');
+  const keepPreviousData = useAtomValue(keepPreviousDataAtom);
   const dataParam: TCollectionParam = {
     ...requestParam,
     limit: requestParam.limit * requestParam.page,
     page: 1,
   }
   return useQuery<IInventoryCollectionList,AxiosError>(
-    ['inventoryCollectionListFresh',requestParam, dataFreshness?.processedAt],
+    ['portfolio','inventoryCollectionListFresh',requestParam, dataFreshness?.processedAt],
     async () => {
       const inventoryCollectionList = await getCollectionList(dataParam);
       return inventoryCollectionList;
@@ -71,7 +73,7 @@ export function useInventoryCollectionList(requestParam: TCollectionParam) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      keepPreviousData: true,
+      keepPreviousData: keepPreviousData,
     },
   );
 }
@@ -93,13 +95,14 @@ export function useInventoryItemFilter(requestParam: TCollectionParam) {
 }
 export function useInventoryItemList(requestParam: ItemParam) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f) => f.status === 'CURRENT');
+  const keepPreviousData = useAtomValue(keepPreviousDataAtom);
   const dataParam: ItemParam = {
     ...requestParam,
     limit: requestParam.limit * requestParam.page,
     page: 1,
   }
   return useQuery<IInventoryItemList,AxiosError>(
-    ['inventoryItemListFresh',requestParam, dataFreshness?.processedAt],
+    ['portfolio','inventoryItemListFresh',requestParam, dataFreshness?.processedAt],
     async () => {
       const inventoryItemList = await getItemList(dataParam);
       return inventoryItemList;
@@ -108,7 +111,7 @@ export function useInventoryItemList(requestParam: ItemParam) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      keepPreviousData: true,
+      keepPreviousData: keepPreviousData,
     },
   );
 }
@@ -131,7 +134,7 @@ export const useInventoryItemInfinite = (requestParam: ItemParam) => {
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
-    // keepPreviousData: true,
+    // keepPreviousData: keepPreviousData,
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,
@@ -162,7 +165,7 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
       if (!lastPage.isLast) return lastPage.nextPage;
       return undefined;
     },
-    // keepPreviousData: true,
+    // keepPreviousData: keepPreviousData,
     staleTime: Infinity,
     cacheTime: Infinity,
     useErrorBoundary: false,
@@ -175,8 +178,9 @@ export const useInventoryCollectionsInfinite = (requestParam: TCollectionParam) 
 };
 export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalValueParam) => {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
+  const keepPreviousData = useAtomValue(keepPreviousDataAtom);
   return useQuery<TResponseInventoryValueHistory,AxiosError>(
-    ['inventoryValueHistorical',requestParam, dataFreshness?.processedAt],
+    ['portfolio','inventoryValueHistorical',requestParam, dataFreshness?.processedAt],
     async () => {
       const inventoryValueHistorical = await getInventoryValueHistory(requestParam);
       return inventoryValueHistorical;
@@ -185,20 +189,21 @@ export const useInventoryValueHistorical = (requestParam: TOverviewHistoricalVal
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      keepPreviousData: true,
+      keepPreviousData: keepPreviousData,
     },
   );
 }
 export const useInventoryCollectionPositionValue = (requestParam: BasicParam) => {
-  const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
+  const dataFreshness = useAtomValue(freshnessAtom).find((f) => f.status === 'ALL');
+  const keepPreviousData = useAtomValue(keepPreviousDataAtom);
   return useQuery<PositionCollection[],AxiosError>(
-    ['inventoryCollectionPositionValue',requestParam, dataFreshness?.processedAt],
+    ['portfolio','inventoryCollectionPositionValue',requestParam, dataFreshness?.processedAt],
     async () => {
       const value = await getInventoryCollectionPositionValue(requestParam);
       return value.data;
     },
     {
-      keepPreviousData: true,
+      keepPreviousData: keepPreviousData,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -206,15 +211,16 @@ export const useInventoryCollectionPositionValue = (requestParam: BasicParam) =>
   );
 }
 export const useInventoryCollectionPositionAmount = (requestParam: BasicParam) => {
-  const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
+  const dataFreshness = useAtomValue(freshnessAtom).find((f) => f.status === 'ALL');
+  const keepPreviousData = useAtomValue(keepPreviousDataAtom);
   return useQuery<PositionCollectionAmount[],AxiosError>(
-    ['inventoryCollectionPositionAmount',requestParam, dataFreshness?.processedAt],
+    ['portfolio','inventoryCollectionPositionAmount',requestParam, dataFreshness?.processedAt],
     async () => {
       const value = await getInventoryCollectionPositionAmount(requestParam);
       return value.data;
     },
     {
-      keepPreviousData: true,
+      keepPreviousData: keepPreviousData,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
@@ -223,13 +229,14 @@ export const useInventoryCollectionPositionAmount = (requestParam: BasicParam) =
 }
 export const useInventoryRealizedTokens = (requestParam: TAnalysisGainAndLossParam) => {
   const dataFreshness = useAtomValue(freshnessAtom).find((f) => f.status === 'ALL');
+  const keepPreviousData = useAtomValue(keepPreviousDataAtom);
   const dataParam: TAnalysisGainAndLossParam = {
     ...requestParam,
     limit: requestParam.limit * requestParam.page,
     page: 1,
   }
   return useQuery(
-    ['inventoryRealizedTokensFresh', requestParam, dataFreshness?.processedAt],
+    ['portfolio','inventoryRealizedTokensFresh', requestParam, dataFreshness?.processedAt],
     async () => {
       const result = await getInventoryRealizedTokens(dataParam);
       return result;
@@ -238,7 +245,7 @@ export const useInventoryRealizedTokens = (requestParam: TAnalysisGainAndLossPar
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      keepPreviousData: true,
+      keepPreviousData: keepPreviousData,
     },
   );
 }
@@ -287,14 +294,15 @@ export const useInventoryValuePolling = (searchParam:BasicParam | null) => {
 }
 export const useInventoryAcquisitionTypes = (requestParam: TAcquisitionParam) => {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
+  const keepPreviousData = useAtomValue(keepPreviousDataAtom);
   return useQuery<ResponseAcquisitionTypesData,AxiosError>(
-    ['inventoryAcquisitionTypes',requestParam, dataFreshness?.processedAt],
+    ['portfolio','inventoryAcquisitionTypes',requestParam, dataFreshness?.processedAt],
     async () => {
       const value = await getInventoryAcquisitionType(requestParam);
       return value;
     },
     {
-      keepPreviousData: true,
+      keepPreviousData: keepPreviousData,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
