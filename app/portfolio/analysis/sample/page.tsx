@@ -8,14 +8,6 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
 
 const AnalysisPage = () => {
-  // const myPortfolio = useAtomValue(myDefaultPortfolioAtom);
-  // const setPortfolioUser = useSetAtom(portfolioUserAtom);
-  // useEffect(() => {
-  //   setPortfolioUser({
-  //     networkId: 'ethereum',
-  //     ...myPortfolio,
-  //   });
-  // }, [myPortfolio]);
   return (
     <section className='pt-20 px-24 pb-40'>
       <PerformanceSection />
