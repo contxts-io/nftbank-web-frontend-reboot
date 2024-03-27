@@ -1,10 +1,9 @@
 'use client';
-import Entrance from '@/components/Entrance';
-import { use } from 'chai';
+import Head from 'next/head';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
-const Home = () => {
+export default function Page() {
   const [mounted, setMounted] = useState(false);
   const { setTheme, theme } = useTheme();
   useEffect(() => {
@@ -16,33 +15,31 @@ const Home = () => {
     document.body.setAttribute('data-theme', 'dark');
     setMounted(true);
   }, []);
-  return (
-    <main className='w-full h-full'>
-      <div className='flex w-full justify-center h-full'>
-        {mounted && <Entrance />}
-      </div>
-    </main>
-  );
-};
-export default Home;
-export function head() {
   const TITLE = 'NFTBank.ai v2 - Make NFT portfolio management smart';
   const DESCRIPTION =
     'You can gather and manage NFTs scattered across multiple wallets in one place!';
   const SAMPLE_IMAGE = '/image/sample_portfolio.png';
+  const KEY = 'portfolio';
+
   return (
-    <>
-      <title>{TITLE}</title>
-      <meta property='og:title' content={TITLE} />
-      <meta property='og:description' content={DESCRIPTION} />
-      <meta property='og:image' content={SAMPLE_IMAGE} />
-      <meta
-        property='og:url'
-        content={`https://v2.nftabank.ai/portfolio/overview/sample`}
-      />
-      <meta name='twitter:title' content={TITLE} />
-      <meta name='twitter:description' content={DESCRIPTION} />
-      <meta name='twitter:image' content={SAMPLE_IMAGE} />
-    </>
+    <main className='w-full h-full'>
+      <Head>
+        <title key={KEY}>{TITLE}</title>
+        <meta key={KEY} property='og:title' content={TITLE} />
+        <meta key={KEY} property='og:description' content={DESCRIPTION} />
+        <meta key={KEY} property='og:image' content={SAMPLE_IMAGE} />
+        <meta
+          key={KEY}
+          property='og:url'
+          content={`https://v2.nftabank.ai/portfolio/overview/sample`}
+        />
+        <meta key={KEY} name='twitter:title' content={TITLE} />
+        <meta key={KEY} name='twitter:description' content={DESCRIPTION} />
+        <meta key={KEY} name='twitter:image' content={SAMPLE_IMAGE} />
+      </Head>
+      <div className='flex w-full justify-center h-full'>
+        {/* {mounted && <Entrance />} */}
+      </div>
+    </main>
   );
 }
