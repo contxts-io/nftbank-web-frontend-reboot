@@ -86,14 +86,6 @@ const PortfolioSelectorWrapper = () => {
   };
   const handleChangeOption = (row: BasicParam) => {
     Boolean(row.nickname && row.nickname !== '') &&
-      // (setOption({
-      //   type: 'all',
-      //   value: '',
-      // }),
-      // setPortfolioUser({
-      //   nickname: row.nickname,
-      //   networkId: 'ethereum',
-      // }));
       setOption({
         type: 'all',
         value: '',
@@ -103,30 +95,13 @@ const PortfolioSelectorWrapper = () => {
           type: 'group',
           value: row.walletGroupId || '',
         });
-    // (setOption({
-    //   type: 'group',
-    //   value: row.walletGroupId || '',
-    // }),
-    // setPortfolioUser({
-    //   walletGroupId: row.walletGroupId,
-    //   networkId: 'ethereum',
-    // }));
     Boolean(row.walletAddress && row.walletAddress !== '') &&
       setOption({
         type: 'wallet',
         value: row.walletAddress || '',
       });
-    // (setOption({
-    //   type: 'wallet',
-    //   value: row.walletAddress || '',
-    // }),
-    // setPortfolioUser({
-    //   walletAddress: row.walletAddress,
-    //   networkId: 'ethereum',
-    // }));
   };
   useEffect(() => {
-    console.log('portfolioUser changed ? ', portfolioUser);
     portfolioProfile === me &&
       path.split('/').length === 3 &&
       setMyDefaultPortfolio(portfolioUser);
@@ -143,7 +118,10 @@ const PortfolioSelectorWrapper = () => {
         <Button
           className={`font-button03-medium ${styles.selectorButton}`}
           onClick={() => toggleOpen()}
-          isLoading={Boolean(nickname) && userStatus === 'loading'}
+          isLoading={
+            Boolean(nickname && !nickname.startsWith('0x')) &&
+            userStatus === 'loading'
+          }
           disabled={!user || path.includes('/walletAddress')}
         >
           <Folder className={`mr-4`} />

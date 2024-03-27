@@ -23,28 +23,6 @@ const OverviewPage = () => {
     // !me && router.push('/portfolio/overview/sample');
     me?.nickname && setPortfolioNicknameAtom(me.nickname);
   }, [me]);
-  // useEffect(() => {
-  //   console.log('~~~~ myPortfolio ~~~~~', myPortfolio);
-  //   myPortfolio &&
-  //     setPortfolioUserAtom({
-  //       ...myPortfolio,
-  //     });
-  // }, [myPortfolio]);
-
-  // if (!walletList || walletList.data.length === 0)
-  //   return (
-  //     <section className='pt-20 px-24 pb-40 flex items-center justify-center'>
-  //       {/* {me?.nickname === portfolioUser?.nickname ? ( */}
-  //       <div className='pt-192'>
-  //         <NoWallet />
-  //       </div>
-  //       {/* ) : (
-  //               <p className='font-body02-regular text-[var(--color-text-subtle)]'>
-  //                 This user has no wallets.
-  //               </p>
-  //             )} */}
-  //     </section>
-  //   );
   return (
     <section className='pt-20 px-24 pb-40'>
       {/* <ChainList />*/}

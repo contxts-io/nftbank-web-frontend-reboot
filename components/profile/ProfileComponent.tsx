@@ -28,6 +28,7 @@ import { getAddress } from 'ethers/lib/utils';
 import { sendGTMEvent } from '@next/third-parties/google';
 import { verifyWalletAddress } from '@/apis/wallet';
 import PortfolioSelectorWrapper from './PortfolioSelectorWrapper';
+import SkeletonLoader from '../SkeletonLoader';
 const ProfileComponent = () => {
   const { data: me, status } = useMe();
   const portfolioProfile = useAtomValue(portfolioProfileAtom);
@@ -58,10 +59,10 @@ const ProfileComponent = () => {
   useEffect(() => {
     if (path.includes('/sample')) {
       setNickname('Welcome to NFTBank.ai');
-      setPortfolioUser({
-        nickname: 'Welcome to NFTBank.ai',
-        networkId: 'ethereum',
-      });
+      // setPortfolioUser({
+      //   nickname: 'Welcome to NFTBank.ai',
+      //   networkId: 'ethereum',
+      // });
       return;
     }
     path && setNickname(path.split('nickname/')[1] || null);
@@ -91,21 +92,6 @@ const ProfileComponent = () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [walletAddress, error]);
-  // useEffect(() => {
-  //   nickname
-  //     ? setPortfolioUser({
-  //         nickname: nickname,
-  //         walletAddress: '',
-  //         networkId: networkId,
-  //       })
-  //     : walletAddress
-  //     ? setPortfolioUser({
-  //         nickname: '',
-  //         walletAddress: walletAddress,
-  //         networkId: networkId,
-  //       })
-  //     : null;
-  // }, [nickname, walletAddress]);
   useEffect(() => {
     if (searchAddress == '') {
       setError(null);
@@ -198,21 +184,6 @@ const ProfileComponent = () => {
                 <Eye className=' fill-[var(--color-icon-subtle)]' /> */}
             </div>
             <div className='mt-12'>
-              {/* {user && portfolioUser ? (
-                //누군가의 계정
-                <PortfolioSelector
-                  className={`${styles.selectorButton} font-button03-medium`}
-                  position='left-0 top-36'
-                  user={user}
-                  portfolioParam={portfolioUser}
-                  setPortfolioParam={(param) => setPortfolioUser(param)}
-                />
-              ) : (
-                <div className='font-caption-regular text-[var(--color-text-subtle)] bg-[var(--color-elevation-sunken)] w-fit px-8 h-24 flex items-center justify-center gap-x-8'>
-                  <Wallet />
-                  <p>All Wallet</p>
-                </div>
-              )} */}
               <PortfolioSelectorWrapper />
             </div>
           </div>
@@ -220,13 +191,17 @@ const ProfileComponent = () => {
             <p className='font-caption-medium mb-8 text-[var(--color-text-subtlest)]'>
               Current Balance
             </p>
-            <CurrencyComponent
-              value={formatCurrency(
-                inventoryValue?.value[currency]?.amount || '0',
-                currency
-              )}
-              className='font-header03-bold mb-4'
-            />
+            {statusInventoryValue === 'loading' ? (
+              <SkeletonLoader className='w-200 h-40' />
+            ) : (
+              <CurrencyComponent
+                value={formatCurrency(
+                  inventoryValue?.value[currency]?.amount || '0',
+                  currency
+                )}
+                className='font-header03-bold mb-4'
+              />
+            )}
             {/* <div className='font-caption-medium flex'>
               <div
                 className={`px-8 py-4 bg-[var(--color-background-danger)] ${

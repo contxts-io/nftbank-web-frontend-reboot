@@ -14,7 +14,7 @@ export function useUser(nickname:string | null) {
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
-      enabled: !!nickname,
+      enabled: !!nickname && nickname.startsWith('0x') === false,
       retry: 1,
     },
   );

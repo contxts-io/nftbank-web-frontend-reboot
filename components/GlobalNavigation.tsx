@@ -67,6 +67,9 @@ const GlobalNavigation = () => {
     };
   }, []);
   useEffect(() => {
+    setIsChecking(false);
+  }, [path]);
+  useEffect(() => {
     me && setCurrency(me.config.currency);
   }, [me]);
 
@@ -145,7 +148,6 @@ const GlobalNavigation = () => {
       const result = await verifyWalletAddress(walletAddress);
       if (result.data.verified === true) {
         setError(null);
-        setIsChecking(false);
         router.push(`/portfolio/overview/walletAddress/${walletAddress}`);
       } else {
         setError('Invalid wallet address');

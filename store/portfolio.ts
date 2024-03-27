@@ -9,7 +9,7 @@ import { TUser } from "@/interfaces/user";
 const PREFIX = 'PORTFOLIO'
 
 export const portfolioNicknameAtom = atom<string>('');
-export const portfolioProfileAtom = atom<TUser | null>(null);
+export const portfolioProfileAtom = atom<{nickname:string} | null>(null);
 portfolioProfileAtom.debugLabel = `${PREFIX}_portfolioProfileAtom`;
 
 export const portfolioUserAtom = atom<BasicParam | null>(null);

@@ -1,7 +1,7 @@
 import { PerformanceParam, getInventoryUnrealizedPerformance, getPerformanceChart, getPerformanceChartAnnual } from '@/apis/performance';
 import { IInventoryCollectionListPerformance, IInventoryItemList, InventoryValueNested, PerformanceCollection, UnrealizedValue } from '@/interfaces/inventory';
 import { BasicParam } from '@/interfaces/request';
-import { freshnessAtom } from '@/store/freshness';
+import { freshnessAtom, keepPreviousDataAtom } from '@/store/freshness';
 import { ItemParam, TCollectionParam } from '@/store/requestParam';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -24,6 +24,7 @@ export function useInventoryUnrealizedPerformance(searchParam: BasicParam | null
 }
 export function usePerformanceChart(requestParam: PerformanceParam & BasicParam) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
+  const keepPreviousData = useAtomValue(keepPreviousDataAtom);
   return useQuery<{ data: PerformanceCollection[]}, AxiosError>(
     ['inventoryPerformanceChart', requestParam, dataFreshness?.processedAt],
     async () => {
@@ -31,10 +32,10 @@ export function usePerformanceChart(requestParam: PerformanceParam & BasicParam)
       return result;
     },
     {
-      keepPreviousData: true,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
+      keepPreviousData: keepPreviousData,
       // refetchInterval: 10000,
     },
   );
@@ -45,6 +46,7 @@ type Param = {
 }
 export function usePerformanceChartAnnual(requestParam: PerformanceParam & BasicParam) {
   const dataFreshness = useAtomValue(freshnessAtom).find((f)=>f.status === 'ALL');
+  const keepPreviousData = useAtomValue(keepPreviousDataAtom);
   return useQuery<PerformanceCollection,AxiosError>(
     ['inventoryPerformanceChartAnnual',requestParam, dataFreshness?.processedAt],
     async () => {
@@ -52,7 +54,7 @@ export function usePerformanceChartAnnual(requestParam: PerformanceParam & Basic
       return result.data;
     },
     {
-      keepPreviousData: true,
+      keepPreviousData: keepPreviousData,
       staleTime: Infinity,
       cacheTime: Infinity,
       useErrorBoundary: false,
