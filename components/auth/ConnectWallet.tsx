@@ -76,7 +76,9 @@ const ConnectWallet = (props: Props) => {
   );
   const setShowModal = useSetAtom(openModalAtom);
   const address = useAddress();
-  const _useDisconnectWagmi = useDisconnectWagmi();
+
+  const { disconnect: disconnectWagmi } = useDisconnectWagmi();
+
   // const disconnect = useDisconnect();
   const chain = useChain();
   const walletInstance = useWallet();
@@ -250,7 +252,8 @@ const ConnectWallet = (props: Props) => {
   const disconnectWallet = async () => {
     console.log('disconnect wallet @@');
     await disconnect().then(() => console.log('disconnected thirdweb'));
-    await _useDisconnectWagmi.disconnect();
+    // await _useDisconnectWagmi.disconnect();
+    disconnectWagmi();
     console.log('disconnected wagmi');
   };
   return step === 'walletConnect' ? (
